@@ -60,3 +60,7 @@ class TestPlots:
     def test_DM(self, setup, rescale):
         fig = plot_DM(setup.pairs, rescale)
         assert isinstance(fig, go.Figure)
+
+
+if __name__ == "__main__":
+    pass
