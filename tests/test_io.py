@@ -1,4 +1,4 @@
-# Copyright (c) [2024-2025] []
+# Copyright (c) [2024-2025] [Laszlo Oroszlany, Daniel Pozsar]
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,8 +21,8 @@ import numpy as np
 import pytest
 import sisl
 
-from grogupy.io.io import read_magnopy
-from grogupy.io.utilities import decipher, decipher_all_by_pos, decipher_all_by_tag
+from grogu.io.io import read_magnopy
+from grogu.io.utilities import decipher, decipher_all_by_pos, decipher_all_by_tag
 
 
 def test_parse_magnopy():

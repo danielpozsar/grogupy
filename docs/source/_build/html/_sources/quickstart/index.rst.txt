@@ -32,7 +32,7 @@ Installation
     .. grid-item-card:: Using source code
         :columns: 12 12 12 12
 
-        Or if you want to use the latest development version, first go to an empty 
+        Or if you want to use the latest development version, first go to an empty
         directory and clone the git repository. Then you can build the wheel and install with pip.
 
         ++++
@@ -47,7 +47,7 @@ Installation
 
 Quickstart tutorials
 --------------------
-   
+
 .. toctree::
    :maxdepth: 1
 

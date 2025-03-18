@@ -1,7 +1,7 @@
 Introduction
 ============
 
-grogupy is a package that contains a variety of modules to calculate 
+grogupy is a package that contains a variety of modules to calculate
 and visualize magnetic interaction parameters. One of the main
 features is the ability to calculate the magnetic anisotropy as well.
 
@@ -10,21 +10,21 @@ features is the ability to calculate the magnetic anisotropy as well.
     H(\{\vec{e}_i\}) = \frac{1}{2} \sum_{i \neq j} \vec{e_i} J_{ij} \vec{e_j} + \sum_{i} \vec{e_i} K_{i} \vec{e_i}
 
 
-It can also be used to set up more complex convergence and high throughput 
-calculations. 
+It can also be used to set up more complex convergence and high throughput
+calculations.
 
-1. grogupy can efficiently calculate the magnetic interaction 
-parameters of a large number of atoms or magnetic entites. The most 
-resource consuming part of the simulation is the Green's function 
-calculation, but the number of matrix inversions does not depend on 
+1. grogupy can efficiently calculate the magnetic interaction
+parameters of a large number of atoms or magnetic entites. The most
+resource consuming part of the simulation is the Green's function
+calculation, but the number of matrix inversions does not depend on
 the number of pairs in the system, so the increase in the number of
 pairs comes very cheap computationally.
 
-2. It is capable to visualize the examined system including the 
-calculated magnetic parameters, like the isotropic, symmetric and 
+2. It is capable to visualize the examined system including the
+calculated magnetic parameters, like the isotropic, symmetric and
 antisymmetric exchange or the Dzyaloshinskii-Morilla  vectors.
 
-3. It is capable to carry out automatic convergence test and create 
+3. It is capable to carry out automatic convergence test and create
 workflows for high throughput calculations.
 
 Package
@@ -39,5 +39,5 @@ Go to the :ref:`installation <quickstart>` page to install grogupy.
 Command line usage
 ------------------
 
-grogupy contains  :ref:`command line scripts <tutorials>` to run simulations 
+grogupy contains  :ref:`command line scripts <tutorials>` to run simulations
 and to create automatic summaries based on high throughput data.

@@ -21,9 +21,11 @@ docs/build
 docs/source/api/generated
 *generated
 
-
 # Debug
 *.coverage
+
+# Benchmarks
+benchmarks
 
 # Mac stuff
 *.DS_Store*

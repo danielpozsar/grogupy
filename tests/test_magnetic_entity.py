@@ -1,4 +1,4 @@
-# Copyright (c) [2024-2025] []
+# Copyright (c) [2024-2025] [Laszlo Oroszlany, Daniel Pozsar]
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,10 +22,10 @@ import os
 import numpy as np
 import pytest
 
-import grogupy
-from grogupy.io.io import load_MagneticEntity
-from grogupy.io.utilities import decipher
-from grogupy.physics.magnetic_entity import MagneticEntity
+import grogu
+from grogu.io.io import load_MagneticEntity
+from grogu.io.utilities import decipher
+from grogu.physics.magnetic_entity import MagneticEntity
 
 
 @pytest.mark.parametrize(
@@ -386,10 +386,10 @@ def test_add_G_tmp():
 
     mag_ent = MagneticEntity(infile, 1)
 
-    builder = grogupy.Builder(np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]))
-    builder.add_contour(grogupy.Contour(100, 1000, -10))
-    builder.add_kspace(grogupy.KSpace())
-    builder.add_hamiltonian(grogupy.Hamiltonian(infile))
+    builder = grogu.Builder(np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]))
+    builder.add_contour(grogu.Contour(100, 1000, -10))
+    builder.add_kspace(grogu.KSpace())
+    builder.add_hamiltonian(grogu.Hamiltonian(infile))
     builder.magnetic_entities = [mag_ent]
 
     builder.finalize()
@@ -424,12 +424,12 @@ def test_energies_and_anisotropy():
 
     mag_ent = MagneticEntity(infile, 1)
 
-    builder = grogupy.Builder(
+    builder = grogu.Builder(
         np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]), matlabmode=True
     )
-    builder.add_contour(grogupy.Contour(100, 1000, -10))
-    builder.add_kspace(grogupy.KSpace())
-    builder.add_hamiltonian(grogupy.Hamiltonian(infile))
+    builder.add_contour(grogu.Contour(100, 1000, -10))
+    builder.add_kspace(grogu.KSpace())
+    builder.add_hamiltonian(grogu.Hamiltonian(infile))
     builder.magnetic_entities = [mag_ent]
 
     builder.solve()
@@ -452,13 +452,13 @@ def test_to_dict_copy_load():
 
     mag_ent = MagneticEntity(infile, 1, 1)
 
-    grogupy.save(
+    grogu.save(
         mag_ent,
         "/Users/danielpozsar/Documents/oktatás/elte/phd/grogu_project/tests/write_load_mag_ent1.pkl",
     )
 
     mag_ent2 = mag_ent.copy()
-    grogupy.save(
+    grogu.save(
         mag_ent2,
         "/Users/danielpozsar/Documents/oktatás/elte/phd/grogu_project/tests/write_load_mag_ent2.pkl",
     )

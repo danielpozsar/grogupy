@@ -7,4 +7,3 @@ CPU solvers
    :no-undoc-members:
    :no-inherited-members:
    :no-imported-members:
-   

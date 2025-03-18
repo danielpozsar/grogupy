@@ -3,16 +3,16 @@
 Running GroguPy in HPC
 ======================
 
-This section provides instructions on how to configure 
-and run GroguPy on a High-Performance Computing (HPC) 
-system using SLURM. Below is an example of a bash script 
+This section provides instructions on how to configure
+and run GroguPy on a High-Performance Computing (HPC)
+system using SLURM. Below is an example of a bash script
 for submitting a job to the SLURM scheduler.
 
 Example SLURM Batch Script
 ---------------------------
 
 The following is an example SLURM batch script (`sbatch`)
-for running GroguPy on an HPC system, in this case on 
+for running GroguPy on an HPC system, in this case on
 `Komondor <https://hpc.kifu.hu/hu/komondor>`_.:
 
 .. code-block:: bash
@@ -61,29 +61,29 @@ Explanation of the Script
 - `#SBATCH --exclusive`: Ensures exclusive access to the node.
 - `#SBATCH --mem-per-cpu 4000`: Allocates 4000 MB of memory per CPU.
 
-The script also sets up the environment by loading necessary 
-modules and setting environment variables for optimal 
-performance. Exportin the LD_LIBRARY_PATH variable is necessary 
-to ensure that the CUDA library is accessible for cupy. The 
-script also sets the `GROGUPY_ARCHITECTURE` environment 
-variable to `GPU` to enable GPU acceleration in grogupy. 
-Finally, it runs the GroguPy application using `srun` and the 
+The script also sets up the environment by loading necessary
+modules and setting environment variables for optimal
+performance. Exportin the LD_LIBRARY_PATH variable is necessary
+to ensure that the CUDA library is accessible for cupy. The
+script also sets the `GROGUPY_ARCHITECTURE` environment
+variable to `GPU` to enable GPU acceleration in grogupy.
+Finally, it runs the GroguPy application using `srun` and the
 `grogupy` command line script.
 
-Make sure to adjust the script parameters according to 
+Make sure to adjust the script parameters according to
 your HPC system's configuration and your specific requirements.
 
 
 Example input file format
 -------------------------
 
-This is the corresponding input file for the above script, `grogupy_input.py`, 
+This is the corresponding input file for the above script, `grogupy_input.py`,
 which contains the parameters for the grogupy simulation. These variables
 are passed to the appropriate functions in the grogupy package very similarly
 as we did in the jupyter notebook examples.
 
 .. code-block:: python
-    
+
     # input folder and file
     infolder = "./"
     infile = "CrIWSe.fdf"

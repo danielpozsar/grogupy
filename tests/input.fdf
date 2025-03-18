@@ -25,7 +25,7 @@ AtomShell 5 2
 # Orbitals 2 1 4 9              # this is a slice of orbital index
 
 
-%block Pairs            #  MagneticEntities index ai and aj, supercell offset 
+%block Pairs            #  MagneticEntities index ai and aj, supercell offset
     0   1   0   0   0
     0   2   0   0   0
     1   2   0   0   0

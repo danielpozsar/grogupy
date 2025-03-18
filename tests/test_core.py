@@ -1,4 +1,4 @@
-# Copyright (c) [2024-2025] []
+# Copyright (c) [2024-2025] [Laszlo Oroszlany, Daniel Pozsar]
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@ import pytest
 import sisl
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
-from grogupy.core.core import (
+from grogu.core.core import (
     calc_Vu,
     hsk,
     make_contour,

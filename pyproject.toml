@@ -3,20 +3,25 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "grogupy"
-version = "1.0.0"
+name = "grogu"
+version = "0.0.1"
 authors = [
   { name="Laszlo Oroszlany", email="laszlo.oroszlany@ttk.elte.hu" },
-  { name="Daniel Pozsar", email="danielpozsar@student.elte.hu" },
+  { name="Daniel Tibor Pozsar", email="danielpozsar@student.elte.hu" },
 ]
-description = "Relativistic magnetic interactions from non-orthogonal basis sets"
+description = "Python package calculating relativistic magnetic interactions for the generalised Heisenberg model."
 readme = "README.md"
 kewords = [
-    "DFT",
     "physics",
-    "grogu",
-    "magnetic interactions",
-    "Siesta"
+    "dft",
+    "density-function-theory",
+    "solid-state-physics",
+    "heisenberg-model",
+    "magnetism",
+    "siesta",
+    "wannier90",
+    "solid-state",
+    "magnetic-materials"
 ]
 requires-python = ">=3.9"
 dependencies = [
@@ -26,7 +31,6 @@ dependencies = [
   "netcdf4==1.7.2",
   "openmpi",
   "mpi4py",
-  "threadpoolctl"
 ]
 
 classifiers = [
@@ -39,24 +43,27 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
+license = "MIT"
+license-files = ["LICENSE"]
+
 [project.optional-dependencies]
 tqdm = ["tqdm"]
 viz = ["plotly", "nbconvert"]
 gpu = ["cupy-cuda12x"]
 
 [project.scripts]
-grogupy = "grogupy.cli:main"
+grogu_run = "grogupy.cli:main"
 
 [project.urls]
-Homepage = "https://gitea.vo.elte.hu/et209d/grogu"
-Documentation = "https://gitea.vo.elte.hu/et209d/grogu"
-Repository = "https://gitea.vo.elte.hu/et209d/grogu"
-Issues = "https://gitea.vo.elte.hu/et209d/grogu"
+Homepage = "https://danielpozsar.web.elte.hu/grogu/"
+Documentation = "https://danielpozsar.web.elte.hu/grogu/"
+Repository = "https://github.com/danielpozsar/grogu"
+Issues = "https://github.com/danielpozsar/grogu/issues"
 
 [tool.pytest.ini_options]
 testpaths = [
-  "./src/grogupy/", 
-  "./tests/", 
+  "./src/grogupy/",
+  "./tests/",
 ]
 addopts = [
     "--import-mode=importlib",

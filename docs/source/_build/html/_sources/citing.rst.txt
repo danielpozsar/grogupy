@@ -3,8 +3,8 @@
 Citing grogupy
 ==============
 
-grogupy is a completely open-source software package. It is released under the MIT license. 
-Currently there is no way to explicitly cite grogupy, but you can cite the underlying paper: 
+grogupy is a completely open-source software package. It is released under the MIT license.
+Currently there is no way to explicitly cite grogupy, but you can cite the underlying paper:
 *Relativistic magnetic interactions from nonorthogonal basis sets*.
 
 .. code-block:: bibtex
@@ -32,7 +32,7 @@ grogupy builds on the sisl package, which should also be cited.
     url          = {https://doi.org/10.5281/zenodo.597181}
     }
 
-Furthermore all the command line scripts and the ``grgupy`` package can print out the citation in **bibtex** 
+Furthermore all the command line scripts and the ``grgupy`` package can print out the citation in **bibtex**
 format.
 
 .. code-block:: python3
@@ -58,9 +58,9 @@ format.
         url          = {https://doi.org/10.5281/zenodo.597181}
         }
 
-    
+
 .. code-block:: console
-    
+
     grogupy --cite
     @article{martinez2023relativistic,
         title={Relativistic magnetic interactions from nonorthogonal basis sets},
@@ -80,5 +80,3 @@ format.
     doi          = {10.5281/zenodo.597181},
     url          = {https://doi.org/10.5281/zenodo.597181}
     }
-
-

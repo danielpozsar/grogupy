@@ -16,16 +16,16 @@
 grogupy: Relativistic magnetic interactions from non-orthogonal basis sets
 ==========================================================================
 
-grogupy was created to easily extract magnetic interaction parameters from 
-density functional theory (DFT) calculations. Because the underlying theory 
-focuses on non-orthogonal basis sets, the most straightforward software to 
-use for the DFT calculation is `Siesta <https://siesta-project.org/siesta/>`_. 
+grogupy was created to easily extract magnetic interaction parameters from
+density functional theory (DFT) calculations. Because the underlying theory
+focuses on non-orthogonal basis sets, the most straightforward software to
+use for the DFT calculation is `Siesta <https://siesta-project.org/siesta/>`_.
 
-It is based on the Grogu matlab implementation and the `sisl 
-<https://sisl.readthedocs.io/en/latest/index.html>`_ package and this work 
+It is based on the Grogu matlab implementation and the `sisl
+<https://sisl.readthedocs.io/en/latest/index.html>`_ package and this work
 was carried out by the `TRILMAX <https://trilmax.elte.hu>`_.
 
-More on the theoretical background can be seen on `arXiv 
+More on the theoretical background can be seen on `arXiv
 <https://arxiv.org/abs/2309.02558>`_.
 
 .. grid:: 1 1 2 2
@@ -41,7 +41,7 @@ More on the theoretical background can be seen on `arXiv
         :link: tutorials/index
         :link-type: doc
 
-        In depth tutorials to explore all the possibilities 
+        In depth tutorials to explore all the possibilities
         with ``grogupy``.
 
     .. grid-item-card::  -- API reference
@@ -81,7 +81,7 @@ More on the theoretical background can be seen on `arXiv
 
    API/modules
    environment/index
-   
+
 .. toctree::
    :hidden:
    :maxdepth: 2
