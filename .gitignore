@@ -1,0 +1,29 @@
+__pycache__
+
+# Build
+*.gz
+*.whl
+dist
+**/*.egg-info
+
+# Tests
+*.pkl
+
+# VSCode settings
+.vscode
+.venv
+.pytest_cache
+*.code-workspace
+
+# Docs
+docs/make.bat
+docs/build
+docs/source/api/generated
+*generated
+
+
+# Debug
+*.coverage
+
+# Mac stuff
+*.DS_Store*
