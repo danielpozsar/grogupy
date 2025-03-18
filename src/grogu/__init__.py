@@ -30,16 +30,12 @@ __version__ = "0.0.1"
 
 
 from . import viz
+from ._tqdm import _tqdm
 
 # pre-import stuff
-from ._tqdm import _tqdm
+from .config import CONFIG
 from .io import load, save, save_magnopy
-from .physics.builder import Builder
-from .physics.contour import Contour
-from .physics.hamiltonian import Hamiltonian
-from .physics.kspace import Kspace
-from .physics.magnetic_entity import MagneticEntity
-from .physics.pair import Pair
+from .physics import Builder, Contour, Hamiltonian, Kspace, MagneticEntity, Pair
 
 # extend namespace
 __all__.extend(

@@ -21,3 +21,8 @@
 
 _extended_summary_
 """
+
+from .. import __all__
+from .timing import DefaultTimer
+
+__all__.extend(["DefaultTimer"])
