@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "grogupy"
-version = "0.0.1"
+version = "0.0.2"
 authors = [
   { name="Laszlo Oroszlany", email="laszlo.oroszlany@ttk.elte.hu" },
   { name="Daniel Tibor Pozsar", email="danielpozsar@student.elte.hu" },
@@ -55,10 +55,10 @@ gpu = ["cupy-cuda12x"]
 grogupy_run = "grogupy.cli:main"
 
 [project.urls]
-Homepage = "https://danielpozsar.web.elte.hu/grogupy/"
-Documentation = "https://danielpozsar.web.elte.hu/grogupy/"
-Repository = "https://github.com/danielpozsar/grogupy"
-Issues = "https://github.com/danielpozsar/grogupy/issues"
+Homepage = "https://danielpozsar.web.elte.hu/grogu/"
+Documentation = "https://danielpozsar.web.elte.hu/grogu/"
+Repository = "https://github.com/danielpozsar/grogu"
+Issues = "https://github.com/danielpozsar/grogu/issues"
 
 [tool.pytest.ini_options]
 testpaths = [
