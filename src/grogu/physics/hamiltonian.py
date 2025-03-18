@@ -64,7 +64,7 @@ class Hamiltonian:
     >>> scf_xcf_orientation = np.array([0,0,1])
     >>> hamiltonian = Hamiltonian(fdf_path, scf_xcf_orientation)
     >>> print(hamiltonian)
-    <grogupy.Hamiltonian scf_xcf_orientation=[0 0 1], orientation=[0 0 1], NO=84>
+    <grogu.Hamiltonian scf_xcf_orientation=[0 0 1], orientation=[0 0 1], NO=84>
 
     Methods
     -------
@@ -113,7 +113,7 @@ class Hamiltonian:
         Unit cell Hamiltonian
     H_XCF_uc: NDArray
         Unit cell exchange part of the Hamiltonian
-    times: grogupy.batch.timing.DefaultTimer
+    times: grogu.batch.timing.DefaultTimer
         It contains and measures runtime
     """
 
@@ -252,7 +252,7 @@ class Hamiltonian:
     def __repr__(self) -> str:
         """String representation of the instance."""
 
-        out = f"<grogupy.Hamiltonian scf_xcf_orientation={self.scf_xcf_orientation}, orientation={self.orientation}, NO={self.NO}>"
+        out = f"<grogu.Hamiltonian scf_xcf_orientation={self.scf_xcf_orientation}, orientation={self.orientation}, NO={self.NO}>"
 
         return out
 

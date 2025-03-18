@@ -1,4 +1,4 @@
-.. automodule:: grogupy.physics
+.. automodule:: grogu.physics
    :noindex:
    :no-members:
    :no-undoc-members:

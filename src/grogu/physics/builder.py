@@ -85,7 +85,7 @@ class Builder:
     >>> simulation.add_contour(contour)
     >>> simulation.add_hamiltonian(hamiltonian)
     >>> simulation
-    <grogupy.Builder npairs=0, numk=1, kset=[1 1 1], eset=100>
+    <grogu.Builder npairs=0, numk=1, kset=[1 1 1], eset=100>
 
     Methods
     -------
@@ -142,7 +142,7 @@ class Builder:
         perpendicular directions and a third direction that is the linear combination of
         the two
     architecture: {"CPU", "GPU"}, optional
-        The architecture of the machine that grogupy is run on, by default 'CPU'
+        The architecture of the machine that grogu is run on, by default 'CPU'
     SLURM_ID: str
         The ID of the SLURM job, if available, else 'Could not be determined.'
     _dh: sisl.physics.Hamiltonian
@@ -151,7 +151,7 @@ class Builder:
         The DFT exchange filed orientation from the instance Hamiltonian
     infile: str
         Input path to the .fdf file
-    times: grogupy.batch.timing.DefaultTimer
+    times: grogu.batch.timing.DefaultTimer
         It contains and measures runtime
     """
 
@@ -181,7 +181,7 @@ class Builder:
         >>> simulation.add_contour(contour)
         >>> simulation.add_hamiltonian(hamiltonian)
         >>> simulation
-        <grogupy.Builder npairs=0, numk=1, kset=[1 1 1], eset=100>
+        <grogu.Builder npairs=0, numk=1, kset=[1 1 1], eset=100>
 
         """
 
@@ -348,7 +348,7 @@ class Builder:
 
         out = ""
         out += section + newline
-        out += f"grogupy version: {__version__}" + newline
+        out += f"grogu version: {__version__}" + newline
         out += f"Input file: {self.infile}" + newline
         out += section + newline
         out += f"SLURM job ID: {self.SLURM_ID}" + newline
@@ -413,7 +413,7 @@ class Builder:
         else:
             eset = self.contour.eset
 
-        string = f"<grogupy.Builder npairs={len(self.pairs)}, numk={NK}, kset={kset}, eset={eset}>"
+        string = f"<grogu.Builder npairs={len(self.pairs)}, numk={NK}, kset={kset}, eset={eset}>"
 
         return string
 
@@ -511,7 +511,7 @@ class Builder:
 
     @property
     def architecture(self) -> str:
-        """The architecture of the machine that grogupy is run on, by default 'CPU'."""
+        """The architecture of the machine that grogu is run on, by default 'CPU'."""
         return self.__architecture
 
     @property

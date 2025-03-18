@@ -26,9 +26,12 @@ pytestmark = [pytest.mark.viz]
 
 @pytest.fixture
 def setup():
-    grogu.Kspace()
-    grogu.Contour()
-    grogu.Builder()
+    kspace = grogu.Kspace()
+    contour = grogu.Contour()
+    builder = grogu.Builder()
+    builder.add_kspace(kspace)
+    builder.add_contour(contour)
+    builder.add_hamiltonian()
     return builder
 
 

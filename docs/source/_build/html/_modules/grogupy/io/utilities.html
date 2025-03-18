@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>grogupy.io.utilities &mdash; grogupy</title>
+  <title>grogu.io.utilities &mdash; grogu</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
@@ -34,7 +34,7 @@
 
 
           <a href="../../../index.html" class="icon icon-home">
-            grogupy documentation
+            grogu documentation
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -48,7 +48,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstart/index.html">Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../citing.html">Citing grogupy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../citing.html">Citing grogu</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
@@ -62,7 +62,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../development/index.html">Contributing to grogupy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development/index.html">Contributing to grogu</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Extras</span></p>
 <ul>
@@ -76,7 +76,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">grogupy documentation</a>
+          <a href="../../../index.html">grogu documentation</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -85,7 +85,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">grogupy.io.utilities</li>
+      <li class="breadcrumb-item active">grogu.io.utilities</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -94,7 +94,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
 
-  <h1>Source code for grogupy.io.utilities</h1><div class="highlight"><pre>
+  <h1>Source code for grogu.io.utilities</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (c) [2024-2025] []</span>
 <span class="c1">#</span>
 <span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
@@ -117,7 +117,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Utility functions</span>
 <span class="sd">=================</span>
-<span class="sd">.. currentmodule:: grogupy.io.utilities</span>
+<span class="sd">.. currentmodule:: grogu.io.utilities</span>
 
 
 <span class="sd">.. autosummary::</span>
@@ -137,7 +137,7 @@
 
 
 <div class="viewcode-block" id="process_input_args">
-<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.utilities.process_input_args.html#grogupy.io.utilities.process_input_args">[docs]</a>
+<a class="viewcode-back" href="../../../API/io/_generated/grogu.io.utilities.process_input_args.html#grogu.io.utilities.process_input_args">[docs]</a>
 <span class="k">def</span> <span class="nf">process_input_args</span><span class="p">(</span>
     <span class="n">DEFAULT_ARGUMENTS</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
     <span class="n">fdf_arguments</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
@@ -153,7 +153,7 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">        default_arguments: dict</span>
-<span class="sd">            Default arguments from grogupy</span>
+<span class="sd">            Default arguments from grogu</span>
 <span class="sd">        fdf_arguments: dict</span>
 <span class="sd">            Arguments read from the fdf input file</span>
 <span class="sd">        command_line_arguments: dict</span>
@@ -183,7 +183,7 @@
 
 
 <div class="viewcode-block" id="decipher">
-<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.utilities.decipher.html#grogupy.io.utilities.decipher">[docs]</a>
+<a class="viewcode-back" href="../../../API/io/_generated/grogu.io.utilities.decipher.html#grogu.io.utilities.decipher">[docs]</a>
 <span class="k">def</span> <span class="nf">decipher</span><span class="p">(</span>
     <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]:</span>
@@ -250,7 +250,7 @@
 
 
 <div class="viewcode-block" id="decipher_all_by_pos">
-<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.utilities.decipher_all_by_pos.html#grogupy.io.utilities.decipher_all_by_pos">[docs]</a>
+<a class="viewcode-back" href="../../../API/io/_generated/grogu.io.utilities.decipher_all_by_pos.html#grogu.io.utilities.decipher_all_by_pos">[docs]</a>
 <span class="k">def</span> <span class="nf">decipher_all_by_pos</span><span class="p">(</span>
     <span class="n">dh</span><span class="p">:</span> <span class="n">sisl</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">Hamiltonian</span><span class="p">,</span>
     <span class="n">magnetic_entities</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
@@ -278,7 +278,7 @@
 <span class="sd">        information and the Hamiltonian, by default 1e-4</span>
 <span class="sd">    mode: {&quot;normal&quot;, &quot;full&quot;}, optional</span>
 <span class="sd">        Whether to return all the information or just the one needed by</span>
-<span class="sd">        ``grogupy``, by default &quot;normal&quot;</span>
+<span class="sd">        ``grogu``, by default &quot;normal&quot;</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -337,7 +337,7 @@
 
 
 <div class="viewcode-block" id="decipher_all_by_tag">
-<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.utilities.decipher_all_by_tag.html#grogupy.io.utilities.decipher_all_by_tag">[docs]</a>
+<a class="viewcode-back" href="../../../API/io/_generated/grogu.io.utilities.decipher_all_by_tag.html#grogu.io.utilities.decipher_all_by_tag">[docs]</a>
 <span class="k">def</span> <span class="nf">decipher_all_by_tag</span><span class="p">(</span>
     <span class="n">magnetic_entities</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">pairs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]]:</span>
@@ -405,7 +405,7 @@
 
 
 <div class="viewcode-block" id="strip_dict_structure">
-<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.utilities.strip_dict_structure.html#grogupy.io.utilities.strip_dict_structure">[docs]</a>
+<a class="viewcode-back" href="../../../API/io/_generated/grogu.io.utilities.strip_dict_structure.html#grogu.io.utilities.strip_dict_structure">[docs]</a>
 <span class="k">def</span> <span class="nf">strip_dict_structure</span><span class="p">(</span>
     <span class="n">dictionary</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
     <span class="n">pops</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
@@ -478,7 +478,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, grogupy.</p>
+    <p>&#169; Copyright 2024, grogu.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Running GroguPy in HPC &mdash; grogupy</title>
+  <title>Running GroguPy in HPC &mdash; grogu</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
@@ -24,7 +24,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Citing grogupy" href="../citing.html" />
+    <link rel="next" title="Citing grogu" href="../citing.html" />
     <link rel="prev" title="Convergence with high throughput" href="../notebooks/quickstart/Convergence%20with%20high%20throughput.html" />
 </head>
 
@@ -37,7 +37,7 @@
 
 
           <a href="../index.html" class="icon icon-home">
-            grogupy documentation
+            grogu documentation
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -66,7 +66,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../citing.html">Citing grogupy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../citing.html">Citing grogu</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
@@ -80,7 +80,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../development/index.html">Contributing to grogupy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/index.html">Contributing to grogu</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Extras</span></p>
 <ul>
@@ -94,7 +94,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">grogupy documentation</a>
+          <a href="../index.html">grogu documentation</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -113,8 +113,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
 
-  <section id="running-grogupy-in-hpc">
-<span id="running-in-hpc"></span><h1>Running GroguPy in HPC<a class="headerlink" href="#running-grogupy-in-hpc" title="Link to this heading"></a></h1>
+  <section id="running-grogu-in-hpc">
+<span id="running-in-hpc"></span><h1>Running GroguPy in HPC<a class="headerlink" href="#running-grogu-in-hpc" title="Link to this heading"></a></h1>
 <p>This section provides instructions on how to configure
 and run GroguPy on a High-Performance Computing (HPC)
 system using SLURM. Below is an example of a bash script
@@ -125,7 +125,7 @@ for submitting a job to the SLURM scheduler.</p>
 for running GroguPy on an HPC system, in this case on
 <a class="reference external" href="https://hpc.kifu.hu/hu/komondor">Komondor</a>.:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
-<span class="c1">#SBATCH --job-name=grogupy</span>
+<span class="c1">#SBATCH --job-name=grogu</span>
 <span class="c1">#SBATCH --nodes=1</span>
 <span class="c1">#SBATCH --ntasks=1</span>
 <span class="c1">#SBATCH --ntasks-per-node=1</span>
@@ -152,14 +152,14 @@ module<span class="w"> </span>load<span class="w"> </span>PrgEnv-gnu<span class=
 <span class="nb">export</span><span class="w"> </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span><span class="nv">$LD_LIBRARY_PATH</span>:/opt/software/packages/cuda/12.3/targets/x86_64-linux/lib
 <span class="nb">export</span><span class="w"> </span><span class="nv">GROGUPY_ARCHITECTURE</span><span class="o">=</span>GPU
 
-<span class="nb">time</span><span class="w"> </span>srun<span class="w"> </span>grogupy<span class="w"> </span>./grogupy_input.py
+<span class="nb">time</span><span class="w"> </span>srun<span class="w"> </span>grogu<span class="w"> </span>./grogu_input.py
 </pre></div>
 </div>
 </section>
 <section id="explanation-of-the-script">
 <h2>Explanation of the Script<a class="headerlink" href="#explanation-of-the-script" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p><cite>#SBATCH –job-name=grogupy</cite>: Sets the name of the job.</p></li>
+<li><p><cite>#SBATCH –job-name=grogu</cite>: Sets the name of the job.</p></li>
 <li><p><cite>#SBATCH –nodes=1</cite>: Requests one node.</p></li>
 <li><p><cite>#SBATCH –ntasks=1</cite>: Requests one task.</p></li>
 <li><p><cite>#SBATCH –ntasks-per-node=1</cite>: Specifies one task per node.</p></li>
@@ -175,17 +175,17 @@ modules and setting environment variables for optimal
 performance. Exportin the LD_LIBRARY_PATH variable is necessary
 to ensure that the CUDA library is accessible for cupy. The
 script also sets the <cite>GROGUPY_ARCHITECTURE</cite> environment
-variable to <cite>GPU</cite> to enable GPU acceleration in grogupy.
+variable to <cite>GPU</cite> to enable GPU acceleration in grogu.
 Finally, it runs the GroguPy application using <cite>srun</cite> and the
-<cite>grogupy</cite> command line script.</p>
+<cite>grogu</cite> command line script.</p>
 <p>Make sure to adjust the script parameters according to
 your HPC system’s configuration and your specific requirements.</p>
 </section>
 <section id="example-input-file-format">
 <h2>Example input file format<a class="headerlink" href="#example-input-file-format" title="Link to this heading"></a></h2>
-<p>This is the corresponding input file for the above script, <cite>grogupy_input.py</cite>,
-which contains the parameters for the grogupy simulation. These variables
-are passed to the appropriate functions in the grogupy package very similarly
+<p>This is the corresponding input file for the above script, <cite>grogu_input.py</cite>,
+which contains the parameters for the grogu simulation. These variables
+are passed to the appropriate functions in the grogu package very similarly
 as we did in the jupyter notebook examples.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># input folder and file</span>
 <span class="n">infolder</span> <span class="o">=</span> <span class="s2">&quot;./&quot;</span>
@@ -250,13 +250,13 @@ as we did in the jupyter notebook examples.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../notebooks/quickstart/Convergence%20with%20high%20throughput.html" class="btn btn-neutral float-left" title="Convergence with high throughput" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../citing.html" class="btn btn-neutral float-right" title="Citing grogupy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../citing.html" class="btn btn-neutral float-right" title="Citing grogu" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, grogupy.</p>
+    <p>&#169; Copyright 2024, grogu.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

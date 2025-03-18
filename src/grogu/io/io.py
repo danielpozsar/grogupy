@@ -21,7 +21,7 @@
 Visualization functions
 =======================
 
-.. currentmodule:: grogupy.io.io
+.. currentmodule:: grogu.io.io
 
 .. autosummary::
    :toctree: _generated/
@@ -37,7 +37,7 @@ Visualization functions
    save
    save_magnopy
    read_magnopy
-   read_grogupy_fdf
+   read_grogu_fdf
 
 """
 import pickle
@@ -328,7 +328,7 @@ def save(
     Parameters
     ----------
     object : Union[DefaultTimer, Contour, Kspace, MagneticEntity, Pair, Hamiltonian, Builder]
-        Object from the grogupy library
+        Object from the grogu library
     path: str
         The path to the output file
     save_memory: bool, optional
@@ -338,7 +338,7 @@ def save(
     """
 
     # check if the object is ours
-    if object.__module__.split(".")[0] == "grogupy":
+    if object.__module__.split(".")[0] == "grogu":
         # add pkl so we know it is pickled
         if not path.endswith(".pkl"):
             path += ".pkl"
@@ -356,7 +356,7 @@ def save(
 
     else:
         raise Exception(
-            f"The object is from package {object.__module__.split('.')[0]} instead of grogupy!"
+            f"The object is from package {object.__module__.split('.')[0]} instead of grogu!"
         )
 
 
@@ -392,7 +392,7 @@ def save_magnopy(
         file.write(data)
 
 
-def read_grogupy_fdf(path: str) -> tuple[dict, list, list]:
+def read_grogu_fdf(path: str) -> tuple[dict, list, list]:
     """It reads the simulation parameters, magnetic entities and pairs from the fdf
 
     Parameters

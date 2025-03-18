@@ -1,4 +1,4 @@
-Contributing to grogupy
+Contributing to grogu
 =======================
 
 Currently there is no way to contribute to the development for outsiders.
@@ -68,7 +68,7 @@ folder:
 
 .. code-block:: bash
 
-    pip install grogupy-1.0.0-py3-none-any
+    pip install grogu-1.0.0-py3-none-any
 
 Build documentation
 -------------------

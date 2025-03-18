@@ -21,7 +21,7 @@
 Visualization functions
 =======================
 
-.. currentmodule:: grogupy.viz.viz
+.. currentmodule:: grogu.viz.viz
 
 .. autosummary::
    :toctree: _generated/

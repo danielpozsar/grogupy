@@ -1,7 +1,7 @@
 Core functions
 ==============
 
-.. automodule:: grogupy.core.core
+.. automodule:: grogu.core.core
    :noindex:
    :no-members:
    :no-undoc-members:

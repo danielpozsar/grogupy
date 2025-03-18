@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>grogupy.physics.kspace &mdash; grogupy</title>
+  <title>grogu.physics.kspace &mdash; grogu</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
@@ -34,7 +34,7 @@
 
 
           <a href="../../../index.html" class="icon icon-home">
-            grogupy documentation
+            grogu documentation
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -48,7 +48,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstart/index.html">Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../citing.html">Citing grogupy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../citing.html">Citing grogu</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
@@ -62,7 +62,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../development/index.html">Contributing to grogupy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development/index.html">Contributing to grogu</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Extras</span></p>
 <ul>
@@ -76,7 +76,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">grogupy documentation</a>
+          <a href="../../../index.html">grogu documentation</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -85,7 +85,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">grogupy.physics.kspace</li>
+      <li class="breadcrumb-item active">grogu.physics.kspace</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -94,7 +94,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
 
-  <h1>Source code for grogupy.physics.kspace</h1><div class="highlight"><pre>
+  <h1>Source code for grogu.physics.kspace</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (c) [2024-2025] []</span>
 <span class="c1">#</span>
 <span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
@@ -133,7 +133,7 @@
 
 
 <div class="viewcode-block" id="Kspace">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.kspace.html#grogupy.physics.kspace.Kspace">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.kspace.html#grogu.physics.kspace.Kspace">[docs]</a>
 <span class="k">class</span> <span class="nc">Kspace</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This class contains and creates the data of the reciprocal space integral.</span>
 
@@ -155,7 +155,7 @@
 
 <span class="sd">    &gt;&gt;&gt; kspace = Kspace(kset=[100,100,1])</span>
 <span class="sd">    &gt;&gt;&gt; print(kspace)</span>
-<span class="sd">    &lt;grogupy.Kspace kset=[100 100   1], NK=10000&gt;</span>
+<span class="sd">    &lt;grogu.Kspace kset=[100 100   1], NK=10000&gt;</span>
 
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
@@ -174,7 +174,7 @@
 <span class="sd">        The samples in the Brillouin zone</span>
 <span class="sd">    weights : NDArray</span>
 <span class="sd">        The weights of the corresponding samples</span>
-<span class="sd">    times : grogupy.batch.timing.DefaultTimer</span>
+<span class="sd">    times : grogu.batch.timing.DefaultTimer</span>
 <span class="sd">        It contains and measures runtime</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -201,7 +201,7 @@
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;String representation of the instance.&quot;&quot;&quot;</span>
 
-        <span class="n">out</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&lt;grogupy.Kspace kset=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">kset</span><span class="si">}</span><span class="s2">, NK=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">NK</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&lt;grogu.Kspace kset=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">kset</span><span class="si">}</span><span class="s2">, NK=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">NK</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
 
         <span class="k">return</span> <span class="n">out</span>
 
@@ -222,7 +222,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kpoints</span><span class="p">))</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kpoints</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Kspace.copy">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.kspace.html#grogupy.physics.kspace.Kspace.copy">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.kspace.html#grogu.physics.kspace.Kspace.copy">[docs]</a>
     <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the deepcopy of the instance.</span>
 
@@ -236,7 +236,7 @@
 
 
 <div class="viewcode-block" id="Kspace.plot">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.kspace.html#grogupy.physics.kspace.Kspace.plot">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.kspace.html#grogu.physics.kspace.Kspace.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a plot from the Brillouin zone sample points.</span>
 
@@ -266,7 +266,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, grogupy.</p>
+    <p>&#169; Copyright 2024, grogu.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

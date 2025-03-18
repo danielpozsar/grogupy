@@ -1,4 +1,4 @@
-.. automodule:: grogupy.viz.viz
+.. automodule:: grogu.viz.viz
    :noindex:
    :no-members:
    :no-undoc-members:

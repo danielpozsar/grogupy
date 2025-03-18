@@ -52,7 +52,7 @@ viz = ["plotly", "nbconvert"]
 gpu = ["cupy-cuda12x"]
 
 [project.scripts]
-grogu_run = "grogupy.cli:main"
+grogu_run = "grogu.cli:main"
 
 [project.urls]
 Homepage = "https://danielpozsar.web.elte.hu/grogu/"
@@ -62,7 +62,7 @@ Issues = "https://github.com/danielpozsar/grogu/issues"
 
 [tool.pytest.ini_options]
 testpaths = [
-  "./src/grogupy/",
+  "./src/grogu/",
   "./tests/",
 ]
 addopts = [

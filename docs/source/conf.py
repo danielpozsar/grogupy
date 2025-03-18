@@ -26,8 +26,8 @@ sys.path.insert(0, os.path.abspath("../../src"))
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = "grogupy documentation"
-copyright = "2024, grogupy"
+project = "grogu documentation"
+copyright = "2024, grogu"
 author = "Author"
 release = "1.0.0"
 
@@ -131,7 +131,7 @@ html_use_index = True
 
 html_theme = "sphinx_rtd_theme"
 html_static_path = ["_static"]
-html_title = "grogupy"
+html_title = "grogu"
 
 # for bibliography
 bibtex_bibfiles = ["references.bib"]
@@ -142,7 +142,7 @@ bibtex_tooltips = True
 
 # pdf documentation
 pdf_documents = [
-    ("index", "grogupy_documentation", "Grogupy documentation", "Daniel Pozsar"),
+    ("index", "grogu_documentation", "grogu documentation", "Daniel Pozsar"),
 ]
 
 templates_path = ["_templates"]

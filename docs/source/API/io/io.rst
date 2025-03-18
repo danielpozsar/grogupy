@@ -1,4 +1,4 @@
-.. automodule:: grogupy.io.io
+.. automodule:: grogu.io.io
    :noindex:
    :no-members:
    :no-undoc-members:

@@ -1,22 +1,22 @@
-.. grogupy master file, created by
+.. grogu master file, created by
    sphinx-quickstart on Thu Oct 10 17:10:03 2024.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
 
-.. module:: grogupy
+.. module:: grogu
    :no-index:
 
-.. title:: grogupy: Relativistic magnetic interactions from non-orthogonal basis sets
+.. title:: grogu: Relativistic magnetic interactions from non-orthogonal basis sets
 .. meta::
    :description: Relativistic magnetic interactions from non-orthogonal basis sets.
    :keywords: DFT, physics, grogu, magnetic interactions, Siesta
 
 
-grogupy: Relativistic magnetic interactions from non-orthogonal basis sets
+grogu: Relativistic magnetic interactions from non-orthogonal basis sets
 ==========================================================================
 
-grogupy was created to easily extract magnetic interaction parameters from
+grogu was created to easily extract magnetic interaction parameters from
 density functional theory (DFT) calculations. Because the underlying theory
 focuses on non-orthogonal basis sets, the most straightforward software to
 use for the DFT calculation is `Siesta <https://siesta-project.org/siesta/>`_.
@@ -35,14 +35,14 @@ More on the theoretical background can be seen on `arXiv
         :link: quickstart/index
         :link-type: doc
 
-        Simple tutorial to introduce the ``grogupy`` package.
+        Simple tutorial to introduce the ``grogu`` package.
 
     .. grid-item-card:: -- Tutorials
         :link: tutorials/index
         :link-type: doc
 
         In depth tutorials to explore all the possibilities
-        with ``grogupy``.
+        with ``grogu``.
 
     .. grid-item-card::  -- API reference
         :link: API/modules

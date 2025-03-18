@@ -56,7 +56,7 @@ class Kspace:
 
     >>> kspace = Kspace(kset=[100,100,1])
     >>> print(kspace)
-    <grogupy.Kspace kset=[100 100   1], NK=10000>
+    <grogu.Kspace kset=[100 100   1], NK=10000>
 
     Methods
     -------
@@ -75,7 +75,7 @@ class Kspace:
         The samples in the Brillouin zone
     weights : NDArray
         The weights of the corresponding samples
-    times : grogupy.batch.timing.DefaultTimer
+    times : grogu.batch.timing.DefaultTimer
         It contains and measures runtime
     """
 
@@ -102,7 +102,7 @@ class Kspace:
     def __repr__(self) -> str:
         """String representation of the instance."""
 
-        out = f"<grogupy.Kspace kset={self.kset}, NK={self.NK}>"
+        out = f"<grogu.Kspace kset={self.kset}, NK={self.NK}>"
 
         return out
 

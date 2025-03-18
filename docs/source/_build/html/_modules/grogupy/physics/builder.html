@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>grogupy.physics.builder &mdash; grogupy</title>
+  <title>grogu.physics.builder &mdash; grogu</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
@@ -34,7 +34,7 @@
 
 
           <a href="../../../index.html" class="icon icon-home">
-            grogupy documentation
+            grogu documentation
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -48,7 +48,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstart/index.html">Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../citing.html">Citing grogupy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../citing.html">Citing grogu</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
@@ -62,7 +62,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../development/index.html">Contributing to grogupy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development/index.html">Contributing to grogu</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Extras</span></p>
 <ul>
@@ -76,7 +76,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">grogupy documentation</a>
+          <a href="../../../index.html">grogu documentation</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -85,7 +85,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">grogupy.physics.builder</li>
+      <li class="breadcrumb-item active">grogu.physics.builder</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -94,7 +94,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
 
-  <h1>Source code for grogupy.physics.builder</h1><div class="highlight"><pre>
+  <h1>Source code for grogu.physics.builder</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (c) [2024-2025] []</span>
 <span class="c1">#</span>
 <span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
@@ -148,7 +148,7 @@
     <span class="kn">import</span> <span class="nn">pytest</span>
 
 <div class="viewcode-block" id="setup">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.setup">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.builder.html#grogu.physics.builder.setup">[docs]</a>
     <span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">setup</span><span class="p">():</span>
         <span class="n">k</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">Kspace</span><span class="p">(),</span> <span class="n">Contour</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="o">-</span><span class="mi">20</span><span class="p">)</span>
@@ -164,7 +164,7 @@
 
 
 <div class="viewcode-block" id="Builder">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.builder.html#grogu.physics.builder.Builder">[docs]</a>
 <span class="k">class</span> <span class="nc">Builder</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This class contains the data and the methods related to the Simulation.</span>
 
@@ -187,7 +187,7 @@
 <span class="sd">    &gt;&gt;&gt; simulation.add_contour(contour)</span>
 <span class="sd">    &gt;&gt;&gt; simulation.add_hamiltonian(hamiltonian)</span>
 <span class="sd">    &gt;&gt;&gt; simulation</span>
-<span class="sd">    &lt;grogupy.Builder npairs=0, numk=1, kset=[1 1 1], eset=100&gt;</span>
+<span class="sd">    &lt;grogu.Builder npairs=0, numk=1, kset=[1 1 1], eset=100&gt;</span>
 
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
@@ -244,7 +244,7 @@
 <span class="sd">        perpendicular directions and a third direction that is the linear combination of</span>
 <span class="sd">        the two</span>
 <span class="sd">    architecture: {&quot;CPU&quot;, &quot;GPU&quot;}, optional</span>
-<span class="sd">        The architecture of the machine that grogupy is run on, by default &#39;CPU&#39;</span>
+<span class="sd">        The architecture of the machine that grogu is run on, by default &#39;CPU&#39;</span>
 <span class="sd">    SLURM_ID: str</span>
 <span class="sd">        The ID of the SLURM job, if available, else &#39;Could not be determined.&#39;</span>
 <span class="sd">    _dh: sisl.physics.Hamiltonian</span>
@@ -253,7 +253,7 @@
 <span class="sd">        The DFT exchange filed orientation from the instance Hamiltonian</span>
 <span class="sd">    infile: str</span>
 <span class="sd">        Input path to the .fdf file</span>
-<span class="sd">    times: grogupy.batch.timing.DefaultTimer</span>
+<span class="sd">    times: grogu.batch.timing.DefaultTimer</span>
 <span class="sd">        It contains and measures runtime</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -283,7 +283,7 @@
 <span class="sd">        &gt;&gt;&gt; simulation.add_contour(contour)</span>
 <span class="sd">        &gt;&gt;&gt; simulation.add_hamiltonian(hamiltonian)</span>
 <span class="sd">        &gt;&gt;&gt; simulation</span>
-<span class="sd">        &lt;grogupy.Builder npairs=0, numk=1, kset=[1 1 1], eset=100&gt;</span>
+<span class="sd">        &lt;grogu.Builder npairs=0, numk=1, kset=[1 1 1], eset=100&gt;</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -450,7 +450,7 @@
 
         <span class="n">out</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="n">out</span> <span class="o">+=</span> <span class="n">section</span> <span class="o">+</span> <span class="n">newline</span>
-        <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;grogupy version: </span><span class="si">{</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">newline</span>
+        <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;grogu version: </span><span class="si">{</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">newline</span>
         <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;Input file: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">infile</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">newline</span>
         <span class="n">out</span> <span class="o">+=</span> <span class="n">section</span> <span class="o">+</span> <span class="n">newline</span>
         <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;SLURM job ID: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">SLURM_ID</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">newline</span>
@@ -515,7 +515,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">eset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">contour</span><span class="o">.</span><span class="n">eset</span>
 
-        <span class="n">string</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&lt;grogupy.Builder npairs=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pairs</span><span class="p">)</span><span class="si">}</span><span class="s2">, numk=</span><span class="si">{</span><span class="n">NK</span><span class="si">}</span><span class="s2">, kset=</span><span class="si">{</span><span class="n">kset</span><span class="si">}</span><span class="s2">, eset=</span><span class="si">{</span><span class="n">eset</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
+        <span class="n">string</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&lt;grogu.Builder npairs=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pairs</span><span class="p">)</span><span class="si">}</span><span class="s2">, numk=</span><span class="si">{</span><span class="n">NK</span><span class="si">}</span><span class="s2">, kset=</span><span class="si">{</span><span class="n">kset</span><span class="si">}</span><span class="s2">, eset=</span><span class="si">{</span><span class="n">eset</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
 
         <span class="k">return</span> <span class="n">string</span>
 
@@ -613,7 +613,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">architecture</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The architecture of the machine that grogupy is run on, by default &#39;CPU&#39;.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The architecture of the machine that grogu is run on, by default &#39;CPU&#39;.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__architecture</span>
 
     <span class="nd">@property</span>
@@ -642,7 +642,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hamiltonian</span><span class="o">.</span><span class="n">infile</span>
 
 <div class="viewcode-block" id="Builder.to_magnopy">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.to_magnopy">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.builder.html#grogu.physics.builder.Builder.to_magnopy">[docs]</a>
     <span class="k">def</span> <span class="nf">to_magnopy</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">precision</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">comments</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -739,7 +739,7 @@
 
 
 <div class="viewcode-block" id="Builder.add_kspace">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.add_kspace">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.builder.html#grogu.physics.builder.Builder.add_kspace">[docs]</a>
     <span class="k">def</span> <span class="nf">add_kspace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kspace</span><span class="p">:</span> <span class="n">Kspace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds the k-space information to the instance.</span>
 
@@ -756,7 +756,7 @@
 
 
 <div class="viewcode-block" id="Builder.add_contour">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.add_contour">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.builder.html#grogu.physics.builder.Builder.add_contour">[docs]</a>
     <span class="k">def</span> <span class="nf">add_contour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contour</span><span class="p">:</span> <span class="n">Contour</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds the energy contour information to the instance.</span>
 
@@ -773,7 +773,7 @@
 
 
 <div class="viewcode-block" id="Builder.add_hamiltonian">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.add_hamiltonian">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.builder.html#grogu.physics.builder.Builder.add_hamiltonian">[docs]</a>
     <span class="k">def</span> <span class="nf">add_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hamiltonian</span><span class="p">:</span> <span class="n">Hamiltonian</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds the Hamiltonian and geometrical information to the instance.</span>
 
@@ -790,7 +790,7 @@
 
 
 <div class="viewcode-block" id="Builder.setup_from_range">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.setup_from_range">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.builder.html#grogu.physics.builder.Builder.setup_from_range">[docs]</a>
     <span class="k">def</span> <span class="nf">setup_from_range</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">R</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
@@ -842,7 +842,7 @@
 
 
 <div class="viewcode-block" id="Builder.create_magnetic_entities">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.create_magnetic_entities">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.builder.html#grogu.physics.builder.Builder.create_magnetic_entities">[docs]</a>
     <span class="k">def</span> <span class="nf">create_magnetic_entities</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">magnetic_entities</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">MagneticEntity</span><span class="p">]:</span>
@@ -882,7 +882,7 @@
 
 
 <div class="viewcode-block" id="Builder.create_pairs">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.create_pairs">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.builder.html#grogu.physics.builder.Builder.create_pairs">[docs]</a>
     <span class="k">def</span> <span class="nf">create_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pairs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Pair</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a list of Pair from a list of dictionaries.</span>
 
@@ -928,7 +928,7 @@
 
 
 <div class="viewcode-block" id="Builder.add_magnetic_entities">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.add_magnetic_entities">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.builder.html#grogu.physics.builder.Builder.add_magnetic_entities">[docs]</a>
     <span class="k">def</span> <span class="nf">add_magnetic_entities</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">magnetic_entities</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
@@ -968,7 +968,7 @@
 
 
 <div class="viewcode-block" id="Builder.add_pairs">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.add_pairs">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.builder.html#grogu.physics.builder.Builder.add_pairs">[docs]</a>
     <span class="k">def</span> <span class="nf">add_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pairs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="n">Pair</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="n">Pair</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds a Pair or a list of Pair to the instance.</span>
 
@@ -1003,7 +1003,7 @@
 
 
 <div class="viewcode-block" id="Builder.finalize">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.finalize">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.builder.html#grogu.physics.builder.Builder.finalize">[docs]</a>
     <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;It finalizes the system and calculates infinitesimal rotations.</span>
 
@@ -1108,7 +1108,7 @@
 
 
 <div class="viewcode-block" id="Builder.solve">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.solve">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.builder.html#grogu.physics.builder.Builder.solve">[docs]</a>
     <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrapper for Greens function solver.</span>
 
@@ -1148,7 +1148,7 @@
 
 
 <div class="viewcode-block" id="Builder.copy">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.copy">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.builder.html#grogu.physics.builder.Builder.copy">[docs]</a>
     <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the deepcopy of the instance.</span>
 
@@ -1162,7 +1162,7 @@
 
 
 <div class="viewcode-block" id="Builder.a2M">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.a2M">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.builder.html#grogu.physics.builder.Builder.a2M">[docs]</a>
     <span class="k">def</span> <span class="nf">a2M</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;partial&quot;</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">MagneticEntity</span><span class="p">]:</span>
@@ -1208,7 +1208,7 @@
 
 
 <div class="viewcode-block" id="Builder.plot_magnetic_entities">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.plot_magnetic_entities">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.builder.html#grogu.physics.builder.Builder.plot_magnetic_entities">[docs]</a>
     <span class="k">def</span> <span class="nf">plot_magnetic_entities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a plot of magnetic entities.</span>
 
@@ -1225,7 +1225,7 @@
 
 
 <div class="viewcode-block" id="Builder.plot_pairs">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.plot_pairs">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.builder.html#grogu.physics.builder.Builder.plot_pairs">[docs]</a>
     <span class="k">def</span> <span class="nf">plot_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connect</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a plot of pairs.</span>
 
@@ -1247,7 +1247,7 @@
 
 
 <div class="viewcode-block" id="Builder.plot_DM">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.plot_DM">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.builder.html#grogu.physics.builder.Builder.plot_DM">[docs]</a>
     <span class="k">def</span> <span class="nf">plot_DM</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rescale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a plot of the DM vectors.</span>
 
@@ -1283,7 +1283,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, grogupy.</p>
+    <p>&#169; Copyright 2024, grogu.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

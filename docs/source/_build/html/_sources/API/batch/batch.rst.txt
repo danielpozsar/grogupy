@@ -1,7 +1,7 @@
 Batch functions
 ===============
 
-.. automodule:: grogupy.batch
+.. automodule:: grogu.batch
    :noindex:
    :no-members:
    :no-undoc-members:

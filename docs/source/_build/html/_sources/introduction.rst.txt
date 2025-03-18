@@ -1,7 +1,7 @@
 Introduction
 ============
 
-grogupy is a package that contains a variety of modules to calculate
+grogu is a package that contains a variety of modules to calculate
 and visualize magnetic interaction parameters. One of the main
 features is the ability to calculate the magnetic anisotropy as well.
 
@@ -13,7 +13,7 @@ features is the ability to calculate the magnetic anisotropy as well.
 It can also be used to set up more complex convergence and high throughput
 calculations.
 
-1. grogupy can efficiently calculate the magnetic interaction
+1. grogu can efficiently calculate the magnetic interaction
 parameters of a large number of atoms or magnetic entites. The most
 resource consuming part of the simulation is the Green's function
 calculation, but the number of matrix inversions does not depend on
@@ -30,14 +30,14 @@ workflows for high throughput calculations.
 Package
 -------
 
-grogupy is a Python package that can calculate and visualize magnetic
+grogu is a Python package that can calculate and visualize magnetic
 interaction parameters. It can be run in a juptyer notebook or in a
 command line interface with the ability of GPU acceleration.
 
-Go to the :ref:`installation <quickstart>` page to install grogupy.
+Go to the :ref:`installation <quickstart>` page to install grogu.
 
 Command line usage
 ------------------
 
-grogupy contains  :ref:`command line scripts <tutorials>` to run simulations
+grogu contains  :ref:`command line scripts <tutorials>` to run simulations
 and to create automatic summaries based on high throughput data.

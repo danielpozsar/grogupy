@@ -1,7 +1,7 @@
 CPU solvers
 ===========
 
-.. automodule:: grogupy.core.cpu_solvers
+.. automodule:: grogu.core.cpu_solvers
    :noindex:
    :no-members:
    :no-undoc-members:

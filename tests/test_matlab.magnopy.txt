@@ -1,5 +1,5 @@
 # ================================================================================
-# grogupy version: 1.0.0
+# grogu version: 1.0.0
 # Input file: /Users/danielpozsar/Downloads/laci_test_nogold_2.88/Cr3.fdf
 # ================================================================================
 # SLURM job ID: Could not be determined.

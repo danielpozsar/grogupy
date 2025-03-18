@@ -72,7 +72,7 @@ class Pair:
     >>> Fe5 = MagneticEntity(fdf_path, atom=5, l=2)
     >>> pair_of_Fe = Pair(Fe3, Fe5, [0,0,0])
     >>> print(pair_of_Fe)
-    <grogupy.Pair tag1=3Fe(l:2), tag2=5Fe(l:2), Ruc=[0 0 0]>
+    <grogu.Pair tag1=3Fe(l:2), tag2=5Fe(l:2), Ruc=[0 0 0]>
 
     Methods
     -------
@@ -174,7 +174,7 @@ class Pair:
         >>> Fe5 = MagneticEntity(fdf_path, atom=5, l=2)
         >>> pair_of_Fe = Pair(Fe3, Fe5, [0,0,0])
         >>> print(pair_of_Fe)
-        <grogupy.Pair tag1=3Fe(l:2), tag2=5Fe(l:2), Ruc=[0 0 0]>
+        <grogu.Pair tag1=3Fe(l:2), tag2=5Fe(l:2), Ruc=[0 0 0]>
         """
 
         if M1._dh is M2._dh:
@@ -227,7 +227,7 @@ class Pair:
     def __repr__(self) -> str:
         """String representation of the instance."""
 
-        out = f"<grogupy.Pair tag1={self.tags[0]}, tag2={self.tags[1]}, Ruc={self.supercell_shift}>"
+        out = f"<grogu.Pair tag1={self.tags[0]}, tag2={self.tags[1]}, Ruc={self.supercell_shift}>"
 
         return out
 

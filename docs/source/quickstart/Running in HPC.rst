@@ -18,7 +18,7 @@ for running GroguPy on an HPC system, in this case on
 .. code-block:: bash
 
     #!/bin/bash
-    #SBATCH --job-name=grogupy
+    #SBATCH --job-name=grogu
     #SBATCH --nodes=1
     #SBATCH --ntasks=1
     #SBATCH --ntasks-per-node=1
@@ -45,12 +45,12 @@ for running GroguPy on an HPC system, in this case on
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/software/packages/cuda/12.3/targets/x86_64-linux/lib
     export GROGUPY_ARCHITECTURE=GPU
 
-    time srun grogupy ./grogupy_input.py
+    time srun grogu ./grogu_input.py
 
 Explanation of the Script
 -------------------------
 
-- `#SBATCH --job-name=grogupy`: Sets the name of the job.
+- `#SBATCH --job-name=grogu`: Sets the name of the job.
 - `#SBATCH --nodes=1`: Requests one node.
 - `#SBATCH --ntasks=1`: Requests one task.
 - `#SBATCH --ntasks-per-node=1`: Specifies one task per node.
@@ -66,9 +66,9 @@ modules and setting environment variables for optimal
 performance. Exportin the LD_LIBRARY_PATH variable is necessary
 to ensure that the CUDA library is accessible for cupy. The
 script also sets the `GROGUPY_ARCHITECTURE` environment
-variable to `GPU` to enable GPU acceleration in grogupy.
+variable to `GPU` to enable GPU acceleration in grogu.
 Finally, it runs the GroguPy application using `srun` and the
-`grogupy` command line script.
+`grogu` command line script.
 
 Make sure to adjust the script parameters according to
 your HPC system's configuration and your specific requirements.
@@ -77,9 +77,9 @@ your HPC system's configuration and your specific requirements.
 Example input file format
 -------------------------
 
-This is the corresponding input file for the above script, `grogupy_input.py`,
-which contains the parameters for the grogupy simulation. These variables
-are passed to the appropriate functions in the grogupy package very similarly
+This is the corresponding input file for the above script, `grogu_input.py`,
+which contains the parameters for the grogu simulation. These variables
+are passed to the appropriate functions in the grogu package very similarly
 as we did in the jupyter notebook examples.
 
 .. code-block:: python
