@@ -30,7 +30,7 @@ def test_plot_pairs():
     Fe3GeTe2 = grogu.Builder(
         np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]), matlabmode=True
     )
-    Fe3GeTe2_kspace = grogu.KSpace()
+    Fe3GeTe2_kspace = grogu.Kspace()
     Fe3GeTe2_contour = grogu.Contour(100, 1000, emin=None, eigfile=infile)
     Fe3GeTe2_hamiltonian = grogu.Hamiltonian(infile, np.array([0, 0, 1]))
 

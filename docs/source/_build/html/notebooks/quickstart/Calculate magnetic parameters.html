@@ -133,12 +133,12 @@
 [Daniels-MacBook-Air.local:25126] shmem: mmap: an error occurred while determining whether or not /var/folders/yh/dx7xl94n3g52ts3td8qcxjcc0000gn/T//ompi.Daniels-MacBook-Air.501/jf.0/806879232/sm_segment.Daniels-MacBook-Air.501.30180000.0 could be created.
 </pre></div></div>
 </div>
-<p>Then we start to create the basic classes based on the desired parameters. First create the <code class="docutils literal notranslate"><span class="pre">KSpace</span></code> class which contains the parameters fot the Brillouin zone integration. Because in this case we only take a single layer of Fe3GeTe2 and there is a large vacuum in the perpendicular direction it is sufficient to only integrate in the plane of the material. Furthermore for a fast initial calculation a 10x10 grid of k-points should be enough.</p>
+<p>Then we start to create the basic classes based on the desired parameters. First create the <code class="docutils literal notranslate"><span class="pre">Kspace</span></code> class which contains the parameters fot the Brillouin zone integration. Because in this case we only take a single layer of Fe3GeTe2 and there is a large vacuum in the perpendicular direction it is sufficient to only integrate in the plane of the material. Furthermore for a fast initial calculation a 10x10 grid of k-points should be enough.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Fe3GeTe2_kspace</span> <span class="o">=</span> <span class="n">grogupy</span><span class="o">.</span><span class="n">KSpace</span><span class="p">(</span><span class="n">kset</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Fe3GeTe2_kspace</span> <span class="o">=</span> <span class="n">grogupy</span><span class="o">.</span><span class="n">Kspace</span><span class="p">(</span><span class="n">kset</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
 <span class="n">Fe3GeTe2_kspace</span>
 </pre></div>
 </div>

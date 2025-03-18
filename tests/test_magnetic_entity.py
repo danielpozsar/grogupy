@@ -388,7 +388,7 @@ def test_add_G_tmp():
 
     builder = grogu.Builder(np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]))
     builder.add_contour(grogu.Contour(100, 1000, -10))
-    builder.add_kspace(grogu.KSpace())
+    builder.add_kspace(grogu.Kspace())
     builder.add_hamiltonian(grogu.Hamiltonian(infile))
     builder.magnetic_entities = [mag_ent]
 
@@ -428,7 +428,7 @@ def test_energies_and_anisotropy():
         np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]), matlabmode=True
     )
     builder.add_contour(grogu.Contour(100, 1000, -10))
-    builder.add_kspace(grogu.KSpace())
+    builder.add_kspace(grogu.Kspace())
     builder.add_hamiltonian(grogu.Hamiltonian(infile))
     builder.magnetic_entities = [mag_ent]
 

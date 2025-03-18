@@ -125,7 +125,7 @@
 
 <span class="sd">   load_DefaultTimer</span>
 <span class="sd">   load_Contour</span>
-<span class="sd">   load_KSpace</span>
+<span class="sd">   load_Kspace</span>
 <span class="sd">   load_MagneticEntity</span>
 <span class="sd">   load_Pair</span>
 <span class="sd">   load_Hamiltonian</span>
@@ -147,7 +147,7 @@
 <span class="kn">from</span> <span class="nn">..physics.builder</span> <span class="kn">import</span> <span class="n">Builder</span>
 <span class="kn">from</span> <span class="nn">..physics.contour</span> <span class="kn">import</span> <span class="n">Contour</span>
 <span class="kn">from</span> <span class="nn">..physics.hamiltonian</span> <span class="kn">import</span> <span class="n">Hamiltonian</span>
-<span class="kn">from</span> <span class="nn">..physics.kspace</span> <span class="kn">import</span> <span class="n">KSpace</span>
+<span class="kn">from</span> <span class="nn">..physics.kspace</span> <span class="kn">import</span> <span class="n">Kspace</span>
 <span class="kn">from</span> <span class="nn">..physics.magnetic_entity</span> <span class="kn">import</span> <span class="n">MagneticEntity</span>
 <span class="kn">from</span> <span class="nn">..physics.pair</span> <span class="kn">import</span> <span class="n">Pair</span>
 <span class="kn">from</span> <span class="nn">.utilities</span> <span class="kn">import</span> <span class="n">strip_dict_structure</span>
@@ -221,9 +221,9 @@
 
 
 
-<div class="viewcode-block" id="load_KSpace">
-<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.load_KSpace.html#grogupy.io.io.load_KSpace">[docs]</a>
-<span class="k">def</span> <span class="nf">load_KSpace</span><span class="p">(</span><span class="n">infile</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">KSpace</span><span class="p">:</span>
+<div class="viewcode-block" id="load_Kspace">
+<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.load_Kspace.html#grogupy.io.io.load_Kspace">[docs]</a>
+<span class="k">def</span> <span class="nf">load_Kspace</span><span class="p">(</span><span class="n">infile</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Kspace</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Recreates the instance from a pickled state.</span>
 
 <span class="sd">    Parameters</span>
@@ -234,8 +234,8 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    KSpace</span>
-<span class="sd">        The KSpace instance that was loaded</span>
+<span class="sd">    Kspace</span>
+<span class="sd">        The Kspace instance that was loaded</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># load pickled file</span>
@@ -248,7 +248,7 @@
                 <span class="n">infile</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
 
     <span class="c1"># build instance</span>
-    <span class="n">out</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="n">KSpace</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="n">Kspace</span><span class="p">)</span>
     <span class="n">out</span><span class="o">.</span><span class="n">__setstate__</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">out</span></div>
@@ -395,7 +395,7 @@
 <a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.load.html#grogupy.io.io.load">[docs]</a>
 <span class="k">def</span> <span class="nf">load</span><span class="p">(</span>
     <span class="n">infile</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">DefaultTimer</span><span class="p">,</span> <span class="n">Contour</span><span class="p">,</span> <span class="n">KSpace</span><span class="p">,</span> <span class="n">MagneticEntity</span><span class="p">,</span> <span class="n">Pair</span><span class="p">,</span> <span class="n">Hamiltonian</span><span class="p">,</span> <span class="n">Builder</span><span class="p">]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">DefaultTimer</span><span class="p">,</span> <span class="n">Contour</span><span class="p">,</span> <span class="n">Kspace</span><span class="p">,</span> <span class="n">MagneticEntity</span><span class="p">,</span> <span class="n">Pair</span><span class="p">,</span> <span class="n">Hamiltonian</span><span class="p">,</span> <span class="n">Builder</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Recreates the instance from a pickled state.</span>
 
 <span class="sd">    Parameters</span>
@@ -406,7 +406,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    Union[DefaultTimer, Contour, KSpace, MagneticEntity, Pair, Hamiltonian, Builder]</span>
+<span class="sd">    Union[DefaultTimer, Contour, Kspace, MagneticEntity, Pair, Hamiltonian, Builder]</span>
 <span class="sd">        The instance that was loaded</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -424,7 +424,7 @@
                     <span class="k">return</span> <span class="n">load_MagneticEntity</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
                 <span class="k">except</span><span class="p">:</span>
                     <span class="k">try</span><span class="p">:</span>
-                        <span class="k">return</span> <span class="n">load_KSpace</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
+                        <span class="k">return</span> <span class="n">load_Kspace</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
                     <span class="k">except</span><span class="p">:</span>
                         <span class="k">try</span><span class="p">:</span>
                             <span class="k">return</span> <span class="n">load_Contour</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
@@ -441,7 +441,7 @@
 <a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.save.html#grogupy.io.io.save">[docs]</a>
 <span class="k">def</span> <span class="nf">save</span><span class="p">(</span>
     <span class="nb">object</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
-        <span class="n">DefaultTimer</span><span class="p">,</span> <span class="n">Contour</span><span class="p">,</span> <span class="n">KSpace</span><span class="p">,</span> <span class="n">MagneticEntity</span><span class="p">,</span> <span class="n">Pair</span><span class="p">,</span> <span class="n">Hamiltonian</span><span class="p">,</span> <span class="n">Builder</span>
+        <span class="n">DefaultTimer</span><span class="p">,</span> <span class="n">Contour</span><span class="p">,</span> <span class="n">Kspace</span><span class="p">,</span> <span class="n">MagneticEntity</span><span class="p">,</span> <span class="n">Pair</span><span class="p">,</span> <span class="n">Hamiltonian</span><span class="p">,</span> <span class="n">Builder</span>
     <span class="p">],</span>
     <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">save_memory</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -450,7 +450,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    object : Union[DefaultTimer, Contour, KSpace, MagneticEntity, Pair, Hamiltonian, Builder]</span>
+<span class="sd">    object : Union[DefaultTimer, Contour, Kspace, MagneticEntity, Pair, Hamiltonian, Builder]</span>
 <span class="sd">        Object from the grogupy library</span>
 <span class="sd">    path: str</span>
 <span class="sd">        The path to the output file</span>

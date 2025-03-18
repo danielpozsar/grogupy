@@ -136,7 +136,7 @@
 <span class="kn">from</span> <span class="nn">..core.utilities</span> <span class="kn">import</span> <span class="n">RotMa2b</span><span class="p">,</span> <span class="n">setup_from_range</span><span class="p">,</span> <span class="n">tau_u</span>
 <span class="kn">from</span> <span class="nn">.contour</span> <span class="kn">import</span> <span class="n">Contour</span>
 <span class="kn">from</span> <span class="nn">.hamiltonian</span> <span class="kn">import</span> <span class="n">Hamiltonian</span>
-<span class="kn">from</span> <span class="nn">.kspace</span> <span class="kn">import</span> <span class="n">KSpace</span>
+<span class="kn">from</span> <span class="nn">.kspace</span> <span class="kn">import</span> <span class="n">Kspace</span>
 <span class="kn">from</span> <span class="nn">.magnetic_entity</span> <span class="kn">import</span> <span class="n">MagneticEntity</span>
 <span class="kn">from</span> <span class="nn">.pair</span> <span class="kn">import</span> <span class="n">Pair</span>
 
@@ -151,7 +151,7 @@
 <a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.setup">[docs]</a>
     <span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">setup</span><span class="p">():</span>
-        <span class="n">k</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">KSpace</span><span class="p">(),</span> <span class="n">Contour</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="o">-</span><span class="mi">20</span><span class="p">)</span>
+        <span class="n">k</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">Kspace</span><span class="p">(),</span> <span class="n">Contour</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="o">-</span><span class="mi">20</span><span class="p">)</span>
         <span class="n">h</span> <span class="o">=</span> <span class="n">Hamiltonian</span><span class="p">(</span>
             <span class="s2">&quot;/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf&quot;</span><span class="p">,</span>
             <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
@@ -178,7 +178,7 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    Creating a Simulation from the DFT exchange field orientation,  Hamiltonian, KSpace</span>
+<span class="sd">    Creating a Simulation from the DFT exchange field orientation,  Hamiltonian, Kspace</span>
 <span class="sd">    and Contour.</span>
 
 <span class="sd">    &gt;&gt;&gt; kspace, contour, hamiltonian = getfixture(&#39;setup&#39;)</span>
@@ -220,7 +220,7 @@
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-<span class="sd">    kspace: Union[None, KSpace]</span>
+<span class="sd">    kspace: Union[None, Kspace]</span>
 <span class="sd">        The k-space part of the integral</span>
 <span class="sd">    contour: Union[None, Contour]</span>
 <span class="sd">        The energy part of the integral</span>
@@ -274,7 +274,7 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        Creating a Simulation from the DFT exchange field orientation,  Hamiltonian, KSpace</span>
+<span class="sd">        Creating a Simulation from the DFT exchange field orientation,  Hamiltonian, Kspace</span>
 <span class="sd">        and Contour.</span>
 
 <span class="sd">        &gt;&gt;&gt; kspace, contour, hamiltonian = getfixture(&#39;setup&#39;)</span>
@@ -289,8 +289,8 @@
 
         <span class="c1">#: Contains a DefaultTimer instance to measure runtime</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">times</span><span class="p">:</span> <span class="n">DefaultTimer</span> <span class="o">=</span> <span class="n">DefaultTimer</span><span class="p">()</span>
-        <span class="c1">#: Contains a KSpace instance</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">kspace</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">KSpace</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1">#: Contains a Kspace instance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kspace</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">Kspace</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="c1">#: Contains a Contour instance</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">contour</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">Contour</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="c1">#: Contains a Hamiltonian instance</span>
@@ -406,7 +406,7 @@
         <span class="n">contour</span><span class="o">.</span><span class="n">__setstate__</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;contour&quot;</span><span class="p">])</span>
         <span class="n">state</span><span class="p">[</span><span class="s2">&quot;contour&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">contour</span>
 
-        <span class="n">kspace</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="n">KSpace</span><span class="p">)</span>
+        <span class="n">kspace</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="n">Kspace</span><span class="p">)</span>
         <span class="n">kspace</span><span class="o">.</span><span class="n">__setstate__</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;kspace&quot;</span><span class="p">])</span>
         <span class="n">state</span><span class="p">[</span><span class="s2">&quot;kspace&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kspace</span>
 
@@ -740,19 +740,19 @@
 
 <div class="viewcode-block" id="Builder.add_kspace">
 <a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.add_kspace">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_kspace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kspace</span><span class="p">:</span> <span class="n">KSpace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">add_kspace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kspace</span><span class="p">:</span> <span class="n">Kspace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds the k-space information to the instance.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        kspace: KSpace</span>
+<span class="sd">        kspace: Kspace</span>
 <span class="sd">            This class contains the information of the k-space</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kspace</span><span class="p">,</span> <span class="n">KSpace</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kspace</span><span class="p">,</span> <span class="n">Kspace</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">kspace</span> <span class="o">=</span> <span class="n">kspace</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Bad type for KSpace: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">kspace</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Bad type for Kspace: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">kspace</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Builder.add_contour">

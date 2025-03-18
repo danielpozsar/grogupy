@@ -42,7 +42,7 @@ import numpy as np
 from . import __citation__
 from .config import CONFIG
 from .io.io import save, save_magnopy
-from .physics import Builder, Contour, Hamiltonian, KSpace
+from .physics import Builder, Contour, Hamiltonian, Kspace
 
 PRINTING = False
 if CONFIG.is_CPU:
@@ -113,7 +113,7 @@ def main():
     simulation.anisotropy_solver = params.anisotropy_solver
 
     # Define Kspace
-    kspace = KSpace(
+    kspace = Kspace(
         kset=params.kset,
     )
     if PRINTING:

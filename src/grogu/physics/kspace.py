@@ -35,7 +35,7 @@ if CONFIG.viz_loaded:
     from ..viz.viz import plot_kspace
 
 
-class KSpace:
+class Kspace:
     """This class contains and creates the data of the reciprocal space integral.
 
     Parameters
@@ -45,16 +45,16 @@ class KSpace:
 
     Examples
     --------
-    Creating a KSpace instance from the minimal amount of information, which
+    Creating a Kspace instance from the minimal amount of information, which
     results in the Gamma point.
 
-    >>> kspace = KSpace()
+    >>> kspace = Kspace()
     >>> kspace.kpoints
     array([[0., 0., 0.]])
 
     Or create it with some specific data.
 
-    >>> kspace = KSpace(kset=[100,100,1])
+    >>> kspace = Kspace(kset=[100,100,1])
     >>> print(kspace)
     <grogupy.Kspace kset=[100 100   1], NK=10000>
 
@@ -127,7 +127,7 @@ class KSpace:
 
         Returns
         -------
-        KSpace
+        Kspace
             The copied instance.
         """
 

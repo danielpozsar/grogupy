@@ -38,7 +38,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ..physics.contour import Contour
-    from ..physics.kspace import KSpace
+    from ..physics.kspace import Kspace
     from ..physics.magnetic_entity import MagneticEntity
     from ..physics.pair import Pair
 
@@ -91,7 +91,7 @@ def plot_contour(contour: "Contour") -> go.Figure:
     return fig
 
 
-def plot_kspace(kspace: "KSpace") -> go.Figure:
+def plot_kspace(kspace: "Kspace") -> go.Figure:
     """Creates a plot from the Brillouin zone sample points.
 
     Parameters

@@ -37,7 +37,7 @@ from .io import load, save, save_magnopy
 from .physics.builder import Builder
 from .physics.contour import Contour
 from .physics.hamiltonian import Hamiltonian
-from .physics.kspace import KSpace
+from .physics.kspace import Kspace
 from .physics.magnetic_entity import MagneticEntity
 from .physics.pair import Pair
 
@@ -49,7 +49,7 @@ __all__.extend(
         "save_magnopy",
         "load",
         "Contour",
-        "KSpace",
+        "Kspace",
         "MagneticEntity",
         "Pair",
         "Hamiltonian",

@@ -28,7 +28,7 @@ Visualization functions
 
    load_DefaultTimer
    load_Contour
-   load_KSpace
+   load_Kspace
    load_MagneticEntity
    load_Pair
    load_Hamiltonian
@@ -50,7 +50,7 @@ from ..batch.timing import DefaultTimer
 from ..physics.builder import Builder
 from ..physics.contour import Contour
 from ..physics.hamiltonian import Hamiltonian
-from ..physics.kspace import KSpace
+from ..physics.kspace import Kspace
 from ..physics.magnetic_entity import MagneticEntity
 from ..physics.pair import Pair
 from .utilities import strip_dict_structure
@@ -118,7 +118,7 @@ def load_Contour(infile: Union[str, dict]) -> Contour:
     return out
 
 
-def load_KSpace(infile: Union[str, dict]) -> KSpace:
+def load_Kspace(infile: Union[str, dict]) -> Kspace:
     """Recreates the instance from a pickled state.
 
     Parameters
@@ -129,8 +129,8 @@ def load_KSpace(infile: Union[str, dict]) -> KSpace:
 
     Returns
     -------
-    KSpace
-        The KSpace instance that was loaded
+    Kspace
+        The Kspace instance that was loaded
     """
 
     # load pickled file
@@ -143,7 +143,7 @@ def load_KSpace(infile: Union[str, dict]) -> KSpace:
                 infile = pickle.load(file)
 
     # build instance
-    out = object.__new__(KSpace)
+    out = object.__new__(Kspace)
     out.__setstate__(infile)
 
     return out
@@ -275,7 +275,7 @@ def load_Builder(infile: Union[str, dict]) -> Builder:
 
 def load(
     infile: Union[str, dict]
-) -> Union[DefaultTimer, Contour, KSpace, MagneticEntity, Pair, Hamiltonian, Builder]:
+) -> Union[DefaultTimer, Contour, Kspace, MagneticEntity, Pair, Hamiltonian, Builder]:
     """Recreates the instance from a pickled state.
 
     Parameters
@@ -286,7 +286,7 @@ def load(
 
     Returns
     -------
-    Union[DefaultTimer, Contour, KSpace, MagneticEntity, Pair, Hamiltonian, Builder]
+    Union[DefaultTimer, Contour, Kspace, MagneticEntity, Pair, Hamiltonian, Builder]
         The instance that was loaded
     """
 
@@ -304,7 +304,7 @@ def load(
                     return load_MagneticEntity(infile)
                 except:
                     try:
-                        return load_KSpace(infile)
+                        return load_Kspace(infile)
                     except:
                         try:
                             return load_Contour(infile)
@@ -318,7 +318,7 @@ def load(
 
 def save(
     object: Union[
-        DefaultTimer, Contour, KSpace, MagneticEntity, Pair, Hamiltonian, Builder
+        DefaultTimer, Contour, Kspace, MagneticEntity, Pair, Hamiltonian, Builder
     ],
     path: str,
     save_memory: bool = True,
@@ -327,7 +327,7 @@ def save(
 
     Parameters
     ----------
-    object : Union[DefaultTimer, Contour, KSpace, MagneticEntity, Pair, Hamiltonian, Builder]
+    object : Union[DefaultTimer, Contour, Kspace, MagneticEntity, Pair, Hamiltonian, Builder]
         Object from the grogupy library
     path: str
         The path to the output file

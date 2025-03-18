@@ -39,7 +39,7 @@ from ..core.core import calc_Vu, onsite_projection
 from ..core.utilities import RotMa2b, setup_from_range, tau_u
 from .contour import Contour
 from .hamiltonian import Hamiltonian
-from .kspace import KSpace
+from .kspace import Kspace
 from .magnetic_entity import MagneticEntity
 from .pair import Pair
 
@@ -52,7 +52,7 @@ try:
 
     @pytest.fixture()
     def setup():
-        k, c = KSpace(), Contour(100, 100, -20)
+        k, c = Kspace(), Contour(100, 100, -20)
         h = Hamiltonian(
             "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf",
             [0, 0, 1],
@@ -76,7 +76,7 @@ class Builder:
 
     Examples
     --------
-    Creating a Simulation from the DFT exchange field orientation,  Hamiltonian, KSpace
+    Creating a Simulation from the DFT exchange field orientation,  Hamiltonian, Kspace
     and Contour.
 
     >>> kspace, contour, hamiltonian = getfixture('setup')
@@ -118,7 +118,7 @@ class Builder:
 
     Attributes
     ----------
-    kspace: Union[None, KSpace]
+    kspace: Union[None, Kspace]
         The k-space part of the integral
     contour: Union[None, Contour]
         The energy part of the integral
@@ -172,7 +172,7 @@ class Builder:
 
         Examples
         --------
-        Creating a Simulation from the DFT exchange field orientation,  Hamiltonian, KSpace
+        Creating a Simulation from the DFT exchange field orientation,  Hamiltonian, Kspace
         and Contour.
 
         >>> kspace, contour, hamiltonian = getfixture('setup')
@@ -187,8 +187,8 @@ class Builder:
 
         #: Contains a DefaultTimer instance to measure runtime
         self.times: DefaultTimer = DefaultTimer()
-        #: Contains a KSpace instance
-        self.kspace: Union[None, KSpace] = None
+        #: Contains a Kspace instance
+        self.kspace: Union[None, Kspace] = None
         #: Contains a Contour instance
         self.contour: Union[None, Contour] = None
         #: Contains a Hamiltonian instance
@@ -304,7 +304,7 @@ class Builder:
         contour.__setstate__(state["contour"])
         state["contour"] = contour
 
-        kspace = object.__new__(KSpace)
+        kspace = object.__new__(Kspace)
         kspace.__setstate__(state["kspace"])
         state["kspace"] = kspace
 
@@ -633,19 +633,19 @@ class Builder:
 
         return out
 
-    def add_kspace(self, kspace: KSpace) -> None:
+    def add_kspace(self, kspace: Kspace) -> None:
         """Adds the k-space information to the instance.
 
         Parameters
         ----------
-        kspace: KSpace
+        kspace: Kspace
             This class contains the information of the k-space
         """
 
-        if isinstance(kspace, KSpace):
+        if isinstance(kspace, Kspace):
             self.kspace = kspace
         else:
-            raise Exception(f"Bad type for KSpace: {type(kspace)}")
+            raise Exception(f"Bad type for Kspace: {type(kspace)}")
 
     def add_contour(self, contour: Contour) -> None:
         """Adds the energy contour information to the instance.

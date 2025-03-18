@@ -157,7 +157,7 @@ def test_equality_between_solutions(
 ):
     # matlabmode on
     ################################################################################
-    Fe3GeTe2_kspace = grogu.KSpace(kset)
+    Fe3GeTe2_kspace = grogu.Kspace(kset)
     print(Fe3GeTe2_kspace)
     Fe3GeTe2_contour = grogu.Contour(
         eset,
@@ -188,7 +188,7 @@ def test_equality_between_solutions(
     grogu.save_magnopy(Fe3GeTe2, "./tests/test_matlab_3_sequential_k")
     grogu.save(Fe3GeTe2, "./tests/test_matlab_3_sequential_k")
     ################################################################################
-    Fe3GeTe2_kspace = grogu.KSpace(kset)
+    Fe3GeTe2_kspace = grogu.Kspace(kset)
     print(Fe3GeTe2_kspace)
     Fe3GeTe2_contour = grogu.Contour(
         eset,
@@ -219,7 +219,7 @@ def test_equality_between_solutions(
     grogu.save_magnopy(Fe3GeTe2, "./tests/test_matlab_3_parallel_k")
     grogu.save(Fe3GeTe2, "./tests/test_matlab_3_parallel_k")
     ################################################################################
-    Fe3GeTe2_kspace = grogu.KSpace(kset)
+    Fe3GeTe2_kspace = grogu.Kspace(kset)
     print(Fe3GeTe2_kspace)
     Fe3GeTe2_contour = grogu.Contour(
         eset,
@@ -250,7 +250,7 @@ def test_equality_between_solutions(
     grogu.save_magnopy(Fe3GeTe2, "./tests/test_matlab_3_sequential_all")
     grogu.save(Fe3GeTe2, "./tests/test_matlab_3_sequential_all")
     ################################################################################
-    Fe3GeTe2_kspace = grogu.KSpace(kset)
+    Fe3GeTe2_kspace = grogu.Kspace(kset)
     print(Fe3GeTe2_kspace)
     Fe3GeTe2_contour = grogu.Contour(
         eset,
@@ -284,7 +284,7 @@ def test_equality_between_solutions(
 
     # matlabmode off
     ################################################################################
-    Fe3GeTe2_kspace = grogu.KSpace(kset)
+    Fe3GeTe2_kspace = grogu.Kspace(kset)
     print(Fe3GeTe2_kspace)
     Fe3GeTe2_contour = grogu.Contour(
         eset,
@@ -315,7 +315,7 @@ def test_equality_between_solutions(
     grogu.save_magnopy(Fe3GeTe2, "./tests/test_3_sequential_k")
     grogu.save(Fe3GeTe2, "./tests/test_3_sequential_k")
     ################################################################################
-    Fe3GeTe2_kspace = grogu.KSpace(kset)
+    Fe3GeTe2_kspace = grogu.Kspace(kset)
     print(Fe3GeTe2_kspace)
     Fe3GeTe2_contour = grogu.Contour(
         eset,
@@ -346,7 +346,7 @@ def test_equality_between_solutions(
     grogu.save_magnopy(Fe3GeTe2, "./tests/test_3_parallel_k")
     grogu.save(Fe3GeTe2, "./tests/test_3_parallel_k")
     ################################################################################
-    Fe3GeTe2_kspace = grogu.KSpace(kset)
+    Fe3GeTe2_kspace = grogu.Kspace(kset)
     print(Fe3GeTe2_kspace)
     Fe3GeTe2_contour = grogu.Contour(
         eset,
@@ -377,7 +377,7 @@ def test_equality_between_solutions(
     grogu.save_magnopy(Fe3GeTe2, "./tests/test_3_sequential_all")
     grogu.save(Fe3GeTe2, "./tests/test_3_sequential_all")
     ################################################################################
-    Fe3GeTe2_kspace = grogu.KSpace(kset)
+    Fe3GeTe2_kspace = grogu.Kspace(kset)
     print(Fe3GeTe2_kspace)
     Fe3GeTe2_contour = grogu.Contour(
         eset,

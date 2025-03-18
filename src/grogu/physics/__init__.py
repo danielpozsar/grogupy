@@ -51,14 +51,14 @@ from .. import __all__
 from .builder import Builder
 from .contour import Contour
 from .hamiltonian import Hamiltonian
-from .kspace import KSpace
+from .kspace import Kspace
 from .magnetic_entity import MagneticEntity
 from .pair import Pair
 
 __all__.extend(
     [
         "Contour",
-        "KSpace",
+        "Kspace",
         "MagneticEntity",
         "Pair",
         "Hamiltonian",
