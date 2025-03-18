@@ -289,31 +289,103 @@ def load(
     Union[DefaultTimer, Contour, Kspace, MagneticEntity, Pair, Hamiltonian, Builder]
         The instance that was loaded
     """
-
-    # try all the possible loading methods
-    try:
-        return load_Builder(infile)
-    except:
+    # load pickled file
+    if isinstance(infile, str):
         try:
-            return load_Hamiltonian(infile)
+            with open(infile, "rb") as file:
+                infile = pickle.load(file)
         except:
-            try:
-                return load_Pair(infile)
-            except:
-                try:
-                    return load_MagneticEntity(infile)
-                except:
-                    try:
-                        return load_Kspace(infile)
-                    except:
-                        try:
-                            return load_Contour(infile)
-                        except:
-                            try:
-                                return load_DefaultTimer(infile)
-                            except:
-                                # also if you know a better way to do it, pls tell me...
-                                raise Exception("What the hell is this???")
+            with open(infile + ".pkl", "rb") as file:
+                infile = pickle.load(file)
+
+    if list(infile.keys()) == [
+        "times",
+        "kspace",
+        "contour",
+        "hamiltonian",
+        "magnetic_entities",
+        "pairs",
+        "_Builder__greens_function_solver",
+        "_Builder__parallel_mode",
+        "_Builder__architecture",
+        "_Builder__matlabmode",
+        "_Builder__exchange_solver",
+        "_Builder__anisotropy_solver",
+        "ref_xcf_orientations",
+        "_rotated_hamiltonians",
+        "SLURM_ID",
+    ]:
+        return load_Builder(infile)
+
+    elif list(infile.keys()) == [
+        "times",
+        "_dh",
+        "_ds",
+        "infile",
+        "H",
+        "S",
+        "scf_xcf_orientation",
+        "orientation",
+        "hTRS",
+        "hTRB",
+        "XCF",
+        "H_XCF",
+    ]:
+        return load_Hamiltonian(infile)
+    elif list(infile.keys()) == [
+        "_dh",
+        "M1",
+        "M2",
+        "supercell_shift",
+        "Gij",
+        "Gji",
+        "_Gij_tmp",
+        "_Gji_tmp",
+        "energies",
+        "J_iso",
+        "J",
+        "J_S",
+        "D",
+    ]:
+        return load_Pair(infile)
+    elif list(infile.keys()) == [
+        "_dh",
+        "_ds",
+        "infile",
+        "atom",
+        "l",
+        "orbital_box_indices",
+        "_tags",
+        "mulliken",
+        "spin_box_indices",
+        "xyz",
+        "Vu1",
+        "Vu2",
+        "Gii",
+        "_Gii_tmp",
+        "energies",
+        "K",
+        "K_consistency",
+    ]:
+        return load_MagneticEntity(infile)
+    elif list(infile.keys()) == ["times", "_Kspace__kset", "kpoints", "weights"]:
+        return load_Kspace(infile)
+    elif list(infile.keys()) == [
+        "times",
+        "_Contour__automatic_emin",
+        "_eigfile",
+        "_emin",
+        "_emax",
+        "_eset",
+        "_esetp",
+        "samples",
+        "weights",
+    ]:
+        return load_Contour(infile)
+    elif list(infile.keys()) == ["_DefaultTimer__start_measure", "_times"]:
+        return load_DefaultTimer(infile)
+    else:
+        raise Exception("Unknown pickle format!")
 
 
 def save(
