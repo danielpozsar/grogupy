@@ -210,17 +210,33 @@ def plot_pairs(pairs: list["Pair"], connect: bool = False) -> go.Figure:
         The created figure
     """
 
-    centers = np.array([p.M1.xyz_center for p in pairs])
-    uniques = np.unique(centers, axis=0)
-    idx = []
-    for unique in uniques:
-        idx.append(np.where(np.isclose(centers, unique).all(axis=1))[0])
+    # the centers can contain many atoms
+    centers = [p.xyz[0] for p in pairs]
+
+    # find unique centers
+    uniques = []
+
+    def in_unique(c):
+        for u in uniques:
+            if c.shape == u.shape:
+                if np.all(c == u):
+                    return True
+        return False
+
+    for c in centers:
+        if not in_unique(c):
+            uniques.append(c)
+    # findex indexes for the same center
+    idx = [[] for u in uniques]
+    for i, u in enumerate(uniques):
+        for j, c in enumerate(centers):
+            if c.shape == u.shape:
+                if np.all(c == u):
+                    idx[i].append(j)
 
     center_tags = np.array([p.tags[0] for p in pairs])
 
-    interacting_atoms = np.array(
-        [p.M2.xyz_center + p.supercell_shift_xyz for p in pairs]
-    )
+    interacting_atoms = np.array([p.xyz[1] for p in pairs], dtype=object)
     interacting_tags = np.array(
         [p.tags[1] + ", ruc:" + str(p.supercell_shift) for p in pairs]
     )
@@ -238,9 +254,9 @@ def plot_pairs(pairs: list["Pair"], connect: bool = False) -> go.Figure:
         fig.add_trace(
             go.Scatter3d(
                 name="Center:" + center_tag,
-                x=[center[0]],
-                y=[center[1]],
-                z=[center[2]],
+                x=center[:, 0],
+                y=center[:, 1],
+                z=center[:, 2],
                 mode="markers",
                 marker=dict(size=10, opacity=0.8, color=color),
             )
@@ -252,9 +268,9 @@ def plot_pairs(pairs: list["Pair"], connect: bool = False) -> go.Figure:
             fig.add_trace(
                 go.Scatter3d(
                     name=interacting_tag,
-                    x=[interacting_atom[0]],
-                    y=[interacting_atom[1]],
-                    z=[interacting_atom[2]],
+                    x=interacting_atom[:, 0],
+                    y=interacting_atom[:, 1],
+                    z=interacting_atom[:, 2],
                     legendgroup=legend_group,
                     mode="markers",
                     marker=dict(size=5, opacity=0.5, color=color),
@@ -263,9 +279,9 @@ def plot_pairs(pairs: list["Pair"], connect: bool = False) -> go.Figure:
             if connect:
                 fig.add_trace(
                     go.Scatter3d(
-                        x=[center[0], interacting_atom[0]],
-                        y=[center[1], interacting_atom[1]],
-                        z=[center[2], interacting_atom[2]],
+                        x=[center.mean(axis=0)[0], interacting_atom.mean(axis=0)[0]],
+                        y=[center.mean(axis=0)[1], interacting_atom.mean(axis=0)[1]],
+                        z=[center.mean(axis=0)[2], interacting_atom.mean(axis=0)[2]],
                         mode="lines",
                         legendgroup=legend_group,
                         showlegend=False,
