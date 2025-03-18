@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>grogu.physics.contour &mdash; grogu</title>
+  <title>grogupy.physics.contour &mdash; grogupy</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
@@ -34,7 +34,7 @@
 
 
           <a href="../../../index.html" class="icon icon-home">
-            grogu documentation
+            grogupy documentation
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -48,7 +48,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstart/index.html">Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../citing.html">Citing grogu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../citing.html">Citing grogupy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
@@ -62,7 +62,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../development/index.html">Contributing to grogu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development/index.html">Contributing to grogupy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Extras</span></p>
 <ul>
@@ -76,7 +76,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">grogu documentation</a>
+          <a href="../../../index.html">grogupy documentation</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -85,7 +85,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">grogu.physics.contour</li>
+      <li class="breadcrumb-item active">grogupy.physics.contour</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -94,7 +94,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
 
-  <h1>Source code for grogu.physics.contour</h1><div class="highlight"><pre>
+  <h1>Source code for grogupy.physics.contour</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (c) [2024-2025] []</span>
 <span class="c1">#</span>
 <span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
@@ -134,7 +134,7 @@
 
 
 <div class="viewcode-block" id="Contour">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.contour.html#grogu.physics.contour.Contour">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.contour.html#grogupy.physics.contour.Contour">[docs]</a>
 <span class="k">class</span> <span class="nc">Contour</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This class contains and creates the data of the energy contour for the integration.</span>
 
@@ -164,13 +164,13 @@
 
 <span class="sd">    &gt;&gt;&gt; contour = Contour(eset=600, esetp=1000, emin=-20)</span>
 <span class="sd">    &gt;&gt;&gt; print(contour)</span>
-<span class="sd">    &lt;grogu.Contour emin=-25, emax=0, eset=600, esetp=1000&gt;</span>
+<span class="sd">    &lt;grogupy.Contour emin=-25, emax=0, eset=600, esetp=1000&gt;</span>
 
 <span class="sd">    Or create it with the automatic emin finder.</span>
 
 <span class="sd">    &gt;&gt;&gt; contour = Contour(eset=600, esetp=1000, emin=None, eigfile=&quot;/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; print(contour)</span>
-<span class="sd">    &lt;grogu.Contour emin=-17.80687896, emax=0, eset=600, esetp=1000&gt;</span>
+<span class="sd">    &lt;grogupy.Contour emin=-17.80687896, emax=0, eset=600, esetp=1000&gt;</span>
 
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
@@ -185,7 +185,7 @@
 <span class="sd">        The samples along the contour</span>
 <span class="sd">    weights: NDArray</span>
 <span class="sd">        The weights of the corresponding samples</span>
-<span class="sd">    times: grogu.batch.timing.DefaultTimer</span>
+<span class="sd">    times: grogupy.batch.timing.DefaultTimer</span>
 <span class="sd">        It contains and measures runtime</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -257,7 +257,7 @@
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;String representation of the instance.&quot;&quot;&quot;</span>
 
-        <span class="n">out</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&lt;grogu.Contour emin=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">emin</span><span class="si">}</span><span class="s2">, emax=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">emax</span><span class="si">}</span><span class="s2">, eset=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">eset</span><span class="si">}</span><span class="s2">, esetp=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">esetp</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&lt;grogupy.Contour emin=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">emin</span><span class="si">}</span><span class="s2">, emax=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">emax</span><span class="si">}</span><span class="s2">, eset=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">eset</span><span class="si">}</span><span class="s2">, esetp=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">esetp</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
 
         <span class="k">return</span> <span class="n">out</span>
 
@@ -317,7 +317,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="n">we</span>
 
 <div class="viewcode-block" id="Contour.copy">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.contour.html#grogu.physics.contour.Contour.copy">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.contour.html#grogupy.physics.contour.Contour.copy">[docs]</a>
     <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the deepcopy of the instance.</span>
 
@@ -331,7 +331,7 @@
 
 
 <div class="viewcode-block" id="Contour.plot">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.contour.html#grogu.physics.contour.Contour.plot">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.contour.html#grogupy.physics.contour.Contour.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a plot from the contour sample points.</span>
 
@@ -361,7 +361,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, grogu.</p>
+    <p>&#169; Copyright 2024, grogupy.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -10,24 +10,24 @@ Installation
     .. grid-item-card:: Using pip
         :columns: 12 12 12 12
 
-        grogu can be quickly installed via pip from `PyPI <https://pypi.org>`_.
+        grogupy can be quickly installed via pip from `PyPI <https://pypi.org>`_.
 
         ++++
 
         .. code-block:: bash
 
-            python3 -m pip install --index-url https://test.pypi.org/simple/ grogu
+            python3 -m pip install --index-url https://test.pypi.org/simple/ grogupy
 
     .. grid-item-card:: Using conda
         :columns: 12 12 12 12
 
-        grogu is also available on `Anaconda/Miniconda <https://docs.conda.io/projects/conda/en/latest/>`_.
+        grogupy is also available on `Anaconda/Miniconda <https://docs.conda.io/projects/conda/en/latest/>`_.
 
         ++++
 
         .. code-block:: bash
 
-            python3 -m pip install --index-url https://test.pypi.org/simple/ grogu
+            python3 -m pip install --index-url https://test.pypi.org/simple/ grogupy
 
     .. grid-item-card:: Using source code
         :columns: 12 12 12 12
@@ -39,9 +39,9 @@ Installation
 
         .. code-block:: bash
 
-            git clone https://github.com/danielpozsar/grogu.git
+            git clone https://github.com/danielpozsar/grogupy.git
             python -m build
-            pip install grogu-1.0.0-py3-none-any
+            pip install grogupy-1.0.0-py3-none-any
 
 
 

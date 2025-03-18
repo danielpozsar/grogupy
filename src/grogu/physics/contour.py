@@ -65,13 +65,13 @@ class Contour:
 
     >>> contour = Contour(eset=600, esetp=1000, emin=-20)
     >>> print(contour)
-    <grogu.Contour emin=-25, emax=0, eset=600, esetp=1000>
+    <grogupy.Contour emin=-25, emax=0, eset=600, esetp=1000>
 
     Or create it with the automatic emin finder.
 
     >>> contour = Contour(eset=600, esetp=1000, emin=None, eigfile="/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf")
     >>> print(contour)
-    <grogu.Contour emin=-17.80687896, emax=0, eset=600, esetp=1000>
+    <grogupy.Contour emin=-17.80687896, emax=0, eset=600, esetp=1000>
 
     Methods
     -------
@@ -86,7 +86,7 @@ class Contour:
         The samples along the contour
     weights: NDArray
         The weights of the corresponding samples
-    times: grogu.batch.timing.DefaultTimer
+    times: grogupy.batch.timing.DefaultTimer
         It contains and measures runtime
     """
 
@@ -158,7 +158,7 @@ class Contour:
     def __repr__(self) -> str:
         """String representation of the instance."""
 
-        out = f"<grogu.Contour emin={self.emin}, emax={self.emax}, eset={self.eset}, esetp={self.esetp}>"
+        out = f"<grogupy.Contour emin={self.emin}, emax={self.emax}, eset={self.eset}, esetp={self.esetp}>"
 
         return out
 

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Calculate magnetic parameters &mdash; grogu</title>
+  <title>Calculate magnetic parameters &mdash; grogupy</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
@@ -40,7 +40,7 @@
 
 
           <a href="../../index.html" class="icon icon-home">
-            grogu documentation
+            grogupy documentation
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -59,12 +59,12 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Calculate magnetic parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Visualize%20the%20exchange.html">Visualize the exchange</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Convergence%20with%20high%20throughput.html">Convergence with high throughput</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../quickstart/Running%20in%20HPC.html">Running GroguPy in HPC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../quickstart/Running%20in%20HPC.html">Running grogupy in HPC</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../citing.html">Citing grogu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citing.html">Citing grogupy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
@@ -78,7 +78,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../development/index.html">Contributing to grogu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development/index.html">Contributing to grogupy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Extras</span></p>
 <ul>
@@ -92,7 +92,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">grogu documentation</a>
+          <a href="../../index.html">grogupy documentation</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -113,13 +113,13 @@
 
   <section id="Calculate-magnetic-parameters">
 <h1>Calculate magnetic parameters<a class="headerlink" href="#Calculate-magnetic-parameters" title="Link to this heading"></a></h1>
-<p>grogu is specifically written in a modular way, to fully take advantage of python classes. In this simple example we show how to use grogu to simulate the magnetic interaction between two atoms from a density functional theory (DFT) calculation and create an output file for <a class="reference external" href="https://docs.magnopy.org/en/latest/user-guide/start/about.html">magnopy</a>. In this example we will use a non-collinear Siesta calculation of the Fe3GeTe2 system.</p>
-<p>First import <code class="docutils literal notranslate"><span class="pre">grogu</span></code>, which will import the most important classes, functions and variables in its namespace. Then import <code class="docutils literal notranslate"><span class="pre">numpy</span></code> for data manipulation.</p>
+<p>grogupy is specifically written in a modular way, to fully take advantage of python classes. In this simple example we show how to use grogupy to simulate the magnetic interaction between two atoms from a density functional theory (DFT) calculation and create an output file for <a class="reference external" href="https://docs.magnopy.org/en/latest/user-guide/start/about.html">magnopy</a>. In this example we will use a non-collinear Siesta calculation of the Fe3GeTe2 system.</p>
+<p>First import <code class="docutils literal notranslate"><span class="pre">grogupy</span></code>, which will import the most important classes, functions and variables in its namespace. Then import <code class="docutils literal notranslate"><span class="pre">numpy</span></code> for data manipulation.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">grogu</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">grogupy</span>
 </pre></div>
 </div>
 </div>
@@ -128,7 +128,7 @@
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/Users/danielpozsar/Documents/oktatás/elte/phd/grogu_project/.venv/lib/python3.9/site-packages/grogu/__init__.py:48: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+/Users/danielpozsar/Documents/oktatás/elte/phd/grogupy_project/.venv/lib/python3.9/site-packages/grogupy/__init__.py:48: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
   from tqdm.autonotebook import tqdm as _tqdm
 [Daniels-MacBook-Air.local:25126] shmem: mmap: an error occurred while determining whether or not /var/folders/yh/dx7xl94n3g52ts3td8qcxjcc0000gn/T//ompi.Daniels-MacBook-Air.501/jf.0/806879232/sm_segment.Daniels-MacBook-Air.501.30180000.0 could be created.
 </pre></div></div>
@@ -138,7 +138,7 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Fe3GeTe2_kspace</span> <span class="o">=</span> <span class="n">grogu</span><span class="o">.</span><span class="n">Kspace</span><span class="p">(</span><span class="n">kset</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Fe3GeTe2_kspace</span> <span class="o">=</span> <span class="n">grogupy</span><span class="o">.</span><span class="n">Kspace</span><span class="p">(</span><span class="n">kset</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
 <span class="n">Fe3GeTe2_kspace</span>
 </pre></div>
 </div>
@@ -149,7 +149,7 @@
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;grogu.Kspace kset=[10 10  1], NK=100&gt;
+&lt;grogupy.Kspace kset=[10 10  1], NK=100&gt;
 </pre></div></div>
 </div>
 <p>Then we would like to set the parameters for the complex integral for the Green’s function calculation. This can be done through the <code class="docutils literal notranslate"><span class="pre">Contour</span></code> class. Again, for an initial calculation 300 sample points should be enough. The energy minimum should be set below the smallest eigenvalue from the Siesta Hamiltonian.</p>
@@ -157,7 +157,7 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Fe3GeTe2_contour</span> <span class="o">=</span> <span class="n">grogu</span><span class="o">.</span><span class="n">Contour</span><span class="p">(</span><span class="n">emin</span><span class="o">=-</span><span class="mi">15</span><span class="p">,</span> <span class="n">eset</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">esetp</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Fe3GeTe2_contour</span> <span class="o">=</span> <span class="n">grogupy</span><span class="o">.</span><span class="n">Contour</span><span class="p">(</span><span class="n">emin</span><span class="o">=-</span><span class="mi">15</span><span class="p">,</span> <span class="n">eset</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">esetp</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
 <span class="n">Fe3GeTe2_contour</span>
 </pre></div>
 </div>
@@ -168,7 +168,7 @@
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;grogu.Contour emin=-20, emax=0, eset=300, esetp=10000&gt;
+&lt;grogupy.Contour emin=-20, emax=0, eset=300, esetp=10000&gt;
 </pre></div></div>
 </div>
 <p>Then we can create the <code class="docutils literal notranslate"><span class="pre">Hamiltonian</span></code> class, which extracts and stores the Hamiltonian and geometrical data from the Siesta files using the <code class="docutils literal notranslate"><span class="pre">sisl</span></code> library. Furthermore we must provide the exchange field orientation in the DFT calculation, which is usually the perpendicular direction from the 2D material.</p>
@@ -176,7 +176,7 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Fe3GeTe2_hamiltonian</span> <span class="o">=</span> <span class="n">grogu</span><span class="o">.</span><span class="n">Hamiltonian</span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Fe3GeTe2_hamiltonian</span> <span class="o">=</span> <span class="n">grogupy</span><span class="o">.</span><span class="n">Hamiltonian</span><span class="p">(</span>
     <span class="n">infile</span><span class="o">=</span><span class="s2">&quot;/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf&quot;</span><span class="p">,</span>
     <span class="n">scf_xcf_orientation</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
 <span class="p">)</span>
@@ -203,7 +203,7 @@ Calculate H_XC: 100%|██████████| 3/3 [00:00&lt;00:00, 74.85i
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;grogu.Hamiltonian scf_xcf_orientation=[0 0 1], orientation=[0, 0, 1], NO=84&gt;
+&lt;grogupy.Hamiltonian scf_xcf_orientation=[0 0 1], orientation=[0, 0, 1], NO=84&gt;
 </pre></div></div>
 </div>
 <p>After these initial steps we can create the <code class="docutils literal notranslate"><span class="pre">Builder</span></code> class and initialize with the above information. We have to provide the directions of the rotated exchange field and the two perpendicular directions are calculated automatically.</p>
@@ -213,7 +213,7 @@ Calculate H_XC: 100%|██████████| 3/3 [00:00&lt;00:00, 74.85i
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">orientations</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span>
 
-<span class="n">Fe3GeTe2</span> <span class="o">=</span> <span class="n">grogu</span><span class="o">.</span><span class="n">Builder</span><span class="p">(</span><span class="n">ref_xcf_orientations</span><span class="o">=</span><span class="n">orientations</span><span class="p">)</span>
+<span class="n">Fe3GeTe2</span> <span class="o">=</span> <span class="n">grogupy</span><span class="o">.</span><span class="n">Builder</span><span class="p">(</span><span class="n">ref_xcf_orientations</span><span class="o">=</span><span class="n">orientations</span><span class="p">)</span>
 <span class="n">Fe3GeTe2</span><span class="o">.</span><span class="n">add_kspace</span><span class="p">(</span><span class="n">Fe3GeTe2_kspace</span><span class="p">)</span>
 <span class="n">Fe3GeTe2</span><span class="o">.</span><span class="n">add_contour</span><span class="p">(</span><span class="n">Fe3GeTe2_contour</span><span class="p">)</span>
 <span class="n">Fe3GeTe2</span><span class="o">.</span><span class="n">add_hamiltonian</span><span class="p">(</span><span class="n">Fe3GeTe2_hamiltonian</span><span class="p">)</span>
@@ -227,7 +227,7 @@ Calculate H_XC: 100%|██████████| 3/3 [00:00&lt;00:00, 74.85i
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;grogu.Builder npairs=0, numk=100, kset=[10 10  1], eset=300&gt;
+&lt;grogupy.Builder npairs=0, numk=100, kset=[10 10  1], eset=300&gt;
 </pre></div></div>
 </div>
 <p>Then we have to define the magnetic entities, which can be a list of orbitals from the Siesta Hamiltonian. We use <code class="docutils literal notranslate"><span class="pre">sisl</span></code> functions to extract this information based on a more human like definition. For example take two shells from two Fe atoms.</p>
@@ -286,7 +286,7 @@ Add pairs:: 100%|██████████| 2/2 [00:00&lt;00:00, 15033.35it
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;grogu.Builder npairs=2, numk=100, kset=[10 10  1], eset=300&gt;
+&lt;grogupy.Builder npairs=2, numk=100, kset=[10 10  1], eset=300&gt;
 </pre></div></div>
 </div>
 <p>Now every information is contained in the Fe3GeTe2 instance to run the simulation. There are multiple parameters that can be changed to tune the runtime and the precision of the simulation, but for now let us use the default parameters.</p>
@@ -307,7 +307,7 @@ Rotating Exchange field: 100%|██████████| 3/3 [00:00&lt;00:0
 Rotating Exchange field: 100%|██████████| 3/3 [00:00&lt;00:00, 56.84it/s]
 Rotating Exchange field: 100%|██████████| 3/3 [00:00&lt;00:00, 51.39it/s]
 Parallel over k: 100%|██████████| 100/100 [02:19&lt;00:00,  1.40s/it]
-/Users/danielpozsar/Documents/oktatás/elte/phd/grogu_project/.venv/lib/python3.9/site-packages/grogu/physics/magnetism.py:607: UserWarning: Still not sure about the -2!
+/Users/danielpozsar/Documents/oktatás/elte/phd/grogupy_project/.venv/lib/python3.9/site-packages/grogupy/physics/magnetism.py:607: UserWarning: Still not sure about the -2!
   warnings.warn(&#34;Still not sure about the -2!&#34;)
 </pre></div></div>
 </div>
@@ -326,7 +326,7 @@ Parallel over k: 100%|██████████| 100/100 [02:19&lt;00:00,  
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 ================================================================================
-grogu version: 1.0.0
+grogupy version: 1.0.0
 Input file: /Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf
 ================================================================================
 SLURM job ID: Could not be determined.
@@ -429,7 +429,7 @@ on-site meV
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, grogu.</p>
+    <p>&#169; Copyright 2024, grogupy.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

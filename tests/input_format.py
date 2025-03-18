@@ -67,7 +67,7 @@ kwargs_for_mag_ent = dict(l=2)
 greens_function_solver = "Parallel"
 # always use K for now
 parallel_mode = "K"
-# the calculation of J and K from the energy derivations, either Fit or Grogu
+# the calculation of J and K from the energy derivations, either Fit or grogupy
 exchange_solver = "Fit"
 anisotropy_solver = "Fit"
 

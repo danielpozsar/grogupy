@@ -17,7 +17,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-"""grogu is a package capable of calculating magnetic interactions.
+"""grogupy is a package capable of calculating magnetic interactions.
 
     The main focus is on calculating the parameters of the generalized Heisenberg
     model including the exchange between the pairs and the anisotropy of the

@@ -20,9 +20,7 @@
 import numpy as np
 import pytest
 import sisl
-from numpy.testing import assert_array_almost_equal, assert_array_equal
-
-from grogu.core.core import (
+from grogupy.core.core import (
     calc_Vu,
     hsk,
     make_contour,
@@ -31,6 +29,7 @@ from grogu.core.core import (
     parallel_Gk,
     sequential_Gk,
 )
+from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 
 @pytest.mark.parametrize(

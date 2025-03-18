@@ -2,7 +2,7 @@ Utility functions
 =================
 
 
-.. automodule:: grogu.core.utilities
+.. automodule:: grogupy.core.utilities
    :noindex:
    :no-members:
    :no-undoc-members:

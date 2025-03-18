@@ -64,6 +64,6 @@ class Config:
         return self.__architecture == "GPU"
 
 
-CONFIG = Config(environ.get("GROGUPY_ARCHITECTURE", "CPU"))
+CONFIG = Config(environ.get("grogupy_ARCHITECTURE", "CPU"))
 
 __all__.extend(["CONFIG"])

@@ -19,10 +19,9 @@
 # SOFTWARE.
 import os
 
+import grogupy
 import numpy as np
 import pytest
-
-import grogu
 
 """
         (
@@ -157,9 +156,9 @@ def test_equality_between_solutions(
 ):
     # matlabmode on
     ################################################################################
-    Fe3GeTe2_kspace = grogu.Kspace(kset)
+    Fe3GeTe2_kspace = grogupy.Kspace(kset)
     print(Fe3GeTe2_kspace)
-    Fe3GeTe2_contour = grogu.Contour(
+    Fe3GeTe2_contour = grogupy.Contour(
         eset,
         esetp,
         emin,
@@ -167,12 +166,12 @@ def test_equality_between_solutions(
         emax=emax,
     )
     print(Fe3GeTe2_contour)
-    Fe3GeTe2_hamiltonian = grogu.Hamiltonian(
+    Fe3GeTe2_hamiltonian = grogupy.Hamiltonian(
         "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf",
         [0, 0, 1],
     )
     print(Fe3GeTe2_hamiltonian)
-    Fe3GeTe2 = grogu.Builder(xyz, matlabmode=False)
+    Fe3GeTe2 = grogupy.Builder(xyz, matlabmode=False)
     Fe3GeTe2.greens_function_solver = "Sequential"
     Fe3GeTe2.parallel_mode = "K"
     Fe3GeTe2.add_kspace(Fe3GeTe2_kspace)
@@ -185,12 +184,12 @@ def test_equality_between_solutions(
     print(Fe3GeTe2.__repr__)
     Fe3GeTe2.solve()
     print(Fe3GeTe2.to_magnopy())
-    grogu.save_magnopy(Fe3GeTe2, "./tests/test_matlab_3_sequential_k")
-    grogu.save(Fe3GeTe2, "./tests/test_matlab_3_sequential_k")
+    grogupy.save_magnopy(Fe3GeTe2, "./tests/test_matlab_3_sequential_k")
+    grogupy.save(Fe3GeTe2, "./tests/test_matlab_3_sequential_k")
     ################################################################################
-    Fe3GeTe2_kspace = grogu.Kspace(kset)
+    Fe3GeTe2_kspace = grogupy.Kspace(kset)
     print(Fe3GeTe2_kspace)
-    Fe3GeTe2_contour = grogu.Contour(
+    Fe3GeTe2_contour = grogupy.Contour(
         eset,
         esetp,
         emin,
@@ -198,12 +197,12 @@ def test_equality_between_solutions(
         emax=emax,
     )
     print(Fe3GeTe2_contour)
-    Fe3GeTe2_hamiltonian = grogu.Hamiltonian(
+    Fe3GeTe2_hamiltonian = grogupy.Hamiltonian(
         "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf",
         [0, 0, 1],
     )
     print(Fe3GeTe2_hamiltonian)
-    Fe3GeTe2 = grogu.Builder(xyz, matlabmode=False)
+    Fe3GeTe2 = grogupy.Builder(xyz, matlabmode=False)
     Fe3GeTe2.greens_function_solver = "Parallel"
     Fe3GeTe2.parallel_mode = "K"
     Fe3GeTe2.add_kspace(Fe3GeTe2_kspace)
@@ -216,12 +215,12 @@ def test_equality_between_solutions(
     print(Fe3GeTe2.__repr__)
     Fe3GeTe2.solve()
     print(Fe3GeTe2.to_magnopy())
-    grogu.save_magnopy(Fe3GeTe2, "./tests/test_matlab_3_parallel_k")
-    grogu.save(Fe3GeTe2, "./tests/test_matlab_3_parallel_k")
+    grogupy.save_magnopy(Fe3GeTe2, "./tests/test_matlab_3_parallel_k")
+    grogupy.save(Fe3GeTe2, "./tests/test_matlab_3_parallel_k")
     ################################################################################
-    Fe3GeTe2_kspace = grogu.Kspace(kset)
+    Fe3GeTe2_kspace = grogupy.Kspace(kset)
     print(Fe3GeTe2_kspace)
-    Fe3GeTe2_contour = grogu.Contour(
+    Fe3GeTe2_contour = grogupy.Contour(
         eset,
         esetp,
         emin,
@@ -229,12 +228,12 @@ def test_equality_between_solutions(
         emax=emax,
     )
     print(Fe3GeTe2_contour)
-    Fe3GeTe2_hamiltonian = grogu.Hamiltonian(
+    Fe3GeTe2_hamiltonian = grogupy.Hamiltonian(
         "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf",
         [0, 0, 1],
     )
     print(Fe3GeTe2_hamiltonian)
-    Fe3GeTe2 = grogu.Builder(xyz, matlabmode=False)
+    Fe3GeTe2 = grogupy.Builder(xyz, matlabmode=False)
     Fe3GeTe2.greens_function_solver = "Sequential"
     Fe3GeTe2.parallel_mode = "All"
     Fe3GeTe2.add_kspace(Fe3GeTe2_kspace)
@@ -247,12 +246,12 @@ def test_equality_between_solutions(
     print(Fe3GeTe2.__repr__)
     Fe3GeTe2.solve()
     print(Fe3GeTe2.to_magnopy())
-    grogu.save_magnopy(Fe3GeTe2, "./tests/test_matlab_3_sequential_all")
-    grogu.save(Fe3GeTe2, "./tests/test_matlab_3_sequential_all")
+    grogupy.save_magnopy(Fe3GeTe2, "./tests/test_matlab_3_sequential_all")
+    grogupy.save(Fe3GeTe2, "./tests/test_matlab_3_sequential_all")
     ################################################################################
-    Fe3GeTe2_kspace = grogu.Kspace(kset)
+    Fe3GeTe2_kspace = grogupy.Kspace(kset)
     print(Fe3GeTe2_kspace)
-    Fe3GeTe2_contour = grogu.Contour(
+    Fe3GeTe2_contour = grogupy.Contour(
         eset,
         esetp,
         emin,
@@ -260,12 +259,12 @@ def test_equality_between_solutions(
         emax=emax,
     )
     print(Fe3GeTe2_contour)
-    Fe3GeTe2_hamiltonian = grogu.Hamiltonian(
+    Fe3GeTe2_hamiltonian = grogupy.Hamiltonian(
         "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf",
         [0, 0, 1],
     )
     print(Fe3GeTe2_hamiltonian)
-    Fe3GeTe2 = grogu.Builder(xyz, matlabmode=False)
+    Fe3GeTe2 = grogupy.Builder(xyz, matlabmode=False)
     Fe3GeTe2.greens_function_solver = "Parallel"
     Fe3GeTe2.parallel_mode = "All"
     Fe3GeTe2.add_kspace(Fe3GeTe2_kspace)
@@ -278,15 +277,15 @@ def test_equality_between_solutions(
     print(Fe3GeTe2.__repr__)
     Fe3GeTe2.solve()
     print(Fe3GeTe2.to_magnopy())
-    grogu.save_magnopy(Fe3GeTe2, "./tests/test_matlab_3_parallel_all")
-    grogu.save(Fe3GeTe2, "./tests/test_matlab_3_parallel_all")
+    grogupy.save_magnopy(Fe3GeTe2, "./tests/test_matlab_3_parallel_all")
+    grogupy.save(Fe3GeTe2, "./tests/test_matlab_3_parallel_all")
     ################################################################################
 
     # matlabmode off
     ################################################################################
-    Fe3GeTe2_kspace = grogu.Kspace(kset)
+    Fe3GeTe2_kspace = grogupy.Kspace(kset)
     print(Fe3GeTe2_kspace)
-    Fe3GeTe2_contour = grogu.Contour(
+    Fe3GeTe2_contour = grogupy.Contour(
         eset,
         esetp,
         emin,
@@ -294,12 +293,12 @@ def test_equality_between_solutions(
         emax=emax,
     )
     print(Fe3GeTe2_contour)
-    Fe3GeTe2_hamiltonian = grogu.Hamiltonian(
+    Fe3GeTe2_hamiltonian = grogupy.Hamiltonian(
         "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf",
         [0, 0, 1],
     )
     print(Fe3GeTe2_hamiltonian)
-    Fe3GeTe2 = grogu.Builder(xyz, matlabmode=False)
+    Fe3GeTe2 = grogupy.Builder(xyz, matlabmode=False)
     Fe3GeTe2.greens_function_solver = "Sequential"
     Fe3GeTe2.parallel_mode = "K"
     Fe3GeTe2.add_kspace(Fe3GeTe2_kspace)
@@ -312,12 +311,12 @@ def test_equality_between_solutions(
     print(Fe3GeTe2.__repr__)
     Fe3GeTe2.solve()
     print(Fe3GeTe2.to_magnopy())
-    grogu.save_magnopy(Fe3GeTe2, "./tests/test_3_sequential_k")
-    grogu.save(Fe3GeTe2, "./tests/test_3_sequential_k")
+    grogupy.save_magnopy(Fe3GeTe2, "./tests/test_3_sequential_k")
+    grogupy.save(Fe3GeTe2, "./tests/test_3_sequential_k")
     ################################################################################
-    Fe3GeTe2_kspace = grogu.Kspace(kset)
+    Fe3GeTe2_kspace = grogupy.Kspace(kset)
     print(Fe3GeTe2_kspace)
-    Fe3GeTe2_contour = grogu.Contour(
+    Fe3GeTe2_contour = grogupy.Contour(
         eset,
         esetp,
         emin,
@@ -325,12 +324,12 @@ def test_equality_between_solutions(
         emax=emax,
     )
     print(Fe3GeTe2_contour)
-    Fe3GeTe2_hamiltonian = grogu.Hamiltonian(
+    Fe3GeTe2_hamiltonian = grogupy.Hamiltonian(
         "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf",
         [0, 0, 1],
     )
     print(Fe3GeTe2_hamiltonian)
-    Fe3GeTe2 = grogu.Builder(xyz, matlabmode=False)
+    Fe3GeTe2 = grogupy.Builder(xyz, matlabmode=False)
     Fe3GeTe2.greens_function_solver = "Parallel"
     Fe3GeTe2.parallel_mode = "K"
     Fe3GeTe2.add_kspace(Fe3GeTe2_kspace)
@@ -343,12 +342,12 @@ def test_equality_between_solutions(
     print(Fe3GeTe2.__repr__)
     Fe3GeTe2.solve()
     print(Fe3GeTe2.to_magnopy())
-    grogu.save_magnopy(Fe3GeTe2, "./tests/test_3_parallel_k")
-    grogu.save(Fe3GeTe2, "./tests/test_3_parallel_k")
+    grogupy.save_magnopy(Fe3GeTe2, "./tests/test_3_parallel_k")
+    grogupy.save(Fe3GeTe2, "./tests/test_3_parallel_k")
     ################################################################################
-    Fe3GeTe2_kspace = grogu.Kspace(kset)
+    Fe3GeTe2_kspace = grogupy.Kspace(kset)
     print(Fe3GeTe2_kspace)
-    Fe3GeTe2_contour = grogu.Contour(
+    Fe3GeTe2_contour = grogupy.Contour(
         eset,
         esetp,
         emin,
@@ -356,12 +355,12 @@ def test_equality_between_solutions(
         emax=emax,
     )
     print(Fe3GeTe2_contour)
-    Fe3GeTe2_hamiltonian = grogu.Hamiltonian(
+    Fe3GeTe2_hamiltonian = grogupy.Hamiltonian(
         "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf",
         [0, 0, 1],
     )
     print(Fe3GeTe2_hamiltonian)
-    Fe3GeTe2 = grogu.Builder(xyz, matlabmode=False)
+    Fe3GeTe2 = grogupy.Builder(xyz, matlabmode=False)
     Fe3GeTe2.greens_function_solver = "Sequential"
     Fe3GeTe2.parallel_mode = "All"
     Fe3GeTe2.add_kspace(Fe3GeTe2_kspace)
@@ -374,12 +373,12 @@ def test_equality_between_solutions(
     print(Fe3GeTe2.__repr__)
     Fe3GeTe2.solve()
     print(Fe3GeTe2.to_magnopy())
-    grogu.save_magnopy(Fe3GeTe2, "./tests/test_3_sequential_all")
-    grogu.save(Fe3GeTe2, "./tests/test_3_sequential_all")
+    grogupy.save_magnopy(Fe3GeTe2, "./tests/test_3_sequential_all")
+    grogupy.save(Fe3GeTe2, "./tests/test_3_sequential_all")
     ################################################################################
-    Fe3GeTe2_kspace = grogu.Kspace(kset)
+    Fe3GeTe2_kspace = grogupy.Kspace(kset)
     print(Fe3GeTe2_kspace)
-    Fe3GeTe2_contour = grogu.Contour(
+    Fe3GeTe2_contour = grogupy.Contour(
         eset,
         esetp,
         emin,
@@ -387,12 +386,12 @@ def test_equality_between_solutions(
         emax=emax,
     )
     print(Fe3GeTe2_contour)
-    Fe3GeTe2_hamiltonian = grogu.Hamiltonian(
+    Fe3GeTe2_hamiltonian = grogupy.Hamiltonian(
         "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf",
         [0, 0, 1],
     )
     print(Fe3GeTe2_hamiltonian)
-    Fe3GeTe2 = grogu.Builder(xyz, matlabmode=False)
+    Fe3GeTe2 = grogupy.Builder(xyz, matlabmode=False)
     Fe3GeTe2.greens_function_solver = "Parallel"
     Fe3GeTe2.parallel_mode = "All"
     Fe3GeTe2.add_kspace(Fe3GeTe2_kspace)
@@ -405,26 +404,28 @@ def test_equality_between_solutions(
     print(Fe3GeTe2.__repr__)
     Fe3GeTe2.solve()
     print(Fe3GeTe2.to_magnopy())
-    grogu.save_magnopy(Fe3GeTe2, "./tests/test_3_parallel_all")
-    grogu.save(Fe3GeTe2, "./tests/test_3_parallel_all")
+    grogupy.save_magnopy(Fe3GeTe2, "./tests/test_3_parallel_all")
+    grogupy.save(Fe3GeTe2, "./tests/test_3_parallel_all")
     ################################################################################
-    fit1 = grogu.io.read_magnopy("./tests/test_3_sequential_k.magnopy.txt")
-    fit2 = grogu.io.read_magnopy("./tests/test_3_parallel_k.magnopy.txt")
-    fit3 = grogu.io.read_magnopy("./tests/test_3_sequential_all.magnopy.txt")
-    fit4 = grogu.io.read_magnopy("./tests/test_3_parallel_all.magnopy.txt")
-    grogu1 = grogu.io.read_magnopy("./tests/test_matlab_3_sequential_k.magnopy.txt")
-    grogu2 = grogu.io.read_magnopy("./tests/test_matlab_3_parallel_k.magnopy.txt")
-    grogu3 = grogu.io.read_magnopy("./tests/test_matlab_3_sequential_all.magnopy.txt")
-    grogu4 = grogu.io.read_magnopy("./tests/test_matlab_3_parallel_all.magnopy.txt")
+    fit1 = grogupy.io.read_magnopy("./tests/test_3_sequential_k.magnopy.txt")
+    fit2 = grogupy.io.read_magnopy("./tests/test_3_parallel_k.magnopy.txt")
+    fit3 = grogupy.io.read_magnopy("./tests/test_3_sequential_all.magnopy.txt")
+    fit4 = grogupy.io.read_magnopy("./tests/test_3_parallel_all.magnopy.txt")
+    grogupy1 = grogupy.io.read_magnopy("./tests/test_matlab_3_sequential_k.magnopy.txt")
+    grogupy2 = grogupy.io.read_magnopy("./tests/test_matlab_3_parallel_k.magnopy.txt")
+    grogupy3 = grogupy.io.read_magnopy(
+        "./tests/test_matlab_3_sequential_all.magnopy.txt"
+    )
+    grogupy4 = grogupy.io.read_magnopy("./tests/test_matlab_3_parallel_all.magnopy.txt")
 
     simulation_pairs = [
         (fit1, fit2),
         (fit1, fit3),
         (fit1, fit4),
-        (fit1, grogu1),
-        (fit1, grogu2),
-        (fit1, grogu3),
-        (fit1, grogu4),
+        (fit1, grogupy1),
+        (fit1, grogupy2),
+        (fit1, grogupy3),
+        (fit1, grogupy4),
     ]
     for first, second in simulation_pairs:
         print("first: ", first)

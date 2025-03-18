@@ -1,4 +1,4 @@
-.. automodule:: grogu.cli
+.. automodule:: grogupy.cli
    :noindex:
    :no-members:
    :no-undoc-members:

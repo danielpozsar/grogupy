@@ -20,7 +20,7 @@
 """
 Utility functions
 =================
-.. currentmodule:: grogu.io.utilities
+.. currentmodule:: grogupy.io.utilities
 
 
 .. autosummary::
@@ -54,7 +54,7 @@ def process_input_args(
     Parameters
     ----------
         default_arguments: dict
-            Default arguments from grogu
+            Default arguments from grogupy
         fdf_arguments: dict
             Arguments read from the fdf input file
         command_line_arguments: dict
@@ -173,7 +173,7 @@ def decipher_all_by_pos(
         information and the Hamiltonian, by default 1e-4
     mode: {"normal", "full"}, optional
         Whether to return all the information or just the one needed by
-        ``grogu``, by default "normal"
+        ``grogupy``, by default "normal"
 
     Returns
     -------

@@ -1,27 +1,27 @@
-.. grogu master file, created by
+.. grogupy master file, created by
    sphinx-quickstart on Thu Oct 10 17:10:03 2024.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
 
-.. module:: grogu
+.. module:: grogupy
    :no-index:
 
-.. title:: grogu: Relativistic magnetic interactions from non-orthogonal basis sets
+.. title:: grogupy: Relativistic magnetic interactions from non-orthogonal basis sets
 .. meta::
    :description: Relativistic magnetic interactions from non-orthogonal basis sets.
-   :keywords: DFT, physics, grogu, magnetic interactions, Siesta
+   :keywords: DFT, physics, grogupy, magnetic interactions, Siesta
 
 
-grogu: Relativistic magnetic interactions from non-orthogonal basis sets
+grogupy: Relativistic magnetic interactions from non-orthogonal basis sets
 ==========================================================================
 
-grogu was created to easily extract magnetic interaction parameters from
+grogupy was created to easily extract magnetic interaction parameters from
 density functional theory (DFT) calculations. Because the underlying theory
 focuses on non-orthogonal basis sets, the most straightforward software to
 use for the DFT calculation is `Siesta <https://siesta-project.org/siesta/>`_.
 
-It is based on the Grogu matlab implementation and the `sisl
+It is based on the grogupy matlab implementation and the `sisl
 <https://sisl.readthedocs.io/en/latest/index.html>`_ package and this work
 was carried out by the `TRILMAX <https://trilmax.elte.hu>`_.
 
@@ -35,14 +35,14 @@ More on the theoretical background can be seen on `arXiv
         :link: quickstart/index
         :link-type: doc
 
-        Simple tutorial to introduce the ``grogu`` package.
+        Simple tutorial to introduce the ``grogupy`` package.
 
     .. grid-item-card:: -- Tutorials
         :link: tutorials/index
         :link-type: doc
 
         In depth tutorials to explore all the possibilities
-        with ``grogu``.
+        with ``grogupy``.
 
     .. grid-item-card::  -- API reference
         :link: API/modules

@@ -1,10 +1,10 @@
 .. _running_in_hpc:
 
-Running GroguPy in HPC
+Running grogupy in HPC
 ======================
 
 This section provides instructions on how to configure
-and run GroguPy on a High-Performance Computing (HPC)
+and run grogupy on a High-Performance Computing (HPC)
 system using SLURM. Below is an example of a bash script
 for submitting a job to the SLURM scheduler.
 
@@ -12,13 +12,13 @@ Example SLURM Batch Script
 ---------------------------
 
 The following is an example SLURM batch script (`sbatch`)
-for running GroguPy on an HPC system, in this case on
+for running grogupy on an HPC system, in this case on
 `Komondor <https://hpc.kifu.hu/hu/komondor>`_.:
 
 .. code-block:: bash
 
     #!/bin/bash
-    #SBATCH --job-name=grogu
+    #SBATCH --job-name=grogupy
     #SBATCH --nodes=1
     #SBATCH --ntasks=1
     #SBATCH --ntasks-per-node=1
@@ -43,14 +43,14 @@ for running GroguPy on an HPC system, in this case on
     export NUMEXPR_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/software/packages/cuda/12.3/targets/x86_64-linux/lib
-    export GROGUPY_ARCHITECTURE=GPU
+    export grogupy_ARCHITECTURE=GPU
 
-    time srun grogu ./grogu_input.py
+    time srun grogupy ./grogupy_input.py
 
 Explanation of the Script
 -------------------------
 
-- `#SBATCH --job-name=grogu`: Sets the name of the job.
+- `#SBATCH --job-name=grogupy`: Sets the name of the job.
 - `#SBATCH --nodes=1`: Requests one node.
 - `#SBATCH --ntasks=1`: Requests one task.
 - `#SBATCH --ntasks-per-node=1`: Specifies one task per node.
@@ -65,10 +65,10 @@ The script also sets up the environment by loading necessary
 modules and setting environment variables for optimal
 performance. Exportin the LD_LIBRARY_PATH variable is necessary
 to ensure that the CUDA library is accessible for cupy. The
-script also sets the `GROGUPY_ARCHITECTURE` environment
-variable to `GPU` to enable GPU acceleration in grogu.
-Finally, it runs the GroguPy application using `srun` and the
-`grogu` command line script.
+script also sets the `grogupy_ARCHITECTURE` environment
+variable to `GPU` to enable GPU acceleration in grogupy.
+Finally, it runs the grogupy application using `srun` and the
+`grogupy` command line script.
 
 Make sure to adjust the script parameters according to
 your HPC system's configuration and your specific requirements.
@@ -77,9 +77,9 @@ your HPC system's configuration and your specific requirements.
 Example input file format
 -------------------------
 
-This is the corresponding input file for the above script, `grogu_input.py`,
-which contains the parameters for the grogu simulation. These variables
-are passed to the appropriate functions in the grogu package very similarly
+This is the corresponding input file for the above script, `grogupy_input.py`,
+which contains the parameters for the grogupy simulation. These variables
+are passed to the appropriate functions in the grogupy package very similarly
 as we did in the jupyter notebook examples.
 
 .. code-block:: python
@@ -117,7 +117,7 @@ as we did in the jupyter notebook examples.
     greens_function_solver = "Sequential"
     # always use K for now
     parallel_mode = "K"
-    # the calculation of J and K from the energy derivations, either Fit or Grogu
+    # the calculation of J and K from the energy derivations, either Fit or grogupy
     exchange_solver = "Fit"
     anisotropy_solver = "Fit"
 

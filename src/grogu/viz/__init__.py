@@ -21,7 +21,7 @@
 Visualization
 =============
 
-.. currentmodule:: grogu.viz
+.. currentmodule:: grogupy.viz
 
 
 This submodule contains various routines to plot the system of magnetic entities

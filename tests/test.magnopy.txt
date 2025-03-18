@@ -1,5 +1,5 @@
 # ================================================================================
-# grogu version: 1.0.0
+# grogupy version: 1.0.0
 # Input file: /Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf
 # ================================================================================
 # SLURM job ID: Could not be determined.

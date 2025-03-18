@@ -85,7 +85,7 @@ class Builder:
     >>> simulation.add_contour(contour)
     >>> simulation.add_hamiltonian(hamiltonian)
     >>> simulation
-    <grogu.Builder npairs=0, numk=1, kset=[1 1 1], eset=100>
+    <grogupy.Builder npairs=0, numk=1, kset=[1 1 1], eset=100>
 
     Methods
     -------
@@ -132,17 +132,17 @@ class Builder:
         The solution method for the Hamiltonian inversion, by default "Sequential"
     parallel_mode: {"All", "K"}
         The parallelization mode for the Hamiltonian inversions, by default "K"
-    exchange_solver: {"Fit", "Grogu"}
+    exchange_solver: {"Fit", "grogupy"}
         The solution method for the exchange tensor, by default "Fit"
-    anisotropy_solver: {"Fit", "Grogu"}
-        The solution method for the anisotropy tensor, by default "Grogu"
+    anisotropy_solver: {"Fit", "grogupy"}
+        The solution method for the anisotropy tensor, by default "grogupy"
     ref_xcf_orientations: NDArray
         The reference directions and two perpendicular direction. Every element is a
         dictionary, wth two elements, 'o', the reference direction and 'vw', the two
         perpendicular directions and a third direction that is the linear combination of
         the two
     architecture: {"CPU", "GPU"}, optional
-        The architecture of the machine that grogu is run on, by default 'CPU'
+        The architecture of the machine that grogupy is run on, by default 'CPU'
     SLURM_ID: str
         The ID of the SLURM job, if available, else 'Could not be determined.'
     _dh: sisl.physics.Hamiltonian
@@ -151,7 +151,7 @@ class Builder:
         The DFT exchange filed orientation from the instance Hamiltonian
     infile: str
         Input path to the .fdf file
-    times: grogu.batch.timing.DefaultTimer
+    times: grogupy.batch.timing.DefaultTimer
         It contains and measures runtime
     """
 
@@ -181,7 +181,7 @@ class Builder:
         >>> simulation.add_contour(contour)
         >>> simulation.add_hamiltonian(hamiltonian)
         >>> simulation
-        <grogu.Builder npairs=0, numk=1, kset=[1 1 1], eset=100>
+        <grogupy.Builder npairs=0, numk=1, kset=[1 1 1], eset=100>
 
         """
 
@@ -207,8 +207,8 @@ class Builder:
         # fix the matlab compatibility
         self.__matlabmode = matlabmode
         if self.__matlabmode:
-            self.__exchange_solver: str = "Grogu"
-            self.__anisotropy_solver: str = "Grogu"
+            self.__exchange_solver: str = "grogupy"
+            self.__anisotropy_solver: str = "grogupy"
         else:
             self.__exchange_solver: str = "Fit"
             self.__anisotropy_solver: str = "Fit"
@@ -348,7 +348,7 @@ class Builder:
 
         out = ""
         out += section + newline
-        out += f"grogu version: {__version__}" + newline
+        out += f"grogupy version: {__version__}" + newline
         out += f"Input file: {self.infile}" + newline
         out += section + newline
         out += f"SLURM job ID: {self.SLURM_ID}" + newline
@@ -413,7 +413,7 @@ class Builder:
         else:
             eset = self.contour.eset
 
-        string = f"<grogu.Builder npairs={len(self.pairs)}, numk={NK}, kset={kset}, eset={eset}>"
+        string = f"<grogupy.Builder npairs={len(self.pairs)}, numk={NK}, kset={kset}, eset={eset}>"
 
         return string
 
@@ -445,8 +445,8 @@ class Builder:
                 )
             else:
                 self.__exchange_solver: str = "Fit"
-        elif value.lower()[0] == "g":  # grogu
-            self.__exchange_solver: str = "Grogu"
+        elif value.lower()[0] == "g":  # grogupy
+            self.__exchange_solver: str = "grogupy"
         else:
             raise Exception(f"Unrecognized solution method: {value}")
 
@@ -469,8 +469,8 @@ class Builder:
                     if len(ref_xcf["vw"]) == 3:
                         ref_xcf["vw"].pop()
 
-        elif value.lower()[0] == "g":  # grogu
-            self.__anisotropy_solver: str = "Grogu"
+        elif value.lower()[0] == "g":  # grogupy
+            self.__anisotropy_solver: str = "grogupy"
             # add the linear combination of the orientations
             for ref_xcf in self.ref_xcf_orientations:
                 if len(ref_xcf["vw"]) == 2:
@@ -511,7 +511,7 @@ class Builder:
 
     @property
     def architecture(self) -> str:
-        """The architecture of the machine that grogu is run on, by default 'CPU'."""
+        """The architecture of the machine that grogupy is run on, by default 'CPU'."""
         return self.__architecture
 
     @property

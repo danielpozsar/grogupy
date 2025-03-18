@@ -1,5 +1,5 @@
 # ================================================================================
-# grogu version: 1.0.0
+# grogupy version: 1.0.0
 # Input file: /Users/danielpozsar/Downloads/Cr/Cr3.fdf
 # ================================================================================
 # SLURM job ID: Could not be determined.
@@ -7,8 +7,8 @@
 # Number of nodes in the parallel cluster: 1
 # Parallelization is over: K
 # Solver used for Greens function calculation: Sequential
-# Solver used for Exchange tensor: Grogu
-# Solver used for Anisotropy tensor: Grogu
+# Solver used for Exchange tensor: grogupy
+# Solver used for Anisotropy tensor: grogupy
 # ================================================================================
 # Cell [Ang]:
 # 2.000000797098135408e+01 0.000000000000000000e+00 0.000000000000000000e+00

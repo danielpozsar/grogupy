@@ -20,11 +20,10 @@
 import numpy as np
 import pytest
 import sisl
+from grogupy.core.constants import TAU_X, TAU_Y, TAU_Z
+from grogupy.core.core import parallel_Gk, sequential_Gk
+from grogupy.physics.hamiltonian import Hamiltonian
 from numpy.testing import assert_array_almost_equal, assert_array_equal
-
-from grogu.core.constants import TAU_X, TAU_Y, TAU_Z
-from grogu.core.core import parallel_Gk, sequential_Gk
-from grogu.physics.hamiltonian import Hamiltonian
 
 
 @pytest.fixture

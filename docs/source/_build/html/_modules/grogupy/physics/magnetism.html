@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>grogu.physics.magnetism &mdash; grogu</title>
+  <title>grogupy.physics.magnetism &mdash; grogupy</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
@@ -34,7 +34,7 @@
 
 
           <a href="../../../index.html" class="icon icon-home">
-            grogu documentation
+            grogupy documentation
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -48,7 +48,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstart/index.html">Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../citing.html">Citing grogu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../citing.html">Citing grogupy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
@@ -62,7 +62,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../development/index.html">Contributing to grogu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development/index.html">Contributing to grogupy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Extras</span></p>
 <ul>
@@ -76,7 +76,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">grogu documentation</a>
+          <a href="../../../index.html">grogupy documentation</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -85,7 +85,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">grogu.physics.magnetism</li>
+      <li class="breadcrumb-item active">grogupy.physics.magnetism</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -94,7 +94,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
 
-  <h1>Source code for grogu.physics.magnetism</h1><div class="highlight"><pre>
+  <h1>Source code for grogupy.physics.magnetism</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (c) [2024-2025] []</span>
 <span class="c1">#</span>
 <span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
@@ -129,7 +129,7 @@
 
 
 <div class="viewcode-block" id="get_number_of_electrons">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.magnetism.html#grogu.physics.magnetism.get_number_of_electrons">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.magnetism.html#grogupy.physics.magnetism.get_number_of_electrons">[docs]</a>
 <span class="k">def</span> <span class="nf">get_number_of_electrons</span><span class="p">(</span><span class="n">dm</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">sisl</span><span class="o">.</span><span class="n">DensityMatrix</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Determines the number of electrons in the system from the density matrix.</span>
 
@@ -160,7 +160,7 @@
 
 
 <div class="viewcode-block" id="automatic_emin">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.magnetism.html#grogu.physics.magnetism.automatic_emin">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.magnetism.html#grogupy.physics.magnetism.automatic_emin">[docs]</a>
 <span class="k">def</span> <span class="nf">automatic_emin</span><span class="p">(</span><span class="n">infile</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;It reads the lowest energy level from siesta.</span>
 
@@ -220,7 +220,7 @@
 
 
 <div class="viewcode-block" id="blow_up_orbindx">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.magnetism.html#grogu.physics.magnetism.blow_up_orbindx">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.magnetism.html#grogupy.physics.magnetism.blow_up_orbindx">[docs]</a>
 <span class="k">def</span> <span class="nf">blow_up_orbindx</span><span class="p">(</span><span class="n">orb_indices</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to blow up orbital indices to make SPIN BOX indices</span>
 
@@ -242,7 +242,7 @@
 
 
 <div class="viewcode-block" id="spin_tracer">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.magnetism.html#grogu.physics.magnetism.spin_tracer">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.magnetism.html#grogupy.physics.magnetism.spin_tracer">[docs]</a>
 <span class="k">def</span> <span class="nf">spin_tracer</span><span class="p">(</span><span class="n">M</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Spin tracer utility</span>
 
@@ -281,7 +281,7 @@
 
 
 <div class="viewcode-block" id="parse_magnetic_entity">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.magnetism.html#grogu.physics.magnetism.parse_magnetic_entity">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.magnetism.html#grogupy.physics.magnetism.parse_magnetic_entity">[docs]</a>
 <span class="k">def</span> <span class="nf">parse_magnetic_entity</span><span class="p">(</span>
     <span class="n">dh</span><span class="p">:</span> <span class="n">sisl</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">Hamiltonian</span><span class="p">,</span>
     <span class="n">atom</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -485,7 +485,7 @@
 
 
 <div class="viewcode-block" id="interaction_energy">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.magnetism.html#grogu.physics.magnetism.interaction_energy">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.magnetism.html#grogupy.physics.magnetism.interaction_energy">[docs]</a>
 <span class="k">def</span> <span class="nf">interaction_energy</span><span class="p">(</span>
     <span class="n">Vu1_1</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">Vu1_2</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">Gij</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">Gji</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">weights</span><span class="p">:</span> <span class="n">NDArray</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
@@ -531,7 +531,7 @@
 
 
 <div class="viewcode-block" id="second_order_energy">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.magnetism.html#grogu.physics.magnetism.second_order_energy">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.magnetism.html#grogupy.physics.magnetism.second_order_energy">[docs]</a>
 <span class="k">def</span> <span class="nf">second_order_energy</span><span class="p">(</span>
     <span class="n">Vu1</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">Vu2</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">Gii</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">weights</span><span class="p">:</span> <span class="n">NDArray</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
@@ -571,7 +571,7 @@
 
 
 <div class="viewcode-block" id="calculate_anisotropy_tensor">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.magnetism.html#grogu.physics.magnetism.calculate_anisotropy_tensor">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.magnetism.html#grogupy.physics.magnetism.calculate_anisotropy_tensor">[docs]</a>
 <span class="k">def</span> <span class="nf">calculate_anisotropy_tensor</span><span class="p">(</span><span class="n">energies</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculates the renormalized anisotropy tensor from the energies.</span>
 
@@ -632,7 +632,7 @@
 
 
 <div class="viewcode-block" id="fit_anisotropy_tensor">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.magnetism.html#grogu.physics.magnetism.fit_anisotropy_tensor">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.magnetism.html#grogupy.physics.magnetism.fit_anisotropy_tensor">[docs]</a>
 <span class="k">def</span> <span class="nf">fit_anisotropy_tensor</span><span class="p">(</span>
     <span class="n">energies</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">ref_xcf</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
@@ -702,7 +702,7 @@
 
 
 <div class="viewcode-block" id="calculate_exchange_tensor">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.magnetism.html#grogu.physics.magnetism.calculate_exchange_tensor">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.magnetism.html#grogupy.physics.magnetism.calculate_exchange_tensor">[docs]</a>
 <span class="k">def</span> <span class="nf">calculate_exchange_tensor</span><span class="p">(</span>
     <span class="n">energies</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">]:</span>
@@ -774,7 +774,7 @@
 
 
 <div class="viewcode-block" id="fit_exchange_tensor">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogu.physics.magnetism.html#grogu.physics.magnetism.fit_exchange_tensor">[docs]</a>
+<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.magnetism.html#grogupy.physics.magnetism.fit_exchange_tensor">[docs]</a>
 <span class="k">def</span> <span class="nf">fit_exchange_tensor</span><span class="p">(</span>
     <span class="n">energies</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">ref_xcf</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">]:</span>
@@ -851,7 +851,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, grogu.</p>
+    <p>&#169; Copyright 2024, grogupy.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

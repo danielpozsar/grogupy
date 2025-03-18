@@ -17,92 +17,91 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import grogupy
+import grogupy.batch
 import pytest
-
-import grogu
-import grogu.batch
-from grogu.io.io import *
-from grogu.io.utilities import *
+from grogupy.io.io import *
+from grogupy.io.utilities import *
 
 pytestmark = [pytest.mark.io]
 
 
 class TestIO:
     def test_load_save(self):
-        builder = grogu.load("./tests/test_builder.pkl")
-        assert isinstance(builder, grogu.Builder)
-        grogu.save(builder, "./tests/test_builder_temp.pkl")
-        builder2 = grogu.load("./tests/test_builder_temp.pkl")
-        assert isinstance(builder2, grogu.Builder)
+        builder = grogupy.load("./tests/test_builder.pkl")
+        assert isinstance(builder, grogupy.Builder)
+        grogupy.save(builder, "./tests/test_builder_temp.pkl")
+        builder2 = grogupy.load("./tests/test_builder_temp.pkl")
+        assert isinstance(builder2, grogupy.Builder)
         assert builder == builder2
 
-        hamiltonian = grogu.load("./tests/test_hamiltonian.pkl")
-        assert isinstance(hamiltonian, grogu.Hamiltonian)
-        grogu.save(hamiltonian, "./tests/test_hamiltonian_temp.pkl")
-        hamiltonian2 = grogu.load("./tests/test_hamiltonian_temp.pkl")
-        assert isinstance(hamiltonian2, grogu.Hamiltonian)
+        hamiltonian = grogupy.load("./tests/test_hamiltonian.pkl")
+        assert isinstance(hamiltonian, grogupy.Hamiltonian)
+        grogupy.save(hamiltonian, "./tests/test_hamiltonian_temp.pkl")
+        hamiltonian2 = grogupy.load("./tests/test_hamiltonian_temp.pkl")
+        assert isinstance(hamiltonian2, grogupy.Hamiltonian)
         assert hamiltonian == hamiltonian2
 
-        contour = grogu.load("./tests/test_contour.pkl")
-        assert isinstance(contour, grogu.Contour)
-        grogu.save(contour, "./tests/test_contour_temp.pkl")
-        contour2 = grogu.load("./tests/test_contour_temp.pkl")
-        assert isinstance(contour2, grogu.Contour)
+        contour = grogupy.load("./tests/test_contour.pkl")
+        assert isinstance(contour, grogupy.Contour)
+        grogupy.save(contour, "./tests/test_contour_temp.pkl")
+        contour2 = grogupy.load("./tests/test_contour_temp.pkl")
+        assert isinstance(contour2, grogupy.Contour)
         assert contour == contour2
 
-        kspace = grogu.load("./tests/test_kspace.pkl")
-        assert isinstance(kspace, grogu.Kspace)
-        grogu.save(kspace, "./tests/test_kspace_temp.pkl")
-        kspace2 = grogu.load("./tests/test_kspace_temp.pkl")
-        assert isinstance(kspace2, grogu.Kspace)
+        kspace = grogupy.load("./tests/test_kspace.pkl")
+        assert isinstance(kspace, grogupy.Kspace)
+        grogupy.save(kspace, "./tests/test_kspace_temp.pkl")
+        kspace2 = grogupy.load("./tests/test_kspace_temp.pkl")
+        assert isinstance(kspace2, grogupy.Kspace)
         assert kspace == kspace2
 
-        default_timer = grogu.load("./tests/test_default_timer.pkl")
-        assert isinstance(default_timer, grogu.batch.DefaultTimer)
-        grogu.save(default_timer, "./tests/test_default_timer_temp.pkl")
-        default_timer2 = grogu.load("./tests/test_default_timer_temp.pkl")
-        assert isinstance(default_timer2, grogu.batch.DefaultTimer)
+        default_timer = grogupy.load("./tests/test_default_timer.pkl")
+        assert isinstance(default_timer, grogupy.batch.DefaultTimer)
+        grogupy.save(default_timer, "./tests/test_default_timer_temp.pkl")
+        default_timer2 = grogupy.load("./tests/test_default_timer_temp.pkl")
+        assert isinstance(default_timer2, grogupy.batch.DefaultTimer)
         assert default_timer == default_timer2
 
     def test_load_save_Builder(self):
         builder = load_Builder("./tests/test_builder.pkl")
-        assert isinstance(builder, grogu.Builder)
-        grogu.save(builder, "./tests/test_builder_temp.pkl")
-        builder2 = grogu.load("./tests/test_builder_temp.pkl")
-        assert isinstance(builder2, grogu.Builder)
+        assert isinstance(builder, grogupy.Builder)
+        grogupy.save(builder, "./tests/test_builder_temp.pkl")
+        builder2 = grogupy.load("./tests/test_builder_temp.pkl")
+        assert isinstance(builder2, grogupy.Builder)
         assert builder == builder2
 
     def test_load_save_Hamiltonian(self):
         hamiltonian = load_Hamiltonian("./tests/test_hamiltonian.pkl")
-        assert isinstance(hamiltonian, grogu.Hamiltonian)
-        grogu.save(hamiltonian, "./tests/test_hamiltonian_temp.pkl")
-        hamiltonian2 = grogu.load("./tests/test_hamiltonian_temp.pkl")
-        assert isinstance(hamiltonian2, grogu.Hamiltonian)
+        assert isinstance(hamiltonian, grogupy.Hamiltonian)
+        grogupy.save(hamiltonian, "./tests/test_hamiltonian_temp.pkl")
+        hamiltonian2 = grogupy.load("./tests/test_hamiltonian_temp.pkl")
+        assert isinstance(hamiltonian2, grogupy.Hamiltonian)
         assert hamiltonian == hamiltonian2
 
     def test_load_save_Contour(self):
         contour = load_Contour("./tests/test_contour.pkl")
-        assert isinstance(contour, grogu.Contour)
-        grogu.save(contour, "./tests/test_contour_temp.pkl")
-        contour2 = grogu.load("./tests/test_contour_temp.pkl")
+        assert isinstance(contour, grogupy.Contour)
+        grogupy.save(contour, "./tests/test_contour_temp.pkl")
+        contour2 = grogupy.load("./tests/test_contour_temp.pkl")
         print(type(contour2))
-        assert isinstance(contour2, grogu.Contour)
+        assert isinstance(contour2, grogupy.Contour)
         assert contour == contour2
 
     def test_load_save_Kspace(self):
         kspace = load_Kspace("./tests/test_kspace.pkl")
-        assert isinstance(kspace, grogu.Kspace)
-        grogu.save(kspace, "./tests/test_kspace_temp.pkl")
-        kspace2 = grogu.load("./tests/test_kspace_temp.pkl")
-        assert isinstance(kspace2, grogu.Kspace)
+        assert isinstance(kspace, grogupy.Kspace)
+        grogupy.save(kspace, "./tests/test_kspace_temp.pkl")
+        kspace2 = grogupy.load("./tests/test_kspace_temp.pkl")
+        assert isinstance(kspace2, grogupy.Kspace)
         assert kspace == kspace2
 
     def test_load_save_DefaultTimer(self):
         default_timer = load_DefaultTimer("./tests/test_default_timer.pkl")
-        assert isinstance(default_timer, grogu.batch.DefaultTimer)
-        grogu.save(default_timer, "./tests/test_default_timer_temp.pkl")
-        default_timer2 = grogu.load("./tests/test_default_timer_temp.pkl")
-        assert isinstance(default_timer2, grogu.batch.DefaultTimer)
+        assert isinstance(default_timer, grogupy.batch.DefaultTimer)
+        grogupy.save(default_timer, "./tests/test_default_timer_temp.pkl")
+        default_timer2 = grogupy.load("./tests/test_default_timer_temp.pkl")
+        assert isinstance(default_timer2, grogupy.batch.DefaultTimer)
         assert default_timer == default_timer2
 
     def test_load_save_magnopy(self):

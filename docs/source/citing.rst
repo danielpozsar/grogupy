@@ -1,10 +1,10 @@
 .. _citing:
 
-Citing grogu
+Citing grogupy
 ==============
 
-grogu is a completely open-source software package. It is released under the MIT license.
-Currently there is no way to explicitly cite grogu, but you can cite the underlying paper:
+grogupy is a completely open-source software package. It is released under the MIT license.
+Currently there is no way to explicitly cite grogupy, but you can cite the underlying paper:
 *Relativistic magnetic interactions from nonorthogonal basis sets*.
 
 .. code-block:: bibtex
@@ -20,7 +20,7 @@ Currently there is no way to explicitly cite grogu, but you can cite the underly
         publisher={APS}
     }
 
-grogu builds on the sisl package, which should also be cited.
+grogupy builds on the sisl package, which should also be cited.
 
 .. code-block:: bibtex
 
@@ -37,8 +37,8 @@ format.
 
 .. code-block:: python3
 
-    >>> import grogu
-    >>> print(grogu.cite)
+    >>> import grogupy
+    >>> print(grogupy.cite)
         @article{martinez2023relativistic,
             title={Relativistic magnetic interactions from nonorthogonal basis sets},
             author={Mart{\'\i}nez-Carracedo, Gabriel and Oroszl{\'a}ny, L{\'a}szl{\'o} and Garc{\'\i}a-Fuente, Amador and Ny{\'a}ri, Bendeg{\'u}z and Udvardi, L{\'a}szl{\'o} and Szunyogh, L{\'a}szl{\'o} and Ferrer, Jaime},
@@ -61,7 +61,7 @@ format.
 
 .. code-block:: console
 
-    grogu --cite
+    grogupy --cite
     @article{martinez2023relativistic,
         title={Relativistic magnetic interactions from nonorthogonal basis sets},
         author={Mart{\'\i}nez-Carracedo, Gabriel and Oroszl{\'a}ny, L{\'a}szl{\'o} and Garc{\'\i}a-Fuente, Amador and Ny{\'a}ri, Bendeg{\'u}z and Udvardi, L{\'a}szl{\'o} and Szunyogh, L{\'a}szl{\'o} and Ferrer, Jaime},

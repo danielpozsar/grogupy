@@ -102,7 +102,7 @@ def solve_parallel_over_k(
                 # mag_ent.calculate_energies(builder.contour.weights, False)
                 mag_ent.calculate_energies(builder.contour.weights, False)
                 mag_ent.fit_anisotropy_tensor(builder.ref_xcf_orientations)
-            elif builder.anisotropy_solver.lower()[0] == "g":  # grogu
+            elif builder.anisotropy_solver.lower()[0] == "g":  # grogupy
                 # mag_ent.calculate_energies(builder.contour.weights, True)
                 mag_ent.calculate_energies(builder.contour.weights, True)
                 mag_ent.calculate_anisotropy()
@@ -115,7 +115,7 @@ def solve_parallel_over_k(
             pair.calculate_energies(builder.contour.weights)
             if builder.exchange_solver.lower()[0] == "f":  # fit
                 pair.fit_exchange_tensor(builder.ref_xcf_orientations)
-            elif builder.exchange_solver.lower()[0] == "g":  # grogu
+            elif builder.exchange_solver.lower()[0] == "g":  # grogupy
                 pair.calculate_exchange_tensor()
 
 
@@ -223,7 +223,7 @@ def solve_parallel_over_all(
             if builder.anisotropy_solver.lower()[0] == "f":  # fit
                 mag_ent.calculate_energies(builder.contour.weights, False)
                 mag_ent.fit_anisotropy_tensor(builder.ref_xcf_orientations)
-            elif builder.anisotropy_solver.lower()[0] == "g":  # grogu
+            elif builder.anisotropy_solver.lower()[0] == "g":  # grogupy
                 mag_ent.calculate_energies(builder.contour.weights, True)
                 mag_ent.calculate_anisotropy()
 
@@ -234,7 +234,7 @@ def solve_parallel_over_all(
             pair.calculate_energies(builder.contour.weights)
             if builder.exchange_solver.lower()[0] == "f":  # fit
                 pair.fit_exchange_tensor(builder.ref_xcf_orientations)
-            elif builder.exchange_solver.lower()[0] == "g":  # grogu
+            elif builder.exchange_solver.lower()[0] == "g":  # grogupy
                 pair.calculate_exchange_tensor()
 
 

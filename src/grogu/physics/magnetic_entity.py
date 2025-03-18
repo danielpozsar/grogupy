@@ -62,7 +62,7 @@ class MagneticEntity:
     Parameters
     ----------
     infile: Union[str, tuple[Union[sisl.physics.Hamiltonian, Hamiltonian], sisl.physics.DensityMatrix]]
-        Either the path to the .fdf file or a tuple of sisl or grogu hamiltonian and a sisl density matrix
+        Either the path to the .fdf file or a tuple of sisl or grogupy hamiltonian and a sisl density matrix
     atom: Union[None, int, list[int]], optional
         Defining atom (or atoms) in the unit cell forming the magnetic entity, by default None
     l: Union[None, int, list[int], list[list[int]]], optional
@@ -200,7 +200,7 @@ class MagneticEntity:
         Parameters
         ----------
         infile: Union[str, tuple[Union[sisl.physics.Hamiltonian, Hamiltonian], sisl.physics.DensityMatrix]]
-            Either the path to the .fdf file or a tuple of sisl or grogu hamiltonian and a sisl density matrix
+            Either the path to the .fdf file or a tuple of sisl or grogupy hamiltonian and a sisl density matrix
         atom: Union[None, int, list[int]], optional
             Defining atom (or atoms) in the unit cell forming the magnetic entity, by default None
         l: Union[None, int, list[int], list[list[int]]], optional
@@ -306,7 +306,7 @@ class MagneticEntity:
     def __repr__(self) -> str:
         """String representation of the instance."""
 
-        out = f"<grogu.MagneticEntity tag={self.tag}, SBS={self.SBS}>"
+        out = f"<grogupy.MagneticEntity tag={self.tag}, SBS={self.SBS}>"
 
         return out
 

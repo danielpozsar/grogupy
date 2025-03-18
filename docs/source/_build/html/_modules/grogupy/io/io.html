@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>grogu.io.io &mdash; grogu</title>
+  <title>grogupy.io.io &mdash; grogupy</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
@@ -34,7 +34,7 @@
 
 
           <a href="../../../index.html" class="icon icon-home">
-            grogu documentation
+            grogupy documentation
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -48,7 +48,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstart/index.html">Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../citing.html">Citing grogu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../citing.html">Citing grogupy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
@@ -62,7 +62,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../development/index.html">Contributing to grogu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development/index.html">Contributing to grogupy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Extras</span></p>
 <ul>
@@ -76,7 +76,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">grogu documentation</a>
+          <a href="../../../index.html">grogupy documentation</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -85,7 +85,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">grogu.io.io</li>
+      <li class="breadcrumb-item active">grogupy.io.io</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -94,7 +94,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
 
-  <h1>Source code for grogu.io.io</h1><div class="highlight"><pre>
+  <h1>Source code for grogupy.io.io</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (c) [2024-2025] []</span>
 <span class="c1">#</span>
 <span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
@@ -118,7 +118,7 @@
 <span class="sd">Visualization functions</span>
 <span class="sd">=======================</span>
 
-<span class="sd">.. currentmodule:: grogu.io.io</span>
+<span class="sd">.. currentmodule:: grogupy.io.io</span>
 
 <span class="sd">.. autosummary::</span>
 <span class="sd">   :toctree: _generated/</span>
@@ -134,7 +134,7 @@
 <span class="sd">   save</span>
 <span class="sd">   save_magnopy</span>
 <span class="sd">   read_magnopy</span>
-<span class="sd">   read_grogu_fdf</span>
+<span class="sd">   read_grogupy_fdf</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
@@ -154,7 +154,7 @@
 
 
 <div class="viewcode-block" id="load_DefaultTimer">
-<a class="viewcode-back" href="../../../API/io/_generated/grogu.io.io.load_DefaultTimer.html#grogu.io.io.load_DefaultTimer">[docs]</a>
+<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.load_DefaultTimer.html#grogupy.io.io.load_DefaultTimer">[docs]</a>
 <span class="k">def</span> <span class="nf">load_DefaultTimer</span><span class="p">(</span><span class="n">infile</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">DefaultTimer</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Recreates the instance from a pickled state.</span>
 
@@ -188,7 +188,7 @@
 
 
 <div class="viewcode-block" id="load_Contour">
-<a class="viewcode-back" href="../../../API/io/_generated/grogu.io.io.load_Contour.html#grogu.io.io.load_Contour">[docs]</a>
+<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.load_Contour.html#grogupy.io.io.load_Contour">[docs]</a>
 <span class="k">def</span> <span class="nf">load_Contour</span><span class="p">(</span><span class="n">infile</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Contour</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Recreates the instance from a pickled state.</span>
 
@@ -222,7 +222,7 @@
 
 
 <div class="viewcode-block" id="load_Kspace">
-<a class="viewcode-back" href="../../../API/io/_generated/grogu.io.io.load_Kspace.html#grogu.io.io.load_Kspace">[docs]</a>
+<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.load_Kspace.html#grogupy.io.io.load_Kspace">[docs]</a>
 <span class="k">def</span> <span class="nf">load_Kspace</span><span class="p">(</span><span class="n">infile</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Kspace</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Recreates the instance from a pickled state.</span>
 
@@ -256,7 +256,7 @@
 
 
 <div class="viewcode-block" id="load_MagneticEntity">
-<a class="viewcode-back" href="../../../API/io/_generated/grogu.io.io.load_MagneticEntity.html#grogu.io.io.load_MagneticEntity">[docs]</a>
+<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.load_MagneticEntity.html#grogupy.io.io.load_MagneticEntity">[docs]</a>
 <span class="k">def</span> <span class="nf">load_MagneticEntity</span><span class="p">(</span><span class="n">infile</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">MagneticEntity</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Recreates the instance from a pickled state.</span>
 
@@ -290,7 +290,7 @@
 
 
 <div class="viewcode-block" id="load_Pair">
-<a class="viewcode-back" href="../../../API/io/_generated/grogu.io.io.load_Pair.html#grogu.io.io.load_Pair">[docs]</a>
+<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.load_Pair.html#grogupy.io.io.load_Pair">[docs]</a>
 <span class="k">def</span> <span class="nf">load_Pair</span><span class="p">(</span><span class="n">infile</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Pair</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Recreates the instance from a pickled state.</span>
 
@@ -324,7 +324,7 @@
 
 
 <div class="viewcode-block" id="load_Hamiltonian">
-<a class="viewcode-back" href="../../../API/io/_generated/grogu.io.io.load_Hamiltonian.html#grogu.io.io.load_Hamiltonian">[docs]</a>
+<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.load_Hamiltonian.html#grogupy.io.io.load_Hamiltonian">[docs]</a>
 <span class="k">def</span> <span class="nf">load_Hamiltonian</span><span class="p">(</span><span class="n">infile</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Hamiltonian</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Recreates the instance from a pickled state.</span>
 
@@ -358,7 +358,7 @@
 
 
 <div class="viewcode-block" id="load_Builder">
-<a class="viewcode-back" href="../../../API/io/_generated/grogu.io.io.load_Builder.html#grogu.io.io.load_Builder">[docs]</a>
+<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.load_Builder.html#grogupy.io.io.load_Builder">[docs]</a>
 <span class="k">def</span> <span class="nf">load_Builder</span><span class="p">(</span><span class="n">infile</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Builder</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Recreates the instance from a pickled state.</span>
 
@@ -392,7 +392,7 @@
 
 
 <div class="viewcode-block" id="load">
-<a class="viewcode-back" href="../../../API/io/_generated/grogu.io.io.load.html#grogu.io.io.load">[docs]</a>
+<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.load.html#grogupy.io.io.load">[docs]</a>
 <span class="k">def</span> <span class="nf">load</span><span class="p">(</span>
     <span class="n">infile</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">DefaultTimer</span><span class="p">,</span> <span class="n">Contour</span><span class="p">,</span> <span class="n">Kspace</span><span class="p">,</span> <span class="n">MagneticEntity</span><span class="p">,</span> <span class="n">Pair</span><span class="p">,</span> <span class="n">Hamiltonian</span><span class="p">,</span> <span class="n">Builder</span><span class="p">]:</span>
@@ -438,7 +438,7 @@
 
 
 <div class="viewcode-block" id="save">
-<a class="viewcode-back" href="../../../API/io/_generated/grogu.io.io.save.html#grogu.io.io.save">[docs]</a>
+<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.save.html#grogupy.io.io.save">[docs]</a>
 <span class="k">def</span> <span class="nf">save</span><span class="p">(</span>
     <span class="nb">object</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
         <span class="n">DefaultTimer</span><span class="p">,</span> <span class="n">Contour</span><span class="p">,</span> <span class="n">Kspace</span><span class="p">,</span> <span class="n">MagneticEntity</span><span class="p">,</span> <span class="n">Pair</span><span class="p">,</span> <span class="n">Hamiltonian</span><span class="p">,</span> <span class="n">Builder</span>
@@ -451,7 +451,7 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    object : Union[DefaultTimer, Contour, Kspace, MagneticEntity, Pair, Hamiltonian, Builder]</span>
-<span class="sd">        Object from the grogu library</span>
+<span class="sd">        Object from the grogupy library</span>
 <span class="sd">    path: str</span>
 <span class="sd">        The path to the output file</span>
 <span class="sd">    save_memory: bool, optional</span>
@@ -461,7 +461,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># check if the object is ours</span>
-    <span class="k">if</span> <span class="nb">object</span><span class="o">.</span><span class="vm">__module__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;grogu&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">object</span><span class="o">.</span><span class="vm">__module__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;grogupy&quot;</span><span class="p">:</span>
         <span class="c1"># add pkl so we know it is pickled</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.pkl&quot;</span><span class="p">):</span>
             <span class="n">path</span> <span class="o">+=</span> <span class="s2">&quot;.pkl&quot;</span>
@@ -479,13 +479,13 @@
 
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;The object is from package </span><span class="si">{</span><span class="nb">object</span><span class="o">.</span><span class="vm">__module__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> instead of grogu!&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;The object is from package </span><span class="si">{</span><span class="nb">object</span><span class="o">.</span><span class="vm">__module__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> instead of grogupy!&quot;</span>
         <span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="save_magnopy">
-<a class="viewcode-back" href="../../../API/io/_generated/grogu.io.io.save_magnopy.html#grogu.io.io.save_magnopy">[docs]</a>
+<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.save_magnopy.html#grogupy.io.io.save_magnopy">[docs]</a>
 <span class="k">def</span> <span class="nf">save_magnopy</span><span class="p">(</span>
     <span class="n">builder</span><span class="p">:</span> <span class="n">Builder</span><span class="p">,</span>
     <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -519,9 +519,9 @@
 
 
 
-<div class="viewcode-block" id="read_grogu_fdf">
-<a class="viewcode-back" href="../../../API/io/_generated/grogu.io.io.read_grogu_fdf.html#grogu.io.io.read_grogu_fdf">[docs]</a>
-<span class="k">def</span> <span class="nf">read_grogu_fdf</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
+<div class="viewcode-block" id="read_grogupy_fdf">
+<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.read_grogupy_fdf.html#grogupy.io.io.read_grogupy_fdf">[docs]</a>
+<span class="k">def</span> <span class="nf">read_grogupy_fdf</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;It reads the simulation parameters, magnetic entities and pairs from the fdf</span>
 
 <span class="sd">    Parameters</span>
@@ -658,7 +658,7 @@
 
 
 <div class="viewcode-block" id="read_magnopy">
-<a class="viewcode-back" href="../../../API/io/_generated/grogu.io.io.read_magnopy.html#grogu.io.io.read_magnopy">[docs]</a>
+<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.read_magnopy.html#grogupy.io.io.read_magnopy">[docs]</a>
 <span class="k">def</span> <span class="nf">read_magnopy</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This function reads the magnopy input file and return a dictionary</span>
 
@@ -905,7 +905,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, grogu.</p>
+    <p>&#169; Copyright 2024, grogupy.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -17,11 +17,10 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import grogupy
 import plotly.graph_objs as go
 import pytest
-
-import grogu
-from grogu.viz import (
+from grogupy.viz import (
     plot_contour,
     plot_DM,
     plot_kspace,
@@ -34,7 +33,7 @@ pytestmark = [pytest.mark.viz]
 
 @pytest.fixture
 def setup():
-    return grogu.load("./tests/test_builder.pkl")
+    return grogupy.load("./tests/test_builder.pkl")
 
 
 class TestPlots:

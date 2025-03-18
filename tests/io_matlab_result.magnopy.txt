@@ -59,8 +59,8 @@ Fe4
 ----------------------------------------
 ========================================
 
-# ----------------------GROGU INFORMATION----------------------
-# Grogu calculation was performed with a k-grid equal to  100  100    1
+# ----------------------grogupy INFORMATION----------------------
+# grogupy calculation was performed with a k-grid equal to  100  100    1
 # On-site Projection is performed over l = 2
 # Original DFT calculation with quantization axis along the z direction
 

@@ -1,4 +1,4 @@
-Contributing to grogu
+Contributing to grogupy
 =======================
 
 Currently there is no way to contribute to the development for outsiders.
@@ -13,8 +13,8 @@ changes in the code.
 
 .. code-block:: bash
 
-    git clone https://gitea.vo.elte.hu/et209d/grogu.git
-    git clone https://github.com/danielpozsar/grogu.git
+    git clone https://gitea.vo.elte.hu/et209d/grogupy.git
+    git clone https://github.com/danielpozsar/grogupy.git
 
 Then the easiest way is to create a a virtual environment (.venv), for
 example with VSCode.
@@ -49,7 +49,7 @@ short summary. First you need some API Tokens for Test PYPI, to be able
 to upload. You can read about this `here <https://test.pypi.org/help/#apitoken>`_
 . I own the current project, so you have to contact me.
 
-Use the following commands for a quick setup from the **grogu_project**
+Use the following commands for a quick setup from the **grogupy_project**
 folder:
 
 * Build wheel.
@@ -68,7 +68,7 @@ folder:
 
 .. code-block:: bash
 
-    pip install grogu-1.0.0-py3-none-any
+    pip install grogupy-1.0.0-py3-none-any
 
 Build documentation
 -------------------

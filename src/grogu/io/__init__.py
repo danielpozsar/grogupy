@@ -21,13 +21,13 @@
 Input/Output
 =============
 
-.. currentmodule:: grogu.io
+.. currentmodule:: grogupy.io
 
 
 This subpackage contains various routines to read in different input files
 and to process the information. The main goal is to convert the information
 from the input files to a format that can be used by the ``Builder`` class
-from the ``grogu`` package.
+from the ``grogupy`` package.
 
 Functions
 ---------
@@ -35,7 +35,7 @@ Functions
 .. autosummary::
    :toctree: _generated/
 
-    load                   General loader for any grogu instance.
+    load                   General loader for any grogupy instance.
     save                   Saves instances in a pickled dictionary.
     save_magnopy           Saves instances in magnopy input format.
 

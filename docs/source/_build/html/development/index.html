@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Contributing to grogu &mdash; grogu</title>
+  <title>Contributing to grogupy &mdash; grogupy</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
@@ -37,7 +37,7 @@
 
 
           <a href="../index.html" class="icon icon-home">
-            grogu documentation
+            grogupy documentation
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -51,7 +51,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../quickstart/index.html">Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../citing.html">Citing grogu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../citing.html">Citing grogupy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
@@ -65,7 +65,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing to grogu</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing to grogupy</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#create-environment">Create environment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#build-wheel">Build wheel</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#build-documentation">Build documentation</a></li>
@@ -84,7 +84,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">grogu documentation</a>
+          <a href="../index.html">grogupy documentation</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -92,7 +92,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Contributing to grogu</li>
+      <li class="breadcrumb-item active">Contributing to grogupy</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/development/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -102,8 +102,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
 
-  <section id="contributing-to-grogu">
-<h1>Contributing to grogu<a class="headerlink" href="#contributing-to-grogu" title="Link to this heading"></a></h1>
+  <section id="contributing-to-grogupy">
+<h1>Contributing to grogupy<a class="headerlink" href="#contributing-to-grogupy" title="Link to this heading"></a></h1>
 <p>Currently there is no way to contribute to the development for outsiders.
 However here is a summary for the ‘approved’ developers.</p>
 <section id="create-environment">
@@ -111,8 +111,8 @@ However here is a summary for the ‘approved’ developers.</p>
 <p>First you have to clone the repository from Github or Gitea. Gitea is the
 old development platform, so it should only be used for tracking early stage
 changes in the code.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://gitea.vo.elte.hu/et209d/grogu.git
-git<span class="w"> </span>clone<span class="w"> </span>https://github.com/danielpozsar/grogu.git
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://gitea.vo.elte.hu/et209d/grogupy.git
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/danielpozsar/grogupy.git
 </pre></div>
 </div>
 <p>Then the easiest way is to create a a virtual environment (.venv), for
@@ -141,7 +141,7 @@ pre-commit<span class="w"> </span>run<span class="w"> </span>--all-files
 short summary. First you need some API Tokens for Test PYPI, to be able
 to upload. You can read about this <a class="reference external" href="https://test.pypi.org/help/#apitoken">here</a>
 . I own the current project, so you have to contact me.</p>
-<p>Use the following commands for a quick setup from the <strong>grogu_project</strong>
+<p>Use the following commands for a quick setup from the <strong>grogupy_project</strong>
 folder:</p>
 <ul class="simple">
 <li><p>Build wheel.</p></li>
@@ -158,7 +158,7 @@ folder:</p>
 <ul class="simple">
 <li><p>Or install right away from the <cite>dist/</cite> directory.</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>grogu-1.0.0-py3-none-any
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>grogupy-1.0.0-py3-none-any
 </pre></div>
 </div>
 </section>
@@ -201,7 +201,7 @@ remove it by running <code class="docutils literal notranslate"><span class="pre
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, grogu.</p>
+    <p>&#169; Copyright 2024, grogupy.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

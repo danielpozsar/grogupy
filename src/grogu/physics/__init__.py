@@ -21,7 +21,7 @@
 Physics
 =======
 
-.. currentmodule:: grogu.physics
+.. currentmodule:: grogupy.physics
 
 
 

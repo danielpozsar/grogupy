@@ -18,11 +18,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """
-Command line interface for grogu
+Command line interface for grogupy
 ==================================
 
 This module does not contain functions, but provides a command line
-interface for grogu. It loads the input parameters from a Python
+interface for grogupy. It loads the input parameters from a Python
 file and runs the simulation.
 
 Examples
