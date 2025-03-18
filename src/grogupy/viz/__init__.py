@@ -57,6 +57,7 @@ For examples, see the various functions.
 
 from .. import __all__
 from ..config import CONFIG
+from ..physics import Builder, Contour, Kspace
 from .viz import plot_contour, plot_DM, plot_kspace, plot_magnetic_entities, plot_pairs
 
 __all__.extend(
@@ -64,3 +65,9 @@ __all__.extend(
 )
 
 CONFIG._Config__viz_loaded = True
+
+setattr(Contour, "plot", plot_contour)
+setattr(Kspace, "plot", plot_kspace)
+setattr(Builder, "plot_DM", plot_DM)
+setattr(Builder, "plot_magnetic_entities", plot_magnetic_entities)
+setattr(Builder, "plot_pairs", plot_pairs)

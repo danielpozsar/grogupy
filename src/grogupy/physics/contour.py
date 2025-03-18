@@ -32,9 +32,6 @@ from ..batch.timing import DefaultTimer
 from ..config import CONFIG
 from .magnetism import automatic_emin
 
-if CONFIG.viz_loaded:
-    from ..viz.viz import plot_contour
-
 
 class Contour:
     """This class contains and creates the data of the energy contour for the integration.
@@ -229,19 +226,9 @@ class Contour:
         return copy.deepcopy(self)
 
     def plot(self):
-        """Creates a plot from the contour sample points.
+        """You have to load grogupy.viz first."""
 
-        Returns
-        -------
-        plotly.graph_objs.go.Figure
-            The created figure
-        """
-
-        if CONFIG.viz_loaded:
-            return plot_contour(self)
-
-        else:
-            raise Exception("Missing visualization libraries.")
+        raise Exception("Missing visualization libraries.")
 
 
 if __name__ == "__main__":

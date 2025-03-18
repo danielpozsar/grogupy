@@ -29,7 +29,6 @@ __all__ = []
 __version__ = "0.0.2"
 
 
-from . import viz
 from ._tqdm import _tqdm
 
 # pre-import stuff

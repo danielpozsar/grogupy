@@ -31,9 +31,6 @@ from .._core.core import make_kset
 from ..batch.timing import DefaultTimer
 from ..config import CONFIG
 
-if CONFIG.viz_loaded:
-    from ..viz.viz import plot_kspace
-
 
 class Kspace:
     """This class contains and creates the data of the reciprocal space integral.
@@ -134,19 +131,9 @@ class Kspace:
         return copy.deepcopy(self)
 
     def plot(self):
-        """Creates a plot from the Brillouin zone sample points.
+        """You have to load grogupy.viz first."""
 
-        Returns
-        -------
-        plotly.graph_objs.go.Figure
-            The created figure
-        """
-
-        if CONFIG.viz_loaded:
-            return plot_kspace(self)
-
-        else:
-            raise Exception("Missing visualization libraries.")
+        raise Exception("Missing visualization libraries.")
 
 
 if __name__ == "__main__":

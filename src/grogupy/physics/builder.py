@@ -43,10 +43,6 @@ from .kspace import Kspace
 from .magnetic_entity import MagneticEntity
 from .pair import Pair
 
-if CONFIG.viz_loaded:
-    from ..viz.viz import plot_DM, plot_magnetic_entities, plot_pairs
-
-
 try:
     import pytest
 
@@ -1067,58 +1063,19 @@ class Builder:
         return M
 
     def plot_magnetic_entities(self):
-        """Creates a plot of magnetic entities.
+        """You have to load grogupy.viz first."""
 
-        Returns
-        -------
-        plotly.graph_objs.go.Figure
-            The created figure
-        """
-
-        if CONFIG.viz_loaded:
-            return plot_magnetic_entities(self.magnetic_entities)
-        else:
-            raise Exception("Missing visualization libraries.")
+        raise Exception("Missing visualization libraries.")
 
     def plot_pairs(self, connect: bool = False):
-        """Creates a plot of pairs.
+        """You have to load grogupy.viz first."""
 
-        Parameters
-        ----------
-        connect : bool, optional
-            Wether to connect the pairs or not, by default False
-
-        Returns
-        -------
-        plotly.graph_objs.go.Figure
-            The created figure
-        """
-
-        if CONFIG.viz_loaded:
-            return plot_pairs(self.pairs, connect)
-        else:
-            raise Exception("Missing visualization libraries.")
+        raise Exception("Missing visualization libraries.")
 
     def plot_DM(self, rescale: float = 1):
-        """Creates a plot of the DM vectors.
+        """You have to load grogupy.viz first."""
 
-        It can only use a finished simulation.
-
-        Parameters
-        ----------
-        rescale : float
-            The length of the vectors are rescaled by this
-
-        Returns
-        -------
-        plotly.graph_objs.go.Figure
-            The created figure
-        """
-
-        if CONFIG.viz_loaded:
-            return plot_DM(self.pairs, rescale)
-        else:
-            raise Exception("Missing visualization libraries.")
+        raise Exception("Missing visualization libraries.")
 
 
 if __name__ == "__main__":
