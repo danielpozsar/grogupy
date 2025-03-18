@@ -27,9 +27,9 @@ import copy
 import numpy as np
 from numpy.typing import NDArray
 
+from .._core.core import make_kset
 from ..batch.timing import DefaultTimer
 from ..config import CONFIG
-from ..core.core import make_kset
 
 if CONFIG.viz_loaded:
     from ..viz.viz import plot_kspace

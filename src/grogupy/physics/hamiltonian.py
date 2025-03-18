@@ -31,11 +31,11 @@ import sisl
 from numpy.typing import NDArray
 
 from .. import _tqdm
+from .._core.constants import TAU_X, TAU_Y, TAU_Z
+from .._core.core import build_hh_ss, hsk
+from .._core.utilities import RotMa2b
 from ..batch.timing import DefaultTimer
 from ..config import CONFIG
-from ..core.constants import TAU_X, TAU_Y, TAU_Z
-from ..core.core import build_hh_ss, hsk
-from ..core.utilities import RotMa2b
 from ..physics.magnetism import spin_tracer
 
 if CONFIG.is_GPU:

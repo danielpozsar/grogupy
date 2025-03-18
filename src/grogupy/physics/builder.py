@@ -33,10 +33,10 @@ import sisl
 from numpy.typing import NDArray
 
 from .. import __version__, _tqdm
+from .._core.core import calc_Vu, onsite_projection
+from .._core.utilities import RotMa2b, setup_from_range, tau_u
 from ..batch.timing import DefaultTimer
 from ..config import CONFIG
-from ..core.core import calc_Vu, onsite_projection
-from ..core.utilities import RotMa2b, setup_from_range, tau_u
 from .contour import Contour
 from .hamiltonian import Hamiltonian
 from .kspace import Kspace
@@ -990,12 +990,12 @@ class Builder:
 
         # choose architecture solver
         if self.__architecture.lower()[0] == "c":  # cpu
-            from ..core.cpu_solvers import (
+            from .._core.cpu_solvers import (
                 solve_parallel_over_all,
                 solve_parallel_over_k,
             )
         elif self.__architecture.lower()[0] == "g":  # gpu
-            from ..core.gpu_solvers import (
+            from .._core.gpu_solvers import (
                 solve_parallel_over_all,
                 solve_parallel_over_k,
             )

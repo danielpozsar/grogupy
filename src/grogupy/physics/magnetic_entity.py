@@ -34,7 +34,7 @@ import numpy as np
 import sisl
 
 from .. import __version__
-from ..core.core import onsite_projection
+from .._core.core import onsite_projection
 from .magnetism import (
     blow_up_orbindx,
     calculate_anisotropy_tensor,

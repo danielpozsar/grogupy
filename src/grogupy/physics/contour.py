@@ -27,9 +27,9 @@ from typing import Union
 
 from numpy.typing import NDArray
 
+from .._core.core import make_contour
 from ..batch.timing import DefaultTimer
 from ..config import CONFIG
-from ..core.core import make_contour
 from .magnetism import automatic_emin
 
 if CONFIG.viz_loaded:
