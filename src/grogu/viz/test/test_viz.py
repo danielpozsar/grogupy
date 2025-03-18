@@ -17,23 +17,46 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import plotly.graph_objs as go
 import pytest
 
 import grogu
+from grogu.viz import (
+    plot_contour,
+    plot_DM,
+    plot_kspace,
+    plot_magnetic_entities,
+    plot_pairs,
+)
 
 pytestmark = [pytest.mark.viz]
 
 
 @pytest.fixture
 def setup():
-    kspace = grogu.Kspace()
-    contour = grogu.Contour()
-    builder = grogu.Builder()
-    builder.add_kspace(kspace)
-    builder.add_contour(contour)
-    builder.add_hamiltonian()
-    return builder
+    return grogu.load("./tests/test_builder.pkl")
 
 
-class test_plot_contour:
-    pass
+class TestPlots:
+    def test_contour(self, setup):
+        fig = plot_contour(setup.contour)
+        print(type(fig))
+        assert isinstance(fig, go.Figure)
+
+    def test_kspace(self, setup):
+        fig = plot_kspace(setup.kspace)
+        assert isinstance(fig, go.Figure)
+
+    def test_magnetic_entities(self, setup):
+        fig = plot_magnetic_entities(setup.magnetic_entities)
+        assert isinstance(fig, go.Figure)
+
+    @pytest.mark.parametrize("connect", [True, False])
+    def test_pairs(self, setup, connect):
+        fig = plot_pairs(setup.pairs, connect)
+        assert isinstance(fig, go.Figure)
+
+    @pytest.mark.parametrize("rescale", [-1, 0, 0.1, 1])
+    def test_DM(self, setup, rescale):
+        fig = plot_DM(setup.pairs, rescale)
+        assert isinstance(fig, go.Figure)
