@@ -464,141 +464,6 @@ def save_magnopy(
         file.write(data)
 
 
-def read_grogupy_fdf(path: str) -> tuple[dict, list, list]:
-    """It reads the simulation parameters, magnetic entities and pairs from the fdf
-
-    Parameters
-    ----------
-        path: str
-            The path to the .fdf file
-
-    Returns
-    -------
-        fdf_arguments: dict
-            The read input arguments from the fdf file
-        magnetic_entities: list
-            It contains the dictionaries associated with the magnetic entities
-        pairs: list
-            It contains the dictionaries associated with the pair information
-    """
-
-    # read fdf file
-    fdf = sisl.io.fdfSileSiesta(path)
-    fdf_arguments = dict()
-
-    InputFile = fdf.get("InputFile")
-    if InputFile is not None:
-        fdf_arguments["infile"] = InputFile
-
-    OutputFile = fdf.get("OutputFile")
-    if OutputFile is not None:
-        fdf_arguments["outfile"] = OutputFile
-
-    ScfXcfOrientation = fdf.get("ScfXcfOrientation")
-    if ScfXcfOrientation is not None:
-        fdf_arguments["scf_xcf_orientation"] = np.array(
-            ScfXcfOrientation.split()[:3], dtype=float
-        )
-
-    XCF_Rotation = fdf.get("XCF_Rotation")
-    if XCF_Rotation is not None:
-        rotations = []
-        # iterate over rows
-        for rot in XCF_Rotation:
-            # convert row to dictionary
-            dat = np.array(rot.split()[:9], dtype=float)
-            o = dat[:3]
-            vw = dat[3:].reshape(2, 3)
-            rotations.append(dict(o=o, vw=vw))
-        fdf_arguments["ref_xcf_orientations"] = rotations
-
-    Kset = fdf.get("INTEGRAL.Kset")
-    if Kset is not None:
-        fdf_arguments["kset"] = int(Kset)
-
-    Kdirs = fdf.get("INTEGRAL.Kdirs")
-    if Kdirs is not None:
-        fdf_arguments["kdirs"] = Kdirs
-
-    # This is permitted because it means automatic Ebot definition
-    ebot = fdf.get("INTEGRAL.Ebot")
-    try:
-        fdf_arguments["ebot"] = float(ebot)
-    except:
-        fdf_arguments["ebot"] = None
-
-    Eset = fdf.get("INTEGRAL.Eset")
-    if Eset is not None:
-        fdf_arguments["eset"] = int(Eset)
-
-    Esetp = fdf.get("INTEGRAL.Esetp")
-    if Esetp is not None:
-        fdf_arguments["esetp"] = float(Esetp)
-
-    ParallelSolver = fdf.get("GREEN.ParallelSolver")
-    if ParallelSolver is not None:
-        fdf_arguments["parallel_solver_for_Gk"] = bool(ParallelSolver)
-
-    PadawanMode = fdf.get("PadawanMode")
-    if PadawanMode is not None:
-        fdf_arguments["padawan_mode"] = bool(PadawanMode)
-
-    Pairs = fdf.get("Pairs")
-    if Pairs is not None:
-        pairs = []
-        # iterate over rows
-        for fdf_pair in Pairs:
-            # convert data
-            dat = np.array(fdf_pair.split()[:5], dtype=int)
-            # create pair dictionary
-            my_pair = dict(ai=dat[0], aj=dat[1], Ruc=np.array(dat[2:]))
-            pairs.append(my_pair)
-
-    MagneticEntities = fdf.get("MagneticEntities")
-    if MagneticEntities is not None:
-        magnetic_entities = []
-        # iterate over magnetic entities
-        for mag_ent in MagneticEntities:
-            # drop comments from data
-            row = mag_ent.split()
-            dat = []
-            for string in row:
-                if string.find("#") != -1:
-                    break
-                dat.append(string)
-            # cluster input
-            if dat[0] in {"Cluster", "cluster"}:
-                magnetic_entities.append(dict(atom=[int(_) for _ in dat[1:]]))
-                continue
-            # atom input, same as cluster, but raises
-            # error when multiple atoms are given
-            if dat[0] in {"Atom", "atom"}:
-                if len(dat) > 2:
-                    raise Exception("Atom input must be a single integer")
-                magnetic_entities.append(dict(atom=int(dat[1])))
-                continue
-            # atom and shell information
-            elif dat[0] in {"AtomShell", "Atomshell", "atomShell", "atomshell"}:
-                magnetic_entities.append(
-                    dict(atom=int(dat[1]), l=[int(_) for _ in dat[2:]])
-                )
-                continue
-            # atom and orbital information
-            elif dat[0] in {"AtomOrbital", "Atomorbital", "tomOrbital", "atomorbital"}:
-                magnetic_entities.append(
-                    dict(atom=int(dat[1]), orb=[int(_) for _ in dat[2:]])
-                )
-                continue
-            # orbital information
-            elif dat[0] in {"Orbitals", "orbitals"}:
-                magnetic_entities.append(dict(orb=[int(_) for _ in dat[1:]]))
-                continue
-            else:
-                raise Exception("Unrecognizable magnetic entity in .fdf!")
-
-    return fdf_arguments, magnetic_entities, pairs
-
-
 def read_magnopy(file: str):
     """This function reads the magnopy input file and return a dictionary
 
@@ -831,6 +696,141 @@ def read_magnopy(file: str):
                 pair["xyz2"] = mag_ent["xyz"]
 
     return out
+
+
+def read_fdf(path: str) -> tuple[dict, list, list]:
+    """It reads the simulation parameters, magnetic entities and pairs from the fdf
+
+    Parameters
+    ----------
+        path: str
+            The path to the .fdf file
+
+    Returns
+    -------
+        fdf_arguments: dict
+            The read input arguments from the fdf file
+        magnetic_entities: list
+            It contains the dictionaries associated with the magnetic entities
+        pairs: list
+            It contains the dictionaries associated with the pair information
+    """
+
+    # read fdf file
+    fdf = sisl.io.fdfSileSiesta(path)
+    fdf_arguments = dict()
+
+    InputFile = fdf.get("InputFile")
+    if InputFile is not None:
+        fdf_arguments["infile"] = InputFile
+
+    OutputFile = fdf.get("OutputFile")
+    if OutputFile is not None:
+        fdf_arguments["outfile"] = OutputFile
+
+    ScfXcfOrientation = fdf.get("ScfXcfOrientation")
+    if ScfXcfOrientation is not None:
+        fdf_arguments["scf_xcf_orientation"] = np.array(
+            ScfXcfOrientation.split()[:3], dtype=float
+        )
+
+    XCF_Rotation = fdf.get("XCF_Rotation")
+    if XCF_Rotation is not None:
+        rotations = []
+        # iterate over rows
+        for rot in XCF_Rotation:
+            # convert row to dictionary
+            dat = np.array(rot.split()[:9], dtype=float)
+            o = dat[:3]
+            vw = dat[3:].reshape(2, 3)
+            rotations.append(dict(o=o, vw=vw))
+        fdf_arguments["ref_xcf_orientations"] = rotations
+
+    Kset = fdf.get("INTEGRAL.Kset")
+    if Kset is not None:
+        fdf_arguments["kset"] = int(Kset)
+
+    Kdirs = fdf.get("INTEGRAL.Kdirs")
+    if Kdirs is not None:
+        fdf_arguments["kdirs"] = Kdirs
+
+    # This is permitted because it means automatic Ebot definition
+    ebot = fdf.get("INTEGRAL.Ebot")
+    try:
+        fdf_arguments["ebot"] = float(ebot)
+    except:
+        fdf_arguments["ebot"] = None
+
+    Eset = fdf.get("INTEGRAL.Eset")
+    if Eset is not None:
+        fdf_arguments["eset"] = int(Eset)
+
+    Esetp = fdf.get("INTEGRAL.Esetp")
+    if Esetp is not None:
+        fdf_arguments["esetp"] = float(Esetp)
+
+    ParallelSolver = fdf.get("GREEN.ParallelSolver")
+    if ParallelSolver is not None:
+        fdf_arguments["parallel_solver_for_Gk"] = bool(ParallelSolver)
+
+    PadawanMode = fdf.get("PadawanMode")
+    if PadawanMode is not None:
+        fdf_arguments["padawan_mode"] = bool(PadawanMode)
+
+    Pairs = fdf.get("Pairs")
+    if Pairs is not None:
+        pairs = []
+        # iterate over rows
+        for fdf_pair in Pairs:
+            # convert data
+            dat = np.array(fdf_pair.split()[:5], dtype=int)
+            # create pair dictionary
+            my_pair = dict(ai=dat[0], aj=dat[1], Ruc=np.array(dat[2:]))
+            pairs.append(my_pair)
+
+    MagneticEntities = fdf.get("MagneticEntities")
+    if MagneticEntities is not None:
+        magnetic_entities = []
+        # iterate over magnetic entities
+        for mag_ent in MagneticEntities:
+            # drop comments from data
+            row = mag_ent.split()
+            dat = []
+            for string in row:
+                if string.find("#") != -1:
+                    break
+                dat.append(string)
+            # cluster input
+            if dat[0] in {"Cluster", "cluster"}:
+                magnetic_entities.append(dict(atom=[int(_) for _ in dat[1:]]))
+                continue
+            # atom input, same as cluster, but raises
+            # error when multiple atoms are given
+            if dat[0] in {"Atom", "atom"}:
+                if len(dat) > 2:
+                    raise Exception("Atom input must be a single integer")
+                magnetic_entities.append(dict(atom=int(dat[1])))
+                continue
+            # atom and shell information
+            elif dat[0] in {"AtomShell", "Atomshell", "atomShell", "atomshell"}:
+                magnetic_entities.append(
+                    dict(atom=int(dat[1]), l=[int(_) for _ in dat[2:]])
+                )
+                continue
+            # atom and orbital information
+            elif dat[0] in {"AtomOrbital", "Atomorbital", "tomOrbital", "atomorbital"}:
+                magnetic_entities.append(
+                    dict(atom=int(dat[1]), orb=[int(_) for _ in dat[2:]])
+                )
+                continue
+            # orbital information
+            elif dat[0] in {"Orbitals", "orbitals"}:
+                magnetic_entities.append(dict(orb=[int(_) for _ in dat[1:]]))
+                continue
+            else:
+                raise Exception("Unrecognizable magnetic entity in .fdf!")
+
+    return fdf_arguments, magnetic_entities, pairs
 
 
 if __name__ == "__main__":
