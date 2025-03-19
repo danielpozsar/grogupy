@@ -26,9 +26,9 @@ class Config:
     def __init__(self, architecture: str):
         self.__viz_loaded = False
 
-        if architecture[0].lower() == "c":
+        if architecture.lower() == "cpu":
             self.__architecture = "CPU"
-        elif architecture[0].lower() == "g":
+        elif architecture.lower() == "gpu":
             self.__architecture = "GPU"
         else:
             raise Exception("Unknown architecture, use CPU or GPU!")
@@ -64,6 +64,6 @@ class Config:
         return self.__architecture == "GPU"
 
 
-CONFIG = Config(environ.get("grogupy_ARCHITECTURE", "CPU"))
+CONFIG = Config(environ.get("GROGUPY_ARCHITECTURE", "CPU"))
 
 __all__.extend(["CONFIG"])
