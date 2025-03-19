@@ -45,3 +45,6 @@ except:
 
 
 __all__.extend(["_tqdm"])
+
+if __name__ == "__main__":
+    pass

@@ -67,3 +67,6 @@ class Config:
 CONFIG = Config(environ.get("GROGUPY_ARCHITECTURE", "CPU"))
 
 __all__.extend(["CONFIG"])
+
+if __name__ == "__main__":
+    pass
