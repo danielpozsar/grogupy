@@ -17,6 +17,8 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import os
+
 import pytest
 
 import grogupy
@@ -143,6 +145,19 @@ class TestIO:
 
     def test_read_fdf(self):
         raise Exception("Not implemented test!")
+
+    def test_read_command_line(self):
+        raise Exception("Not implemented test!")
+
+    def cleanup(self):
+        os.remove("./tests/test_magnopy.magnopy.txt")
+        os.remove("./tests/test_pair_temp.pkl")
+        os.remove("./tests/test_magnetic_entity_temp.pkl")
+        os.remove("./tests/test_default_timer_temp.pkl")
+        os.remove("./tests/test_kspace_temp.pkl")
+        os.remove("./tests/test_contour_temp.pkl")
+        os.remove("./tests/test_hamiltonian_temp.pkl")
+        os.remove("./tests/test_builder_temp.pkl")
 
 
 if __name__ == "__main__":
