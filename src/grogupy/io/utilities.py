@@ -33,7 +33,7 @@ Utility functions
     strip_dict_structure
 """
 import re
-from typing import Union
+from typing import Any, Union
 
 import numpy as np
 import sisl
@@ -307,8 +307,9 @@ def strip_dict_structure(
         "Vu1",
         "Vu2",
     ],
+    setto: Any = [],
 ) -> dict:
-    """Sets the values in the pops keys from the whole dictionary structure to None.
+    """Sets the values in the pops keys from the whole dictionary structure to the given value.
 
     Usually it is used to remove the parts from the magnetic entities and
     the pairs that are taking up a lot of space. See the default keys in
@@ -321,7 +322,8 @@ def strip_dict_structure(
     pops : list[str], optional
         These are the keys that should be set to None in the structure,
         by defualt ["Gii", "_Gii_tmp", "Gij", "_Gij_tmp", "Gji", "_Gji_tmp", "Vu1", "Vu2"]
-
+    setto : Any, optional
+        The value will be set to this, by defualt []
     Returns
     -------
     dict
@@ -333,7 +335,7 @@ def strip_dict_structure(
     for key, value in dictionary.items():
         # if the value at the key is not needed, then set it to None
         if key in pops:
-            out_value = None
+            out_value = setto
         # if the key contains a dictionary go a level deeper and do the same
         elif isinstance(value, dict):
             out_value = strip_dict_structure(value, pops)
