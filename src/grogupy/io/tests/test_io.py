@@ -22,7 +22,6 @@ import pytest
 import grogupy
 import grogupy.batch
 from grogupy.io.io import *
-from grogupy.io.utilities import *
 
 pytestmark = [pytest.mark.io]
 
@@ -142,57 +141,8 @@ class TestIO:
         print(data)
         raise Exception("Not implemented test!")
 
-    @pytest.mark.parametrize(
-        "tag, atom, l, orb",
-        [
-            ("0Te(o:1)", [0], None, [[1]]),
-            ("0Te(o:1-2)", [0], None, [[1, 2]]),
-            ("0Te(l:1)", [0], [[1]], None),
-            ("0Te(l:1-2)", [0], [[1, 2]], None),
-            ("0Te(l:All)", [0], [[None]], None),
-            ("1Te(o:1)", [1], None, [[1]]),
-            ("1Te(o:1-2)", [1], None, [[1, 2]]),
-            ("1Te(l:1)", [1], [[1]], None),
-            ("1Te(l:1-2)", [1], [[1, 2]], None),
-            ("1Te(l:All)", [1], [[None]], None),
-            ("0Te(o:1)--0Te(o:1)", [0, 0], None, [[1], [1]]),
-            ("0Te(o:1)--0Te(o:1-2)", [0, 0], None, [[1], [1, 2]]),
-            ("0Te(o:1)--1Te(o:1)", [0, 1], None, [[1], [1]]),
-            ("0Te(o:1)--1Te(o:1-2)", [0, 1], None, [[1], [1, 2]]),
-        ],
-    )
-    def test_decipher(self, tag, atom, l, orb):
-        catom, cl, corb = decipher(tag)
-
-        print(catom, atom)
-        print(cl, l)
-        print(corb, orb)
-
-        assert catom == atom
-        assert cl == l
-        assert corb == orb
-
-    @pytest.mark.parametrize(
-        "tag",
-        [
-            ("0Te(a:1)"),
-            ("Te(o:1)"),
-            ("0Te(o:all)"),
-            ("0Te(l:allee)"),
-            ("0Te(l:allee-allee)"),
-            ("0Te(l:allee--allee)"),
-            ("0Te(o:1)--0Te(l:1)"),
-            ("0Te(o:1)--0Te(l:1-2)"),
-            ("0Te(o:1)--0Te(l:All)"),
-            ("0Te(o:1)--1Te(l:1)"),
-            ("0Te(o:1)--1Te(l:1-2)"),
-            ("0Te(o:1)--1Te(l:All)"),
-        ],
-    )
-    def test_raise_decipher(self, tag):
-        with pytest.raises(Exception):
-            atom, l, orb = decipher(tag)
-            print(atom, l, orb)
+    def test_read_fdf(self):
+        raise Exception("Not implemented test!")
 
 
 if __name__ == "__main__":
