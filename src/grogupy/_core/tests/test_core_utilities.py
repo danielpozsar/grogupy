@@ -17,3 +17,32 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import pytest
+
+from grogupy._core.utilities import *
+
+pytestmark = [pytest.mark.core]
+
+
+class TestCore:
+    def test_commutator(self):
+        raise Exception("Not implemented test!")
+
+    def test_tau_u(self):
+        raise Exception("Not implemented test!")
+
+    def test_crossM(self):
+        raise Exception("Not implemented test!")
+
+    def test_RotM(self):
+        raise Exception("Not implemented test!")
+
+    def test_RotMa2b(self):
+        raise Exception("Not implemented test!")
+
+    def test_setup_from_range(self):
+        raise Exception("Not implemented test!")
+
+
+if __name__ == "__main__":
+    pass
