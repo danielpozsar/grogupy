@@ -53,7 +53,6 @@ def commutator(a: NDArray, b: NDArray) -> NDArray:
     return a @ b - b @ a
 
 
-# define some useful functions
 def tau_u(u: Union[list, NDArray]) -> NDArray:
     """Pauli matrix in direction u
 
