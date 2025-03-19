@@ -38,7 +38,7 @@ from numpy.typing import NDArray
 from .. import __version__
 from .._core.core import onsite_projection
 from .magnetic_entity import MagneticEntity
-from .magnetism import (
+from .utilities import (
     calculate_exchange_tensor,
     fit_exchange_tensor,
     interaction_energy,

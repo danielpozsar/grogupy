@@ -36,7 +36,7 @@ from .._core.core import build_hh_ss, hsk
 from .._core.utilities import RotMa2b
 from ..batch.timing import DefaultTimer
 from ..config import CONFIG
-from ..physics.magnetism import spin_tracer
+from .utilities import spin_tracer
 
 if CONFIG.is_GPU:
     import cupy as cp

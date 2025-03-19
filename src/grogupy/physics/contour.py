@@ -31,7 +31,7 @@ from numpy.typing import NDArray
 from .._core.core import make_contour
 from ..batch.timing import DefaultTimer
 from ..config import CONFIG
-from .magnetism import automatic_emin
+from .utilities import automatic_emin
 
 
 class Contour:

@@ -35,7 +35,7 @@ import sisl
 
 from .. import __version__
 from .._core.core import onsite_projection
-from .magnetism import (
+from .utilities import (
     blow_up_orbindx,
     calculate_anisotropy_tensor,
     fit_anisotropy_tensor,
