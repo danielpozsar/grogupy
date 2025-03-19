@@ -21,13 +21,6 @@
 
 _extended_summary_
 """
-
-try:
-    import pytest
-except:
-    pass
-
-
 import copy
 from typing import Union
 
@@ -179,11 +172,9 @@ class Pair:
 
         if M1._dh is M2._dh:
             self._dh: sisl.physics.Hamiltonian = M1._dh
-        elif (
-            M1._dh.geometry == M2._dh.geometry
-            and (M1._dh.Hk().toarray() == M2._dh.Hk().toarray()).all()
-            and (M1._dh.Sk().toarray() == M2._dh.Sk().toarray()).all()
-        ):
+        elif (M1._dh.Hk().toarray() == M2._dh.Hk().toarray()).all() and (
+            M1._dh.Sk().toarray() == M2._dh.Sk().toarray()
+        ).all():
             self._dh: sisl.physics.Hamiltonian = M1._dh
         else:
             raise Exception("Different Hamiltonians from the magnetic entities!")
