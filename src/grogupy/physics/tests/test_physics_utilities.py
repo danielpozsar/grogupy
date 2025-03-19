@@ -17,38 +17,3 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-import pytest
-
-from grogupy._core.core import *
-
-pytestmark = [pytest.mark.core]
-
-
-class TestCore:
-    def test_parallel_Gk(self):
-        raise Exception("Not implemented test!")
-
-    def test_sequential_Gk(self):
-        raise Exception("Not implemented test!")
-
-    def test_onsite_projection(self):
-        raise Exception("Not implemented test!")
-
-    def test_calc_Vu(self):
-        raise Exception("Not implemented test!")
-
-    def test_build_hh_ss(self):
-        raise Exception("Not implemented test!")
-
-    def test_make_contour(self):
-        raise Exception("Not implemented test!")
-
-    def test_make_kset(self):
-        raise Exception("Not implemented test!")
-
-    def test_hsk(self):
-        raise Exception("Not implemented test!")
-
-
-if __name__ == "__main__":
-    pass
