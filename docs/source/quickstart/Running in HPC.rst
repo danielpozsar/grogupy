@@ -112,9 +112,10 @@ as we did in the jupyter notebook examples.
     setup_from_range = True
     radius = 4
     atomic_subset = "Cr"
+    kwargs_for_mag_ent = dict(l=2)
 
     # sequential solver is better for large systems
-    greens_function_solver = "Sequential"
+    greens_function_solver = "Parallel"
     # always use K for now
     parallel_mode = "K"
     # the calculation of J and K from the energy derivations, either Fit or grogupy
@@ -136,4 +137,4 @@ as we did in the jupyter notebook examples.
     # output folder, for example the current folder
     outfolder = infolder
     # outfile name
-    outfile = f"CrIWSe_kset_{'_'.join(map(str, kset))}_eset_{eset}"
+    outfile = f"{infile.split('.')[0]}_kset_{'_'.join(map(str, kset))}_eset_{eset}"

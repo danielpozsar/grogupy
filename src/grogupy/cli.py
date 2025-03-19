@@ -31,9 +31,6 @@ Examples
 For examples, see the `running in HPC <.._running_in_hpc>`_ section in the documentation.
 
 """
-import argparse
-import importlib.util
-import os
 from os.path import join
 from timeit import default_timer as timer
 
@@ -41,7 +38,7 @@ import numpy as np
 
 from . import __citation__
 from .config import CONFIG
-from .io.io import save, save_magnopy
+from .io.io import read_command_line, save, save_magnopy
 from .physics import Builder, Contour, Hamiltonian, Kspace
 
 PRINTING = False
@@ -61,39 +58,10 @@ def main():
     """Main entry point of the script."""
     start = timer()
 
-    # Read the input parameters
-    parser = argparse.ArgumentParser(description="Load Python variables from a file.")
-    parser.add_argument(
-        "file", nargs="?", help="Path to a Python file containing variables to load"
-    )
-    parser.add_argument(
-        "--cite",
-        dest="cite",
-        action="store_true",
-        default=False,
-        help="Print the citation of the package",
-    )
-
-    args = parser.parse_args()
-    # Check if citation is requested
-
-    if args.cite:
-        print(__citation__)
-        if args.file is None:
-            return
-
-    filepath = args.file
-
-    # Get the absolute path
-    abs_path = os.path.abspath(filepath)
-    # Create a unique module name based on the file path
-    module_name = f"dynamic_module_{abs_path.replace('/', '_').replace('.', '_')}"
-
-    # Create the spec
-    spec = importlib.util.spec_from_file_location(module_name, abs_path)
-    # Create the module
-    params = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(params)
+    params = read_command_line(__citation__)
+    # only citation
+    if params is None:
+        return
 
     # construct the input and output file paths
     infile = join(params.infolder, params.infile)

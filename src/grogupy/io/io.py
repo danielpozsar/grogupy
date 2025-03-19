@@ -40,7 +40,10 @@ Visualization functions
    read_grogupy_fdf
 
 """
+import argparse
+import importlib.util
 import pickle
+from types import ModuleType
 from typing import Union
 
 import numpy as np
@@ -831,6 +834,60 @@ def read_fdf(path: str) -> tuple[dict, list, list]:
                 raise Exception("Unrecognizable magnetic entity in .fdf!")
 
     return fdf_arguments, magnetic_entities, pairs
+
+
+def read_command_line(citation: str) -> Union[None, ModuleType]:
+    """Reading command line parameters for command line tools.
+
+    Options:
+    The first argument is a .py file
+    that contains the input parameters.
+    --cite returns citations
+
+    Parameters
+    ----------
+    citation: str
+        The citation that should be printed.
+
+    Returns
+    -------
+    params : Union[None, ModuleType]
+        The input parameters
+    """
+
+    # setup parser
+    parser = argparse.ArgumentParser(
+        description="Load Python variables from a .py file."
+    )
+    parser.add_argument(
+        "file", nargs="?", help="Path to a Python file containing variables to load"
+    )
+    parser.add_argument(
+        "--cite",
+        dest="cite",
+        action="store_true",
+        default=False,
+        help="Print the citation of the package",
+    )
+    # parameters from command line
+    args = parser.parse_args()
+
+    # print citation if needed
+    if args.cite:
+        print(citation)
+        if args.file is None:
+            return
+
+    # Create the spec
+    spec = importlib.util.spec_from_file_location(
+        "grogupy_command_line_input", args.file
+    )
+
+    # Create the module
+    params = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(params)
+
+    return params
 
 
 if __name__ == "__main__":
