@@ -6,13 +6,9 @@ More on the theoretical background can be seen on [arXiv](https://arxiv.org/abs/
 
 get automatic emax
 threadpol processpool?
-check if file exists before io
-lazy viz placeholders
 move tests to src
 document
 better readme
-
-load tests could check equality
 
 ### Testing
 
