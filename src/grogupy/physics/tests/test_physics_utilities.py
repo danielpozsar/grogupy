@@ -17,3 +17,47 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import pytest
+
+from grogupy.physics.utilities import *
+
+pytestmark = [pytest.mark.physics]
+
+
+class TestUtilities:
+    def test_get_number_of_electrons(self):
+        raise Exception("Not implemented test!")
+
+    def test_automatic_emin(self):
+        raise Exception("Not implemented test!")
+
+    def test_blow_up_orbindx(self):
+        raise Exception("Not implemented test!")
+
+    def test_spin_tracer(self):
+        raise Exception("Not implemented test!")
+
+    def test_parse_magnetic_entity(self):
+        raise Exception("Not implemented test!")
+
+    def test_interaction_energy(self):
+        raise Exception("Not implemented test!")
+
+    def test_second_order_energy(self):
+        raise Exception("Not implemented test!")
+
+    def test_calculate_anisotropy_tensor(self):
+        raise Exception("Not implemented test!")
+
+    def test_fit_anisotropy_tensor(self):
+        raise Exception("Not implemented test!")
+
+    def test_calculate_exchange_tensor(self):
+        raise Exception("Not implemented test!")
+
+    def test_fit_exchange_tensor(self):
+        raise Exception("Not implemented test!")
+
+
+if __name__ == "__main__":
+    pass

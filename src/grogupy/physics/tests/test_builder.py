@@ -17,3 +17,17 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import pytest
+
+from grogupy.physics import Builder
+
+pytestmark = [pytest.mark.physics]
+
+
+class TestBuilder:
+    def test_(self):
+        raise Exception("Not implemented test!")
+
+
+if __name__ == "__main__":
+    pass
