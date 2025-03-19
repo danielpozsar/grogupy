@@ -303,13 +303,6 @@ class MagneticEntity:
     def __setstate__(self, state):
         self.__dict__ = state
 
-    def __repr__(self) -> str:
-        """String representation of the instance."""
-
-        out = f"<grogupy.MagneticEntity tag={self.tag}, SBS={self.SBS}>"
-
-        return out
-
     def __add__(self, value):
         if not isinstance(value, MagneticEntity):
             raise Exception("Only MagneticEntity instances can be added!")
@@ -338,6 +331,57 @@ class MagneticEntity:
         new.xyz = np.hstack((new.xyz, value.xyz))
 
         return new
+
+    def __eq__(self, value):
+        if isinstance(value, MagneticEntity):
+            if (
+                np.allclose(self._dh.Hk().toarray(), value._dh.Hk().toarray())
+                and np.allclose(self._dh.Sk().toarray(), value._dh.Sk().toarray())
+                and np.allclose(self._ds.Dk().toarray(), value._ds.Dk().toarray())
+                and np.allclose(self._ds.Sk().toarray(), value._ds.Sk().toarray())
+                and self.infile == value.infile
+                and np.allclose(self.atom, value.atom)
+                and np.allclose(self.l, value.l)
+                and np.allclose(self.orbital_box_indices, value.orbital_box_indices)
+                and self._tags == value._tags
+                and np.allclose(self.mulliken, value.mulliken)
+                and np.allclose(self.spin_box_indices, value.spin_box_indices)
+                and np.allclose(self.xyz, value.xyz)
+                and np.allclose(self.energies, value.energies)
+                and np.allclose(self.K, value.K)
+                and np.allclose(self.K_consistency, value.K_consistency)
+            ):
+                if len(self.Vu1) != len(value.Vu1):
+                    return False
+                if len(self.Vu2) != len(value.Vu2):
+                    return False
+                if len(self.Gii) != len(value.Gii):
+                    return False
+                if len(self._Gii_tmp) != len(value._Gii_tmp):
+                    return False
+
+                for one, two in zip(self.Vu1, value.Vu1):
+                    if not np.allclose(one, two):
+                        return False
+                for one, two in zip(self.Vu2, value.Vu2):
+                    if not np.allclose(one, two):
+                        return False
+                for one, two in zip(self.Gii, value.Gii):
+                    if not np.allclose(one, two):
+                        return False
+                for one, two in zip(self._Gii_tmp, value._Gii_tmp):
+                    if not np.allclose(one, two):
+                        return False
+                return True
+            return False
+        return False
+
+    def __repr__(self) -> str:
+        """String representation of the instance."""
+
+        out = f"<grogupy.MagneticEntity tag={self.tag}, SBS={self.SBS}>"
+
+        return out
 
     @property
     def tag(self):

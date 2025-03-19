@@ -25,6 +25,7 @@ _extended_summary_
 import copy
 from typing import Union
 
+import numpy as np
 from numpy.typing import NDArray
 
 from .._core.core import make_contour
@@ -158,6 +159,23 @@ class Contour:
         out = f"<grogupy.Contour emin={self.emin}, emax={self.emax}, eset={self.eset}, esetp={self.esetp}>"
 
         return out
+
+    def __eq__(self, value):
+        if isinstance(value, Contour):
+            if (
+                self.times == value.times
+                and self.__automatic_emin == value.__automatic_emin
+                and self._eigfile == value._eigfile
+                and self._emin == value._emin
+                and self._emax == value._emax
+                and self._eset == value._eset
+                and self._esetp == value._esetp
+                and np.allclose(self.samples, value.samples)
+                and np.allclose(self.weights, value.weights)
+            ):
+                return True
+            return False
+        return False
 
     @property
     def automatic_emin(self) -> bool:

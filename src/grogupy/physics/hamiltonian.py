@@ -140,6 +140,7 @@ class Hamiltonian:
             ):
                 self._dh = infile[0]
                 self._ds = infile[1]
+                self.infile = "Unknown!"
         else:
             raise Exception("Not valid input:", type(infile))
 
@@ -248,6 +249,27 @@ class Hamiltonian:
         state["times"] = times
 
         self.__dict__ = state
+
+    def __eq__(self, value):
+        if isinstance(value, Hamiltonian):
+            if (
+                np.allclose(self._dh.Hk().toarray(), value._dh.Hk().toarray())
+                and np.allclose(self._dh.Sk().toarray(), value._dh.Sk().toarray())
+                and np.allclose(self._ds.Dk().toarray(), value._ds.Dk().toarray())
+                and np.allclose(self._ds.Sk().toarray(), value._ds.Sk().toarray())
+                and self.infile == value.infile
+                and np.allclose(self.H, value.H)
+                and np.allclose(self.S, value.S)
+                and np.allclose(self.scf_xcf_orientation, value.scf_xcf_orientation)
+                and np.allclose(self.orientation, value.orientation)
+                and np.allclose(self.hTRS, value.hTRS)
+                and np.allclose(self.hTRB, value.hTRB)
+                and np.allclose(self.XCF, value.XCF)
+                and np.allclose(self.H_XCF, value.H_XCF)
+            ):
+                return True
+            return False
+        return False
 
     def __repr__(self) -> str:
         """String representation of the instance."""

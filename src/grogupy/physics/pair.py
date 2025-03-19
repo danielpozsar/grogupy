@@ -224,6 +224,28 @@ class Pair:
 
         self.__dict__ = state
 
+    def __eq__(self, value):
+        if isinstance(value, Pair):
+            if (
+                np.allclose(self._dh.Hk().toarray(), value._dh.Hk().toarray())
+                and np.allclose(self._dh.Sk().toarray(), value._dh.Sk().toarray())
+                and self.M1 == value.M1
+                and self.M2 == value.M2
+                and np.allclose(self.supercell_shift, value.supercell_shift)
+                and np.allclose(self.Gij, value.Gij)
+                and np.allclose(self.Gji, value.Gji)
+                and np.allclose(self._Gij_tmp, value._Gij_tmp)
+                and np.allclose(self._Gji_tmp, value._Gji_tmp)
+                and np.allclose(self.energies, value.energies)
+                and np.allclose(self.J_iso, value.J_iso)
+                and np.allclose(self.J, value.J)
+                and np.allclose(self.J_S, value.J_S)
+                and np.allclose(self.D, value.D)
+            ):
+                return True
+            return False
+        return False
+
     def __repr__(self) -> str:
         """String representation of the instance."""
 

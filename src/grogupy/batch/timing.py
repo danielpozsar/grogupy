@@ -55,6 +55,16 @@ class DefaultTimer:
         self.__start_measure = state["_DefaultTimer__start_measure"]
         self._times = state["_times"]
 
+    def __eq__(self, value):
+        if isinstance(value, DefaultTimer):
+            if (
+                self.__start_measure == value.__start_measure
+                and self.times == value.times
+            ):
+                return True
+            return False
+        return False
+
     @property
     def times(self) -> dict:
         return self._times

@@ -210,9 +210,9 @@ class Builder:
             self.__anisotropy_solver: str = "Fit"
 
         # this is the original three axes o is z and vw is x and y
-        x = np.array([1, 0, 0])
-        y = np.array([0, 1, 0])
-        z = np.array([0, 0, 1])
+        x = np.array([1, 0, 0], dtype=float)
+        y = np.array([0, 1, 0], dtype=float)
+        z = np.array([0, 0, 1], dtype=float)
         # for every given orientation we rotate the x,y,z coordinate system
         orientations = []
         for a in np.array(ref_xcf_orientations):
@@ -330,6 +330,55 @@ class Builder:
         state["pairs"] = out
 
         self.__dict__ = state
+
+    def __eq__(self, value):
+        if isinstance(value, Builder):
+            if (
+                self.times == value.times
+                and self.kspace == value.kspace
+                and self.contour == value.contour
+                and self.hamiltonian == value.hamiltonian
+                and self.__greens_function_solver == value.__greens_function_solver
+                and self.__parallel_mode == value.__parallel_mode
+                and self.__architecture == value.__architecture
+                and self.__matlabmode == value.__matlabmode
+                and self.__exchange_solver == value.__exchange_solver
+                and self.__anisotropy_solver == value.__anisotropy_solver
+                and self.SLURM_ID == value.SLURM_ID
+            ):
+                if len(self._rotated_hamiltonians) != len(value._rotated_hamiltonians):
+                    return False
+                if len(self.magnetic_entities) != len(value.magnetic_entities):
+                    return False
+                if len(self.pairs) != len(value.pairs):
+                    return False
+                if len(self.ref_xcf_orientations) != len(value.ref_xcf_orientations):
+                    return False
+
+                for i in range(len(self.ref_xcf_orientations)):
+                    for k in self.ref_xcf_orientations[i].keys():
+                        if not np.allclose(
+                            self.ref_xcf_orientations[i][k],
+                            value.ref_xcf_orientations[i][k],
+                        ):
+                            return False
+
+                for one, two in zip(
+                    self._rotated_hamiltonians, value._rotated_hamiltonians
+                ):
+                    if one != two:
+                        return False
+
+                for one, two in zip(self.magnetic_entities, value.magnetic_entities):
+                    if one != two:
+                        return False
+
+                for one, two in zip(self.pairs, value.pairs):
+                    if one != two:
+                        return False
+                return True
+            return False
+        return False
 
     def __str__(self) -> str:
         """It prints the parameters and the description of the job.
