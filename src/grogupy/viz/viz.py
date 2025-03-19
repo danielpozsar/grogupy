@@ -36,6 +36,8 @@ Visualization functions
 
 from typing import TYPE_CHECKING
 
+from ..physics import Builder
+
 if TYPE_CHECKING:
     from ..physics.contour import Contour
     from ..physics.kspace import Kspace
@@ -158,6 +160,12 @@ def plot_magnetic_entities(
         The created figure
     """
 
+    # conversion line for the case when it is set as the plot function of a builder
+    if isinstance(magnetic_entities, Builder):
+        magnetic_entities = magnetic_entities.magnetic_entities
+    elif not isinstance(magnetic_entities, list):
+        magnetic_entities = [magnetic_entities]
+
     tags = [m.tag for m in magnetic_entities]
     coords = [m.xyz for m in magnetic_entities]
 
@@ -209,6 +217,12 @@ def plot_pairs(pairs: list["Pair"], connect: bool = False) -> go.Figure:
     plotly.graph_objs.go.Figure
         The created figure
     """
+
+    # conversion line for the case when it is set as the plot function of a builder
+    if isinstance(pairs, Builder):
+        pairs = pairs.pairs
+    elif not isinstance(pairs, list):
+        pairs = [pairs]
 
     # the centers can contain many atoms
     centers = [p.xyz[0] for p in pairs]
@@ -323,6 +337,12 @@ def plot_DM(pairs: list["Pair"], rescale: float = 1) -> go.Figure:
     plotly.graph_objs.go.Figure
         The created figure
     """
+
+    # conversion line for the case when it is set as the plot function of a builder
+    if isinstance(pairs, Builder):
+        pairs = pairs.pairs
+    elif not isinstance(pairs, list):
+        pairs = [pairs]
 
     # Define some example vectors
     vectors = np.array([p.D_meV * rescale for p in pairs])
