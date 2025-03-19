@@ -58,17 +58,17 @@ folder:
 
     python -m build
 
-* Push to PYPI test repository.
+* Push to PYPI repository.
 
 .. code-block:: bash
 
-    python -m twine upload --repository testpypi dist/*
+    python -m twine upload dist/*
 
 * Or install right away from the `dist/` directory.
 
 .. code-block:: bash
 
-    pip install grogupy-1.0.0-py3-none-any
+    pip install grogupy-0.0.0-py3-none-any
 
 Build documentation
 -------------------
