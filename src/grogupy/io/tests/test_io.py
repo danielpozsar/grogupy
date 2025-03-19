@@ -64,6 +64,20 @@ class TestIO:
         assert isinstance(default_timer2, grogupy.batch.DefaultTimer)
         assert default_timer == default_timer2
 
+        mag_ent = grogupy.load("./tests/test_magnetic_entity.pkl")
+        assert isinstance(mag_ent, grogupy.MagneticEntity)
+        grogupy.save(mag_ent, "./tests/test_magnetic_entity_temp.pkl")
+        mag_ent2 = grogupy.load("./tests/test_magnetic_entity_temp.pkl")
+        assert isinstance(mag_ent2, grogupy.MagneticEntity)
+        assert mag_ent == mag_ent2
+
+        pair = grogupy.load("./tests/test_pair.pkl")
+        assert isinstance(pair, grogupy.Pair)
+        grogupy.save(pair, "./tests/test_pair_temp.pkl")
+        pair2 = grogupy.load("./tests/test_pair_temp.pkl")
+        assert isinstance(pair2, grogupy.Pair)
+        assert pair == pair2
+
     def test_load_save_Builder(self):
         builder = load_Builder("./tests/test_builder.pkl")
         assert isinstance(builder, grogupy.Builder)
@@ -105,12 +119,28 @@ class TestIO:
         assert isinstance(default_timer2, grogupy.batch.DefaultTimer)
         assert default_timer == default_timer2
 
+    def test_load_save_MagneticEntity(self):
+        magnetic_entity = load_MagneticEntity("./tests/test_magnetic_entity.pkl")
+        assert isinstance(magnetic_entity, grogupy.MagneticEntity)
+        grogupy.save(magnetic_entity, "./tests/test_magnetic_entity_temp.pkl")
+        magnetic_entity2 = grogupy.load("./tests/test_magnetic_entity_temp.pkl")
+        assert isinstance(magnetic_entity2, grogupy.MagneticEntity)
+        assert magnetic_entity == magnetic_entity2
+
+    def test_load_save_Pair(self):
+        pair = load_Pair("./tests/test_pair.pkl")
+        assert isinstance(pair, grogupy.Pair)
+        grogupy.save(pair, "./tests/test_pair_temp.pkl")
+        pair2 = grogupy.load("./tests/test_pair_temp.pkl")
+        assert isinstance(pair2, grogupy.Pair)
+        assert pair == pair2
+
     def test_load_save_magnopy(self):
         builder = load_Builder("./tests/test_builder.pkl")
         save_magnopy(builder, "./tests/test_magnopy")
         data = read_magnopy("./tests/test_magnopy.magnopy.txt")
         print(data)
-        assert 1 == 0
+        raise Exception("Not implemented test!")
 
     @pytest.mark.parametrize(
         "tag, atom, l, orb",
@@ -131,7 +161,7 @@ class TestIO:
             ("0Te(o:1)--1Te(o:1-2)", [0, 1], None, [[1], [1, 2]]),
         ],
     )
-    def test_decipher(tag, atom, l, orb):
+    def test_decipher(self, tag, atom, l, orb):
         catom, cl, corb = decipher(tag)
 
         print(catom, atom)
@@ -159,7 +189,7 @@ class TestIO:
             ("0Te(o:1)--1Te(l:All)"),
         ],
     )
-    def test_raise_decipher(tag):
+    def test_raise_decipher(self, tag):
         with pytest.raises(Exception):
             atom, l, orb = decipher(tag)
             print(atom, l, orb)

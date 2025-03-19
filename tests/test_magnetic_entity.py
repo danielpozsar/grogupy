@@ -19,9 +19,10 @@
 # SOFTWARE.
 import os
 
-import grogupy
 import numpy as np
 import pytest
+
+import grogupy
 from grogupy.io.io import load_MagneticEntity
 from grogupy.io.utilities import decipher
 from grogupy.physics.magnetic_entity import MagneticEntity
