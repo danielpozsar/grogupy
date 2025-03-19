@@ -39,49 +39,6 @@ import numpy as np
 import sisl
 
 
-def process_input_args(
-    DEFAULT_ARGUMENTS: dict,
-    fdf_arguments: dict,
-    command_line_arguments: dict,
-) -> dict:
-    """It returns the final simulation parameters based on the inputs
-
-    The merging is done in the order of priority:
-    1. command line arguments
-    2. fdf arguments
-    3. default arguments
-
-    Parameters
-    ----------
-        default_arguments: dict
-            Default arguments from grogupy
-        fdf_arguments: dict
-            Arguments read from the fdf input file
-        command_line_arguments: dict
-            Arguments from the command line
-
-    Returns
-    -------
-        dict
-            The final simulation parameters
-    """
-
-    # copy input so it does not get changed
-    default_arguments = DEFAULT_ARGUMENTS.copy()
-
-    # iterate over fdf_arguments and update default arguments
-    for key, value in fdf_arguments.items():
-        if value is not None:
-            default_arguments[key] = value
-
-    # iterate over command_line_arguments and update default arguments
-    for key, value in command_line_arguments.items():
-        if value is not None:
-            default_arguments[key] = value
-
-    return default_arguments
-
-
 def decipher(
     tag: str,
 ) -> tuple[list[int], Union[None, list[int]], Union[None, list[int]]]:
