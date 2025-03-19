@@ -77,7 +77,7 @@ class TestMagneticEntity:
             ([1], [[None]], None, "1Te(l:0-1-2-3-4-5-6-7-8-9-10-11-12)"),
         ],
     )
-    def test_generation(atom, l, orb, res):
+    def test_generation(self, atom, l, orb, res):
         mag_ent = MagneticEntity(
             "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf",
             atom,
@@ -312,7 +312,7 @@ class TestMagneticEntity:
             ([0, 1], [None, [None]], [[1], None]),
         ],
     )
-    def test_generation_exception(atom, l, orb):
+    def test_generation_exception(self, atom, l, orb):
         with pytest.raises(Exception):
             mag_ent = MagneticEntity(
                 "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf",
@@ -334,7 +334,7 @@ class TestMagneticEntity:
             ("0Te(o:1)", "1Te(l:0-1-2-3-4-5-6-7-8-9-10-11-12)"),
         ],
     )
-    def test_addition(tag1, tag2):
+    def test_addition(self, tag1, tag2):
         atom1, l1, orb1 = decipher(tag1)
         atom2, l2, orb2 = decipher(tag2)
         mag_ent1 = MagneticEntity(
@@ -357,7 +357,7 @@ class TestMagneticEntity:
             == np.concatenate((mag_ent1.spin_box_indices, mag_ent2.spin_box_indices))
         ).all()
 
-    def test_reset():
+    def test_reset(self):
         mag_ent = grogupy.load("./tests/test_magnetic_entity.pkl")
 
         mag_ent.Vu1 = 1
@@ -377,7 +377,7 @@ class TestMagneticEntity:
         assert mag_ent.K is None
         assert mag_ent.K_consistency is None
 
-    def test_add_G_tmp():
+    def test_add_G_tmp(self):
         infile = "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf"
 
         mag_ent = MagneticEntity(infile, 1)
@@ -414,7 +414,7 @@ class TestMagneticEntity:
         assert mag_ent._Gii_tmp[1].sum() == 1
         assert mag_ent._Gii_tmp[2].sum() == 0
 
-    def test_energies_and_anisotropy():
+    def test_energies_and_anisotropy(self):
         infile = "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf"
 
         mag_ent = MagneticEntity(infile, 1)
