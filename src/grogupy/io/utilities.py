@@ -255,6 +255,8 @@ def decipher_all_by_tag(
 def strip_dict_structure(
     dictionary: dict,
     pops: list[str] = [
+        "_dh",
+        "_ds",
         "Gii",
         "_Gii_tmp",
         "Gij",
@@ -263,6 +265,10 @@ def strip_dict_structure(
         "_Gji_tmp",
         "Vu1",
         "Vu2",
+        "hTRS",
+        "hTRB",
+        "XCF",
+        "H_XCF",
     ],
     setto: Any = [],
 ) -> dict:
@@ -278,7 +284,7 @@ def strip_dict_structure(
         The dictionary structure that we want to strip down
     pops : list[str], optional
         These are the keys that should be set to None in the structure,
-        by defualt ["Gii", "_Gii_tmp", "Gij", "_Gij_tmp", "Gji", "_Gji_tmp", "Vu1", "Vu2"]
+        by defualt ["_dh", "_ds", "Gii", "_Gii_tmp", "Gij", "_Gij_tmp", "Gji", "_Gji_tmp", "Vu1", "Vu2", "hTRS", "hTRB", "XCF", "H_XCF"]
     setto : Any, optional
         The value will be set to this, by defualt []
     Returns
