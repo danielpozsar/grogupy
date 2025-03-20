@@ -191,7 +191,9 @@ def solve_parallel_over_k(
 
             local_S = cp.array(S)
 
-            for i in _tqdm(range(len(local_kpoints)), desc="Parallel over k:"):
+            for i in _tqdm(
+                range(len(local_kpoints)), desc=f"Parallel over k on GPU{gpu_number}:"
+            ):
                 # weight of k point in BZ integral
                 wk = local_kweights[i]
                 k = local_kpoints[i]
