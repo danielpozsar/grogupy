@@ -149,6 +149,9 @@ class TestIO:
     def test_read_command_line(self):
         raise Exception("Not implemented test!")
 
+    def test_save_compression(self):
+        raise Exception("Not implemented test!")
+
     def cleanup(self):
         os.remove("./tests/test_magnopy.magnopy.txt")
         os.remove("./tests/test_pair_temp.pkl")

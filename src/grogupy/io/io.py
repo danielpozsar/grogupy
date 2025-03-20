@@ -396,9 +396,23 @@ def save(
         DefaultTimer, Contour, Kspace, MagneticEntity, Pair, Hamiltonian, Builder
     ],
     path: str,
-    save_memory: bool = True,
+    compress: int = 0,
 ) -> None:
     """Saves the instance from a pickled state.
+
+    The compression level can be set to 0,1,2,3. Every other value defaults to 3.
+    0. This means that there is no compression at all.
+
+    1. This means, that the keys "_dh" and "_ds" are set
+       to None, because othervise the loading would be dependent
+       on the sisl version
+
+    2. This contains compression 1, but sets the keys "Gii",
+       "_Gii_tmp", "Gij", "_Gij_tmp", "Gji", "_Gji_tmp",
+       "Vu1" and "Vu2" to [], to save space
+
+    3. This contains compression 1 and 2, but sets the keys
+       "hTRS", "hTRB", "XCF" and "H_XCF" to None, to save space
 
     Parameters
     ----------
@@ -406,10 +420,8 @@ def save(
         Object from the grogupy library
     path: str
         The path to the output file
-    save_memory: bool, optional
-        Wether to delete the Gij, Gji, Gij_temp, Gji_temp
-        from the pairs and the Vu1, Vu2, Gii, Gii_temp from
-        the magnetic entities, by default True
+    compress: int, optional
+        The level of lossy compression of the output pickle, by default 0
     """
 
     # check if the object is ours
@@ -421,9 +433,47 @@ def save(
         # the dictionary to be saved
         out_dict = object.__getstate__()
 
-        # remove large objects to save memory
-        if save_memory:
-            out_dict = strip_dict_structure(out_dict)
+        # remove large objects to save memory or to avoid sisl loading errors
+        if compress == 1:
+            out_dict = strip_dict_structure(out_dict, pops=["_dh", "_ds"], setto=None)
+        elif compress == 2:
+            out_dict = strip_dict_structure(out_dict, pops=["_dh", "_ds"], setto=None)
+            out_dict = strip_dict_structure(
+                out_dict,
+                pops=[
+                    "Gii",
+                    "_Gii_tmp",
+                    "Gij",
+                    "_Gij_tmp",
+                    "Gji",
+                    "_Gji_tmp",
+                    "Vu1",
+                    "Vu2",
+                ],
+                setto=[],
+            )
+        elif compress == 3:
+            out_dict = strip_dict_structure(out_dict, pops=["_dh", "_ds"], setto=None)
+            out_dict = strip_dict_structure(
+                out_dict,
+                pops=[
+                    "Gii",
+                    "_Gii_tmp",
+                    "Gij",
+                    "_Gij_tmp",
+                    "Gji",
+                    "_Gji_tmp",
+                    "Vu1",
+                    "Vu2",
+                ],
+                setto=[],
+            )
+            out_dict = strip_dict_structure(
+                out_dict, pops=["hTRS", "hTRB", "XCF", "H_XCF"], setto=None
+            )
+        # this is compress 0 and the default
+        else:
+            pass
 
         # write to file
         with open(path, "wb") as f:

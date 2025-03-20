@@ -131,8 +131,22 @@ as we did in the jupyter notebook examples.
 
     # save the pickle file
     save_pickle = True
-    # add all the arrays to the pickle file, which can be large
-    pickle_dump_all = False
+    """
+    The compression level can be set to 0,1,2,3. Every other value defaults to 3.
+    0. This means that there is no compression at all. 
+    
+    1. This means, that the keys "_dh" and "_ds" are set 
+       to None, because othervise the loading would be dependent
+       on the sisl version 
+
+    2. This contains compression 1, but sets the keys "Gii", 
+       "_Gii_tmp", "Gij", "_Gij_tmp", "Gji", "_Gji_tmp", 
+       "Vu1" and "Vu2" to [], to save space
+
+    3. This contains compression 1 and 2, but sets the keys 
+       "hTRS", "hTRB", "XCF" and "H_XCF" to None, to save space
+    """
+    pickle_compress_level = 3
 
     # output folder, for example the current folder
     outfolder = infolder

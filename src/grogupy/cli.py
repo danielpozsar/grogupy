@@ -32,6 +32,7 @@ For examples, see the `running in HPC <.._running_in_hpc>`_ section in the docum
 
 """
 import datetime
+import warnings
 from os.path import join
 from timeit import default_timer as timer
 
@@ -55,14 +56,12 @@ else:
     raise Exception
 
 
-def main():
+def main(params):
     """Main entry point of the script."""
     if PRINTING:
         print("Simulation started at:", datetime.datetime.now())
-
     start = timer()
 
-    params = read_command_line(__citation__)
     # only citation
     if params is None:
         return
@@ -165,7 +164,7 @@ def main():
                 comments=params.magnopy_comments,
             )
         if params.save_pickle:
-            save(object=simulation, path=outfile, save_memory=params.pickle_dump_all)
+            save(object=simulation, path=outfile, compress=params.pickle_compress_level)
 
 
 if PRINTING:
@@ -173,4 +172,6 @@ if PRINTING:
     print("GROGUPY_NORMAL_EXIT")
 
 if __name__ == "__main__":
-    main()
+    params = read_command_line(__citation__)
+
+    main(params)
