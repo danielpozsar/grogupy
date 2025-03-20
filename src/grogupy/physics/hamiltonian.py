@@ -235,6 +235,13 @@ class Hamiltonian:
             )
         self.hTRS, self.hTRB, self.XCF, self.H_XCF = hTRS, hTRB, XCF, H_XCF
 
+        # pre calculate hidden unuseed properties
+        # they are here so they are dumped to the self.__dict__ upon saving
+        self.__no = self._dh.no
+        self.__cell = self._dh.geometry.cell
+        self.__sc_off = self._dh.geometry.sc_off
+        self.__uc_in_sc_index = self._dh.lattice.sc_index([0, 0, 0])
+
         self.times.measure("setup", restart=True)
         Hamiltonian.number_of_hamiltonians += 1
 
@@ -284,11 +291,13 @@ class Hamiltonian:
 
     @property
     def NO(self) -> int:
-        return self._dh.no
+        self.__no = self._dh.no
+        return self.__no
 
     @property
     def cell(self) -> NDArray:
-        return self._dh.geometry.cell
+        self.__cell = self._dh.geometry.cell
+        return self.__cell
 
     @property
     def nsc(self) -> int:
@@ -296,11 +305,13 @@ class Hamiltonian:
 
     @property
     def sc_off(self) -> NDArray:
-        return self._dh.geometry.sc_off
+        self.__sc_off = self._dh.geometry.sc_off
+        return self.__sc_off
 
     @property
     def uc_in_sc_index(self) -> int:
-        return self._dh.lattice.sc_index([0, 0, 0])
+        self.__uc_in_sc_index = self._dh.lattice.sc_index([0, 0, 0])
+        return self.__uc_in_sc_index
 
     @property
     def H_uc(self) -> NDArray:
@@ -309,11 +320,6 @@ class Hamiltonian:
     @property
     def H_XCF_uc(self) -> NDArray:
         return self.H_XCF[self.uc_in_sc_index]
-
-    @property
-    def k(self) -> NDArray:
-        """The k point where the system is set up."""
-        return self.__k
 
     def rotate(self, orientation: NDArray) -> None:
         """It rotates the exchange field of the Hamiltonian.

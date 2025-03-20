@@ -265,6 +265,8 @@ class Builder:
         except:
             self.SLURM_ID: str = "Could not be determined."
 
+        self.__version = __version__
+
         self.times.measure("setup", restart=True)
 
     def __getstate__(self):
@@ -345,6 +347,7 @@ class Builder:
                 and self.__exchange_solver == value.__exchange_solver
                 and self.__anisotropy_solver == value.__anisotropy_solver
                 and self.SLURM_ID == value.SLURM_ID
+                and self.__version == value.__version
             ):
                 if len(self._rotated_hamiltonians) != len(value._rotated_hamiltonians):
                     return False
@@ -393,7 +396,7 @@ class Builder:
 
         out = ""
         out += section + newline
-        out += f"grogupy version: {__version__}" + newline
+        out += f"grogupy version: {self.__version}" + newline
         out += f"Input file: {self.infile}" + newline
         out += section + newline
         out += f"SLURM job ID: {self.SLURM_ID}" + newline
@@ -583,6 +586,11 @@ class Builder:
     def infile(self) -> str:
         """Input file used to build the Hamiltonian."""
         return self.hamiltonian.infile
+
+    @property
+    def version(self) -> str:
+        """Version of grogupy."""
+        return self.__version
 
     def to_magnopy(
         self, precision: Union[None, int] = None, comments: bool = True

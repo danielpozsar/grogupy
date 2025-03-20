@@ -295,6 +295,22 @@ class MagneticEntity:
         self.K: Union[None, NDArray] = None
         self.K_consistency: Union[None, float] = None
 
+        # pre calculate hidden unuseed properties
+        # they are here so they are dumped to the self.__dict__ upon saving
+        self.__tag = "--".join(self._tags)
+        self.__SBS = len(self.spin_box_indices)
+        self.__xyz_center = self.xyz.mean(axis=0)
+        self.__Q = self.mulliken[0].sum()
+        self.__Sx = self.mulliken[1].sum()
+        self.__Sy = self.mulliken[2].sum()
+        self.__Sz = self.mulliken[3].sum()
+        self.__energies_meV = None
+        self.__energies_mRy = None
+        self.__K_meV = None
+        self.__K_mRy = None
+        self.__K_consistency_meV = None
+        self.__K_consistency_mRy = None
+
         MagneticEntity.number_of_entities += 1
 
     def __getstate__(self):
@@ -386,108 +402,109 @@ class MagneticEntity:
     @property
     def tag(self):
         """The description of the magnetic entity"""
+        self.__tag = "--".join(self._tags)
 
-        tag = "--".join(self._tags)
-
-        return tag
+        return self.__tag
 
     @property
     def SBS(self) -> int:
         """The spin box size of the magnetic entity"""
+        self.__SBS = len(self.spin_box_indices)
 
-        return len(self.spin_box_indices)
+        return self.__SBS
 
     @property
     def xyz_center(self) -> NDArray:
         """The mean of the position of the atoms that are in the magnetic entity."""
+        self.__xyz_center = self.xyz.mean(axis=0)
 
-        return self.xyz.mean(axis=0)
+        return self.__xyz_center
 
     @property
     def Q(self) -> NDArray:
         """The charge of the magnetic entity."""
+        self.__Q = self.mulliken[0].sum()
 
-        return self.mulliken[0].sum()
+        return self.__Q
 
     @property
     def Sx(self) -> NDArray:
         """The non-collinear Sx of the magnetic entity."""
+        self.__Sx = self.mulliken[1].sum()
 
-        return self.mulliken[1].sum()
+        return self.__Sx
 
     @property
     def Sy(self) -> NDArray:
         """The non-collinear Sy of the magnetic entity."""
+        self.__Sy = self.mulliken[2].sum()
 
-        return self.mulliken[2].sum()
+        return self.__Sy
 
     @property
     def Sz(self) -> NDArray:
         """The non-collinear Sz of the magnetic entity."""
+        self.__Sz = self.mulliken[3].sum()
 
-        return self.mulliken[3].sum()
+        return self.__Sz
 
     @property
     def energies_meV(self) -> NDArray:
         """The energies, but in meV."""
-
         if self.energies is None:
-            return None
-
-        return self.energies * sisl.unit_convert("eV", "meV")
+            self.__energies_meV = None
+        else:
+            self.__energies_meV = self.energies * sisl.unit_convert("eV", "meV")
+        return self.__energies_meV
 
     @property
     def energies_mRy(self) -> NDArray:
         """The energies, but in mRy."""
-
         if self.energies is None:
-            return None
-
-        return self.energies * sisl.unit_convert("eV", "mRy")
+            self.__energies_mRy = None
+        else:
+            self.__energies_mRy = self.energies * sisl.unit_convert("eV", "mRy")
+        return self.__energies_mRy
 
     @property
     def K_meV(self) -> NDArray:
         """The anisotropy tensor, but in meV."""
-
-        try:
-            out = self.K * sisl.unit_convert("eV", "meV")
-        except:
-            out = None
-
-        return out
+        if self.K is None:
+            self.__K_meV = None
+        else:
+            self.__K_meV = self.K * sisl.unit_convert("eV", "meV")
+        return self.__K_meV
 
     @property
     def K_mRy(self) -> NDArray:
         """The anisotropy tensor, but in mRy."""
-
-        try:
-            out = self.K * sisl.unit_convert("eV", "mRy")
-        except:
-            out = None
-
-        return out
+        if self.K is None:
+            self.__K_mRy = None
+        else:
+            self.__K_mRy = self.K * sisl.unit_convert("eV", "mRy")
+        return self.__K_mRy
 
     @property
     def K_consistency_meV(self) -> NDArray:
         """The consistency check, but in meV."""
-
-        try:
-            out = self.K_consistency * sisl.unit_convert("eV", "meV")
-        except:
-            out = None
-
-        return out
+        if self.K_consistency is None:
+            self.__K_consistency_meV = None
+        else:
+            self.__K_consistency_meV = self.K_consistency * sisl.unit_convert(
+                "eV", "meV"
+            )
+        return self.__K_consistency_meV
 
     @property
     def K_consistency_mRy(self) -> NDArray:
         """The consistency check, but in mRy."""
-
-        try:
-            out = self.K_consistency * sisl.unit_convert("eV", "mRy")
-        except:
-            out = None
-
-        return out
+        if self.K_consistency is None:
+            self.__K_consistency_mRy = None
+        else:
+            self.__K_consistency_mRy = self.K_consistency * sisl.unit_convert(
+                "eV", "mRy"
+            )
+        return self.__K_consistency_mRy
 
     def reset(self) -> None:
         """Resets the simulation results."""
@@ -551,6 +568,9 @@ class MagneticEntity:
 
         # convert to array
         self.energies: NDArray = np.array(energies)
+        # call these so they are updated
+        self.energies_meV
+        self.energies_mRy
 
     def calculate_anisotropy(self) -> None:
         """Calculates the anisotropy matrix and the consistency from the energies.
@@ -563,6 +583,11 @@ class MagneticEntity:
         K, K_consistency = calculate_anisotropy_tensor(self.energies)
         self.K: NDArray = K
         self.K_consistency: float = K_consistency
+        # call these so they are updated
+        self.K_meV
+        self.K_mRy
+        self.K_consistency_meV
+        self.K_consistency_mRy
 
     def fit_anisotropy_tensor(self, ref_xcf: list[dict]) -> None:
         """Fits the anisotropy tensor to the energies.
@@ -582,6 +607,11 @@ class MagneticEntity:
         self.K: NDArray = K
         # it is not relevant with this method
         self.K_consistency: Union[float, None] = None
+        # call these so they are updated
+        self.K_meV
+        self.K_mRy
+        self.K_consistency_meV
+        self.K_consistency_mRy
 
     def copy(self):
         """Returns the deepcopy of the instance.
