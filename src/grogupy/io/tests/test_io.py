@@ -18,6 +18,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import os
+import pickle
 
 import pytest
 
@@ -150,9 +151,116 @@ class TestIO:
         raise Exception("Not implemented test!")
 
     def test_save_compression(self):
-        raise Exception("Not implemented test!")
+        def parse(dictionary, key):
+            out = []
+            if isinstance(dictionary, dict):
+                for k, v in dictionary.items():
+                    if k == key:
+                        out.append(v)
+                    elif isinstance(v, dict) or isinstance(v, list):
+                        small_out = parse(v, key)
+                        for d in small_out:
+                            out.append(d)
+            elif isinstance(dictionary, list):
+                for v in dictionary:
+                    if isinstance(v, dict) or isinstance(v, list):
+                        small_out = parse(v, key)
+                        for d in small_out:
+                            out.append(d)
+            return out
 
-    def cleanup(self):
+        builder = grogupy.load("./tests/test_builder.pkl")
+        assert isinstance(builder, grogupy.Builder)
+
+        grogupy.save(builder, "./tests/test_builder_temp2.pkl", compress=0)
+        with open("./tests/test_builder_temp2.pkl", "rb") as f:
+            dictionary = pickle.load(f)
+        import sys
+
+        assert sys.getsizeof(dictionary) == sys.getsizeof(builder.__dict__)
+
+        grogupy.save(builder, "./tests/test_builder_temp2.pkl", compress=1)
+        with open("./tests/test_builder_temp2.pkl", "rb") as f:
+            dictionary = pickle.load(f)
+        dat = []
+        temp = parse(dictionary, "_dh")
+        for t in temp:
+            dat.append(t)
+        temp = parse(dictionary, "_ds")
+        for t in temp:
+            dat.append(t)
+        for d in dat:
+            assert d is None
+
+        grogupy.save(builder, "./tests/test_builder_temp2.pkl", compress=2)
+        with open("./tests/test_builder_temp2.pkl", "rb") as f:
+            dictionary = pickle.load(f)
+        dat = []
+        temp = parse(dictionary, "_dh")
+        for t in temp:
+            dat.append(t)
+        temp = parse(dictionary, "_ds")
+        for t in temp:
+            dat.append(t)
+        for d in dat:
+            assert d is None
+
+        dat = []
+        for string in [
+            "Gii",
+            "_Gii_tmp",
+            "Gij",
+            "_Gij_tmp",
+            "Gji",
+            "_Gji_tmp",
+            "Vu1",
+            "Vu2",
+        ]:
+            temp = parse(dictionary, string)
+            for t in temp:
+                dat.append(t)
+        for d in dat:
+            assert d == []
+
+        grogupy.save(builder, "./tests/test_builder_temp2.pkl", compress=3)
+        with open("./tests/test_builder_temp2.pkl", "rb") as f:
+            dictionary = pickle.load(f)
+        dat = []
+        temp = parse(dictionary, "_dh")
+        for t in temp:
+            dat.append(t)
+        temp = parse(dictionary, "_ds")
+        for t in temp:
+            dat.append(t)
+        for d in dat:
+            assert d is None
+
+        dat = []
+        for string in [
+            "Gii",
+            "_Gii_tmp",
+            "Gij",
+            "_Gij_tmp",
+            "Gji",
+            "_Gji_tmp",
+            "Vu1",
+            "Vu2",
+        ]:
+            temp = parse(dictionary, string)
+            for t in temp:
+                dat.append(t)
+        for d in dat:
+            assert d == []
+
+        dat = []
+        for string in ["hTRS", "hTRB", "XCF", "H_XCF"]:
+            temp = parse(dictionary, string)
+            for t in temp:
+                dat.append(t)
+        for d in dat:
+            assert d is None
+
+    def test_cleanup(self):
         os.remove("./tests/test_magnopy.magnopy.txt")
         os.remove("./tests/test_pair_temp.pkl")
         os.remove("./tests/test_magnetic_entity_temp.pkl")
@@ -161,6 +269,7 @@ class TestIO:
         os.remove("./tests/test_contour_temp.pkl")
         os.remove("./tests/test_hamiltonian_temp.pkl")
         os.remove("./tests/test_builder_temp.pkl")
+        os.remove("./tests/test_builder_temp2.pkl")
 
 
 if __name__ == "__main__":
