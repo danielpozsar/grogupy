@@ -301,14 +301,14 @@ def strip_dict_structure(
             out_value = setto
         # if the key contains a dictionary go a level deeper and do the same
         elif isinstance(value, dict):
-            out_value = strip_dict_structure(value, pops)
+            out_value = strip_dict_structure(value, pops, setto)
         # if the key contains a list, then iterate over it, check if there is any dictionary
         # and if there is, then go a level deeper
         elif isinstance(value, list):
             list_out_val = []
             for val in value:
                 if isinstance(val, dict):
-                    list_out_val.append(strip_dict_structure(val, pops))
+                    list_out_val.append(strip_dict_structure(val, pops, setto))
                 else:
                     list_out_val.append(val)
             out_value = list_out_val
