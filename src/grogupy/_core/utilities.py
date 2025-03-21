@@ -294,7 +294,7 @@ def arrays_lists_equal(array1: Any, array2: Any) -> bool:
     """Compares two objects.
 
     if the objects are not nested lists ending in arrays
-    or arrays, then it returns False. Otherwise it goes
+    or arrays, then it returns the equality relation. Otherwise it goes
     down the list structure and checks all the arrays with
     np.allclose for equality. If the structure itself or any
     array is different, then it returns False. Otherwise it
@@ -343,7 +343,7 @@ def arrays_lists_equal(array1: Any, array2: Any) -> bool:
 
     # othervise they are not the desired structure
     else:
-        return False
+        return np.all(array1 == array2)
 
 
 if __name__ == "__main__":
