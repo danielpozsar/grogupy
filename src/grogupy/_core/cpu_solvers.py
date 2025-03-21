@@ -58,7 +58,9 @@ def solve_parallel_over_k(
     parallel_w = np.array_split(builder.kspace.weights, parallel_size)
 
     if rank == root_node:
-        parallel_k[root_node] = _tqdm(parallel_k[root_node], desc="Parallel over k:")
+        parallel_k[root_node] = _tqdm(
+            parallel_k[root_node], desc=f"Parallel over k on CPU{rank}:"
+        )
 
     # sampling the integrand on the contour and the BZ
     for i, k in enumerate(parallel_k[rank]):
@@ -160,7 +162,9 @@ def solve_parallel_over_all(
             / parallel_size
         )
         combinations[root_node] = _tqdm(
-            combinations[root_node], total=total, desc="Parallel over all: "
+            combinations[root_node],
+            total=total,
+            desc=f"Parallel over all on CPU{rank}: ",
         )
 
     for k_idx, o_idx in combinations[rank]:
