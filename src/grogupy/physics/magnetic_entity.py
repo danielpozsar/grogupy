@@ -276,14 +276,14 @@ class MagneticEntity:
         else:
             raise Exception("Cannot setup without path or sisl objects!")
         atom, l, orbital, tag = parse_magnetic_entity(self._dh, atom, l, orb)
-        self.atom: NDArray = np.array([atom]).flatten()
-        self.l = l
-        self.orbital_box_indices: NDArray = np.array(orbital).flatten()
+        self._atom: NDArray = np.array([atom]).flatten()
+        self._l = l
+        self._orbital_box_indices: NDArray = np.array(orbital).flatten()
         self._tags = tag
-        self.mulliken: NDArray = self._ds.mulliken()[:, self.orbital_box_indices]
+        self._mulliken: NDArray = self._ds.mulliken()[:, self._orbital_box_indices]
 
-        self.spin_box_indices: NDArray = blow_up_orbindx(self.orbital_box_indices)
-        self.xyz: NDArray = np.array([self._dh.xyz[i] for i in self.atom])
+        self._spin_box_indices: NDArray = blow_up_orbindx(self._orbital_box_indices)
+        self._xyz: NDArray = np.array([self._dh.xyz[i] for i in self._atom])
 
         # initialize simulation parameters
         self.Vu1: list[list[NDArray]] = []
@@ -298,12 +298,12 @@ class MagneticEntity:
         # pre calculate hidden unuseed properties
         # they are here so they are dumped to the self.__dict__ upon saving
         self.__tag = "--".join(self._tags)
-        self.__SBS = len(self.spin_box_indices)
-        self.__xyz_center = self.xyz.mean(axis=0)
-        self.__Q = self.mulliken[0].sum()
-        self.__Sx = self.mulliken[1].sum()
-        self.__Sy = self.mulliken[2].sum()
-        self.__Sz = self.mulliken[3].sum()
+        self.__SBS = len(self._spin_box_indices)
+        self.__xyz_center = self._xyz.mean(axis=0)
+        self.__Q = self._mulliken[0].sum()
+        self.__Sx = self._mulliken[1].sum()
+        self.__Sy = self._mulliken[2].sum()
+        self.__Sz = self._mulliken[3].sum()
         self.__energies_meV = None
         self.__energies_mRy = None
         self.__K_meV = None
@@ -329,22 +329,20 @@ class MagneticEntity:
         new.reset()
         # update out instance
         # accept both kinds of hamiltonian
-        if (new._dh.Hk() != value._dh.Hk()).sum() != 0:
+        if np.allclose(new._dh.Hk().toarray(), value._dh.Hk().toarray()):
             raise Exception("The sisl Hamiltonians are not the same!")
-        if (new._dh.Sk() != value._dh.Sk()).sum() != 0:
-            raise Exception("The sisl Hamiltonians are not the same!")
-        if self._dh.geometry != value._dh.geometry:
+        if np.allclose(new._dh.Sk().toarray(), value._dh.Sk().toarray()):
             raise Exception("The sisl Hamiltonians are not the same!")
 
-        new.atom = np.concatenate((new.atom, value.atom))
-        new.l = new.l + value.l
-        new.orbital_box_indices = np.concatenate(
-            (new.orbital_box_indices, value.orbital_box_indices)
+        new._atom = np.concatenate((new._atom, value._atom))
+        new._l = np.concatenate((new._l, value._l))
+        new._orbital_box_indices = np.concatenate(
+            (new._orbital_box_indices, value._orbital_box_indices)
         )
         new._tags = new._tags + value._tags
 
-        new.spin_box_indices = blow_up_orbindx(new.orbital_box_indices)
-        new.xyz = np.hstack((new.xyz, value.xyz))
+        new._spin_box_indices = blow_up_orbindx(new._orbital_box_indices)
+        new._xyz = np.hstack((new._xyz, value._xyz))
 
         return new
 
@@ -356,13 +354,13 @@ class MagneticEntity:
                 and np.allclose(self._ds.Dk().toarray(), value._ds.Dk().toarray())
                 and np.allclose(self._ds.Sk().toarray(), value._ds.Sk().toarray())
                 and self.infile == value.infile
-                and np.allclose(self.atom, value.atom)
-                and np.allclose(self.l, value.l)
-                and np.allclose(self.orbital_box_indices, value.orbital_box_indices)
+                and np.allclose(self._atom, value._atom)
+                and np.allclose(self._l, value._l)
+                and np.allclose(self._orbital_box_indices, value._orbital_box_indices)
                 and self._tags == value._tags
-                and np.allclose(self.mulliken, value.mulliken)
-                and np.allclose(self.spin_box_indices, value.spin_box_indices)
-                and np.allclose(self.xyz, value.xyz)
+                and np.allclose(self._mulliken, value._mulliken)
+                and np.allclose(self._spin_box_indices, value._spin_box_indices)
+                and np.allclose(self._xyz, value._xyz)
                 and np.allclose(self.energies, value.energies)
                 and np.allclose(self.K, value.K)
                 and np.allclose(self.K_consistency, value.K_consistency)
@@ -409,42 +407,42 @@ class MagneticEntity:
     @property
     def SBS(self) -> int:
         """The spin box size of the magnetic entity"""
-        self.__SBS = len(self.spin_box_indices)
+        self.__SBS = len(self._spin_box_indices)
 
         return self.__SBS
 
     @property
     def xyz_center(self) -> NDArray:
         """The mean of the position of the atoms that are in the magnetic entity."""
-        self.__xyz_center = self.xyz.mean(axis=0)
+        self.__xyz_center = self._xyz.mean(axis=0)
 
         return self.__xyz_center
 
     @property
     def Q(self) -> NDArray:
         """The charge of the magnetic entity."""
-        self.__Q = self.mulliken[0].sum()
+        self.__Q = self._mulliken[0].sum()
 
         return self.__Q
 
     @property
     def Sx(self) -> NDArray:
         """The non-collinear Sx of the magnetic entity."""
-        self.__Sx = self.mulliken[1].sum()
+        self.__Sx = self._mulliken[1].sum()
 
         return self.__Sx
 
     @property
     def Sy(self) -> NDArray:
         """The non-collinear Sy of the magnetic entity."""
-        self.__Sy = self.mulliken[2].sum()
+        self.__Sy = self._mulliken[2].sum()
 
         return self.__Sy
 
     @property
     def Sz(self) -> NDArray:
         """The non-collinear Sz of the magnetic entity."""
-        self.__Sz = self.mulliken[3].sum()
+        self.__Sz = self._mulliken[3].sum()
 
         return self.__Sz
 
@@ -532,7 +530,8 @@ class MagneticEntity:
             The weight of the k-point
         """
         self._Gii_tmp[i] += (
-            onsite_projection(Gk, self.spin_box_indices, self.spin_box_indices) * weight
+            onsite_projection(Gk, self._spin_box_indices, self._spin_box_indices)
+            * weight
         )
 
     def calculate_energies(self, weights: NDArray, matlabmode: bool = False) -> None:
