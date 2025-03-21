@@ -19,6 +19,7 @@
 # SOFTWARE.
 import numpy as np
 import pytest
+import sisl
 
 import grogupy
 from grogupy._core.utilities import arrays_lists_equal
@@ -351,22 +352,18 @@ class TestMagneticEntity:
         new = mag_ent1 + mag_ent2
         assert new.tag == tag1 + "--" + tag2
         assert arrays_lists_equal(
-            new._atom, np.concatenate((mag_ent1._atom, mag_ent2._atom))
+            new._atom, np.hstack((mag_ent1._atom, mag_ent2._atom))
         )
-        assert arrays_lists_equal(new._l, np.concatenate((mag_ent1._l, mag_ent2._l)))
+        assert arrays_lists_equal(new._l, mag_ent1._l + mag_ent2._l)
         assert arrays_lists_equal(
             new._orbital_box_indices,
-            np.concatenate(
-                (mag_ent1._orbital_box_indices, mag_ent2._orbital_box_indices)
-            ),
+            np.hstack((mag_ent1._orbital_box_indices, mag_ent2._orbital_box_indices)),
         )
         assert arrays_lists_equal(
             new._spin_box_indices,
-            np.concatenate((mag_ent1._spin_box_indices, mag_ent2._spin_box_indices)),
+            np.hstack((mag_ent1._spin_box_indices, mag_ent2._spin_box_indices)),
         )
-        assert arrays_lists_equal(
-            new._xyz, np.concatenate((mag_ent1._xyz, mag_ent2._xyz))
-        )
+        assert arrays_lists_equal(new._xyz, np.vstack((mag_ent1._xyz, mag_ent2._xyz)))
 
     def test_reset(self):
         mag_ent = grogupy.load("./tests/test_magnetic_entity.pkl")
@@ -450,15 +447,20 @@ class TestMagneticEntity:
             l,
             orb,
         )
+
         m2 = m.copy()
         assert m == m2
 
-        m2._dh.H[1] = 0
+        m2._dh = sisl.get_sile(
+            "/Users/danielpozsar/Downloads/Cr3_new/Cr3.fdf"
+        ).read_hamiltonian()
         assert m != m2
         m2._dh = m._dh
         assert m == m2
 
-        m2._ds.D[1] = 0
+        m2._ds = sisl.get_sile(
+            "/Users/danielpozsar/Downloads/Cr3_new/Cr3.fdf"
+        ).read_density_matrix()
         assert m != m2
         m2._ds = m._ds
         assert m == m2
@@ -468,12 +470,12 @@ class TestMagneticEntity:
         m2.infile = m.infile
         assert m == m2
 
-        m2._atom = np.array([1])
+        m2._atom = np.array([1000])
         assert m != m2
         m2._atom = m._atom
         assert m == m2
 
-        m2._l = np.ones_like(m._l)
+        m2._l = np.zeros_like(m._l)
         assert m != m2
         m2._l = m._l
         assert m == m2
@@ -503,37 +505,37 @@ class TestMagneticEntity:
         m2._xyz = m._xyz
         assert m == m2
 
-        m2._Vu1[-1] = np.zeros(3)
+        m2._Vu1 = np.zeros(3)
         assert m != m2
         m2._Vu1 = m._Vu1
         assert m == m2
 
-        m2._Vu2[-1] = np.zeros(3)
+        m2._Vu2 = np.zeros(3)
         assert m != m2
         m2._Vu2 = m._Vu2
         assert m == m2
 
-        m2._Gii[-1] = np.zeros(3)
+        m2._Gii = [np.zeros(3)]
         assert m != m2
         m2._Gii = m._Gii
         assert m == m2
 
-        m2._Gii_tmp[-1] = np.zeros(3)
+        m2._Gii_tmp = [[], [], []]
         assert m != m2
         m2._Gii_tmp = m._Gii_tmp
         assert m == m2
 
-        m2.energies[-1] = np.zeros(3)
+        m2.energies = np.zeros(3)
         assert m != m2
         m2.energies = m.energies
         assert m == m2
 
-        m2.K[-1] = np.zeros(3)
+        m2.K = []
         assert m != m2
         m2.K = m.K
         assert m == m2
 
-        m2.K_consistency[-1] = np.zeros(3)
+        m2.K_consistency = 1000
         assert m != m2
         m2.K_consistency = m.K_consistency
         assert m == m2
@@ -593,7 +595,7 @@ class TestMagneticEntity:
         )
         m2 = m.copy()
         assert m == m2
-        m2.emax = 1
+        m2._tags = 1
         assert m != m2
 
     @pytest.mark.parametrize(
