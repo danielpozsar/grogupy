@@ -32,7 +32,6 @@ For examples, see the `running in HPC <.._running_in_hpc>`_ section in the docum
 
 """
 import datetime
-import warnings
 from os.path import join
 from timeit import default_timer as timer
 
