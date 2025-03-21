@@ -221,7 +221,7 @@ class Contour:
         self._esetp = value
         self.__make_contour()
 
-    def _make_contour(self) -> None:
+    def __make_contour(self) -> None:
         """It calculates the samples and weights.
 
         It calculates the samples and weights based on the instance attributes
