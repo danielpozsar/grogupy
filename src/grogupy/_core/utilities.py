@@ -22,7 +22,7 @@
     This module mostly contains functions for rotations.
 """
 
-from typing import Union
+from typing import Any, Union
 
 import numpy as np
 import sisl
@@ -288,6 +288,62 @@ def setup_from_range(
         out.append(dict(ai=ai, aj=aj, Ruc=[pair[2], pair[3], pair[4]]))
 
     return magnetic_entities, out
+
+
+def arrays_lists_equal(array1: Any, array2: Any) -> bool:
+    """Compares two objects.
+
+    if the objects are not nested lists ending in arrays
+    or arrays, then it returns False. Otherwise it goes
+    down the list structure and checks all the arrays with
+    np.allclose for equality. If the structure itself or any
+    array is different, then it returns False. Otherwise it
+    returns True. It is useful to check the Greens function
+    results and the perturbations.
+
+    Parameters
+    ----------
+    array1: Any
+        The first object to compare
+    array2: Any
+        The second object to compare
+
+    Returns
+    -------
+    bool:
+        Wether the above described structures are equal
+    """
+
+    # if both are array, then they can be equal
+    if isinstance(array1, np.ndarray) and isinstance(array2, np.ndarray):
+        # the array shapes should be equal
+        if array1.shape == array2.shape:
+            # the array elements should be equal
+            if np.allclose(array1, array2):
+                return True
+            else:
+                return False
+        else:
+            return False
+
+    # if both are lists, then they can be equal
+    elif isinstance(array1, list) and isinstance(array2, list):
+        # the list legngths should be equal
+        if len(array1) == len(array2):
+            equality = []
+            # all the list elements should be equal
+            for a1, a2 in zip(array1, array2):
+                equality.append(arrays_lists_equal(a1, a2))
+            if np.all(equality):
+                return True
+            else:
+                return False
+        else:
+            return False
+
+    # othervise they are not the desired structure
+    else:
+        return False
 
 
 if __name__ == "__main__":

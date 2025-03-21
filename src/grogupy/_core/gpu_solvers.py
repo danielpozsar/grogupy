@@ -95,7 +95,7 @@ def solve_parallel_over_k(
     G_pair_ji = np.array(G_pair_ji)
 
     # convert everything so it can be passed to the GPU solvers
-    SBI = [m.spin_box_indices for m in builder.magnetic_entities]
+    SBI = [m._spin_box_indices for m in builder.magnetic_entities]
     SBI1 = [p.SBI1 for p in builder.pairs]
     SBI2 = [p.SBI2 for p in builder.pairs]
     Ruc = [p.supercell_shift for p in builder.pairs]
@@ -294,7 +294,7 @@ def solve_parallel_over_k(
     for j in range(len(builder._rotated_hamiltonians)):
         for l in range(len(builder.magnetic_entities)):
             mag_ent = builder.magnetic_entities[l]
-            mag_ent.Gii[j] = G_mag[j][l]
+            mag_ent._Gii[j] = G_mag[j][l]
 
             if builder.anisotropy_solver.lower()[0] == "f":  # fit
                 mag_ent.calculate_energies(builder.contour.weights, False)

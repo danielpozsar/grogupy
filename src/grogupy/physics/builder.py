@@ -970,9 +970,9 @@ class Builder:
             self._rotated_hamiltonians.append(new_hamiltonian)
 
             for mag_ent in self.magnetic_entities:
-                mag_ent.Vu1.append([])
-                mag_ent.Vu2.append([])
-                mag_ent.Gii.append(
+                mag_ent._Vu1.append([])
+                mag_ent._Vu2.append([])
+                mag_ent._Gii.append(
                     np.zeros(
                         (self.contour.eset, mag_ent.SBS, mag_ent.SBS),
                         dtype="complex128",
@@ -1015,14 +1015,14 @@ class Builder:
 
                 for mag_ent in self.magnetic_entities:
                     # fill up the perturbed potentials (for now) based on the on-site projections
-                    mag_ent.Vu1[-1].append(
+                    mag_ent._Vu1[-1].append(
                         onsite_projection(
-                            Vu1, mag_ent.spin_box_indices, mag_ent.spin_box_indices
+                            Vu1, mag_ent._spin_box_indices, mag_ent._spin_box_indices
                         )
                     )
-                    mag_ent.Vu2[-1].append(
+                    mag_ent._Vu2[-1].append(
                         onsite_projection(
-                            Vu2, mag_ent.spin_box_indices, mag_ent.spin_box_indices
+                            Vu2, mag_ent._spin_box_indices, mag_ent._spin_box_indices
                         )
                     )
 

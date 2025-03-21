@@ -200,13 +200,13 @@ class Pair:
         # they are here so they are dumped to the self.__dict__ upon saving
         self.__SBS1 = self.M1.SBS
         self.__SBS2 = self.M2.SBS
-        self.__SBI1 = self.M1.spin_box_indices
-        self.__SBI2 = self.M2.spin_box_indices
+        self.__SBI1 = self.M1._spin_box_indices
+        self.__SBI2 = self.M2._spin_box_indices
         self.__tags = [self.M1.tag, self.M2.tag]
         self.__cell = self._dh.cell
         self.__supercell_shift_xyz = self.supercell_shift @ self.cell
         self.__xyz = np.array(
-            [self.M1.xyz, self.M2.xyz + self.supercell_shift_xyz], dtype=object
+            [self.M1._xyz, self.M2._xyz + self.supercell_shift_xyz], dtype=object
         )
         self.__xyz_center = np.array(
             [self.M1.xyz_center, self.M2.xyz_center + self.supercell_shift_xyz]
@@ -286,13 +286,13 @@ class Pair:
     @property
     def SBI1(self) -> NDArray:
         """Spin box indices of the first magnetic entity."""
-        self.__SBI1 = self.M1.spin_box_indices
+        self.__SBI1 = self.M1._spin_box_indices
         return self.__SBI1
 
     @property
     def SBI2(self) -> NDArray:
         """Spin box indices of the second magnetic entity."""
-        self.__SBI2 = self.M2.spin_box_indices
+        self.__SBI2 = self.M2._spin_box_indices
         return self.__SBI2
 
     @property
@@ -460,8 +460,8 @@ class Pair:
             # iterate over the first order local perturbations in all possible orientations for the two sites
             # actually all possible orientations without the orientation for the off-diagonal anisotropy
             # that is why we only take the first two of each Vu1
-            for Vui in self.M1.Vu1[i][:2]:
-                for Vuj in self.M2.Vu1[i][:2]:
+            for Vui in self.M1._Vu1[i][:2]:
+                for Vuj in self.M2._Vu1[i][:2]:
                     storage.append(interaction_energy(Vui, Vuj, Gij, Gji, weights))
             # fill up the pairs dictionary with the energies
             energies.append(storage)

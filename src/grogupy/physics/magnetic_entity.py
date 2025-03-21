@@ -35,6 +35,7 @@ import sisl
 
 from .. import __version__
 from .._core.core import onsite_projection
+from .._core.utilities import arrays_lists_equal
 from .utilities import (
     blow_up_orbindx,
     calculate_anisotropy_tensor,
@@ -155,9 +156,9 @@ class MagneticEntity:
         The center of coordinates for the magnetic entity
     tag : str
         The description of the magnetic entity
-    Vu1 : list[list[float]]
+    _Vu1 : list[list[float]]
         The list of the first order rotations
-    Vu2 : list[list[float]]
+    _Vu2 : list[list[float]]
         The list of the second order rotations
     Gii : list[NDArray]
         The list of the projected Greens functions
@@ -286,9 +287,9 @@ class MagneticEntity:
         self._xyz: NDArray = np.array([self._dh.xyz[i] for i in self._atom])
 
         # initialize simulation parameters
-        self.Vu1: list[list[NDArray]] = []
-        self.Vu2: list[list[NDArray]] = []
-        self.Gii: list[NDArray] = []
+        self._Vu1: list[list[NDArray]] = []
+        self._Vu2: list[list[NDArray]] = []
+        self._Gii: list[NDArray] = []
         self._Gii_tmp: list[NDArray] = []
 
         self.energies: Union[None, NDArray] = None
@@ -332,7 +333,7 @@ class MagneticEntity:
         if np.allclose(new._dh.Hk().toarray(), value._dh.Hk().toarray()):
             raise Exception("The sisl Hamiltonians are not the same!")
         if np.allclose(new._dh.Sk().toarray(), value._dh.Sk().toarray()):
-            raise Exception("The sisl Hamiltonians are not the same!")
+            raise Exception("The sisl Overlap matrices are not the same!")
 
         new._atom = np.concatenate((new._atom, value._atom))
         new._l = np.concatenate((new._l, value._l))
@@ -354,38 +355,41 @@ class MagneticEntity:
                 and np.allclose(self._ds.Dk().toarray(), value._ds.Dk().toarray())
                 and np.allclose(self._ds.Sk().toarray(), value._ds.Sk().toarray())
                 and self.infile == value.infile
-                and np.allclose(self._atom, value._atom)
-                and np.allclose(self._l, value._l)
-                and np.allclose(self._orbital_box_indices, value._orbital_box_indices)
+                and arrays_lists_equal(self._atom, value._atom)
+                and arrays_lists_equal(self._l, value._l)
+                and arrays_lists_equal(
+                    self._orbital_box_indices, value._orbital_box_indices
+                )
                 and self._tags == value._tags
-                and np.allclose(self._mulliken, value._mulliken)
-                and np.allclose(self._spin_box_indices, value._spin_box_indices)
-                and np.allclose(self._xyz, value._xyz)
-                and np.allclose(self.energies, value.energies)
-                and np.allclose(self.K, value.K)
-                and np.allclose(self.K_consistency, value.K_consistency)
+                and arrays_lists_equal(self._mulliken, value._mulliken)
+                and arrays_lists_equal(self._spin_box_indices, value._spin_box_indices)
+                and arrays_lists_equal(self._xyz, value._xyz)
+                and arrays_lists_equal(self._Vu1, value._Vu1)
+                and arrays_lists_equal(self._Vu2, value._Vu2)
+                and arrays_lists_equal(self._Gii, value._Gii)
+                and arrays_lists_equal(self._Gii_tmp, value._Gii_tmp)
             ):
-                if len(self.Vu1) != len(value.Vu1):
-                    return False
-                if len(self.Vu2) != len(value.Vu2):
-                    return False
-                if len(self.Gii) != len(value.Gii):
-                    return False
-                if len(self._Gii_tmp) != len(value._Gii_tmp):
+                if self.energies is None and value.energies is None:
+                    pass
+                elif arrays_lists_equal(self.energies, value.energies):
+                    pass
+                else:
                     return False
 
-                for one, two in zip(self.Vu1, value.Vu1):
-                    if not np.allclose(one, two):
-                        return False
-                for one, two in zip(self.Vu2, value.Vu2):
-                    if not np.allclose(one, two):
-                        return False
-                for one, two in zip(self.Gii, value.Gii):
-                    if not np.allclose(one, two):
-                        return False
-                for one, two in zip(self._Gii_tmp, value._Gii_tmp):
-                    if not np.allclose(one, two):
-                        return False
+                if self.K is None and value.K is None:
+                    pass
+                elif arrays_lists_equal(self.K, value.K):
+                    pass
+                else:
+                    return False
+
+                if self.K_consistency is None and value.K_consistency is None:
+                    pass
+                elif arrays_lists_equal(self.K_consistency, value.K_consistency):
+                    pass
+                else:
+                    return False
+
                 return True
             return False
         return False
@@ -507,9 +511,9 @@ class MagneticEntity:
     def reset(self) -> None:
         """Resets the simulation results."""
 
-        self.Vu1: list[list[NDArray]] = []
-        self.Vu2: list[list[NDArray]] = []
-        self.Gii: list[NDArray] = []
+        self._Vu1: list[list[NDArray]] = []
+        self._Vu2: list[list[NDArray]] = []
+        self._Gii: list[NDArray] = []
         self._Gii_tmp: list[NDArray] = []
         self.energies: list[NDArray] = []
         self.K: Union[None, NDArray] = None
@@ -550,11 +554,11 @@ class MagneticEntity:
         """
 
         energies: list[list[float]] = []
-        for i, Gii in enumerate(self.Gii):
+        for i, Gii in enumerate(self._Gii):
             storage: list[float] = []
             # iterate over the first and second order local perturbations
-            V1 = self.Vu1[i]
-            V2 = self.Vu2[i]
+            V1 = self._Vu1[i]
+            V2 = self._Vu2[i]
 
             # fill up the magnetic entities dictionary with the energies
             storage.append(second_order_energy(V1[0], V2[0], Gii, weights))

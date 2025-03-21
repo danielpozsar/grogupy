@@ -98,7 +98,7 @@ def solve_parallel_over_k(
     # sum reduce partial results of mpi nodes
     for i in range(len(builder._rotated_hamiltonians)):
         for mag_ent in builder.magnetic_entities:
-            comm.Reduce(mag_ent._Gii_tmp[i], mag_ent.Gii[i], root=root_node)
+            comm.Reduce(mag_ent._Gii_tmp[i], mag_ent._Gii[i], root=root_node)
 
             if builder.anisotropy_solver.lower()[0] == "f":  # fit
                 # mag_ent.calculate_energies(builder.contour.weights, False)
@@ -196,7 +196,7 @@ def solve_parallel_over_all(
         for mag_ent in builder.magnetic_entities:
             mag_ent._Gii_tmp[o_idx] += (
                 onsite_projection(
-                    Gk, mag_ent.spin_box_indices, mag_ent.spin_box_indices
+                    Gk, mag_ent._spin_box_indices, mag_ent._spin_box_indices
                 )
                 * builder.kspace.weights[k_idx]
             )
@@ -222,7 +222,7 @@ def solve_parallel_over_all(
     # sum reduce partial results of mpi nodes
     for i in range(len(builder._rotated_hamiltonians)):
         for mag_ent in builder.magnetic_entities:
-            comm.Reduce(mag_ent._Gii_tmp[i], mag_ent.Gii[i], root=root_node)
+            comm.Reduce(mag_ent._Gii_tmp[i], mag_ent._Gii[i], root=root_node)
 
             if builder.anisotropy_solver.lower()[0] == "f":  # fit
                 mag_ent.calculate_energies(builder.contour.weights, False)

@@ -21,6 +21,7 @@ import numpy as np
 import pytest
 
 import grogupy
+from grogupy._core.utilities import arrays_lists_equal
 from grogupy.io.utilities import decipher
 from grogupy.physics import MagneticEntity
 
@@ -28,9 +29,6 @@ pytestmark = [pytest.mark.physics]
 
 
 class TestMagneticEntity:
-    def test_(self):
-        raise Exception("Not implemented test!")
-
     @pytest.mark.parametrize(
         "atom, l, orb, res",
         [
@@ -85,26 +83,26 @@ class TestMagneticEntity:
             orb,
         )
         print(mag_ent)
-        print(mag_ent.atom, mag_ent.l, mag_ent.spin_box_indices)
+        print(mag_ent._atom, mag_ent._l, mag_ent._spin_box_indices)
         assert mag_ent.tag == res
-        print(type(mag_ent.atom), mag_ent.atom)
-        assert isinstance(mag_ent.atom, np.ndarray)
+        print(type(mag_ent._atom), mag_ent._atom)
+        assert isinstance(mag_ent._atom, np.ndarray)
         if isinstance(atom, int):
-            assert len(mag_ent.atom) == 1
+            assert len(mag_ent._atom) == 1
         elif atom is not None:
-            assert len(mag_ent.atom) == len(atom)
-        assert isinstance(mag_ent.l, list)
-        for i in mag_ent.l:
+            assert len(mag_ent._atom) == len(atom)
+        assert isinstance(mag_ent._l, list)
+        for i in mag_ent._l:
             assert isinstance(i, list)
             for j in i:
                 if j is not None:
                     assert isinstance(j, int)
-        assert len(mag_ent.spin_box_indices) == mag_ent.SBS
-        assert len(mag_ent._tags) == len(mag_ent.atom)
-        assert len(mag_ent.xyz) == len(mag_ent.atom)
-        assert isinstance(mag_ent.Vu1, list)
-        assert isinstance(mag_ent.Vu2, list)
-        assert isinstance(mag_ent.Gii, list)
+        assert len(mag_ent._spin_box_indices) == mag_ent.SBS
+        assert len(mag_ent._tags) == len(mag_ent._atom)
+        assert len(mag_ent._xyz) == len(mag_ent._atom)
+        assert isinstance(mag_ent._Vu1, list)
+        assert isinstance(mag_ent._Vu2, list)
+        assert isinstance(mag_ent._Gii, list)
         assert isinstance(mag_ent._Gii_tmp, list)
         assert mag_ent.energies is None
         assert mag_ent.K is None
@@ -352,94 +350,311 @@ class TestMagneticEntity:
 
         new = mag_ent1 + mag_ent2
         assert new.tag == tag1 + "--" + tag2
-        assert (
-            new.spin_box_indices
-            == np.concatenate((mag_ent1.spin_box_indices, mag_ent2.spin_box_indices))
-        ).all()
+        assert arrays_lists_equal(
+            new._atom, np.concatenate((mag_ent1._atom, mag_ent2._atom))
+        )
+        assert arrays_lists_equal(new._l, np.concatenate((mag_ent1._l, mag_ent2._l)))
+        assert arrays_lists_equal(
+            new._orbital_box_indices,
+            np.concatenate(
+                (mag_ent1._orbital_box_indices, mag_ent2._orbital_box_indices)
+            ),
+        )
+        assert arrays_lists_equal(
+            new._spin_box_indices,
+            np.concatenate((mag_ent1._spin_box_indices, mag_ent2._spin_box_indices)),
+        )
+        assert arrays_lists_equal(
+            new._xyz, np.concatenate((mag_ent1._xyz, mag_ent2._xyz))
+        )
 
     def test_reset(self):
         mag_ent = grogupy.load("./tests/test_magnetic_entity.pkl")
 
-        mag_ent.Vu1 = 1
-        mag_ent.Vu2 = None
-        mag_ent.Gii = np.array([10])
+        mag_ent._Vu1 = 1
+        mag_ent._Vu2 = None
+        mag_ent._Gii = np.array([10])
         mag_ent._Gii_tmp = "[]"
         mag_ent.energies = 3.14
         mag_ent.K = (10, 20, 30)
         mag_ent.K_consistency = 2
 
         mag_ent.reset()
-        assert mag_ent.Vu1 == []
-        assert mag_ent.Vu2 == []
-        assert mag_ent.Gii == []
+        assert mag_ent._Vu1 == []
+        assert mag_ent._Vu2 == []
+        assert mag_ent._Gii == []
         assert mag_ent._Gii_tmp == []
         assert mag_ent.energies == []
         assert mag_ent.K is None
         assert mag_ent.K_consistency is None
 
     def test_add_G_tmp(self):
-        infile = "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf"
+        raise Exception("Not implemented test!")
 
-        mag_ent = MagneticEntity(infile, 1)
+    def test_energies(self):
+        raise Exception("Not implemented test!")
 
-        builder = grogupy.Builder(np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]))
-        builder.add_contour(grogupy.Contour(100, 1000, -10))
-        builder.add_kspace(grogupy.Kspace())
-        builder.add_hamiltonian(grogupy.Hamiltonian(infile))
-        builder.magnetic_entities = [mag_ent]
+    def test_anisotropy(self):
+        raise Exception("Not implemented test!")
 
-        builder.finalize()
-
-        mag_ent = builder.magnetic_entities[0]
-        assert len(mag_ent.Gii) == 3
-        assert len(mag_ent._Gii_tmp) == 3
-        for g in mag_ent._Gii_tmp:
-            assert g.sum() == 0
-        for g in mag_ent.Gii:
-            assert g.sum() == 0
-        print(mag_ent._Gii_tmp[0].shape)
-        Gk = np.zeros((100, builder.NO, builder.NO))
-        Gk[0, 0, 0] = 1
-        mag_ent.add_G_tmp(1, Gk, 1)
-        for g in mag_ent.Gii:
-            assert g.sum() == 0
-        assert mag_ent._Gii_tmp[0].sum() == 0
-        assert mag_ent._Gii_tmp[1].sum() == 0
-        assert mag_ent._Gii_tmp[2].sum() == 0
-        Gk[0, mag_ent.SBS, mag_ent.SBS] = 1
-        mag_ent.add_G_tmp(1, Gk, 1)
-        for g in mag_ent.Gii:
-            assert g.sum() == 0
-        assert mag_ent._Gii_tmp[0].sum() == 0
-        assert mag_ent._Gii_tmp[1].sum() == 1
-        assert mag_ent._Gii_tmp[2].sum() == 0
-
-    def test_energies_and_anisotropy(self):
-        infile = "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf"
-
-        mag_ent = MagneticEntity(infile, 1)
-
-        builder = grogupy.Builder(
-            np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]), matlabmode=True
+    @pytest.mark.parametrize(
+        "atom, l, orb",
+        [
+            (None, None, 1),
+            (None, None, [1]),
+            (None, None, [1, 2]),
+            (1, None, None),
+            (1, None, 1),
+            (1, None, [1]),
+            (1, None, [1, 2]),
+            (1, None, [[1, 2]]),
+            (1, 1, None),
+            (1, [1], None),
+            (1, [1, 2], None),
+            (1, [[1, 2]], None),
+            ([1], None, None),
+            ([1], None, 1),
+            ([1], None, [1]),
+            ([1], None, [1, 2]),
+            ([1], None, [[1, 2]]),
+            ([1], 1, None),
+            ([1], [1], None),
+            ([1], [1, 2], None),
+            ([1], [[1, 2]], None),
+            ([1, 2], None, None),
+            ([1, 2], None, 1),
+            ([1, 2], None, [1]),
+            ([1, 2], None, [1, 2]),
+            ([1, 2], None, [[1, 2], [1, 2]]),
+            ([1, 2], 1, None),
+            ([1, 2], [1], None),
+            ([1, 2], [1, 2], None),
+            ([1, 2], [[1, 2], [1, 2]], None),
+            # tests from decipher
+            ([0], None, [[1]]),
+            ([0], None, [[1, 2]]),
+            ([0], [[1]], None),
+            ([0], [[1, 2]], None),
+            ([0], [[None]], None),
+            ([1], None, [[1]]),
+            ([1], None, [[1, 2]]),
+            ([1], [[1]], None),
+            ([1], [[1, 2]], None),
+            ([1], [[None]], None),
+        ],
+    )
+    def test_equality(self, atom, l, orb):
+        m = MagneticEntity(
+            "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf",
+            atom,
+            l,
+            orb,
         )
-        builder.add_contour(grogupy.Contour(100, 600))
-        builder.add_kspace(grogupy.Kspace())
-        builder.add_hamiltonian(grogupy.Hamiltonian(infile))
-        builder.magnetic_entities = [mag_ent]
+        m2 = m.copy()
+        assert m == m2
 
-        builder.solve()
+        m2._dh.H[1] = 0
+        assert m != m2
+        m2._dh = m._dh
+        assert m == m2
 
-        mag_ent = builder.magnetic_entities[0]
-        print(mag_ent.energies)
-        # matlabmode True
-        K1 = np.array(mag_ent.K)
-        # matlabmode False
-        mag_ent.fit_anisotropy_tensor(builder.ref_xcf_orientations)
-        K2 = np.array(mag_ent.K)
+        m2._ds.D[1] = 0
+        assert m != m2
+        m2._ds = m._ds
+        assert m == m2
 
-        print(K1)
-        print(K2)
-        assert np.isclose(K1, K2).all()
+        m2.infile = "unknown!"  # lowercase
+        assert m != m2
+        m2.infile = m.infile
+        assert m == m2
+
+        m2._atom = np.array([1])
+        assert m != m2
+        m2._atom = m._atom
+        assert m == m2
+
+        m2._l = np.ones_like(m._l)
+        assert m != m2
+        m2._l = m._l
+        assert m == m2
+
+        m2._orbital_box_indices = [0]
+        assert m != m2
+        m2._orbital_box_indices = m._orbital_box_indices
+        assert m == m2
+
+        m2._tags = "asd"
+        assert m != m2
+        m2._tags = m._tags
+        assert m == m2
+
+        m2._mulliken = np.zeros_like(m._mulliken)
+        assert m != m2
+        m2._mulliken = m._mulliken
+        assert m == m2
+
+        m2._spin_box_indices = np.ones_like(m._spin_box_indices)
+        assert m != m2
+        m2._spin_box_indices = m._spin_box_indices
+        assert m == m2
+
+        m2._xyz[-1] = np.zeros(3)
+        assert m != m2
+        m2._xyz = m._xyz
+        assert m == m2
+
+        m2._Vu1[-1] = np.zeros(3)
+        assert m != m2
+        m2._Vu1 = m._Vu1
+        assert m == m2
+
+        m2._Vu2[-1] = np.zeros(3)
+        assert m != m2
+        m2._Vu2 = m._Vu2
+        assert m == m2
+
+        m2._Gii[-1] = np.zeros(3)
+        assert m != m2
+        m2._Gii = m._Gii
+        assert m == m2
+
+        m2._Gii_tmp[-1] = np.zeros(3)
+        assert m != m2
+        m2._Gii_tmp = m._Gii_tmp
+        assert m == m2
+
+        m2.energies[-1] = np.zeros(3)
+        assert m != m2
+        m2.energies = m.energies
+        assert m == m2
+
+        m2.K[-1] = np.zeros(3)
+        assert m != m2
+        m2.K = m.K
+        assert m == m2
+
+        m2.K_consistency[-1] = np.zeros(3)
+        assert m != m2
+        m2.K_consistency = m.K_consistency
+        assert m == m2
+
+    @pytest.mark.parametrize(
+        "atom, l, orb",
+        [
+            (None, None, 1),
+            (None, None, [1]),
+            (None, None, [1, 2]),
+            (1, None, None),
+            (1, None, 1),
+            (1, None, [1]),
+            (1, None, [1, 2]),
+            (1, None, [[1, 2]]),
+            (1, 1, None),
+            (1, [1], None),
+            (1, [1, 2], None),
+            (1, [[1, 2]], None),
+            ([1], None, None),
+            ([1], None, 1),
+            ([1], None, [1]),
+            ([1], None, [1, 2]),
+            ([1], None, [[1, 2]]),
+            ([1], 1, None),
+            ([1], [1], None),
+            ([1], [1, 2], None),
+            ([1], [[1, 2]], None),
+            ([1, 2], None, None),
+            ([1, 2], None, 1),
+            ([1, 2], None, [1]),
+            ([1, 2], None, [1, 2]),
+            ([1, 2], None, [[1, 2], [1, 2]]),
+            ([1, 2], 1, None),
+            ([1, 2], [1], None),
+            ([1, 2], [1, 2], None),
+            ([1, 2], [[1, 2], [1, 2]], None),
+            # tests from decipher
+            ([0], None, [[1]]),
+            ([0], None, [[1, 2]]),
+            ([0], [[1]], None),
+            ([0], [[1, 2]], None),
+            ([0], [[None]], None),
+            ([1], None, [[1]]),
+            ([1], None, [[1, 2]]),
+            ([1], [[1]], None),
+            ([1], [[1, 2]], None),
+            ([1], [[None]], None),
+        ],
+    )
+    def test_copy(self, atom, l, orb):
+        m = MagneticEntity(
+            "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf",
+            atom,
+            l,
+            orb,
+        )
+        m2 = m.copy()
+        assert m == m2
+        m2.emax = 1
+        assert m != m2
+
+    @pytest.mark.parametrize(
+        "atom, l, orb",
+        [
+            (None, None, 1),
+            (None, None, [1]),
+            (None, None, [1, 2]),
+            (1, None, None),
+            (1, None, 1),
+            (1, None, [1]),
+            (1, None, [1, 2]),
+            (1, None, [[1, 2]]),
+            (1, 1, None),
+            (1, [1], None),
+            (1, [1, 2], None),
+            (1, [[1, 2]], None),
+            ([1], None, None),
+            ([1], None, 1),
+            ([1], None, [1]),
+            ([1], None, [1, 2]),
+            ([1], None, [[1, 2]]),
+            ([1], 1, None),
+            ([1], [1], None),
+            ([1], [1, 2], None),
+            ([1], [[1, 2]], None),
+            ([1, 2], None, None),
+            ([1, 2], None, 1),
+            ([1, 2], None, [1]),
+            ([1, 2], None, [1, 2]),
+            ([1, 2], None, [[1, 2], [1, 2]]),
+            ([1, 2], 1, None),
+            ([1, 2], [1], None),
+            ([1, 2], [1, 2], None),
+            ([1, 2], [[1, 2], [1, 2]], None),
+            # tests from decipher
+            ([0], None, [[1]]),
+            ([0], None, [[1, 2]]),
+            ([0], [[1]], None),
+            ([0], [[1, 2]], None),
+            ([0], [[None]], None),
+            ([1], None, [[1]]),
+            ([1], None, [[1, 2]]),
+            ([1], [[1]], None),
+            ([1], [[1, 2]], None),
+            ([1], [[None]], None),
+        ],
+    )
+    def test_getstate_setstate(self, atom, l, orb):
+        m = MagneticEntity(
+            "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf",
+            atom,
+            l,
+            orb,
+        )
+        state = m.__getstate__()
+        assert isinstance(state, dict)
+
+        m2 = object.__new__(MagneticEntity)
+        m2.__setstate__(state)
+        assert m == m2
 
 
 if __name__ == "__main__":
