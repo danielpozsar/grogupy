@@ -19,7 +19,6 @@
 # SOFTWARE.
 import pytest
 
-import grogupy.batch
 from grogupy.io.utilities import *
 
 pytestmark = [pytest.mark.io]
