@@ -330,13 +330,13 @@ class MagneticEntity:
         new.reset()
         # update out instance
         # accept both kinds of hamiltonian
-        if np.allclose(new._dh.Hk().toarray(), value._dh.Hk().toarray()):
+        if not arrays_lists_equal(new._dh.Hk().toarray(), value._dh.Hk().toarray()):
             raise Exception("The sisl Hamiltonians are not the same!")
-        if np.allclose(new._dh.Sk().toarray(), value._dh.Sk().toarray()):
+        if not arrays_lists_equal(new._dh.Sk().toarray(), value._dh.Sk().toarray()):
             raise Exception("The sisl Overlap matrices are not the same!")
 
         new._atom = np.concatenate((new._atom, value._atom))
-        new._l = np.concatenate((new._l, value._l))
+        new._l = new._l + value._l
         new._orbital_box_indices = np.concatenate(
             (new._orbital_box_indices, value._orbital_box_indices)
         )
@@ -350,10 +350,16 @@ class MagneticEntity:
     def __eq__(self, value):
         if isinstance(value, MagneticEntity):
             if (
-                np.allclose(self._dh.Hk().toarray(), value._dh.Hk().toarray())
-                and np.allclose(self._dh.Sk().toarray(), value._dh.Sk().toarray())
-                and np.allclose(self._ds.Dk().toarray(), value._ds.Dk().toarray())
-                and np.allclose(self._ds.Sk().toarray(), value._ds.Sk().toarray())
+                arrays_lists_equal(self._dh.Hk().toarray(), value._dh.Hk().toarray())
+                and arrays_lists_equal(
+                    self._dh.Sk().toarray(), value._dh.Sk().toarray()
+                )
+                and arrays_lists_equal(
+                    self._ds.Dk().toarray(), value._ds.Dk().toarray()
+                )
+                and arrays_lists_equal(
+                    self._ds.Sk().toarray(), value._ds.Sk().toarray()
+                )
                 and self.infile == value.infile
                 and arrays_lists_equal(self._atom, value._atom)
                 and arrays_lists_equal(self._l, value._l)
@@ -385,7 +391,7 @@ class MagneticEntity:
 
                 if self.K_consistency is None and value.K_consistency is None:
                     pass
-                elif arrays_lists_equal(self.K_consistency, value.K_consistency):
+                elif np.isclose(self.K_consistency, value.K_consistency):
                     pass
                 else:
                     return False
