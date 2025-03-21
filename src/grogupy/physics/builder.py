@@ -645,7 +645,7 @@ class Builder:
         out += newline
         for mag_ent in self.magnetic_entities:
             out += mag_ent.tag + " "
-            out += f"{mag_ent.xyz.mean(axis=0)[0]} {mag_ent.xyz.mean(axis=0)[1]} {mag_ent.xyz.mean(axis=0)[2]} "
+            out += f"{mag_ent._xyz.mean(axis=0)[0]} {mag_ent._xyz.mean(axis=0)[1]} {mag_ent._xyz.mean(axis=0)[2]} "
             out += f"{mag_ent.Sx} {mag_ent.Sy} {mag_ent.Sz} # {mag_ent.Q}"
             out += newline
         out += section + newline
