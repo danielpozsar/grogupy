@@ -138,7 +138,7 @@ class Contour:
         self._esetp: float = esetp
         self.samples: Union[NDArray, None] = None
         self.weights: Union[NDArray, None] = None
-        self._make_contour()
+        self.__make_contour()
         self.times.measure("setup", restart=True)
 
     def __getstate__(self):
