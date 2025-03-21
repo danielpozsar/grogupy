@@ -23,6 +23,7 @@ _extended_summary_
 """
 
 import copy
+from typing import Union
 
 import numpy as np
 from numpy.typing import NDArray
@@ -126,8 +127,8 @@ class Kspace:
         return self.__kset
 
     @kset.setter
-    def kset(self, value: int) -> None:
-        self._kset = value
+    def kset(self, value: Union[list, NDArray]) -> None:
+        self.__kset = np.array(value)
         self.kpoints: NDArray = make_kset(self.__kset)
         self.weights: NDArray = np.ones(len(self.kpoints)) / len(self.kpoints)
 
