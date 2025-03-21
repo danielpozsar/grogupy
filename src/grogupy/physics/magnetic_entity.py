@@ -335,15 +335,15 @@ class MagneticEntity:
         if not arrays_lists_equal(new._dh.Sk().toarray(), value._dh.Sk().toarray()):
             raise Exception("The sisl Overlap matrices are not the same!")
 
-        new._atom = np.concatenate((new._atom, value._atom))
+        new._atom = np.hstack((new._atom, value._atom))
         new._l = new._l + value._l
-        new._orbital_box_indices = np.concatenate(
+        new._orbital_box_indices = np.hstack(
             (new._orbital_box_indices, value._orbital_box_indices)
         )
         new._tags = new._tags + value._tags
 
         new._spin_box_indices = blow_up_orbindx(new._orbital_box_indices)
-        new._xyz = np.hstack((new._xyz, value._xyz))
+        new._xyz = np.vstack((new._xyz, value._xyz))
 
         return new
 
@@ -391,8 +391,13 @@ class MagneticEntity:
 
                 if self.K_consistency is None and value.K_consistency is None:
                     pass
-                elif np.isclose(self.K_consistency, value.K_consistency):
-                    pass
+                elif isinstance(self.K_consistency, float) and isinstance(
+                    value.K_consistency, float
+                ):
+                    if np.isclose(self.K_consistency, value.K_consistency):
+                        pass
+                    else:
+                        return False
                 else:
                     return False
 
