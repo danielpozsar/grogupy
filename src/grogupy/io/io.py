@@ -317,6 +317,7 @@ def load(
         "ref_xcf_orientations",
         "_rotated_hamiltonians",
         "SLURM_ID",
+        "_Builder__version",
     ]:
         return load_Builder(infile)
 
@@ -329,10 +330,14 @@ def load(
         "S",
         "scf_xcf_orientation",
         "orientation",
+        "_Hamiltonian__no",
         "hTRS",
         "hTRB",
         "XCF",
         "H_XCF",
+        "_Hamiltonian__cell",
+        "_Hamiltonian__sc_off",
+        "_Hamiltonian__uc_in_sc_index",
     ]:
         return load_Hamiltonian(infile)
     elif list(infile.keys()) == [
@@ -349,26 +354,59 @@ def load(
         "J",
         "J_S",
         "D",
+        "_Pair__SBS1",
+        "_Pair__SBS2",
+        "_Pair__SBI1",
+        "_Pair__SBI2",
+        "_Pair__tags",
+        "_Pair__cell",
+        "_Pair__supercell_shift_xyz",
+        "_Pair__xyz",
+        "_Pair__xyz_center",
+        "_Pair__distance",
+        "_Pair__energies_meV",
+        "_Pair__energies_mRy",
+        "_Pair__J_meV",
+        "_Pair__J_mRy",
+        "_Pair__D_meV",
+        "_Pair__D_mRy",
+        "_Pair__J_S_meV",
+        "_Pair__J_S_mRy",
+        "_Pair__J_iso_meV",
+        "_Pair__J_iso_mRy",
     ]:
         return load_Pair(infile)
     elif list(infile.keys()) == [
         "_dh",
         "_ds",
         "infile",
-        "atom",
-        "l",
-        "orbital_box_indices",
+        "_atom",
+        "_l",
+        "_orbital_box_indices",
         "_tags",
-        "mulliken",
-        "spin_box_indices",
-        "xyz",
-        "Vu1",
-        "Vu2",
-        "Gii",
+        "_mulliken",
+        "_spin_box_indices",
+        "_xyz",
+        "_Vu1",
+        "_Vu2",
+        "_Gii",
         "_Gii_tmp",
         "energies",
         "K",
         "K_consistency",
+        "_MagneticEntity__tag",
+        "_MagneticEntity__SBS",
+        "_MagneticEntity__xyz_center",
+        "_MagneticEntity__Q",
+        "_MagneticEntity__Sx",
+        "_MagneticEntity__Sy",
+        "_MagneticEntity__Sz",
+        "_MagneticEntity__energies_meV",
+        "_MagneticEntity__energies_mRy",
+        "_MagneticEntity__K_meV",
+        "_MagneticEntity__K_mRy",
+        "_MagneticEntity__K_consistency_meV",
+        "_MagneticEntity__K_consistency_mRy",
     ]:
         return load_MagneticEntity(infile)
     elif list(infile.keys()) == ["times", "_Kspace__kset", "kpoints", "weights"]:
@@ -401,6 +439,7 @@ def save(
     """Saves the instance from a pickled state.
 
     The compression level can be set to 0,1,2,3. Every other value defaults to 3.
+
     0. This means that there is no compression at all.
 
     1. This means, that the keys "_dh" and "_ds" are set
