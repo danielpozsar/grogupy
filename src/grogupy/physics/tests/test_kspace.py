@@ -43,9 +43,10 @@ class TestKspace:
     @pytest.mark.parametrize(
         "kset", [[1, 1, 1], [10, 10, 10], [1, 10, 1], [1, 1, 10], [10, 1, 1]]
     )
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_kpoints(self, kset):
         k = Kspace(kset)
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
     @pytest.mark.parametrize(
         "kset", [[1, 1, 1], [10, 10, 10], [1, 10, 1], [1, 1, 10], [10, 1, 1]]

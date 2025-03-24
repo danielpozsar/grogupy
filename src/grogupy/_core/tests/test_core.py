@@ -25,29 +25,37 @@ pytestmark = [pytest.mark.core]
 
 
 class TestCore:
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_parallel_Gk(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_sequential_Gk(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_onsite_projection(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_calc_Vu(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_build_hh_ss(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_make_contour(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_make_kset(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_hsk(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
 
 if __name__ == "__main__":

@@ -385,14 +385,17 @@ class TestMagneticEntity:
         assert mag_ent.K is None
         assert mag_ent.K_consistency is None
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_add_G_tmp(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_energies(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_anisotropy(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
     @pytest.mark.parametrize(
         "atom, l, orb",
@@ -451,16 +454,12 @@ class TestMagneticEntity:
         m2 = m.copy()
         assert m == m2
 
-        m2._dh = sisl.get_sile(
-            "/Users/danielpozsar/Downloads/Cr3_new/Cr3.fdf"
-        ).read_hamiltonian()
+        m2._dh = sisl.get_sile("./benchmarks/Cr3/Cr3.fdf").read_hamiltonian()
         assert m != m2
         m2._dh = m._dh
         assert m == m2
 
-        m2._ds = sisl.get_sile(
-            "/Users/danielpozsar/Downloads/Cr3_new/Cr3.fdf"
-        ).read_density_matrix()
+        m2._ds = sisl.get_sile("./benchmarks/Cr3/Cr3.fdf").read_density_matrix()
         assert m != m2
         m2._ds = m._ds
         assert m == m2

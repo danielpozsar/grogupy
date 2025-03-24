@@ -25,23 +25,29 @@ pytestmark = [pytest.mark.core]
 
 
 class TestCore:
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_commutator(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_tau_u(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_crossM(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_RotM(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_RotMa2b(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_setup_from_range(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
 
 if __name__ == "__main__":

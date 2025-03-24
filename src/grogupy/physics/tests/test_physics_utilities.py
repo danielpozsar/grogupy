@@ -25,38 +25,49 @@ pytestmark = [pytest.mark.physics]
 
 
 class TestUtilities:
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_get_number_of_electrons(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_automatic_emin(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_blow_up_orbindx(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_spin_tracer(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_parse_magnetic_entity(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_interaction_energy(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_second_order_energy(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_calculate_anisotropy_tensor(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_fit_anisotropy_tensor(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_calculate_exchange_tensor(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_fit_exchange_tensor(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
 
 if __name__ == "__main__":

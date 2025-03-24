@@ -77,14 +77,17 @@ class TestUtilities:
             atom, l, orb = decipher(tag)
             print(atom, l, orb)
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_decipher_all_by_pos(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_decipher_all_by_tag(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_strip_dict_structure(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
 
 if __name__ == "__main__":

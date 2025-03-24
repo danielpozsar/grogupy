@@ -25,8 +25,9 @@ pytestmark = [pytest.mark.physics]
 
 
 class TestBuilder:
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
 
 if __name__ == "__main__":

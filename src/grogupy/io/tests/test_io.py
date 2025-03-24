@@ -137,18 +137,21 @@ class TestIO:
         assert isinstance(pair2, grogupy.Pair)
         assert pair == pair2
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_load_save_magnopy(self):
         builder = load_Builder("./tests/test_builder.pkl")
         save_magnopy(builder, "./tests/test_magnopy")
         data = read_magnopy("./tests/test_magnopy.magnopy.txt")
         print(data)
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_read_fdf(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_read_command_line(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
     def test_save_compression(self):
         def parse(dictionary, key):

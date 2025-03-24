@@ -79,14 +79,17 @@ class TestPair:
         assert pair.J_S == None
         assert pair.D == None
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_add_G_tmp(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_energies(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_exchange(self):
-        raise Exception("Not implemented test!")
+        raise NotImplementedError
 
     def test_equality(self):
         p = grogupy.load("./tests/test_pair.pkl")
@@ -94,9 +97,7 @@ class TestPair:
         p2 = p.copy()
         assert p == p2
 
-        p2._dh = sisl.get_sile(
-            "/Users/danielpozsar/Downloads/Cr3_new/Cr3.fdf"
-        ).read_hamiltonian()
+        p2._dh = sisl.get_sile("./benchmarks/Cr3/Cr3.fdf").read_hamiltonian()
         assert p != p2
         p2._dh = p._dh
         assert p == p2
