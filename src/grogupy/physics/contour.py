@@ -67,7 +67,7 @@ class Contour:
 
     Or create it with the automatic emin finder.
 
-    >>> contour = Contour(eset=600, esetp=1000, emin=None, eigfile="/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf")
+    >>> contour = Contour(eset=600, esetp=1000, emin=None, eigfile="/Users/danielpozsar/Downloads/Fe3GeTe2/Fe3GeTe2.fdf")
     >>> print(contour)
     <grogupy.Contour emin=-17.80687896, emax=0, eset=600, esetp=1000>
 

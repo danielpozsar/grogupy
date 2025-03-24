@@ -31,7 +31,7 @@ from grogupy.physics.hamiltonian import Hamiltonian
 def test_hamiltonian():
     """Create a test Hamiltonian instance"""
     # Use the provided input.fdf file in tests directory
-    infile = "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf"
+    infile = "/Users/danielpozsar/Downloads/Fe3GeTe2/Fe3GeTe2.fdf"
     scf_xcf_orientation = np.array([0, 0, 1])
     return Hamiltonian(infile, scf_xcf_orientation)
 
@@ -42,10 +42,7 @@ def test_hamiltonian_initialization(test_hamiltonian):
 
     # Check basic properties
     assert isinstance(h._dh, sisl.physics.Hamiltonian)
-    assert (
-        h.infile
-        == "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf"
-    )
+    assert h.infile == "/Users/danielpozsar/Downloads/Fe3GeTe2/Fe3GeTe2.fdf"
     assert_array_equal(h.scf_xcf_orientation, np.array([0, 0, 1]))
     assert_array_equal(h.orientation, np.array([0, 0, 1]))
 

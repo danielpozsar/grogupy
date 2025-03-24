@@ -60,7 +60,7 @@ class Hamiltonian:
     --------
     Creating a Hamiltonian from the DFT calculation.
 
-    >>> fdf_path = "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf"
+    >>> fdf_path = "/Users/danielpozsar/Downloads/Fe3GeTe2/Fe3GeTe2.fdf"
     >>> scf_xcf_orientation = np.array([0,0,1])
     >>> hamiltonian = Hamiltonian(fdf_path, scf_xcf_orientation)
     >>> print(hamiltonian)

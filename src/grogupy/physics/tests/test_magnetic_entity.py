@@ -78,7 +78,7 @@ class TestMagneticEntity:
     )
     def test_generation(self, atom, l, orb, res):
         mag_ent = MagneticEntity(
-            "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf",
+            "/Users/danielpozsar/Downloads/Fe3GeTe2/Fe3GeTe2.fdf",
             atom,
             l,
             orb,
@@ -314,7 +314,7 @@ class TestMagneticEntity:
     def test_generation_exception(self, atom, l, orb):
         with pytest.raises(Exception):
             mag_ent = MagneticEntity(
-                "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf",
+                "/Users/danielpozsar/Downloads/Fe3GeTe2/Fe3GeTe2.fdf",
                 atom,
                 l,
                 orb,
@@ -337,13 +337,13 @@ class TestMagneticEntity:
         atom1, l1, orb1 = decipher(tag1)
         atom2, l2, orb2 = decipher(tag2)
         mag_ent1 = MagneticEntity(
-            "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf",
+            "/Users/danielpozsar/Downloads/Fe3GeTe2/Fe3GeTe2.fdf",
             atom1,
             l1,
             orb1,
         )
         mag_ent2 = MagneticEntity(
-            "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf",
+            "/Users/danielpozsar/Downloads/Fe3GeTe2/Fe3GeTe2.fdf",
             atom2,
             l2,
             orb2,
@@ -442,7 +442,7 @@ class TestMagneticEntity:
     )
     def test_equality(self, atom, l, orb):
         m = MagneticEntity(
-            "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf",
+            "/Users/danielpozsar/Downloads/Fe3GeTe2/Fe3GeTe2.fdf",
             atom,
             l,
             orb,
@@ -588,7 +588,7 @@ class TestMagneticEntity:
     )
     def test_copy(self, atom, l, orb):
         m = MagneticEntity(
-            "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf",
+            "/Users/danielpozsar/Downloads/Fe3GeTe2/Fe3GeTe2.fdf",
             atom,
             l,
             orb,
@@ -646,7 +646,7 @@ class TestMagneticEntity:
     )
     def test_getstate_setstate(self, atom, l, orb):
         m = MagneticEntity(
-            "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf",
+            "/Users/danielpozsar/Downloads/Fe3GeTe2/Fe3GeTe2.fdf",
             atom,
             l,
             orb,

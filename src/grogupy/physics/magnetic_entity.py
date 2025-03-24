@@ -81,7 +81,7 @@ class MagneticEntity:
     to the input parameters, to understand how to build the magnetic entity,
     that suits your needs.
 
-    >>> fdf_path = "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf"
+    >>> fdf_path = "/Users/danielpozsar/Downloads/Fe3GeTe2/Fe3GeTe2.fdf"
 
     To define a Cluster of atoms use a dictionary that only contains atoms.
 
@@ -219,7 +219,7 @@ class MagneticEntity:
         to the input parameters, to understand how to build the magnetic entity,
         that suits your needs.
 
-        >>> fdf_path = "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf"
+        >>> fdf_path = "/Users/danielpozsar/Downloads/Fe3GeTe2/Fe3GeTe2.fdf"
 
         To define a Cluster of atoms use a dictionary that only contains atoms.
 

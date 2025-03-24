@@ -50,7 +50,7 @@ try:
     def setup():
         k, c = Kspace(), Contour(100, 100, -20)
         h = Hamiltonian(
-            "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf",
+            "/Users/danielpozsar/Downloads/Fe3GeTe2/Fe3GeTe2.fdf",
             [0, 0, 1],
         )
         return k, c, h
