@@ -317,7 +317,7 @@ class Pair:
     def xyz(self) -> NDArray:
         """Coordinates of the magnetic entities."""
         self.__xyz = np.array(
-            [self.M1.xyz, self.M2.xyz + self.supercell_shift_xyz], dtype=object
+            [self.M1._xyz, self.M2._xyz + self.supercell_shift_xyz], dtype=object
         )
         return self.__xyz
 
