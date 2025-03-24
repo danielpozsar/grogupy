@@ -167,7 +167,7 @@ def plot_magnetic_entities(
         magnetic_entities = [magnetic_entities]
 
     tags = [m.tag for m in magnetic_entities]
-    coords = [m.xyz for m in magnetic_entities]
+    coords = [m._xyz for m in magnetic_entities]
 
     colors = ["red", "green", "blue", "purple", "orange", "cyan", "magenta"]
     colors = colors * (len(coords) // len(colors) + 1)
