@@ -29,17 +29,13 @@ __all__ = []
 __version__ = "0.0.4"
 
 
-from ._tqdm import _tqdm
-
 # pre-import stuff
-from .config import CONFIG
 from .io import load, save, save_magnopy
 from .physics import Builder, Contour, Hamiltonian, Kspace, MagneticEntity, Pair
 
 # extend namespace
 __all__.extend(
     [
-        "_tqdm",
         "save",
         "save_magnopy",
         "load",

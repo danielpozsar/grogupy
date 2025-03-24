@@ -17,7 +17,6 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-from . import __all__
 from .config import CONFIG
 
 # tqdm might not work, but this should not be a problem
@@ -43,8 +42,6 @@ except:
     def _tqdm(something, **kwargs):
         return something
 
-
-__all__.extend(["_tqdm"])
 
 if __name__ == "__main__":
     pass
