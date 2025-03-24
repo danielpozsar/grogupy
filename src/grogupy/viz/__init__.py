@@ -55,14 +55,9 @@ For examples, see the various functions.
 
 """
 
-from .. import __all__
 from ..config import CONFIG
 from ..physics import Builder, Contour, Kspace
 from .viz import plot_contour, plot_DM, plot_kspace, plot_magnetic_entities, plot_pairs
-
-__all__.extend(
-    ["plot_contour", "plot_DM", "plot_kspace", "plot_magnetic_entities", "plot_pairs"]
-)
 
 CONFIG._Config__viz_loaded = True
 
