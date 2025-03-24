@@ -215,14 +215,14 @@ class TestPair:
             l,
             orb,
         )
-        p2 = grogupy.MagneticEntity(
+        m2 = grogupy.MagneticEntity(
             "/Users/danielpozsar/Downloads/Fe3GeTe2/Fe3GeTe2.fdf",
             atom,
             l,
             orb,
         )
-        p1 = grogupy.Pair(m1, p2)
-        p2 = grogupy.Pair(p2, m1, shift)
+        p1 = grogupy.Pair(m1, m2)
+        p2 = grogupy.Pair(m2, m1, shift)
 
         p1c = p1.copy()
         assert p1 == p1c
