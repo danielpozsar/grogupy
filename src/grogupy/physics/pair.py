@@ -185,8 +185,8 @@ class Pair:
         self.supercell_shift: NDArray = np.array(supercell_shift)
 
         # initialize simulation parameters
-        self.Gij: list[NDArray] = []
-        self.Gji: list[NDArray] = []
+        self._Gij: list[NDArray] = []
+        self._Gji: list[NDArray] = []
         self._Gij_tmp: list[NDArray] = []
         self._Gji_tmp: list[NDArray] = []
 
@@ -250,8 +250,8 @@ class Pair:
                 and self.M1 == value.M1
                 and self.M2 == value.M2
                 and np.allclose(self.supercell_shift, value.supercell_shift)
-                and np.allclose(self.Gij, value.Gij)
-                and np.allclose(self.Gji, value.Gji)
+                and np.allclose(self._Gij, value._Gij)
+                and np.allclose(self._Gji, value._Gji)
                 and np.allclose(self._Gij_tmp, value._Gij_tmp)
                 and np.allclose(self._Gji_tmp, value._Gji_tmp)
                 and np.allclose(self.energies, value.energies)
@@ -431,8 +431,8 @@ class Pair:
         Does not reset the underlying Magnetic Entity instances.
         """
 
-        self.Gij: list[NDArray] = []
-        self.Gji: list[NDArray] = []
+        self._Gij: list[NDArray] = []
+        self._Gji: list[NDArray] = []
         self._Gij_tmp: list[NDArray] = []
         self._Gji_tmp: list[NDArray] = []
         self.energies: Union[None, NDArray] = None
@@ -455,7 +455,7 @@ class Pair:
         """
 
         energies: list[list[float]] = []
-        for i, (Gij, Gji) in enumerate(zip(self.Gij, self.Gji)):
+        for i, (Gij, Gji) in enumerate(zip(self._Gij, self._Gji)):
             storage: list = []
             # iterate over the first order local perturbations in all possible orientations for the two sites
             # actually all possible orientations without the orientation for the off-diagonal anisotropy

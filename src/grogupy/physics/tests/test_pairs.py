@@ -17,16 +17,232 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import numpy as np
 import pytest
+import sisl
 
-from grogupy.physics import Pair
+import grogupy
 
 pytestmark = [pytest.mark.physics]
 
 
 class TestPair:
-    def test_(self):
+    def test_generation(self):
+        fdf = "./benchmarks/Fe3GeTe2/Fe3GeTe2.fdf"
+        m1 = grogupy.MagneticEntity(fdf, 1, 2)
+        m2 = grogupy.MagneticEntity(fdf, 2, 0)
+
+        p = grogupy.Pair(m1, m2, [1, 2, 3])
+
+        assert isinstance(p._dh, sisl.physics.Hamiltonian)
+
+        assert isinstance(p.M1, grogupy.MagneticEntity)
+        assert isinstance(p.M2, grogupy.MagneticEntity)
+        assert m1 == p.M1
+        assert m2 == p.M2
+
+        assert np.allclose(p.supercell_shift, [1, 2, 3])
+
+        assert p._Gij == []
+        assert p._Gji == []
+        assert p._Gij_tmp == []
+        assert p._Gji_tmp == []
+
+        assert p.energies == None
+        assert p.J_iso == None
+        assert p.J == None
+        assert p.J_S == None
+        assert p.D == None
+        p.D
+
+    def test_reset(self):
+        pair = grogupy.load("./tests/test_pair.pkl")
+
+        pair.Gij = 1
+        pair.Gji = None
+        pair._Gij_tmp = np.array([10])
+        pair._Gji_tmp = "[]"
+        pair.energies = 3.14
+        pair.J_iso = (10, 20, 30)
+        pair.J = 2
+        pair.J_S = (10, 20, 30)
+        pair.D = 2
+
+        pair.reset()
+        assert pair.Gij == []
+        assert pair.Gji == []
+        assert pair._Gij_tmp == []
+        assert pair._Gji_tmp == []
+        assert pair.energies == None
+        assert pair.J_iso == None
+        assert pair.J == None
+        assert pair.J_S == None
+        assert pair.D == None
+
+    def test_add_G_tmp(self):
         raise Exception("Not implemented test!")
+
+    def test_energies(self):
+        raise Exception("Not implemented test!")
+
+    def test_exchange(self):
+        raise Exception("Not implemented test!")
+
+    def test_equality(self):
+        p = grogupy.load("./tests/test_pair.pkl")
+
+        p2 = p.copy()
+        assert p == p2
+
+        p2._dh = sisl.get_sile(
+            "/Users/danielpozsar/Downloads/Cr3_new/Cr3.fdf"
+        ).read_hamiltonian()
+        assert p != p2
+        p2._dh = p._dh
+        assert p == p2
+
+        p2.M1 = grogupy.MagneticEntity("./tests/test_magnetic_entity.pkl")
+        assert p != p2
+        p2.M1 = p.M1
+        assert p == p2
+
+        p2.M2 = grogupy.MagneticEntity("./tests/test_magnetic_entity.pkl")
+        assert p != p2
+        p2.M2 = p.M2
+        assert p == p2
+
+        p2.supercell_shift = np.array([100, 100, 100, 100])
+        assert p != p2
+        p2.supercell_shift = p.supercell_shift
+        assert p == p2
+
+        p2._Gij = [np.zeros(3)]
+        assert p != p2
+        p2._Gij = p._Gij
+        assert p == p2
+
+        p2._Gij_tmp = [[], [], []]
+        assert p != p2
+        p2._Gij_tmp = p._Gij_tmp
+        assert p == p2
+
+        p2._Gji = None
+        assert p != p2
+        p2._Gji = p._Gji
+        assert p == p2
+
+        p2._Gji_tmp = [[], [], []]
+        assert p != p2
+        p2._Gji_tmp = p._Gji_tmp
+        assert p == p2
+
+        p2.energies = np.zeros(3)
+        assert p != p2
+        p2.energies = p.energies
+        assert p == p2
+
+        p2.J_iso = np.zeros(3)
+        assert p != p2
+        p2.J_iso = p.J_iso
+        assert p == p2
+
+        p2.J = np.zeros(3)
+        assert p != p2
+        p2.J = p.J
+        assert p == p2
+
+        p2.J_S = np.zeros(3)
+        assert p != p2
+        p2.J_S = p.J_S
+        assert p == p2
+
+        p2.D = np.zeros(3)
+        assert p != p2
+        p2.D = p.D
+        assert p == p2
+
+    @pytest.mark.parametrize("shift", [[0, 0, 0], [0, 1, 2], [-1, 10, 0]])
+    @pytest.mark.parametrize(
+        "atom, l, orb",
+        [
+            (None, None, 1),
+            (None, None, [1]),
+            (None, None, [1, 2]),
+            (1, None, None),
+            (1, None, 1),
+            (1, None, [1]),
+            (1, None, [1, 2]),
+            (1, None, [[1, 2]]),
+            (1, 1, None),
+            (1, [1], None),
+            (1, [1, 2], None),
+            (1, [[1, 2]], None),
+            ([1], None, None),
+            ([1], None, 1),
+            ([1], None, [1]),
+            ([1], None, [1, 2]),
+            ([1], None, [[1, 2]]),
+            ([1], 1, None),
+            ([1], [1], None),
+            ([1], [1, 2], None),
+            ([1], [[1, 2]], None),
+            ([1, 2], None, None),
+            ([1, 2], None, 1),
+            ([1, 2], None, [1]),
+            ([1, 2], None, [1, 2]),
+            ([1, 2], None, [[1, 2], [1, 2]]),
+            ([1, 2], 1, None),
+            ([1, 2], [1], None),
+            ([1, 2], [1, 2], None),
+            ([1, 2], [[1, 2], [1, 2]], None),
+            # tests fropdecipher
+            ([0], None, [[1]]),
+            ([0], None, [[1, 2]]),
+            ([0], [[1]], None),
+            ([0], [[1, 2]], None),
+            ([0], [[None]], None),
+            ([1], None, [[1]]),
+            ([1], None, [[1, 2]]),
+            ([1], [[1]], None),
+            ([1], [[1, 2]], None),
+            ([1], [[None]], None),
+        ],
+    )
+    def test_copy(self, atom, l, orb, shift):
+        m1 = grogupy.MagneticEntity(
+            "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf",
+            atom,
+            l,
+            orb,
+        )
+        p2 = grogupy.MagneticEntity(
+            "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf",
+            atom,
+            l,
+            orb,
+        )
+        p1 = grogupy.Pair(m1, p2)
+        p2 = grogupy.Pair(p2, m1, shift)
+
+        p1c = p1.copy()
+        assert p1 == p1c
+        p1c.xyz = 1
+        assert p1 != p1c
+
+        p2c = p2.copy()
+        assert p2 == p2c
+        p2c.xyz = 1
+        assert p2 != p2c
+
+    def test_getstate_setstate(self):
+        p = grogupy.load("./tests/test_pair.pkl")
+
+        state = p.__getstate__()
+        assert isinstance(state, dict)
+
+        p2 = object.__new__(grogupy.Pair)
+        p2.__setstate__(state)
+        assert p == p2
 
 
 if __name__ == "__main__":
