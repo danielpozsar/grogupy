@@ -30,6 +30,7 @@ from numpy.typing import NDArray
 
 from .. import __version__
 from .._core.core import onsite_projection
+from .._core.utilities import arrays_lists_equal
 from .magnetic_entity import MagneticEntity
 from .utilities import (
     calculate_exchange_tensor,
@@ -59,7 +60,7 @@ class Pair:
     --------
     The following examples show you how to create pairs in the **Fe3GeTe2** system.
 
-    >>> fdf_path = "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf"
+    >>> fdf_path = "/Users/danielpozsar/Downloads/Fe3GeTe2/Fe3GeTe2.fdf"
 
     >>> Fe3 = MagneticEntity(fdf_path, atom=3, l=2)
     >>> Fe5 = MagneticEntity(fdf_path, atom=5, l=2)
@@ -161,7 +162,7 @@ class Pair:
         --------
         The following examples show you how to create pairs in the **Fe3GeTe2** system.
 
-        >>> fdf_path = "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf"
+        >>> fdf_path = "/Users/danielpozsar/Downloads/Fe3GeTe2/Fe3GeTe2.fdf"
 
         >>> Fe3 = MagneticEntity(fdf_path, atom=3, l=2)
         >>> Fe5 = MagneticEntity(fdf_path, atom=5, l=2)
@@ -172,9 +173,9 @@ class Pair:
 
         if M1._dh is M2._dh:
             self._dh: sisl.physics.Hamiltonian = M1._dh
-        elif (M1._dh.Hk().toarray() == M2._dh.Hk().toarray()).all() and (
-            M1._dh.Sk().toarray() == M2._dh.Sk().toarray()
-        ).all():
+        elif arrays_lists_equal(
+            M1._dh.Hk().toarray() == M2._dh.Hk().toarray()
+        ) and arrays_lists_equal(M1._dh.Sk().toarray() == M2._dh.Sk().toarray()):
             self._dh: sisl.physics.Hamiltonian = M1._dh
         else:
             raise Exception("Different Hamiltonians from the magnetic entities!")
@@ -245,20 +246,22 @@ class Pair:
     def __eq__(self, value):
         if isinstance(value, Pair):
             if (
-                np.allclose(self._dh.Hk().toarray(), value._dh.Hk().toarray())
-                and np.allclose(self._dh.Sk().toarray(), value._dh.Sk().toarray())
+                arrays_lists_equal(self._dh.Hk().toarray(), value._dh.Hk().toarray())
+                and arrays_lists_equal(
+                    self._dh.Sk().toarray(), value._dh.Sk().toarray()
+                )
                 and self.M1 == value.M1
                 and self.M2 == value.M2
-                and np.allclose(self.supercell_shift, value.supercell_shift)
-                and np.allclose(self._Gij, value._Gij)
-                and np.allclose(self._Gji, value._Gji)
-                and np.allclose(self._Gij_tmp, value._Gij_tmp)
-                and np.allclose(self._Gji_tmp, value._Gji_tmp)
-                and np.allclose(self.energies, value.energies)
-                and np.allclose(self.J_iso, value.J_iso)
-                and np.allclose(self.J, value.J)
-                and np.allclose(self.J_S, value.J_S)
-                and np.allclose(self.D, value.D)
+                and arrays_lists_equal(self.supercell_shift, value.supercell_shift)
+                and arrays_lists_equal(self._Gij, value._Gij)
+                and arrays_lists_equal(self._Gji, value._Gji)
+                and arrays_lists_equal(self._Gij_tmp, value._Gij_tmp)
+                and arrays_lists_equal(self._Gji_tmp, value._Gji_tmp)
+                and arrays_lists_equal(self.energies, value.energies)
+                and arrays_lists_equal(self.J_iso, value.J_iso)
+                and arrays_lists_equal(self.J, value.J)
+                and arrays_lists_equal(self.J_S, value.J_S)
+                and arrays_lists_equal(self.D, value.D)
             ):
                 return True
             return False
