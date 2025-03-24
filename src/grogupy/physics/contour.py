@@ -30,7 +30,6 @@ from numpy.typing import NDArray
 
 from .._core.core import make_contour
 from ..batch.timing import DefaultTimer
-from ..config import CONFIG
 from .utilities import automatic_emin
 
 

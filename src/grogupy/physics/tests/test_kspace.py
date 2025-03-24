@@ -83,6 +83,7 @@ class TestKspace:
         k = Kspace([10, 10, 10])
         with pytest.raises(Exception):
             k.plot()
+
         import grogupy.viz
 
         assert isinstance(k.plot(), go.Figure)

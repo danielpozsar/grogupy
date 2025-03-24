@@ -30,7 +30,6 @@ from numpy.typing import NDArray
 
 from .._core.core import make_kset
 from ..batch.timing import DefaultTimer
-from ..config import CONFIG
 
 
 class Kspace:

@@ -112,6 +112,7 @@ class TestContour:
         c = Contour(100, 1000, emin=-10)
         with pytest.raises(Exception):
             c.plot()
+
         import grogupy.viz
 
         assert isinstance(c.plot(), go.Figure)
