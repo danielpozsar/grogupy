@@ -19,8 +19,6 @@
 # SOFTWARE.
 from os import environ
 
-from . import __all__
-
 
 class Config:
     def __init__(self, architecture: str):
@@ -65,8 +63,6 @@ class Config:
 
 
 CONFIG = Config(environ.get("GROGUPY_ARCHITECTURE", "CPU"))
-
-__all__.extend(["CONFIG"])
 
 if __name__ == "__main__":
     pass
