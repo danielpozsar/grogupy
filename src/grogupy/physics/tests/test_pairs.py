@@ -28,7 +28,7 @@ pytestmark = [pytest.mark.physics]
 
 class TestPair:
     def test_generation(self):
-        fdf = "./benchmarks/Fe3GeTe2/Fe3GeTe2.fdf"
+        fdf = "/Users/danielpozsar/Downloads/Fe3GeTe2/Fe3GeTe2.fdf"
         m1 = grogupy.MagneticEntity(fdf, 1, 2)
         m2 = grogupy.MagneticEntity(fdf, 2, 0)
 
@@ -210,13 +210,13 @@ class TestPair:
     )
     def test_copy(self, atom, l, orb, shift):
         m1 = grogupy.MagneticEntity(
-            "./benchmarks/Fe3GeTe2/Fe3GeTe2.fdf",
+            "/Users/danielpozsar/Downloads/Fe3GeTe2/Fe3GeTe2.fdf",
             atom,
             l,
             orb,
         )
         p2 = grogupy.MagneticEntity(
-            "./benchmarks/Fe3GeTe2/Fe3GeTe2.fdf",
+            "/Users/danielpozsar/Downloads/Fe3GeTe2/Fe3GeTe2.fdf",
             atom,
             l,
             orb,
