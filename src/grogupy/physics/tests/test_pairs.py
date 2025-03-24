@@ -226,12 +226,12 @@ class TestPair:
 
         p1c = p1.copy()
         assert p1 == p1c
-        p1c.xyz = 1
+        p1c._Gji = 1
         assert p1 != p1c
 
         p2c = p2.copy()
         assert p2 == p2c
-        p2c.xyz = 1
+        p2c.energies = 1
         assert p2 != p2c
 
     def test_getstate_setstate(self):
