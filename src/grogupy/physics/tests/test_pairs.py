@@ -97,17 +97,19 @@ class TestPair:
         p2 = p.copy()
         assert p == p2
 
-        p2._dh = sisl.get_sile("./benchmarks/Cr3/Cr3.fdf").read_hamiltonian()
+        p2._dh = sisl.get_sile(
+            "/Users/danielpozsar/Downloads/Fe3GeTe2/Fe3GeTe2.fdf"
+        ).read_hamiltonian()
         assert p != p2
         p2._dh = p._dh
         assert p == p2
 
-        p2.M1 = grogupy.MagneticEntity("./tests/test_magnetic_entity.pkl")
+        p2.M1 = grogupy.load("./tests/test_magnetic_entity.pkl")
         assert p != p2
         p2.M1 = p.M1
         assert p == p2
 
-        p2.M2 = grogupy.MagneticEntity("./tests/test_magnetic_entity.pkl")
+        p2.M2 = grogupy.load("./tests/test_magnetic_entity.pkl")
         assert p != p2
         p2.M2 = p.M2
         assert p == p2
