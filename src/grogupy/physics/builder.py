@@ -986,7 +986,7 @@ class Builder:
                 )
 
             for pair in self.pairs:
-                pair.Gij.append(
+                pair._Gij.append(
                     np.zeros(
                         (self.contour.eset, pair.SBS1, pair.SBS2), dtype="complex128"
                     )
@@ -996,7 +996,7 @@ class Builder:
                         (self.contour.eset, pair.SBS1, pair.SBS2), dtype="complex128"
                     )
                 )
-                pair.Gji.append(
+                pair._Gji.append(
                     np.zeros(
                         (self.contour.eset, pair.SBS2, pair.SBS1), dtype="complex128"
                     )

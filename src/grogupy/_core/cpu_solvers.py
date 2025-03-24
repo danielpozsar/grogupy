@@ -110,8 +110,8 @@ def solve_parallel_over_k(
                 mag_ent.calculate_anisotropy()
 
         for pair in builder.pairs:
-            comm.Reduce(pair._Gij_tmp[i], pair.Gij[i], root=root_node)
-            comm.Reduce(pair._Gji_tmp[i], pair.Gji[i], root=root_node)
+            comm.Reduce(pair._Gij_tmp[i], pair._Gij[i], root=root_node)
+            comm.Reduce(pair._Gji_tmp[i], pair._Gji[i], root=root_node)
 
             # pair.calculate_energies(builder.contour.weights)
             pair.calculate_energies(builder.contour.weights)
@@ -232,8 +232,8 @@ def solve_parallel_over_all(
                 mag_ent.calculate_anisotropy()
 
         for pair in builder.pairs:
-            comm.Reduce(pair._Gij_tmp[i], pair.Gij[i], root=root_node)
-            comm.Reduce(pair._Gji_tmp[i], pair.Gji[i], root=root_node)
+            comm.Reduce(pair._Gij_tmp[i], pair._Gij[i], root=root_node)
+            comm.Reduce(pair._Gji_tmp[i], pair._Gji[i], root=root_node)
 
             pair.calculate_energies(builder.contour.weights)
             if builder.exchange_solver.lower()[0] == "f":  # fit

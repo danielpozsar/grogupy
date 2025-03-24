@@ -58,8 +58,8 @@ class TestPair:
     def test_reset(self):
         pair = grogupy.load("./tests/test_pair.pkl")
 
-        pair.Gij = 1
-        pair.Gji = None
+        pair._Gij = 1
+        pair._Gji = None
         pair._Gij_tmp = np.array([10])
         pair._Gji_tmp = "[]"
         pair.energies = 3.14
@@ -69,8 +69,8 @@ class TestPair:
         pair.D = 2
 
         pair.reset()
-        assert pair.Gij == []
-        assert pair.Gji == []
+        assert pair._Gij == []
+        assert pair._Gji == []
         assert pair._Gij_tmp == []
         assert pair._Gji_tmp == []
         assert pair.energies == None
@@ -210,13 +210,13 @@ class TestPair:
     )
     def test_copy(self, atom, l, orb, shift):
         m1 = grogupy.MagneticEntity(
-            "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf",
+            "./benchmarks/Fe3GeTe2/Fe3GeTe2.fdf",
             atom,
             l,
             orb,
         )
         p2 = grogupy.MagneticEntity(
-            "/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf",
+            "./benchmarks/Fe3GeTe2/Fe3GeTe2.fdf",
             atom,
             l,
             orb,

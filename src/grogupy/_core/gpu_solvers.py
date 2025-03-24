@@ -305,8 +305,8 @@ def solve_parallel_over_k(
 
         for l in range(len(builder.pairs)):
             pair = builder.pairs[l]
-            pair.Gij[j] = G_pair_ij[j][l]
-            pair.Gji[j] = G_pair_ji[j][l]
+            pair._Gij[j] = G_pair_ij[j][l]
+            pair._Gji[j] = G_pair_ji[j][l]
 
             pair.calculate_energies(builder.contour.weights)
             if builder.exchange_solver.lower()[0] == "f":  # fit
