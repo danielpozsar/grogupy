@@ -345,8 +345,8 @@ def load(
         "M1",
         "M2",
         "supercell_shift",
-        "Gij",
-        "Gji",
+        "_Gij",
+        "_Gji",
         "_Gij_tmp",
         "_Gji_tmp",
         "energies",
@@ -438,7 +438,7 @@ def save(
 ) -> None:
     """Saves the instance from a pickled state.
 
-    The compression level can be set to 0,1,2,3. Every other value defaults to 3.
+    The compression level can be set to 0,1,2,3. Every other value defaults to 0.
 
     0. This means that there is no compression at all.
 
