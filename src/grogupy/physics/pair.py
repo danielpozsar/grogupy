@@ -174,8 +174,8 @@ class Pair:
         if M1._dh is M2._dh:
             self._dh: sisl.physics.Hamiltonian = M1._dh
         elif arrays_lists_equal(
-            M1._dh.Hk().toarray() == M2._dh.Hk().toarray()
-        ) and arrays_lists_equal(M1._dh.Sk().toarray() == M2._dh.Sk().toarray()):
+            M1._dh.Hk().toarray(), M2._dh.Hk().toarray()
+        ) and arrays_lists_equal(M1._dh.Sk().toarray(), M2._dh.Sk().toarray()):
             self._dh: sisl.physics.Hamiltonian = M1._dh
         else:
             raise Exception("Different Hamiltonians from the magnetic entities!")
