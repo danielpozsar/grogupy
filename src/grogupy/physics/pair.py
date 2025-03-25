@@ -269,13 +269,23 @@ class Pair:
                 return False
             if not arrays_None_equal(self.energies, value.energies):
                 return False
-            if not np.isclose(self.J_iso, value.J_iso):
-                return False
             if not arrays_None_equal(self.J, value.J):
                 return False
             if not arrays_None_equal(self.J_S, value.J_S):
                 return False
             if not arrays_None_equal(self.D, value.D):
+                return False
+            # Checking J_iso separately
+            # if both are None, then pass and no other check is perfomred because of elif
+            if self.J_iso is None and value.J_iso is None:
+                pass
+            # if either one is None, but the other is not, then return false
+            elif self.J_iso is not None and value.J_iso is None:
+                return False
+            elif self.J_iso is None and value.J_iso is not None:
+                return False
+            # If neither of them is None, compare them
+            elif not np.isclose(self.J_iso, value.J_iso):
                 return False
             return True
         else:
