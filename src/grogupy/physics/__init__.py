@@ -47,21 +47,9 @@ For examples, see the various functions.
 
 """
 
-from .. import __all__
 from .builder import Builder
 from .contour import Contour
 from .hamiltonian import Hamiltonian
 from .kspace import Kspace
 from .magnetic_entity import MagneticEntity
 from .pair import Pair
-
-__all__.extend(
-    [
-        "Contour",
-        "Kspace",
-        "MagneticEntity",
-        "Pair",
-        "Hamiltonian",
-        "Builder",
-    ]
-)

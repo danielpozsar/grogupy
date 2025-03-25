@@ -53,7 +53,4 @@ For examples, see the various functions.
 
 """
 
-from .. import __all__
-from .io import load, save, save_magnopy
-
-__all__.extend(["load", "save", "save_magnopy"])
+from .io import load, save, save_magnopy, save_UppASD

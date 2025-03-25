@@ -30,7 +30,7 @@ __version__ = "0.0.4"
 
 
 # pre-import stuff
-from .io import load, save, save_magnopy
+from .io import load, save, save_magnopy, save_UppASD
 from .physics import Builder, Contour, Hamiltonian, Kspace, MagneticEntity, Pair
 
 # extend namespace
@@ -38,6 +38,7 @@ __all__.extend(
     [
         "save",
         "save_magnopy",
+        "save_UppASD",
         "load",
         "Contour",
         "Kspace",
