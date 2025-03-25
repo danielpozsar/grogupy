@@ -49,6 +49,14 @@ class TestCore:
     def test_setup_from_range(self):
         raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
+    def test_arrays_lists_equal(self):
+        raise NotImplementedError
+
+    @pytest.mark.xfail(raises=NotImplementedError)
+    def test_arrays_None_equal(self):
+        raise NotImplementedError
+
 
 if __name__ == "__main__":
     pass
