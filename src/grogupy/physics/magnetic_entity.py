@@ -140,27 +140,27 @@ class MagneticEntity:
 
     Attributes
     ----------
-    orbital_box_indices : NDArray
+    _orbital_box_indices : NDArray
         The ORBITAL BOX indices
-    atom : NDArray
+    _atom : NDArray
         The list of atoms in the magnetic entity
-    l : list[list[Union[None, int]]]
+    _l : list[list[Union[None, int]]]
         The list of l in the magnetic entity, None if it is incomplete
-    spin_box_indices : NDArray
+    _spin_box_indices : NDArray
         The SPIN BOX indices
     SBS : int
         Length of the SPIN BOX indices
-    xyz : NDArray
+    _xyz : NDArray
         The coordinates of the magnetic entity (it can consist of many atoms)
-    xyz_center : NDArray
+    _xyz_center : NDArray
         The center of coordinates for the magnetic entity
-    tag : str
+    _tag : str
         The description of the magnetic entity
     _Vu1 : list[list[float]]
         The list of the first order rotations
     _Vu2 : list[list[float]]
         The list of the second order rotations
-    Gii : list[NDArray]
+    _Gii : list[NDArray]
         The list of the projected Greens functions
     energies : Union[None, NDArray]
         The calculated energies for each direction
@@ -185,83 +185,7 @@ class MagneticEntity:
         l: Union[None, int, list[int], list[list[int]]] = None,
         orb: Union[None, int, list[int], list[list[int]]] = None,
     ) -> None:
-        """Initialize the magnetic entity.
-
-        It sets up the instance based on the indexing of the Hamiltonian by the ``atom``,
-        ``l`` and orbital (``orb``) parameters.
-
-        There are four possible input types:
-        1. Cluster: a list of atoms
-        2. AtomShell: one atom and a list of shells indexed in the atom or
-        a list of atoms and a list of lists containing the shells
-        3. AtomOrbital: one atom and a list of orbitals indexed in the atom or
-        a list of atoms and a list of lists containing the orbitals
-        4. Orbitals: a list of orbitals  indexed in the Hamiltonian
-
-        Parameters
-        ----------
-        infile: Union[str, tuple[Union[sisl.physics.Hamiltonian, Hamiltonian], sisl.physics.DensityMatrix]]
-            Either the path to the .fdf file or a tuple of sisl or grogupy hamiltonian and a sisl density matrix
-        atom: Union[None, int, list[int]], optional
-            Defining atom (or atoms) in the unit cell forming the magnetic entity, by default None
-        l: Union[None, int, list[int], list[list[int]]], optional
-            Defining the angular momentum channel, by default None
-        orb: Union[None, int, list[int], list[list[int]]], optional
-                Defining the orbital index in the Hamiltonian or on the atom, by default None
-
-        Examples
-        --------
-        Creating a magnetic entity can be done by giving the Hamiltonian from the
-        DFT calculation and somehow specifying the corresponding atoms and orbitals.
-
-        The following examples show you how to create magnetic entities in the
-        **Fe3GeTe2** system. You can compare the tags of the ``MagneticEntity``
-        to the input parameters, to understand how to build the magnetic entity,
-        that suits your needs.
-
-        >>> fdf_path = "/Users/danielpozsar/Downloads/Fe3GeTe2/Fe3GeTe2.fdf"
-
-        To define a Cluster of atoms use a dictionary that only contains atoms.
-
-        >>> magnetic_entity = MagneticEntity(fdf_path, atom=[3,4,5])
-        >>> print(magnetic_entity.tag)
-        3Fe(l:All)--4Fe(l:All)--5Fe(l:All)
-
-        To define a magnetic entity with a single atom, but with specific
-        shells use both the ``atom`` and ``l`` key in the dictionary.
-
-        >>> magnetic_entity = MagneticEntity(fdf_path, atom=5, l=[[1,2,3]])
-        >>> print(magnetic_entity.tag)
-        5Fe(l:1-2-3)
-
-        Or you can define multiple atoms with different shells:
-
-        >>> magnetic_entity = MagneticEntity(fdf_path, atom=[4,5], l=[[1],[1,2,3]])
-        >>> print(magnetic_entity.tag)
-        4Fe(l:1)--5Fe(l:1-2-3)
-
-        To define a magnetic entity with a single atom, but with specific
-        orbitals use both the ``atom`` and ``orb`` key in the dictionary.
-        Be aware that these orbitals are indexed inside the atom, not in the
-        total Hamiltonian.
-
-        >>> magnetic_entity = MagneticEntity(fdf_path, atom=5, orb=[[1,2,3,4,5,6,7,8,9,10]])
-        >>> print(magnetic_entity.tag)
-        5Fe(o:1-2-3-4-5-6-7-8-9-10)
-
-        Or you can define multiple atoms with different orbitals:
-
-        >>> magnetic_entity = MagneticEntity(fdf_path, atom=[4,5], orb=[[1],[1,2,3,4,5,6,7,8,9,10]])
-        >>> print(magnetic_entity.tag)
-        4Fe(o:1)--5Fe(o:1-2-3-4-5-6-7-8-9-10)
-
-        And finally you can use only the ``orb`` key to directly index the
-        orbitals from the Hamiltonian.
-
-        >>> magnetic_entity = MagneticEntity(fdf_path, orb=[1,10,30,40,50])
-        >>> print(magnetic_entity.tag)
-        0Te(o:1-10)--2Ge(o:4)--3Fe(o:1-11)
-        """
+        """Initialize the magnetic entity."""
 
         if isinstance(infile, str):
             # get sisl sile
@@ -281,7 +205,12 @@ class MagneticEntity:
         self._l = l
         self._orbital_box_indices: NDArray = np.array(orbital).flatten()
         self._tags = tag
-        self._mulliken: NDArray = self._ds.mulliken()[:, self._orbital_box_indices]
+        self._total_mulliken: NDArray = self._ds.mulliken()[
+            :, self._dh.a2o(self._atom, all=True)
+        ]
+        self._local_mulliken: NDArray = self._ds.mulliken()[
+            :, self._orbital_box_indices
+        ]
 
         self._spin_box_indices: NDArray = blow_up_orbindx(self._orbital_box_indices)
         self._xyz: NDArray = np.array([self._dh.xyz[i] for i in self._atom])
@@ -301,10 +230,14 @@ class MagneticEntity:
         self.__tag = "--".join(self._tags)
         self.__SBS = len(self._spin_box_indices)
         self.__xyz_center = self._xyz.mean(axis=0)
-        self.__Q = self._mulliken[0].sum()
-        self.__Sx = self._mulliken[1].sum()
-        self.__Sy = self._mulliken[2].sum()
-        self.__Sz = self._mulliken[3].sum()
+        self.__total_Q = self._total_mulliken[0].sum()
+        self.__total_Sx = self._total_mulliken[1].sum()
+        self.__total_Sy = self._total_mulliken[2].sum()
+        self.__total_Sz = self._total_mulliken[3].sum()
+        self.__local_Q = self._local_mulliken[0].sum()
+        self.__local_Sx = self._local_mulliken[1].sum()
+        self.__local_Sy = self._local_mulliken[2].sum()
+        self.__local_Sz = self._local_mulliken[3].sum()
         self.__energies_meV = None
         self.__energies_mRy = None
         self.__K_meV = None
@@ -440,32 +373,60 @@ class MagneticEntity:
         return self.__xyz_center
 
     @property
-    def Q(self) -> NDArray:
+    def total_Q(self) -> NDArray:
+        """The total charge of the atom or the atoms of magnetic entity."""
+        self.__total_Q = self._total_mulliken[0].sum()
+
+        return self.__total_Q
+
+    @property
+    def total_Sx(self) -> NDArray:
+        """The non-collinear Sx of the atom or the atoms of the magnetic entity."""
+        self.__total_Sx = self._total_mulliken[1].sum()
+
+        return self.__total_Sx
+
+    @property
+    def total_Sy(self) -> NDArray:
+        """The non-collinear Sy of the atom or the atoms of the magnetic entity."""
+        self.__total_Sy = self._total_mulliken[2].sum()
+
+        return self.__total_Sy
+
+    @property
+    def total_Sz(self) -> NDArray:
+        """The non-collinear Sz of the atom or the atoms of the magnetic entity."""
+        self.__total_Sz = self._total_mulliken[3].sum()
+
+        return self.__total_Sz
+
+    @property
+    def local_Q(self) -> NDArray:
         """The charge of the magnetic entity."""
-        self.__Q = self._mulliken[0].sum()
+        self.__local_Q = self._local_mulliken[0].sum()
 
-        return self.__Q
+        return self.__local_Q
 
     @property
-    def Sx(self) -> NDArray:
+    def local_Sx(self) -> NDArray:
         """The non-collinear Sx of the magnetic entity."""
-        self.__Sx = self._mulliken[1].sum()
+        self.__local_Sx = self._local_mulliken[1].sum()
 
-        return self.__Sx
+        return self.__local_Sx
 
     @property
-    def Sy(self) -> NDArray:
+    def local_Sy(self) -> NDArray:
         """The non-collinear Sy of the magnetic entity."""
-        self.__Sy = self._mulliken[2].sum()
+        self.__local_Sy = self._local_mulliken[2].sum()
 
-        return self.__Sy
+        return self.__local_Sy
 
     @property
-    def Sz(self) -> NDArray:
+    def local_Sz(self) -> NDArray:
         """The non-collinear Sz of the magnetic entity."""
-        self.__Sz = self._mulliken[3].sum()
+        self.__local_Sz = self._local_mulliken[3].sum()
 
-        return self.__Sz
+        return self.__local_Sz
 
     @property
     def energies_meV(self) -> NDArray:
