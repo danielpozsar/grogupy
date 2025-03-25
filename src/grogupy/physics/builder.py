@@ -32,9 +32,10 @@ import numpy as np
 import sisl
 from numpy.typing import NDArray
 
-from .. import __version__, _tqdm
+from .. import __version__
 from .._core.core import calc_Vu, onsite_projection
 from .._core.utilities import RotMa2b, setup_from_range, tau_u
+from .._tqdm import _tqdm
 from ..batch.timing import DefaultTimer
 from ..config import CONFIG
 from .contour import Contour

@@ -30,7 +30,7 @@ if TYPE_CHECKING:
 
 import numpy as np
 
-from .. import _tqdm
+from .._tqdm import _tqdm
 from ..config import CONFIG
 from .core import onsite_projection, parallel_Gk, sequential_Gk
 

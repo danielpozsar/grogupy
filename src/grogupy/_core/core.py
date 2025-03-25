@@ -29,7 +29,7 @@ import sisl
 from numpy.typing import NDArray
 from scipy.special import roots_legendre
 
-from .. import _tqdm
+from .._tqdm import _tqdm
 from ..config import CONFIG
 from .utilities import commutator
 

@@ -30,10 +30,10 @@ import numpy as np
 import sisl
 from numpy.typing import NDArray
 
-from .. import _tqdm
 from .._core.constants import TAU_X, TAU_Y, TAU_Z
 from .._core.core import build_hh_ss, hsk
 from .._core.utilities import RotMa2b
+from .._tqdm import _tqdm
 from ..batch.timing import DefaultTimer
 from ..config import CONFIG
 from .utilities import spin_tracer
