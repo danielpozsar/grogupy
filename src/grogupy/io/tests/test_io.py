@@ -29,6 +29,30 @@ from grogupy.io.io import *
 pytestmark = [pytest.mark.io]
 
 
+# cleaning up possible temorary output files
+@pytest.fixture(autouse=True)
+def clean():
+    yield
+    if os.path.isfile("./tests/test_magnopy.magnopy.txt"):
+        os.remove("./tests/test_magnopy.magnopy.txt")
+    if os.path.isfile("./tests/test_pair_temp.pkl"):
+        os.remove("./tests/test_pair_temp.pkl")
+    if os.path.isfile("./tests/test_magnetic_entity_temp.pkl"):
+        os.remove("./tests/test_magnetic_entity_temp.pkl")
+    if os.path.isfile("./tests/test_default_timer_temp.pkl"):
+        os.remove("./tests/test_default_timer_temp.pkl")
+    if os.path.isfile("./tests/test_kspace_temp.pkl"):
+        os.remove("./tests/test_kspace_temp.pkl")
+    if os.path.isfile("./tests/test_contour_temp.pkl"):
+        os.remove("./tests/test_contour_temp.pkl")
+    if os.path.isfile("./tests/test_hamiltonian_temp.pkl"):
+        os.remove("./tests/test_hamiltonian_temp.pkl")
+    if os.path.isfile("./tests/test_builder_temp.pkl"):
+        os.remove("./tests/test_builder_temp.pkl")
+    if os.path.isfile("./tests/test_builder_temp2.pkl"):
+        os.remove("./tests/test_builder_temp2.pkl")
+
+
 class TestIO:
     def test_load_save(self):
         builder = grogupy.load("./tests/test_builder.pkl")
@@ -268,17 +292,6 @@ class TestIO:
                 dat.append(t)
         for d in dat:
             assert d is None
-
-    def test_cleanup(self):
-        os.remove("./tests/test_magnopy.magnopy.txt")
-        os.remove("./tests/test_pair_temp.pkl")
-        os.remove("./tests/test_magnetic_entity_temp.pkl")
-        os.remove("./tests/test_default_timer_temp.pkl")
-        os.remove("./tests/test_kspace_temp.pkl")
-        os.remove("./tests/test_contour_temp.pkl")
-        os.remove("./tests/test_hamiltonian_temp.pkl")
-        os.remove("./tests/test_builder_temp.pkl")
-        os.remove("./tests/test_builder_temp2.pkl")
 
 
 if __name__ == "__main__":
