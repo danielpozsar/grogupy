@@ -33,49 +33,49 @@ class TestIO:
     def test_load_save(self):
         builder = grogupy.load("./tests/test_builder.pkl")
         assert isinstance(builder, grogupy.Builder)
-        grogupy.save(builder, "./tests/test_builder_temp.pkl")
+        grogupy.save(builder, "./tests/test_builder_temp.pkl", compress=0)
         builder2 = grogupy.load("./tests/test_builder_temp.pkl")
         assert isinstance(builder2, grogupy.Builder)
         assert builder == builder2
 
         hamiltonian = grogupy.load("./tests/test_hamiltonian.pkl")
         assert isinstance(hamiltonian, grogupy.Hamiltonian)
-        grogupy.save(hamiltonian, "./tests/test_hamiltonian_temp.pkl")
+        grogupy.save(hamiltonian, "./tests/test_hamiltonian_temp.pkl", compress=0)
         hamiltonian2 = grogupy.load("./tests/test_hamiltonian_temp.pkl")
         assert isinstance(hamiltonian2, grogupy.Hamiltonian)
         assert hamiltonian == hamiltonian2
 
         contour = grogupy.load("./tests/test_contour.pkl")
         assert isinstance(contour, grogupy.Contour)
-        grogupy.save(contour, "./tests/test_contour_temp.pkl")
+        grogupy.save(contour, "./tests/test_contour_temp.pkl", compress=0)
         contour2 = grogupy.load("./tests/test_contour_temp.pkl")
         assert isinstance(contour2, grogupy.Contour)
         assert contour == contour2
 
         kspace = grogupy.load("./tests/test_kspace.pkl")
         assert isinstance(kspace, grogupy.Kspace)
-        grogupy.save(kspace, "./tests/test_kspace_temp.pkl")
+        grogupy.save(kspace, "./tests/test_kspace_temp.pkl", compress=0)
         kspace2 = grogupy.load("./tests/test_kspace_temp.pkl")
         assert isinstance(kspace2, grogupy.Kspace)
         assert kspace == kspace2
 
         default_timer = grogupy.load("./tests/test_default_timer.pkl")
         assert isinstance(default_timer, grogupy.batch.DefaultTimer)
-        grogupy.save(default_timer, "./tests/test_default_timer_temp.pkl")
+        grogupy.save(default_timer, "./tests/test_default_timer_temp.pkl", compress=0)
         default_timer2 = grogupy.load("./tests/test_default_timer_temp.pkl")
         assert isinstance(default_timer2, grogupy.batch.DefaultTimer)
         assert default_timer == default_timer2
 
         mag_ent = grogupy.load("./tests/test_magnetic_entity.pkl")
         assert isinstance(mag_ent, grogupy.MagneticEntity)
-        grogupy.save(mag_ent, "./tests/test_magnetic_entity_temp.pkl")
+        grogupy.save(mag_ent, "./tests/test_magnetic_entity_temp.pkl", compress=0)
         mag_ent2 = grogupy.load("./tests/test_magnetic_entity_temp.pkl")
         assert isinstance(mag_ent2, grogupy.MagneticEntity)
         assert mag_ent == mag_ent2
 
         pair = grogupy.load("./tests/test_pair.pkl")
         assert isinstance(pair, grogupy.Pair)
-        grogupy.save(pair, "./tests/test_pair_temp.pkl")
+        grogupy.save(pair, "./tests/test_pair_temp.pkl", compress=0)
         pair2 = grogupy.load("./tests/test_pair_temp.pkl")
         assert isinstance(pair2, grogupy.Pair)
         assert pair == pair2
@@ -83,7 +83,7 @@ class TestIO:
     def test_load_save_Builder(self):
         builder = load_Builder("./tests/test_builder.pkl")
         assert isinstance(builder, grogupy.Builder)
-        grogupy.save(builder, "./tests/test_builder_temp.pkl")
+        grogupy.save(builder, "./tests/test_builder_temp.pkl", compress=0)
         builder2 = grogupy.load("./tests/test_builder_temp.pkl")
         assert isinstance(builder2, grogupy.Builder)
         assert builder == builder2
@@ -91,7 +91,7 @@ class TestIO:
     def test_load_save_Hamiltonian(self):
         hamiltonian = load_Hamiltonian("./tests/test_hamiltonian.pkl")
         assert isinstance(hamiltonian, grogupy.Hamiltonian)
-        grogupy.save(hamiltonian, "./tests/test_hamiltonian_temp.pkl")
+        grogupy.save(hamiltonian, "./tests/test_hamiltonian_temp.pkl", compress=0)
         hamiltonian2 = grogupy.load("./tests/test_hamiltonian_temp.pkl")
         assert isinstance(hamiltonian2, grogupy.Hamiltonian)
         assert hamiltonian == hamiltonian2
@@ -99,7 +99,7 @@ class TestIO:
     def test_load_save_Contour(self):
         contour = load_Contour("./tests/test_contour.pkl")
         assert isinstance(contour, grogupy.Contour)
-        grogupy.save(contour, "./tests/test_contour_temp.pkl")
+        grogupy.save(contour, "./tests/test_contour_temp.pkl", compress=0)
         contour2 = grogupy.load("./tests/test_contour_temp.pkl")
         print(type(contour2))
         assert isinstance(contour2, grogupy.Contour)
@@ -108,7 +108,7 @@ class TestIO:
     def test_load_save_Kspace(self):
         kspace = load_Kspace("./tests/test_kspace.pkl")
         assert isinstance(kspace, grogupy.Kspace)
-        grogupy.save(kspace, "./tests/test_kspace_temp.pkl")
+        grogupy.save(kspace, "./tests/test_kspace_temp.pkl", compress=0)
         kspace2 = grogupy.load("./tests/test_kspace_temp.pkl")
         assert isinstance(kspace2, grogupy.Kspace)
         assert kspace == kspace2
@@ -116,7 +116,7 @@ class TestIO:
     def test_load_save_DefaultTimer(self):
         default_timer = load_DefaultTimer("./tests/test_default_timer.pkl")
         assert isinstance(default_timer, grogupy.batch.DefaultTimer)
-        grogupy.save(default_timer, "./tests/test_default_timer_temp.pkl")
+        grogupy.save(default_timer, "./tests/test_default_timer_temp.pkl", compress=0)
         default_timer2 = grogupy.load("./tests/test_default_timer_temp.pkl")
         assert isinstance(default_timer2, grogupy.batch.DefaultTimer)
         assert default_timer == default_timer2
@@ -124,7 +124,9 @@ class TestIO:
     def test_load_save_MagneticEntity(self):
         magnetic_entity = load_MagneticEntity("./tests/test_magnetic_entity.pkl")
         assert isinstance(magnetic_entity, grogupy.MagneticEntity)
-        grogupy.save(magnetic_entity, "./tests/test_magnetic_entity_temp.pkl")
+        grogupy.save(
+            magnetic_entity, "./tests/test_magnetic_entity_temp.pkl", compress=0
+        )
         magnetic_entity2 = grogupy.load("./tests/test_magnetic_entity_temp.pkl")
         assert isinstance(magnetic_entity2, grogupy.MagneticEntity)
         assert magnetic_entity == magnetic_entity2
@@ -132,7 +134,7 @@ class TestIO:
     def test_load_save_Pair(self):
         pair = load_Pair("./tests/test_pair.pkl")
         assert isinstance(pair, grogupy.Pair)
-        grogupy.save(pair, "./tests/test_pair_temp.pkl")
+        grogupy.save(pair, "./tests/test_pair_temp.pkl", compress=0)
         pair2 = grogupy.load("./tests/test_pair_temp.pkl")
         assert isinstance(pair2, grogupy.Pair)
         assert pair == pair2
