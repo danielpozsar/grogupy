@@ -245,6 +245,10 @@ class Pair:
 
     def __eq__(self, value):
         if isinstance(value, Pair):
+            # if the IDs are identical, skip comaprison
+            if id(self) == id(value):
+                return True
+
             if not arrays_lists_equal(
                 self._dh.Hk().toarray(), value._dh.Hk().toarray()
             ):
