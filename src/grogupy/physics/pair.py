@@ -30,7 +30,7 @@ from numpy.typing import NDArray
 
 from .. import __version__
 from .._core.core import onsite_projection
-from .._core.utilities import arrays_lists_equal
+from .._core.utilities import arrays_lists_equal, arrays_None_equal
 from .magnetic_entity import MagneticEntity
 from .utilities import (
     calculate_exchange_tensor,
@@ -245,27 +245,41 @@ class Pair:
 
     def __eq__(self, value):
         if isinstance(value, Pair):
-            if (
-                arrays_lists_equal(self._dh.Hk().toarray(), value._dh.Hk().toarray())
-                and arrays_lists_equal(
-                    self._dh.Sk().toarray(), value._dh.Sk().toarray()
-                )
-                and self.M1 == value.M1
-                and self.M2 == value.M2
-                and arrays_lists_equal(self.supercell_shift, value.supercell_shift)
-                and arrays_lists_equal(self._Gij, value._Gij)
-                and arrays_lists_equal(self._Gji, value._Gji)
-                and arrays_lists_equal(self._Gij_tmp, value._Gij_tmp)
-                and arrays_lists_equal(self._Gji_tmp, value._Gji_tmp)
-                and arrays_lists_equal(self.energies, value.energies)
-                and arrays_lists_equal(self.J_iso, value.J_iso)
-                and arrays_lists_equal(self.J, value.J)
-                and arrays_lists_equal(self.J_S, value.J_S)
-                and arrays_lists_equal(self.D, value.D)
+            if not arrays_lists_equal(
+                self._dh.Hk().toarray(), value._dh.Hk().toarray()
             ):
-                return True
+                return False
+            if not arrays_lists_equal(
+                self._dh.Sk().toarray(), value._dh.Sk().toarray()
+            ):
+                return False
+            if not self.M1 == value.M1:
+                return False
+            if not self.M2 == value.M2:
+                return False
+            if not arrays_lists_equal(self.supercell_shift, value.supercell_shift):
+                return False
+            if not arrays_lists_equal(self._Gij, value._Gij):
+                return False
+            if not arrays_lists_equal(self._Gji, value._Gji):
+                return False
+            if not arrays_lists_equal(self._Gij_tmp, value._Gij_tmp):
+                return False
+            if not arrays_lists_equal(self._Gji_tmp, value._Gji_tmp):
+                return False
+            if not arrays_None_equal(self.energies, value.energies):
+                return False
+            if not np.isclose(self.J_iso, value.J_iso):
+                return False
+            if not arrays_None_equal(self.J, value.J):
+                return False
+            if not arrays_None_equal(self.J_S, value.J_S):
+                return False
+            if not arrays_None_equal(self.D, value.D):
+                return False
+            return True
+        else:
             return False
-        return False
 
     def __repr__(self) -> str:
         """String representation of the instance."""

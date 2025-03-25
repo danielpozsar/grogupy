@@ -35,7 +35,7 @@ import sisl
 
 from .. import __version__
 from .._core.core import onsite_projection
-from .._core.utilities import arrays_lists_equal
+from .._core.utilities import arrays_lists_equal, arrays_None_equal
 from .utilities import (
     blow_up_orbindx,
     calculate_anisotropy_tensor,
@@ -349,61 +349,67 @@ class MagneticEntity:
 
     def __eq__(self, value):
         if isinstance(value, MagneticEntity):
-            if (
-                arrays_lists_equal(self._dh.Hk().toarray(), value._dh.Hk().toarray())
-                and arrays_lists_equal(
-                    self._dh.Sk().toarray(), value._dh.Sk().toarray()
-                )
-                and arrays_lists_equal(
-                    self._ds.Dk().toarray(), value._ds.Dk().toarray()
-                )
-                and arrays_lists_equal(
-                    self._ds.Sk().toarray(), value._ds.Sk().toarray()
-                )
-                and self.infile == value.infile
-                and arrays_lists_equal(self._atom, value._atom)
-                and arrays_lists_equal(self._l, value._l)
-                and arrays_lists_equal(
-                    self._orbital_box_indices, value._orbital_box_indices
-                )
-                and self._tags == value._tags
-                and arrays_lists_equal(self._mulliken, value._mulliken)
-                and arrays_lists_equal(self._spin_box_indices, value._spin_box_indices)
-                and arrays_lists_equal(self._xyz, value._xyz)
-                and arrays_lists_equal(self._Vu1, value._Vu1)
-                and arrays_lists_equal(self._Vu2, value._Vu2)
-                and arrays_lists_equal(self._Gii, value._Gii)
-                and arrays_lists_equal(self._Gii_tmp, value._Gii_tmp)
+            if not arrays_lists_equal(
+                self._dh.Hk().toarray(), value._dh.Hk().toarray()
             ):
-                if self.energies is None and value.energies is None:
-                    pass
-                elif arrays_lists_equal(self.energies, value.energies):
-                    pass
-                else:
-                    return False
-
-                if self.K is None and value.K is None:
-                    pass
-                elif arrays_lists_equal(self.K, value.K):
-                    pass
-                else:
-                    return False
-
-                if self.K_consistency is None and value.K_consistency is None:
-                    pass
-                elif isinstance(self.K_consistency, float) and isinstance(
-                    value.K_consistency, float
-                ):
-                    if np.isclose(self.K_consistency, value.K_consistency):
-                        pass
-                    else:
-                        return False
-                else:
-                    return False
-
-                return True
+                return False
+            if not arrays_lists_equal(
+                self._dh.Sk().toarray(), value._dh.Sk().toarray()
+            ):
+                return False
+            if not arrays_lists_equal(
+                self._ds.Dk().toarray(), value._ds.Dk().toarray()
+            ):
+                return False
+            if not arrays_lists_equal(
+                self._ds.Sk().toarray(), value._ds.Sk().toarray()
+            ):
+                return False
+            if not self.infile == value.infile:
+                return False
+            if not arrays_lists_equal(self._atom, value._atom):
+                return False
+            if not self._l == value._l:
+                return False
+            if not arrays_lists_equal(
+                self._orbital_box_indices, value._orbital_box_indices
+            ):
+                return False
+            if not self._tags == value._tags:
+                return False
+            if not arrays_lists_equal(self._mulliken, value._mulliken):
+                return False
+            if not arrays_lists_equal(self._spin_box_indices, value._spin_box_indices):
+                return False
+            if not arrays_lists_equal(self._xyz, value._xyz):
+                return False
+            if not arrays_lists_equal(self._Vu1, value._Vu1):
+                return False
+            if not arrays_lists_equal(self._Vu2, value._Vu2):
+                return False
+            if not arrays_lists_equal(self._Gii, value._Gii):
+                return False
+            if not arrays_lists_equal(self._Gii_tmp, value._Gii_tmp):
+                return False
+            if not arrays_None_equal(self.energies, value.energies):
+                return False
+            if not arrays_None_equal(self.K, value.K):
+                return False
+            # Checking K_consistency separately
+            # if both are None, then pass and no other check is perfomred because of elif
+            if self.K_consistency is None and value.K_consistency is None:
+                pass
+            # if either one is None, but the other is not, then return false
+            elif self.K_consistency is not None and value.K_consistency is None:
+                return False
+            elif self.K_consistency is None and value.K_consistency is not None:
+                return False
+            # If neither of them is None, compare them
+            elif not np.isclose(self.K_consistency, value.K_consistency):
+                return False
+            return True
+        else:
             return False
-        return False
 
     def __repr__(self) -> str:
         """String representation of the instance."""
