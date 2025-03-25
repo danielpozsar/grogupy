@@ -434,11 +434,11 @@ def save(
         DefaultTimer, Contour, Kspace, MagneticEntity, Pair, Hamiltonian, Builder
     ],
     path: str,
-    compress: int = 0,
+    compress: int = 3,
 ) -> None:
     """Saves the instance from a pickled state.
 
-    The compression level can be set to 0,1,2,3. Every other value defaults to 0.
+    The compression level can be set to 0,1,2,3. Every other value defaults to 3.
 
     0. This means that there is no compression at all.
 
@@ -460,7 +460,7 @@ def save(
     path: str
         The path to the output file
     compress: int, optional
-        The level of lossy compression of the output pickle, by default 0
+        The level of lossy compression of the output pickle, by default 3
     """
 
     # check if the object is ours
@@ -473,7 +473,9 @@ def save(
         out_dict = object.__getstate__()
 
         # remove large objects to save memory or to avoid sisl loading errors
-        if compress == 1:
+        if compress == 0:
+            pass
+        elif compress == 1:
             out_dict = strip_dict_structure(out_dict, pops=["_dh", "_ds"], setto=None)
         elif compress == 2:
             out_dict = strip_dict_structure(out_dict, pops=["_dh", "_ds"], setto=None)
@@ -491,7 +493,8 @@ def save(
                 ],
                 setto=[],
             )
-        elif compress == 3:
+        # compress 3 is the default
+        else:
             out_dict = strip_dict_structure(out_dict, pops=["_dh", "_ds"], setto=None)
             out_dict = strip_dict_structure(
                 out_dict,
@@ -510,9 +513,6 @@ def save(
             out_dict = strip_dict_structure(
                 out_dict, pops=["hTRS", "hTRB", "XCF", "H_XCF"], setto=None
             )
-        # this is compress 0 and the default
-        else:
-            pass
 
         # write to file
         with open(path, "wb") as f:
