@@ -34,7 +34,7 @@ Visualization functions
 
 """
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 
 from ..physics import Builder
 
@@ -145,13 +145,13 @@ def plot_kspace(kspace: "Kspace") -> go.Figure:
 
 
 def plot_magnetic_entities(
-    magnetic_entities: list["MagneticEntity"],
+    magnetic_entities: Union[Builder, list["MagneticEntity"]],
 ) -> go.Figure:
     """Creates a plot from a list of magnetic entities.
 
     Parameters
     ----------
-    magnetic_entities : list[MagneticEntity]
+    magnetic_entities : Union[Builder, list["MagneticEntity"]]
         The magnetic entities that contain the tags and coordinates
 
     Returns
@@ -202,12 +202,12 @@ def plot_magnetic_entities(
     return fig
 
 
-def plot_pairs(pairs: list["Pair"], connect: bool = False) -> go.Figure:
+def plot_pairs(pairs: Union[Builder, list["Pair"]], connect: bool = False) -> go.Figure:
     """Creates a plot from a list of pairs.
 
     Parameters
     ----------
-    pairs : Union[list[Pair], None]
+    pairs : Union[Builder, list[Pair]]
         The pairs that contain the tags and coordinates
     connect : bool, optional
         Wether to connect the pairs or not, by default False
@@ -319,7 +319,7 @@ def plot_pairs(pairs: list["Pair"], connect: bool = False) -> go.Figure:
     return fig
 
 
-def plot_DM(pairs: list["Pair"], rescale: float = 1) -> go.Figure:
+def plot_DM(pairs: Union[Builder, list["Pair"]], rescale: float = 1) -> go.Figure:
     """Creates a plot of the DM vectors from a list of pairs.
 
     It can only use pairs from a finished simulation. The magnitude of
@@ -327,7 +327,7 @@ def plot_DM(pairs: list["Pair"], rescale: float = 1) -> go.Figure:
 
     Parameters
     ----------
-    pairs : Union[list[Pair], None]
+    pairs : Union[Builder, list["Pair"]]
         The pairs that contain the tags, coordinates and the DM vectors
     rescale : float, optional
         The length of the vectors are rescaled by this, by default 1
