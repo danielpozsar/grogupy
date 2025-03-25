@@ -148,6 +148,10 @@ class TestIO:
         raise NotImplementedError
 
     @pytest.mark.xfail(raises=NotImplementedError)
+    def test_save_UppASD(self):
+        raise NotImplementedError
+
+    @pytest.mark.xfail(raises=NotImplementedError)
     def test_read_fdf(self):
         raise NotImplementedError
 
