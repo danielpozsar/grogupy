@@ -6,13 +6,13 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>grogupy.io.utilities &mdash; grogupy</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css" />
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
-
+  
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../../../_static/documentation_options.js?v=8d563738"></script>
@@ -22,17 +22,17 @@
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
 
-
-
+          
+          
           <a href="../../../index.html" class="icon icon-home">
             grogupy documentation
           </a>
@@ -93,9 +93,9 @@
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-
+             
   <h1>Source code for grogupy.io.utilities</h1><div class="highlight"><pre>
-<span></span><span class="c1"># Copyright (c) [2024-2025] []</span>
+<span></span><span class="c1"># Copyright (c) [2024-2025] [Laszlo Oroszlany, Daniel Pozsar]</span>
 <span class="c1">#</span>
 <span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
 <span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
@@ -129,62 +129,16 @@
 <span class="sd">    decipher_all_by_tag</span>
 <span class="sd">    strip_dict_structure</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">sisl</span>
-
-
-<div class="viewcode-block" id="process_input_args">
-<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.utilities.process_input_args.html#grogupy.io.utilities.process_input_args">[docs]</a>
-<span class="k">def</span> <span class="nf">process_input_args</span><span class="p">(</span>
-    <span class="n">DEFAULT_ARGUMENTS</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
-    <span class="n">fdf_arguments</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
-    <span class="n">command_line_arguments</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;It returns the final simulation parameters based on the inputs</span>
-
-<span class="sd">    The merging is done in the order of priority:</span>
-<span class="sd">    1. command line arguments</span>
-<span class="sd">    2. fdf arguments</span>
-<span class="sd">    3. default arguments</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">        default_arguments: dict</span>
-<span class="sd">            Default arguments from grogupy</span>
-<span class="sd">        fdf_arguments: dict</span>
-<span class="sd">            Arguments read from the fdf input file</span>
-<span class="sd">        command_line_arguments: dict</span>
-<span class="sd">            Arguments from the command line</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">        dict</span>
-<span class="sd">            The final simulation parameters</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="c1"># copy input so it does not get changed</span>
-    <span class="n">default_arguments</span> <span class="o">=</span> <span class="n">DEFAULT_ARGUMENTS</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-
-    <span class="c1"># iterate over fdf_arguments and update default arguments</span>
-    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">fdf_arguments</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">default_arguments</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="c1"># iterate over command_line_arguments and update default arguments</span>
-    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">command_line_arguments</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">default_arguments</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="k">return</span> <span class="n">default_arguments</span></div>
-
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sisl</span>
 
 
 <div class="viewcode-block" id="decipher">
 <a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.utilities.decipher.html#grogupy.io.utilities.decipher">[docs]</a>
-<span class="k">def</span> <span class="nf">decipher</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">decipher</span><span class="p">(</span>
     <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets the ``atom``, ``l`` and ``orb`` from the tag of the magnetic entity.</span>
@@ -251,7 +205,7 @@
 
 <div class="viewcode-block" id="decipher_all_by_pos">
 <a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.utilities.decipher_all_by_pos.html#grogupy.io.utilities.decipher_all_by_pos">[docs]</a>
-<span class="k">def</span> <span class="nf">decipher_all_by_pos</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">decipher_all_by_pos</span><span class="p">(</span>
     <span class="n">dh</span><span class="p">:</span> <span class="n">sisl</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">Hamiltonian</span><span class="p">,</span>
     <span class="n">magnetic_entities</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
     <span class="n">pairs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
@@ -338,7 +292,7 @@
 
 <div class="viewcode-block" id="decipher_all_by_tag">
 <a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.utilities.decipher_all_by_tag.html#grogupy.io.utilities.decipher_all_by_tag">[docs]</a>
-<span class="k">def</span> <span class="nf">decipher_all_by_tag</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">decipher_all_by_tag</span><span class="p">(</span>
     <span class="n">magnetic_entities</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">pairs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates the magnetic entities and pairs from the tag.</span>
@@ -406,9 +360,11 @@
 
 <div class="viewcode-block" id="strip_dict_structure">
 <a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.utilities.strip_dict_structure.html#grogupy.io.utilities.strip_dict_structure">[docs]</a>
-<span class="k">def</span> <span class="nf">strip_dict_structure</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">strip_dict_structure</span><span class="p">(</span>
     <span class="n">dictionary</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
     <span class="n">pops</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;_dh&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_ds&quot;</span><span class="p">,</span>
         <span class="s2">&quot;Gii&quot;</span><span class="p">,</span>
         <span class="s2">&quot;_Gii_tmp&quot;</span><span class="p">,</span>
         <span class="s2">&quot;Gij&quot;</span><span class="p">,</span>
@@ -417,9 +373,14 @@
         <span class="s2">&quot;_Gji_tmp&quot;</span><span class="p">,</span>
         <span class="s2">&quot;Vu1&quot;</span><span class="p">,</span>
         <span class="s2">&quot;Vu2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;hTRS&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;hTRB&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;XCF&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;H_XCF&quot;</span><span class="p">,</span>
     <span class="p">],</span>
+    <span class="n">setto</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="p">[],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sets the values in the pops keys from the whole dictionary structure to None.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sets the values in the pops keys from the whole dictionary structure to the given value.</span>
 
 <span class="sd">    Usually it is used to remove the parts from the magnetic entities and</span>
 <span class="sd">    the pairs that are taking up a lot of space. See the default keys in</span>
@@ -431,8 +392,9 @@
 <span class="sd">        The dictionary structure that we want to strip down</span>
 <span class="sd">    pops : list[str], optional</span>
 <span class="sd">        These are the keys that should be set to None in the structure,</span>
-<span class="sd">        by defualt [&quot;Gii&quot;, &quot;_Gii_tmp&quot;, &quot;Gij&quot;, &quot;_Gij_tmp&quot;, &quot;Gji&quot;, &quot;_Gji_tmp&quot;, &quot;Vu1&quot;, &quot;Vu2&quot;]</span>
-
+<span class="sd">        by defualt [&quot;_dh&quot;, &quot;_ds&quot;, &quot;Gii&quot;, &quot;_Gii_tmp&quot;, &quot;Gij&quot;, &quot;_Gij_tmp&quot;, &quot;Gji&quot;, &quot;_Gji_tmp&quot;, &quot;Vu1&quot;, &quot;Vu2&quot;, &quot;hTRS&quot;, &quot;hTRB&quot;, &quot;XCF&quot;, &quot;H_XCF&quot;]</span>
+<span class="sd">    setto : Any, optional</span>
+<span class="sd">        The value will be set to this, by defualt []</span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    dict</span>
@@ -444,17 +406,17 @@
     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">dictionary</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="c1"># if the value at the key is not needed, then set it to None</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">pops</span><span class="p">:</span>
-            <span class="n">out_value</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">out_value</span> <span class="o">=</span> <span class="n">setto</span>
         <span class="c1"># if the key contains a dictionary go a level deeper and do the same</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="n">out_value</span> <span class="o">=</span> <span class="n">strip_dict_structure</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">pops</span><span class="p">)</span>
+            <span class="n">out_value</span> <span class="o">=</span> <span class="n">strip_dict_structure</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">pops</span><span class="p">,</span> <span class="n">setto</span><span class="p">)</span>
         <span class="c1"># if the key contains a list, then iterate over it, check if there is any dictionary</span>
         <span class="c1"># and if there is, then go a level deeper</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="n">list_out_val</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                    <span class="n">list_out_val</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">strip_dict_structure</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">pops</span><span class="p">))</span>
+                    <span class="n">list_out_val</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">strip_dict_structure</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">pops</span><span class="p">,</span> <span class="n">setto</span><span class="p">))</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">list_out_val</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
             <span class="n">out_value</span> <span class="o">=</span> <span class="n">list_out_val</span>
@@ -484,7 +446,7 @@
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     provided by <a href="https://readthedocs.org">Read the Docs</a>.
-
+   
 
 </footer>
         </div>
@@ -495,7 +457,7 @@
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
+  </script> 
 
 </body>
 </html>

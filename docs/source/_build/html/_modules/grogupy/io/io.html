@@ -6,13 +6,13 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>grogupy.io.io &mdash; grogupy</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css" />
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
-
+  
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../../../_static/documentation_options.js?v=8d563738"></script>
@@ -22,17 +22,17 @@
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
 
-
-
+          
+          
           <a href="../../../index.html" class="icon icon-home">
             grogupy documentation
           </a>
@@ -93,9 +93,9 @@
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-
+             
   <h1>Source code for grogupy.io.io</h1><div class="highlight"><pre>
-<span></span><span class="c1"># Copyright (c) [2024-2025] []</span>
+<span></span><span class="c1"># Copyright (c) [2024-2025] [Laszlo Oroszlany, Daniel Pozsar]</span>
 <span class="c1">#</span>
 <span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
 <span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
@@ -137,25 +137,28 @@
 <span class="sd">   read_grogupy_fdf</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">pickle</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">importlib.util</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">types</span><span class="w"> </span><span class="kn">import</span> <span class="n">ModuleType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">sisl</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sisl</span>
 
-<span class="kn">from</span> <span class="nn">..batch.timing</span> <span class="kn">import</span> <span class="n">DefaultTimer</span>
-<span class="kn">from</span> <span class="nn">..physics.builder</span> <span class="kn">import</span> <span class="n">Builder</span>
-<span class="kn">from</span> <span class="nn">..physics.contour</span> <span class="kn">import</span> <span class="n">Contour</span>
-<span class="kn">from</span> <span class="nn">..physics.hamiltonian</span> <span class="kn">import</span> <span class="n">Hamiltonian</span>
-<span class="kn">from</span> <span class="nn">..physics.kspace</span> <span class="kn">import</span> <span class="n">Kspace</span>
-<span class="kn">from</span> <span class="nn">..physics.magnetic_entity</span> <span class="kn">import</span> <span class="n">MagneticEntity</span>
-<span class="kn">from</span> <span class="nn">..physics.pair</span> <span class="kn">import</span> <span class="n">Pair</span>
-<span class="kn">from</span> <span class="nn">.utilities</span> <span class="kn">import</span> <span class="n">strip_dict_structure</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..batch.timing</span><span class="w"> </span><span class="kn">import</span> <span class="n">DefaultTimer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..physics.builder</span><span class="w"> </span><span class="kn">import</span> <span class="n">Builder</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..physics.contour</span><span class="w"> </span><span class="kn">import</span> <span class="n">Contour</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..physics.hamiltonian</span><span class="w"> </span><span class="kn">import</span> <span class="n">Hamiltonian</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..physics.kspace</span><span class="w"> </span><span class="kn">import</span> <span class="n">Kspace</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..physics.magnetic_entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">MagneticEntity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..physics.pair</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pair</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utilities</span><span class="w"> </span><span class="kn">import</span> <span class="n">strip_dict_structure</span>
 
 
 <div class="viewcode-block" id="load_DefaultTimer">
 <a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.load_DefaultTimer.html#grogupy.io.io.load_DefaultTimer">[docs]</a>
-<span class="k">def</span> <span class="nf">load_DefaultTimer</span><span class="p">(</span><span class="n">infile</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">DefaultTimer</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_DefaultTimer</span><span class="p">(</span><span class="n">infile</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">DefaultTimer</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Recreates the instance from a pickled state.</span>
 
 <span class="sd">    Parameters</span>
@@ -189,7 +192,7 @@
 
 <div class="viewcode-block" id="load_Contour">
 <a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.load_Contour.html#grogupy.io.io.load_Contour">[docs]</a>
-<span class="k">def</span> <span class="nf">load_Contour</span><span class="p">(</span><span class="n">infile</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Contour</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_Contour</span><span class="p">(</span><span class="n">infile</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Contour</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Recreates the instance from a pickled state.</span>
 
 <span class="sd">    Parameters</span>
@@ -222,8 +225,8 @@
 
 
 <div class="viewcode-block" id="load_Kspace">
-<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.load_Kspace.html#grogupy.io.io.load_Kspace">[docs]</a>
-<span class="k">def</span> <span class="nf">load_Kspace</span><span class="p">(</span><span class="n">infile</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Kspace</span><span class="p">:</span>
+<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.load_KSpace.html#grogupy.io.io.load_Kspace">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_Kspace</span><span class="p">(</span><span class="n">infile</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Kspace</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Recreates the instance from a pickled state.</span>
 
 <span class="sd">    Parameters</span>
@@ -257,7 +260,7 @@
 
 <div class="viewcode-block" id="load_MagneticEntity">
 <a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.load_MagneticEntity.html#grogupy.io.io.load_MagneticEntity">[docs]</a>
-<span class="k">def</span> <span class="nf">load_MagneticEntity</span><span class="p">(</span><span class="n">infile</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">MagneticEntity</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_MagneticEntity</span><span class="p">(</span><span class="n">infile</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">MagneticEntity</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Recreates the instance from a pickled state.</span>
 
 <span class="sd">    Parameters</span>
@@ -291,7 +294,7 @@
 
 <div class="viewcode-block" id="load_Pair">
 <a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.load_Pair.html#grogupy.io.io.load_Pair">[docs]</a>
-<span class="k">def</span> <span class="nf">load_Pair</span><span class="p">(</span><span class="n">infile</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Pair</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_Pair</span><span class="p">(</span><span class="n">infile</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Pair</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Recreates the instance from a pickled state.</span>
 
 <span class="sd">    Parameters</span>
@@ -325,7 +328,7 @@
 
 <div class="viewcode-block" id="load_Hamiltonian">
 <a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.load_Hamiltonian.html#grogupy.io.io.load_Hamiltonian">[docs]</a>
-<span class="k">def</span> <span class="nf">load_Hamiltonian</span><span class="p">(</span><span class="n">infile</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Hamiltonian</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_Hamiltonian</span><span class="p">(</span><span class="n">infile</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Hamiltonian</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Recreates the instance from a pickled state.</span>
 
 <span class="sd">    Parameters</span>
@@ -359,7 +362,7 @@
 
 <div class="viewcode-block" id="load_Builder">
 <a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.load_Builder.html#grogupy.io.io.load_Builder">[docs]</a>
-<span class="k">def</span> <span class="nf">load_Builder</span><span class="p">(</span><span class="n">infile</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Builder</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_Builder</span><span class="p">(</span><span class="n">infile</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Builder</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Recreates the instance from a pickled state.</span>
 
 <span class="sd">    Parameters</span>
@@ -393,7 +396,7 @@
 
 <div class="viewcode-block" id="load">
 <a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.load.html#grogupy.io.io.load">[docs]</a>
-<span class="k">def</span> <span class="nf">load</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span>
     <span class="n">infile</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">DefaultTimer</span><span class="p">,</span> <span class="n">Contour</span><span class="p">,</span> <span class="n">Kspace</span><span class="p">,</span> <span class="n">MagneticEntity</span><span class="p">,</span> <span class="n">Pair</span><span class="p">,</span> <span class="n">Hamiltonian</span><span class="p">,</span> <span class="n">Builder</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Recreates the instance from a pickled state.</span>
@@ -409,44 +412,169 @@
 <span class="sd">    Union[DefaultTimer, Contour, Kspace, MagneticEntity, Pair, Hamiltonian, Builder]</span>
 <span class="sd">        The instance that was loaded</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="c1"># try all the possible loading methods</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">load_Builder</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
-    <span class="k">except</span><span class="p">:</span>
+    <span class="c1"># load pickled file</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">load_Hamiltonian</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                <span class="n">infile</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">load_Pair</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
-            <span class="k">except</span><span class="p">:</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="n">load_MagneticEntity</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
-                <span class="k">except</span><span class="p">:</span>
-                    <span class="k">try</span><span class="p">:</span>
-                        <span class="k">return</span> <span class="n">load_Kspace</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
-                    <span class="k">except</span><span class="p">:</span>
-                        <span class="k">try</span><span class="p">:</span>
-                            <span class="k">return</span> <span class="n">load_Contour</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
-                        <span class="k">except</span><span class="p">:</span>
-                            <span class="k">try</span><span class="p">:</span>
-                                <span class="k">return</span> <span class="n">load_DefaultTimer</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
-                            <span class="k">except</span><span class="p">:</span>
-                                <span class="c1"># also if you know a better way to do it, pls tell me...</span>
-                                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;What the hell is this???&quot;</span><span class="p">)</span></div>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">infile</span> <span class="o">+</span> <span class="s2">&quot;.pkl&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                <span class="n">infile</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">list</span><span class="p">(</span><span class="n">infile</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">==</span> <span class="p">[</span>
+        <span class="s2">&quot;times&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;kspace&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;contour&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;hamiltonian&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;magnetic_entities&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;pairs&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Builder__greens_function_solver&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Builder__parallel_mode&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Builder__architecture&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Builder__matlabmode&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Builder__exchange_solver&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Builder__anisotropy_solver&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ref_xcf_orientations&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_rotated_hamiltonians&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;SLURM_ID&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Builder__version&quot;</span><span class="p">,</span>
+    <span class="p">]:</span>
+        <span class="k">return</span> <span class="n">load_Builder</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="nb">list</span><span class="p">(</span><span class="n">infile</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">==</span> <span class="p">[</span>
+        <span class="s2">&quot;times&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_dh&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_ds&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;infile&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;H&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;S&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;scf_xcf_orientation&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;orientation&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Hamiltonian__no&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;hTRS&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;hTRB&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;XCF&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;H_XCF&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Hamiltonian__cell&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Hamiltonian__sc_off&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Hamiltonian__uc_in_sc_index&quot;</span><span class="p">,</span>
+    <span class="p">]:</span>
+        <span class="k">return</span> <span class="n">load_Hamiltonian</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">list</span><span class="p">(</span><span class="n">infile</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">==</span> <span class="p">[</span>
+        <span class="s2">&quot;_dh&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;M1&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;M2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;supercell_shift&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Gij&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Gji&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Gij_tmp&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Gji_tmp&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;energies&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;J_iso&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;J&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;J_S&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;D&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Pair__SBS1&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Pair__SBS2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Pair__SBI1&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Pair__SBI2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Pair__tags&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Pair__cell&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Pair__supercell_shift_xyz&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Pair__xyz&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Pair__xyz_center&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Pair__distance&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Pair__energies_meV&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Pair__energies_mRy&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Pair__J_meV&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Pair__J_mRy&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Pair__D_meV&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Pair__D_mRy&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Pair__J_S_meV&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Pair__J_S_mRy&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Pair__J_iso_meV&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Pair__J_iso_mRy&quot;</span><span class="p">,</span>
+    <span class="p">]:</span>
+        <span class="k">return</span> <span class="n">load_Pair</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">list</span><span class="p">(</span><span class="n">infile</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">==</span> <span class="p">[</span>
+        <span class="s2">&quot;_dh&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_ds&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;infile&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_atom&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_l&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_orbital_box_indices&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_tags&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_mulliken&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_spin_box_indices&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_xyz&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Vu1&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Vu2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Gii&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Gii_tmp&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;energies&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;K&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;K_consistency&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_MagneticEntity__tag&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_MagneticEntity__SBS&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_MagneticEntity__xyz_center&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_MagneticEntity__Q&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_MagneticEntity__Sx&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_MagneticEntity__Sy&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_MagneticEntity__Sz&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_MagneticEntity__energies_meV&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_MagneticEntity__energies_mRy&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_MagneticEntity__K_meV&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_MagneticEntity__K_mRy&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_MagneticEntity__K_consistency_meV&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_MagneticEntity__K_consistency_mRy&quot;</span><span class="p">,</span>
+    <span class="p">]:</span>
+        <span class="k">return</span> <span class="n">load_MagneticEntity</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">list</span><span class="p">(</span><span class="n">infile</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;times&quot;</span><span class="p">,</span> <span class="s2">&quot;_Kspace__kset&quot;</span><span class="p">,</span> <span class="s2">&quot;kpoints&quot;</span><span class="p">,</span> <span class="s2">&quot;weights&quot;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">load_Kspace</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">list</span><span class="p">(</span><span class="n">infile</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">==</span> <span class="p">[</span>
+        <span class="s2">&quot;times&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Contour__automatic_emin&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_eigfile&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_emin&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_emax&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_eset&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_esetp&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;samples&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;weights&quot;</span><span class="p">,</span>
+    <span class="p">]:</span>
+        <span class="k">return</span> <span class="n">load_Contour</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">list</span><span class="p">(</span><span class="n">infile</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;_DefaultTimer__start_measure&quot;</span><span class="p">,</span> <span class="s2">&quot;_times&quot;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">load_DefaultTimer</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Unknown pickle format!&quot;</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="save">
 <a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.save.html#grogupy.io.io.save">[docs]</a>
-<span class="k">def</span> <span class="nf">save</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span>
     <span class="nb">object</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
         <span class="n">DefaultTimer</span><span class="p">,</span> <span class="n">Contour</span><span class="p">,</span> <span class="n">Kspace</span><span class="p">,</span> <span class="n">MagneticEntity</span><span class="p">,</span> <span class="n">Pair</span><span class="p">,</span> <span class="n">Hamiltonian</span><span class="p">,</span> <span class="n">Builder</span>
     <span class="p">],</span>
     <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">save_memory</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">compress</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Saves the instance from a pickled state.</span>
+
+<span class="sd">    The compression level can be set to 0,1,2,3. Every other value defaults to 0.</span>
+
+<span class="sd">    0. This means that there is no compression at all.</span>
+
+<span class="sd">    1. This means, that the keys &quot;_dh&quot; and &quot;_ds&quot; are set</span>
+<span class="sd">       to None, because othervise the loading would be dependent</span>
+<span class="sd">       on the sisl version</span>
+
+<span class="sd">    2. This contains compression 1, but sets the keys &quot;Gii&quot;,</span>
+<span class="sd">       &quot;_Gii_tmp&quot;, &quot;Gij&quot;, &quot;_Gij_tmp&quot;, &quot;Gji&quot;, &quot;_Gji_tmp&quot;,</span>
+<span class="sd">       &quot;Vu1&quot; and &quot;Vu2&quot; to [], to save space</span>
+
+<span class="sd">    3. This contains compression 1 and 2, but sets the keys</span>
+<span class="sd">       &quot;hTRS&quot;, &quot;hTRB&quot;, &quot;XCF&quot; and &quot;H_XCF&quot; to None, to save space</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -454,10 +582,8 @@
 <span class="sd">        Object from the grogupy library</span>
 <span class="sd">    path: str</span>
 <span class="sd">        The path to the output file</span>
-<span class="sd">    save_memory: bool, optional</span>
-<span class="sd">        Wether to delete the Gij, Gji, Gij_temp, Gji_temp</span>
-<span class="sd">        from the pairs and the Vu1, Vu2, Gii, Gii_temp from</span>
-<span class="sd">        the magnetic entities, by default True</span>
+<span class="sd">    compress: int, optional</span>
+<span class="sd">        The level of lossy compression of the output pickle, by default 0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># check if the object is ours</span>
@@ -469,9 +595,47 @@
         <span class="c1"># the dictionary to be saved</span>
         <span class="n">out_dict</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="n">__getstate__</span><span class="p">()</span>
 
-        <span class="c1"># remove large objects to save memory</span>
-        <span class="k">if</span> <span class="n">save_memory</span><span class="p">:</span>
-            <span class="n">out_dict</span> <span class="o">=</span> <span class="n">strip_dict_structure</span><span class="p">(</span><span class="n">out_dict</span><span class="p">)</span>
+        <span class="c1"># remove large objects to save memory or to avoid sisl loading errors</span>
+        <span class="k">if</span> <span class="n">compress</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">out_dict</span> <span class="o">=</span> <span class="n">strip_dict_structure</span><span class="p">(</span><span class="n">out_dict</span><span class="p">,</span> <span class="n">pops</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;_dh&quot;</span><span class="p">,</span> <span class="s2">&quot;_ds&quot;</span><span class="p">],</span> <span class="n">setto</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">compress</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">out_dict</span> <span class="o">=</span> <span class="n">strip_dict_structure</span><span class="p">(</span><span class="n">out_dict</span><span class="p">,</span> <span class="n">pops</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;_dh&quot;</span><span class="p">,</span> <span class="s2">&quot;_ds&quot;</span><span class="p">],</span> <span class="n">setto</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+            <span class="n">out_dict</span> <span class="o">=</span> <span class="n">strip_dict_structure</span><span class="p">(</span>
+                <span class="n">out_dict</span><span class="p">,</span>
+                <span class="n">pops</span><span class="o">=</span><span class="p">[</span>
+                    <span class="s2">&quot;Gii&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;_Gii_tmp&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Gij&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;_Gij_tmp&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Gji&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;_Gji_tmp&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Vu1&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Vu2&quot;</span><span class="p">,</span>
+                <span class="p">],</span>
+                <span class="n">setto</span><span class="o">=</span><span class="p">[],</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">compress</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">out_dict</span> <span class="o">=</span> <span class="n">strip_dict_structure</span><span class="p">(</span><span class="n">out_dict</span><span class="p">,</span> <span class="n">pops</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;_dh&quot;</span><span class="p">,</span> <span class="s2">&quot;_ds&quot;</span><span class="p">],</span> <span class="n">setto</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+            <span class="n">out_dict</span> <span class="o">=</span> <span class="n">strip_dict_structure</span><span class="p">(</span>
+                <span class="n">out_dict</span><span class="p">,</span>
+                <span class="n">pops</span><span class="o">=</span><span class="p">[</span>
+                    <span class="s2">&quot;Gii&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;_Gii_tmp&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Gij&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;_Gij_tmp&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Gji&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;_Gji_tmp&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Vu1&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Vu2&quot;</span><span class="p">,</span>
+                <span class="p">],</span>
+                <span class="n">setto</span><span class="o">=</span><span class="p">[],</span>
+            <span class="p">)</span>
+            <span class="n">out_dict</span> <span class="o">=</span> <span class="n">strip_dict_structure</span><span class="p">(</span>
+                <span class="n">out_dict</span><span class="p">,</span> <span class="n">pops</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;hTRS&quot;</span><span class="p">,</span> <span class="s2">&quot;hTRB&quot;</span><span class="p">,</span> <span class="s2">&quot;XCF&quot;</span><span class="p">,</span> <span class="s2">&quot;H_XCF&quot;</span><span class="p">],</span> <span class="n">setto</span><span class="o">=</span><span class="kc">None</span>
+            <span class="p">)</span>
+        <span class="c1"># this is compress 0 and the default</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
 
         <span class="c1"># write to file</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -486,7 +650,7 @@
 
 <div class="viewcode-block" id="save_magnopy">
 <a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.save_magnopy.html#grogupy.io.io.save_magnopy">[docs]</a>
-<span class="k">def</span> <span class="nf">save_magnopy</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">save_magnopy</span><span class="p">(</span>
     <span class="n">builder</span><span class="p">:</span> <span class="n">Builder</span><span class="p">,</span>
     <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">precision</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -519,147 +683,9 @@
 
 
 
-<div class="viewcode-block" id="read_grogupy_fdf">
-<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.read_grogupy_fdf.html#grogupy.io.io.read_grogupy_fdf">[docs]</a>
-<span class="k">def</span> <span class="nf">read_grogupy_fdf</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;It reads the simulation parameters, magnetic entities and pairs from the fdf</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">        path: str</span>
-<span class="sd">            The path to the .fdf file</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">        fdf_arguments: dict</span>
-<span class="sd">            The read input arguments from the fdf file</span>
-<span class="sd">        magnetic_entities: list</span>
-<span class="sd">            It contains the dictionaries associated with the magnetic entities</span>
-<span class="sd">        pairs: list</span>
-<span class="sd">            It contains the dictionaries associated with the pair information</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="c1"># read fdf file</span>
-    <span class="n">fdf</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">fdfSileSiesta</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-    <span class="n">fdf_arguments</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-
-    <span class="n">InputFile</span> <span class="o">=</span> <span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;InputFile&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">InputFile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">fdf_arguments</span><span class="p">[</span><span class="s2">&quot;infile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">InputFile</span>
-
-    <span class="n">OutputFile</span> <span class="o">=</span> <span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;OutputFile&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">OutputFile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">fdf_arguments</span><span class="p">[</span><span class="s2">&quot;outfile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">OutputFile</span>
-
-    <span class="n">ScfXcfOrientation</span> <span class="o">=</span> <span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ScfXcfOrientation&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">ScfXcfOrientation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">fdf_arguments</span><span class="p">[</span><span class="s2">&quot;scf_xcf_orientation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="n">ScfXcfOrientation</span><span class="o">.</span><span class="n">split</span><span class="p">()[:</span><span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span>
-        <span class="p">)</span>
-
-    <span class="n">XCF_Rotation</span> <span class="o">=</span> <span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;XCF_Rotation&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">XCF_Rotation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">rotations</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="c1"># iterate over rows</span>
-        <span class="k">for</span> <span class="n">rot</span> <span class="ow">in</span> <span class="n">XCF_Rotation</span><span class="p">:</span>
-            <span class="c1"># convert row to dictionary</span>
-            <span class="n">dat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rot</span><span class="o">.</span><span class="n">split</span><span class="p">()[:</span><span class="mi">9</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-            <span class="n">o</span> <span class="o">=</span> <span class="n">dat</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
-            <span class="n">vw</span> <span class="o">=</span> <span class="n">dat</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-            <span class="n">rotations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">o</span><span class="o">=</span><span class="n">o</span><span class="p">,</span> <span class="n">vw</span><span class="o">=</span><span class="n">vw</span><span class="p">))</span>
-        <span class="n">fdf_arguments</span><span class="p">[</span><span class="s2">&quot;ref_xcf_orientations&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rotations</span>
-
-    <span class="n">Kset</span> <span class="o">=</span> <span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;INTEGRAL.Kset&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">Kset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">fdf_arguments</span><span class="p">[</span><span class="s2">&quot;kset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">Kset</span><span class="p">)</span>
-
-    <span class="n">Kdirs</span> <span class="o">=</span> <span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;INTEGRAL.Kdirs&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">Kdirs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">fdf_arguments</span><span class="p">[</span><span class="s2">&quot;kdirs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Kdirs</span>
-
-    <span class="c1"># This is permitted because it means automatic Ebot definition</span>
-    <span class="n">ebot</span> <span class="o">=</span> <span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;INTEGRAL.Ebot&quot;</span><span class="p">)</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">fdf_arguments</span><span class="p">[</span><span class="s2">&quot;ebot&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ebot</span><span class="p">)</span>
-    <span class="k">except</span><span class="p">:</span>
-        <span class="n">fdf_arguments</span><span class="p">[</span><span class="s2">&quot;ebot&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="n">Eset</span> <span class="o">=</span> <span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;INTEGRAL.Eset&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">Eset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">fdf_arguments</span><span class="p">[</span><span class="s2">&quot;eset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">Eset</span><span class="p">)</span>
-
-    <span class="n">Esetp</span> <span class="o">=</span> <span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;INTEGRAL.Esetp&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">Esetp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">fdf_arguments</span><span class="p">[</span><span class="s2">&quot;esetp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">Esetp</span><span class="p">)</span>
-
-    <span class="n">ParallelSolver</span> <span class="o">=</span> <span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;GREEN.ParallelSolver&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">ParallelSolver</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">fdf_arguments</span><span class="p">[</span><span class="s2">&quot;parallel_solver_for_Gk&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">ParallelSolver</span><span class="p">)</span>
-
-    <span class="n">PadawanMode</span> <span class="o">=</span> <span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;PadawanMode&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">PadawanMode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">fdf_arguments</span><span class="p">[</span><span class="s2">&quot;padawan_mode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">PadawanMode</span><span class="p">)</span>
-
-    <span class="n">Pairs</span> <span class="o">=</span> <span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Pairs&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">Pairs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">pairs</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="c1"># iterate over rows</span>
-        <span class="k">for</span> <span class="n">fdf_pair</span> <span class="ow">in</span> <span class="n">Pairs</span><span class="p">:</span>
-            <span class="c1"># convert data</span>
-            <span class="n">dat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">fdf_pair</span><span class="o">.</span><span class="n">split</span><span class="p">()[:</span><span class="mi">5</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-            <span class="c1"># create pair dictionary</span>
-            <span class="n">my_pair</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">ai</span><span class="o">=</span><span class="n">dat</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">aj</span><span class="o">=</span><span class="n">dat</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">Ruc</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dat</span><span class="p">[</span><span class="mi">2</span><span class="p">:]))</span>
-            <span class="n">pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">my_pair</span><span class="p">)</span>
-
-    <span class="n">MagneticEntities</span> <span class="o">=</span> <span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;MagneticEntities&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">MagneticEntities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">magnetic_entities</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="c1"># iterate over magnetic entities</span>
-        <span class="k">for</span> <span class="n">mag_ent</span> <span class="ow">in</span> <span class="n">MagneticEntities</span><span class="p">:</span>
-            <span class="c1"># drop comments from data</span>
-            <span class="n">row</span> <span class="o">=</span> <span class="n">mag_ent</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-            <span class="n">dat</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">string</span> <span class="ow">in</span> <span class="n">row</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">string</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-                    <span class="k">break</span>
-                <span class="n">dat</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
-            <span class="c1"># cluster input</span>
-            <span class="k">if</span> <span class="n">dat</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;Cluster&quot;</span><span class="p">,</span> <span class="s2">&quot;cluster&quot;</span><span class="p">}:</span>
-                <span class="n">magnetic_entities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">atom</span><span class="o">=</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">_</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">dat</span><span class="p">[</span><span class="mi">1</span><span class="p">:]]))</span>
-                <span class="k">continue</span>
-            <span class="c1"># atom input, same as cluster, but raises</span>
-            <span class="c1"># error when multiple atoms are given</span>
-            <span class="k">if</span> <span class="n">dat</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;Atom&quot;</span><span class="p">,</span> <span class="s2">&quot;atom&quot;</span><span class="p">}:</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dat</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Atom input must be a single integer&quot;</span><span class="p">)</span>
-                <span class="n">magnetic_entities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">atom</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">dat</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
-                <span class="k">continue</span>
-            <span class="c1"># atom and shell information</span>
-            <span class="k">elif</span> <span class="n">dat</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;AtomShell&quot;</span><span class="p">,</span> <span class="s2">&quot;Atomshell&quot;</span><span class="p">,</span> <span class="s2">&quot;atomShell&quot;</span><span class="p">,</span> <span class="s2">&quot;atomshell&quot;</span><span class="p">}:</span>
-                <span class="n">magnetic_entities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                    <span class="nb">dict</span><span class="p">(</span><span class="n">atom</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">dat</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">l</span><span class="o">=</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">_</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">dat</span><span class="p">[</span><span class="mi">2</span><span class="p">:]])</span>
-                <span class="p">)</span>
-                <span class="k">continue</span>
-            <span class="c1"># atom and orbital information</span>
-            <span class="k">elif</span> <span class="n">dat</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;AtomOrbital&quot;</span><span class="p">,</span> <span class="s2">&quot;Atomorbital&quot;</span><span class="p">,</span> <span class="s2">&quot;tomOrbital&quot;</span><span class="p">,</span> <span class="s2">&quot;atomorbital&quot;</span><span class="p">}:</span>
-                <span class="n">magnetic_entities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                    <span class="nb">dict</span><span class="p">(</span><span class="n">atom</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">dat</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">orb</span><span class="o">=</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">_</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">dat</span><span class="p">[</span><span class="mi">2</span><span class="p">:]])</span>
-                <span class="p">)</span>
-                <span class="k">continue</span>
-            <span class="c1"># orbital information</span>
-            <span class="k">elif</span> <span class="n">dat</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;Orbitals&quot;</span><span class="p">,</span> <span class="s2">&quot;orbitals&quot;</span><span class="p">}:</span>
-                <span class="n">magnetic_entities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">orb</span><span class="o">=</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">_</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">dat</span><span class="p">[</span><span class="mi">1</span><span class="p">:]]))</span>
-                <span class="k">continue</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Unrecognizable magnetic entity in .fdf!&quot;</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">fdf_arguments</span><span class="p">,</span> <span class="n">magnetic_entities</span><span class="p">,</span> <span class="n">pairs</span></div>
-
-
-
 <div class="viewcode-block" id="read_magnopy">
 <a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.read_magnopy.html#grogupy.io.io.read_magnopy">[docs]</a>
-<span class="k">def</span> <span class="nf">read_magnopy</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_magnopy</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This function reads the magnopy input file and return a dictionary</span>
 
 <span class="sd">    The dictionary contains sub-dictionaries with the section names and</span>
@@ -894,6 +920,195 @@
 
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">read_fdf</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;It reads the simulation parameters, magnetic entities and pairs from the fdf</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        path: str</span>
+<span class="sd">            The path to the .fdf file</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        fdf_arguments: dict</span>
+<span class="sd">            The read input arguments from the fdf file</span>
+<span class="sd">        magnetic_entities: list</span>
+<span class="sd">            It contains the dictionaries associated with the magnetic entities</span>
+<span class="sd">        pairs: list</span>
+<span class="sd">            It contains the dictionaries associated with the pair information</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># read fdf file</span>
+    <span class="n">fdf</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">fdfSileSiesta</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">fdf_arguments</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+    <span class="n">InputFile</span> <span class="o">=</span> <span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;InputFile&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">InputFile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fdf_arguments</span><span class="p">[</span><span class="s2">&quot;infile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">InputFile</span>
+
+    <span class="n">OutputFile</span> <span class="o">=</span> <span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;OutputFile&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">OutputFile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fdf_arguments</span><span class="p">[</span><span class="s2">&quot;outfile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">OutputFile</span>
+
+    <span class="n">ScfXcfOrientation</span> <span class="o">=</span> <span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ScfXcfOrientation&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ScfXcfOrientation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fdf_arguments</span><span class="p">[</span><span class="s2">&quot;scf_xcf_orientation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="n">ScfXcfOrientation</span><span class="o">.</span><span class="n">split</span><span class="p">()[:</span><span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span>
+        <span class="p">)</span>
+
+    <span class="n">XCF_Rotation</span> <span class="o">=</span> <span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;XCF_Rotation&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">XCF_Rotation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">rotations</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># iterate over rows</span>
+        <span class="k">for</span> <span class="n">rot</span> <span class="ow">in</span> <span class="n">XCF_Rotation</span><span class="p">:</span>
+            <span class="c1"># convert row to dictionary</span>
+            <span class="n">dat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rot</span><span class="o">.</span><span class="n">split</span><span class="p">()[:</span><span class="mi">9</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+            <span class="n">o</span> <span class="o">=</span> <span class="n">dat</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">vw</span> <span class="o">=</span> <span class="n">dat</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="n">rotations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">o</span><span class="o">=</span><span class="n">o</span><span class="p">,</span> <span class="n">vw</span><span class="o">=</span><span class="n">vw</span><span class="p">))</span>
+        <span class="n">fdf_arguments</span><span class="p">[</span><span class="s2">&quot;ref_xcf_orientations&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rotations</span>
+
+    <span class="n">Kset</span> <span class="o">=</span> <span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;INTEGRAL.Kset&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">Kset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fdf_arguments</span><span class="p">[</span><span class="s2">&quot;kset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">Kset</span><span class="p">)</span>
+
+    <span class="n">Kdirs</span> <span class="o">=</span> <span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;INTEGRAL.Kdirs&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">Kdirs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fdf_arguments</span><span class="p">[</span><span class="s2">&quot;kdirs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Kdirs</span>
+
+    <span class="c1"># This is permitted because it means automatic Ebot definition</span>
+    <span class="n">ebot</span> <span class="o">=</span> <span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;INTEGRAL.Ebot&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">fdf_arguments</span><span class="p">[</span><span class="s2">&quot;ebot&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ebot</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">fdf_arguments</span><span class="p">[</span><span class="s2">&quot;ebot&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">Eset</span> <span class="o">=</span> <span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;INTEGRAL.Eset&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">Eset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fdf_arguments</span><span class="p">[</span><span class="s2">&quot;eset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">Eset</span><span class="p">)</span>
+
+    <span class="n">Esetp</span> <span class="o">=</span> <span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;INTEGRAL.Esetp&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">Esetp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fdf_arguments</span><span class="p">[</span><span class="s2">&quot;esetp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">Esetp</span><span class="p">)</span>
+
+    <span class="n">ParallelSolver</span> <span class="o">=</span> <span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;GREEN.ParallelSolver&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ParallelSolver</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fdf_arguments</span><span class="p">[</span><span class="s2">&quot;parallel_solver_for_Gk&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">ParallelSolver</span><span class="p">)</span>
+
+    <span class="n">PadawanMode</span> <span class="o">=</span> <span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;PadawanMode&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">PadawanMode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fdf_arguments</span><span class="p">[</span><span class="s2">&quot;padawan_mode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">PadawanMode</span><span class="p">)</span>
+
+    <span class="n">Pairs</span> <span class="o">=</span> <span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Pairs&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">Pairs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">pairs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># iterate over rows</span>
+        <span class="k">for</span> <span class="n">fdf_pair</span> <span class="ow">in</span> <span class="n">Pairs</span><span class="p">:</span>
+            <span class="c1"># convert data</span>
+            <span class="n">dat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">fdf_pair</span><span class="o">.</span><span class="n">split</span><span class="p">()[:</span><span class="mi">5</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+            <span class="c1"># create pair dictionary</span>
+            <span class="n">my_pair</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">ai</span><span class="o">=</span><span class="n">dat</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">aj</span><span class="o">=</span><span class="n">dat</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">Ruc</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dat</span><span class="p">[</span><span class="mi">2</span><span class="p">:]))</span>
+            <span class="n">pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">my_pair</span><span class="p">)</span>
+
+    <span class="n">MagneticEntities</span> <span class="o">=</span> <span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;MagneticEntities&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">MagneticEntities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">magnetic_entities</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># iterate over magnetic entities</span>
+        <span class="k">for</span> <span class="n">mag_ent</span> <span class="ow">in</span> <span class="n">MagneticEntities</span><span class="p">:</span>
+            <span class="c1"># drop comments from data</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="n">mag_ent</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="n">dat</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">string</span> <span class="ow">in</span> <span class="n">row</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">string</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="n">dat</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+            <span class="c1"># cluster input</span>
+            <span class="k">if</span> <span class="n">dat</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;Cluster&quot;</span><span class="p">,</span> <span class="s2">&quot;cluster&quot;</span><span class="p">}:</span>
+                <span class="n">magnetic_entities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">atom</span><span class="o">=</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">_</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">dat</span><span class="p">[</span><span class="mi">1</span><span class="p">:]]))</span>
+                <span class="k">continue</span>
+            <span class="c1"># atom input, same as cluster, but raises</span>
+            <span class="c1"># error when multiple atoms are given</span>
+            <span class="k">if</span> <span class="n">dat</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;Atom&quot;</span><span class="p">,</span> <span class="s2">&quot;atom&quot;</span><span class="p">}:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dat</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Atom input must be a single integer&quot;</span><span class="p">)</span>
+                <span class="n">magnetic_entities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">atom</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">dat</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
+                <span class="k">continue</span>
+            <span class="c1"># atom and shell information</span>
+            <span class="k">elif</span> <span class="n">dat</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;AtomShell&quot;</span><span class="p">,</span> <span class="s2">&quot;Atomshell&quot;</span><span class="p">,</span> <span class="s2">&quot;atomShell&quot;</span><span class="p">,</span> <span class="s2">&quot;atomshell&quot;</span><span class="p">}:</span>
+                <span class="n">magnetic_entities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="nb">dict</span><span class="p">(</span><span class="n">atom</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">dat</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">l</span><span class="o">=</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">_</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">dat</span><span class="p">[</span><span class="mi">2</span><span class="p">:]])</span>
+                <span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="c1"># atom and orbital information</span>
+            <span class="k">elif</span> <span class="n">dat</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;AtomOrbital&quot;</span><span class="p">,</span> <span class="s2">&quot;Atomorbital&quot;</span><span class="p">,</span> <span class="s2">&quot;tomOrbital&quot;</span><span class="p">,</span> <span class="s2">&quot;atomorbital&quot;</span><span class="p">}:</span>
+                <span class="n">magnetic_entities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="nb">dict</span><span class="p">(</span><span class="n">atom</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">dat</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">orb</span><span class="o">=</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">_</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">dat</span><span class="p">[</span><span class="mi">2</span><span class="p">:]])</span>
+                <span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="c1"># orbital information</span>
+            <span class="k">elif</span> <span class="n">dat</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;Orbitals&quot;</span><span class="p">,</span> <span class="s2">&quot;orbitals&quot;</span><span class="p">}:</span>
+                <span class="n">magnetic_entities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">orb</span><span class="o">=</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">_</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">dat</span><span class="p">[</span><span class="mi">1</span><span class="p">:]]))</span>
+                <span class="k">continue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Unrecognizable magnetic entity in .fdf!&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">fdf_arguments</span><span class="p">,</span> <span class="n">magnetic_entities</span><span class="p">,</span> <span class="n">pairs</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">read_command_line</span><span class="p">(</span><span class="n">citation</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">ModuleType</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reading command line parameters for command line tools.</span>
+
+<span class="sd">    Options:</span>
+<span class="sd">    The first argument is a .py file</span>
+<span class="sd">    that contains the input parameters.</span>
+<span class="sd">    --cite returns citations</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    citation: str</span>
+<span class="sd">        The citation that should be printed.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    params : Union[None, ModuleType]</span>
+<span class="sd">        The input parameters</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># setup parser</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Load Python variables from a .py file.&quot;</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;file&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;?&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Path to a Python file containing variables to load&quot;</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--cite&quot;</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;cite&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Print the citation of the package&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="c1"># parameters from command line</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+    <span class="c1"># print citation if needed</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">cite</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">citation</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+    <span class="c1"># Create the spec</span>
+    <span class="n">spec</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">spec_from_file_location</span><span class="p">(</span>
+        <span class="s2">&quot;grogupy_command_line_input&quot;</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">file</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Create the module</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">module_from_spec</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
+    <span class="n">spec</span><span class="o">.</span><span class="n">loader</span><span class="o">.</span><span class="n">exec_module</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">params</span>
+
+
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="k">pass</span>
 </pre></div>
@@ -911,7 +1126,7 @@
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     provided by <a href="https://readthedocs.org">Read the Docs</a>.
-
+   
 
 </footer>
         </div>
@@ -922,7 +1137,7 @@
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
+  </script> 
 
 </body>
 </html>

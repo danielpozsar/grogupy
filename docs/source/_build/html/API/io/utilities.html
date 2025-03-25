@@ -7,13 +7,13 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Utility functions &mdash; grogupy</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom_styles.css" />
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
-
+  
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../../_static/documentation_options.js?v=8d563738"></script>
@@ -24,18 +24,18 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="grogupy.io.utilities.process_input_args" href="_generated/grogupy.io.utilities.process_input_args.html" />
-    <link rel="prev" title="grogupy.io.io.read_grogupy_fdf" href="_generated/grogupy.io.io.read_grogupy_fdf.html" />
+    <link rel="next" title="grogupy.io.utilities.decipher" href="_generated/grogupy.io.utilities.decipher.html" />
+    <link rel="prev" title="grogupy.io.io.read_magnopy" href="_generated/grogupy.io.io.read_magnopy.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
 
-
-
+          
+          
           <a href="../../index.html" class="icon icon-home">
             grogupy documentation
           </a>
@@ -67,7 +67,6 @@
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Input/Output</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="io.html">Visualization functions</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Utility functions</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="_generated/grogupy.io.utilities.process_input_args.html">grogupy.io.utilities.process_input_args</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_generated/grogupy.io.utilities.decipher.html">grogupy.io.utilities.decipher</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_generated/grogupy.io.utilities.decipher_all_by_pos.html">grogupy.io.utilities.decipher_all_by_pos</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_generated/grogupy.io.utilities.decipher_all_by_tag.html">grogupy.io.utilities.decipher_all_by_tag</a></li>
@@ -117,25 +116,22 @@
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-
+             
   <section id="utility-functions">
 <h1>Utility functions<a class="headerlink" href="#utility-functions" title="Link to this heading"></a></h1>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="_generated/grogupy.io.utilities.process_input_args.html#grogupy.io.utilities.process_input_args" title="grogupy.io.utilities.process_input_args"><code class="xref py py-obj docutils literal notranslate"><span class="pre">process_input_args</span></code></a>(DEFAULT_ARGUMENTS, ...)</p></td>
-<td><p>It returns the final simulation parameters based on the inputs</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_generated/grogupy.io.utilities.decipher.html#grogupy.io.utilities.decipher" title="grogupy.io.utilities.decipher"><code class="xref py py-obj docutils literal notranslate"><span class="pre">decipher</span></code></a>(tag)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_generated/grogupy.io.utilities.decipher.html#grogupy.io.utilities.decipher" title="grogupy.io.utilities.decipher"><code class="xref py py-obj docutils literal notranslate"><span class="pre">decipher</span></code></a>(tag)</p></td>
 <td><p>Gets the <code class="docutils literal notranslate"><span class="pre">atom</span></code>, <code class="docutils literal notranslate"><span class="pre">l</span></code> and <code class="docutils literal notranslate"><span class="pre">orb</span></code> from the tag of the magnetic entity.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_generated/grogupy.io.utilities.decipher_all_by_pos.html#grogupy.io.utilities.decipher_all_by_pos" title="grogupy.io.utilities.decipher_all_by_pos"><code class="xref py py-obj docutils literal notranslate"><span class="pre">decipher_all_by_pos</span></code></a>(dh, magnetic_entities, pairs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_generated/grogupy.io.utilities.decipher_all_by_pos.html#grogupy.io.utilities.decipher_all_by_pos" title="grogupy.io.utilities.decipher_all_by_pos"><code class="xref py py-obj docutils literal notranslate"><span class="pre">decipher_all_by_pos</span></code></a>(dh, magnetic_entities, pairs)</p></td>
 <td><p>This function deciphers the magnetic entities and pairs based on coordinates</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_generated/grogupy.io.utilities.decipher_all_by_tag.html#grogupy.io.utilities.decipher_all_by_tag" title="grogupy.io.utilities.decipher_all_by_tag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">decipher_all_by_tag</span></code></a>(magnetic_entities, pairs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_generated/grogupy.io.utilities.decipher_all_by_tag.html#grogupy.io.utilities.decipher_all_by_tag" title="grogupy.io.utilities.decipher_all_by_tag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">decipher_all_by_tag</span></code></a>(magnetic_entities, pairs)</p></td>
 <td><p>Creates the magnetic entities and pairs from the tag.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_generated/grogupy.io.utilities.strip_dict_structure.html#grogupy.io.utilities.strip_dict_structure" title="grogupy.io.utilities.strip_dict_structure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">strip_dict_structure</span></code></a>(dictionary[, pops])</p></td>
-<td><p>Sets the values in the pops keys from the whole dictionary structure to None.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_generated/grogupy.io.utilities.strip_dict_structure.html#grogupy.io.utilities.strip_dict_structure" title="grogupy.io.utilities.strip_dict_structure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">strip_dict_structure</span></code></a>(dictionary[, pops, setto])</p></td>
+<td><p>Sets the values in the pops keys from the whole dictionary structure to the given value.</p></td>
 </tr>
 </tbody>
 </table>
@@ -145,8 +141,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="_generated/grogupy.io.io.read_grogupy_fdf.html" class="btn btn-neutral float-left" title="grogupy.io.io.read_grogupy_fdf" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="_generated/grogupy.io.utilities.process_input_args.html" class="btn btn-neutral float-right" title="grogupy.io.utilities.process_input_args" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="_generated/grogupy.io.io.read_magnopy.html" class="btn btn-neutral float-left" title="grogupy.io.io.read_magnopy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="_generated/grogupy.io.utilities.decipher.html" class="btn btn-neutral float-right" title="grogupy.io.utilities.decipher" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
@@ -158,7 +154,7 @@
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     provided by <a href="https://readthedocs.org">Read the Docs</a>.
-
+   
 
 </footer>
         </div>
@@ -169,7 +165,7 @@
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
+  </script> 
 
 </body>
 </html>

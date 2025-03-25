@@ -6,13 +6,13 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>grogupy.physics.builder &mdash; grogupy</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css" />
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
-
+  
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../../../_static/documentation_options.js?v=8d563738"></script>
@@ -22,17 +22,17 @@
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
 
-
-
+          
+          
           <a href="../../../index.html" class="icon icon-home">
             grogupy documentation
           </a>
@@ -93,9 +93,9 @@
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-
+             
   <h1>Source code for grogupy.physics.builder</h1><div class="highlight"><pre>
-<span></span><span class="c1"># Copyright (c) [2024-2025] []</span>
+<span></span><span class="c1"># Copyright (c) [2024-2025] [Laszlo Oroszlany, Daniel Pozsar]</span>
 <span class="c1">#</span>
 <span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
 <span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
@@ -119,41 +119,38 @@
 <span class="sd">_extended_summary_</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">io</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">sisl</span>
-<span class="kn">from</span> <span class="nn">numpy.typing</span> <span class="kn">import</span> <span class="n">NDArray</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sisl</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">NDArray</span>
 
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">__version__</span><span class="p">,</span> <span class="n">_tqdm</span>
-<span class="kn">from</span> <span class="nn">..batch.timing</span> <span class="kn">import</span> <span class="n">DefaultTimer</span>
-<span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">CONFIG</span>
-<span class="kn">from</span> <span class="nn">..core.core</span> <span class="kn">import</span> <span class="n">calc_Vu</span><span class="p">,</span> <span class="n">onsite_projection</span>
-<span class="kn">from</span> <span class="nn">..core.utilities</span> <span class="kn">import</span> <span class="n">RotMa2b</span><span class="p">,</span> <span class="n">setup_from_range</span><span class="p">,</span> <span class="n">tau_u</span>
-<span class="kn">from</span> <span class="nn">.contour</span> <span class="kn">import</span> <span class="n">Contour</span>
-<span class="kn">from</span> <span class="nn">.hamiltonian</span> <span class="kn">import</span> <span class="n">Hamiltonian</span>
-<span class="kn">from</span> <span class="nn">.kspace</span> <span class="kn">import</span> <span class="n">Kspace</span>
-<span class="kn">from</span> <span class="nn">.magnetic_entity</span> <span class="kn">import</span> <span class="n">MagneticEntity</span>
-<span class="kn">from</span> <span class="nn">.pair</span> <span class="kn">import</span> <span class="n">Pair</span>
-
-<span class="k">if</span> <span class="n">CONFIG</span><span class="o">.</span><span class="n">viz_loaded</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">..viz.viz</span> <span class="kn">import</span> <span class="n">plot_DM</span><span class="p">,</span> <span class="n">plot_magnetic_entities</span><span class="p">,</span> <span class="n">plot_pairs</span>
-
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.._tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">_tqdm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.._core.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_Vu</span><span class="p">,</span> <span class="n">onsite_projection</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.._core.utilities</span><span class="w"> </span><span class="kn">import</span> <span class="n">RotMa2b</span><span class="p">,</span> <span class="n">setup_from_range</span><span class="p">,</span> <span class="n">tau_u</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..batch.timing</span><span class="w"> </span><span class="kn">import</span> <span class="n">DefaultTimer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..config</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONFIG</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.contour</span><span class="w"> </span><span class="kn">import</span> <span class="n">Contour</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.hamiltonian</span><span class="w"> </span><span class="kn">import</span> <span class="n">Hamiltonian</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.kspace</span><span class="w"> </span><span class="kn">import</span> <span class="n">Kspace</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.magnetic_entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">MagneticEntity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.pair</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pair</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">pytest</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
 
 <div class="viewcode-block" id="setup">
 <a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.setup">[docs]</a>
     <span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">setup</span><span class="p">():</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup</span><span class="p">():</span>
         <span class="n">k</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">Kspace</span><span class="p">(),</span> <span class="n">Contour</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="o">-</span><span class="mi">20</span><span class="p">)</span>
         <span class="n">h</span> <span class="o">=</span> <span class="n">Hamiltonian</span><span class="p">(</span>
-            <span class="s2">&quot;/Users/danielpozsar/Downloads/nojij/Fe3GeTe2/monolayer/soc/lat3_791/Fe3GeTe2.fdf&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;/Users/danielpozsar/Downloads/Fe3GeTe2/Fe3GeTe2.fdf&quot;</span><span class="p">,</span>
             <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">k</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">h</span></div>
@@ -165,7 +162,7 @@
 
 <div class="viewcode-block" id="Builder">
 <a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder">[docs]</a>
-<span class="k">class</span> <span class="nc">Builder</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Builder</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This class contains the data and the methods related to the Simulation.</span>
 
 <span class="sd">    Parameters</span>
@@ -259,7 +256,7 @@
 
     <span class="n">root_node</span> <span class="o">=</span> <span class="mi">0</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">ref_xcf_orientations</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">],</span> <span class="n">matlabmode</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize simulation.</span>
@@ -316,9 +313,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">__anisotropy_solver</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Fit&quot;</span>
 
         <span class="c1"># this is the original three axes o is z and vw is x and y</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-        <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
         <span class="c1"># for every given orientation we rotate the x,y,z coordinate system</span>
         <span class="n">orientations</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ref_xcf_orientations</span><span class="p">):</span>
@@ -371,9 +368,11 @@
         <span class="k">except</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">SLURM_ID</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Could not be determined.&quot;</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">__version</span> <span class="o">=</span> <span class="n">__version__</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">times</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="s2">&quot;setup&quot;</span><span class="p">,</span> <span class="n">restart</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">state</span><span class="p">[</span><span class="s2">&quot;times&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;times&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">__getstate__</span><span class="p">()</span>
         <span class="n">state</span><span class="p">[</span><span class="s2">&quot;contour&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;contour&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">__getstate__</span><span class="p">()</span>
@@ -397,7 +396,7 @@
 
         <span class="k">return</span> <span class="n">state</span>
 
-    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
         <span class="n">times</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="n">DefaultTimer</span><span class="p">)</span>
         <span class="n">times</span><span class="o">.</span><span class="n">__setstate__</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;times&quot;</span><span class="p">])</span>
         <span class="n">state</span><span class="p">[</span><span class="s2">&quot;times&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">times</span>
@@ -437,7 +436,57 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span> <span class="o">=</span> <span class="n">state</span>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Builder</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">times</span> <span class="o">==</span> <span class="n">value</span><span class="o">.</span><span class="n">times</span>
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">kspace</span> <span class="o">==</span> <span class="n">value</span><span class="o">.</span><span class="n">kspace</span>
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">contour</span> <span class="o">==</span> <span class="n">value</span><span class="o">.</span><span class="n">contour</span>
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">hamiltonian</span> <span class="o">==</span> <span class="n">value</span><span class="o">.</span><span class="n">hamiltonian</span>
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__greens_function_solver</span> <span class="o">==</span> <span class="n">value</span><span class="o">.</span><span class="n">__greens_function_solver</span>
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parallel_mode</span> <span class="o">==</span> <span class="n">value</span><span class="o">.</span><span class="n">__parallel_mode</span>
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__architecture</span> <span class="o">==</span> <span class="n">value</span><span class="o">.</span><span class="n">__architecture</span>
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__matlabmode</span> <span class="o">==</span> <span class="n">value</span><span class="o">.</span><span class="n">__matlabmode</span>
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__exchange_solver</span> <span class="o">==</span> <span class="n">value</span><span class="o">.</span><span class="n">__exchange_solver</span>
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__anisotropy_solver</span> <span class="o">==</span> <span class="n">value</span><span class="o">.</span><span class="n">__anisotropy_solver</span>
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">SLURM_ID</span> <span class="o">==</span> <span class="n">value</span><span class="o">.</span><span class="n">SLURM_ID</span>
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__version</span> <span class="o">==</span> <span class="n">value</span><span class="o">.</span><span class="n">__version</span>
+            <span class="p">):</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rotated_hamiltonians</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">_rotated_hamiltonians</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">magnetic_entities</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">magnetic_entities</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pairs</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">pairs</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_xcf_orientations</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">ref_xcf_orientations</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_xcf_orientations</span><span class="p">)):</span>
+                    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_xcf_orientations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">ref_xcf_orientations</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">k</span><span class="p">],</span>
+                            <span class="n">value</span><span class="o">.</span><span class="n">ref_xcf_orientations</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">k</span><span class="p">],</span>
+                        <span class="p">):</span>
+                            <span class="k">return</span> <span class="kc">False</span>
+
+                <span class="k">for</span> <span class="n">one</span><span class="p">,</span> <span class="n">two</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_rotated_hamiltonians</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">_rotated_hamiltonians</span>
+                <span class="p">):</span>
+                    <span class="k">if</span> <span class="n">one</span> <span class="o">!=</span> <span class="n">two</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="kc">False</span>
+
+                <span class="k">for</span> <span class="n">one</span><span class="p">,</span> <span class="n">two</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">magnetic_entities</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">magnetic_entities</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">one</span> <span class="o">!=</span> <span class="n">two</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="kc">False</span>
+
+                <span class="k">for</span> <span class="n">one</span><span class="p">,</span> <span class="n">two</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pairs</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">pairs</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">one</span> <span class="o">!=</span> <span class="n">two</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="kc">False</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;It prints the parameters and the description of the job.</span>
 
 <span class="sd">        Args:</span>
@@ -450,7 +499,7 @@
 
         <span class="n">out</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="n">out</span> <span class="o">+=</span> <span class="n">section</span> <span class="o">+</span> <span class="n">newline</span>
-        <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;grogupy version: </span><span class="si">{</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">newline</span>
+        <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;grogupy version: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__version</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">newline</span>
         <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;Input file: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">infile</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">newline</span>
         <span class="n">out</span> <span class="o">+=</span> <span class="n">section</span> <span class="o">+</span> <span class="n">newline</span>
         <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;SLURM job ID: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">SLURM_ID</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">newline</span>
@@ -503,7 +552,7 @@
 
         <span class="k">return</span> <span class="n">out</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">kspace</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">NK</span> <span class="o">=</span> <span class="s2">&quot;None&quot;</span>
             <span class="n">kset</span> <span class="o">=</span> <span class="s2">&quot;None&quot;</span>
@@ -520,7 +569,7 @@
         <span class="k">return</span> <span class="n">string</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">NO</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">NO</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The number of orbitals in the Hamiltonian.&quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hamiltonian</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -529,17 +578,17 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hamiltonian</span><span class="o">.</span><span class="n">NO</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">matlabmode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">matlabmode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Wether to force compatibility with matlab or not.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__matlabmode</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">exchange_solver</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">exchange_solver</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The solver used for the exchange tensor calculation.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__exchange_solver</span>
 
     <span class="nd">@exchange_solver</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">exchange_solver</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">exchange_solver</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;f&quot;</span><span class="p">:</span>  <span class="c1"># fit</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__matlabmode</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
@@ -553,12 +602,12 @@
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognized solution method: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">anisotropy_solver</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">anisotropy_solver</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The solver used for the anisotropy tensor calculation.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__anisotropy_solver</span>
 
     <span class="nd">@anisotropy_solver</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">anisotropy_solver</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">anisotropy_solver</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;f&quot;</span><span class="p">:</span>  <span class="c1"># fit</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__matlabmode</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
@@ -584,12 +633,12 @@
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognized solution method: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">greens_function_solver</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">greens_function_solver</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The solution method for the Hamiltonian inversion, by default &quot;Sequential&quot;.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__greens_function_solver</span>
 
     <span class="nd">@greens_function_solver</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">greens_function_solver</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">greens_function_solver</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;s&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__greens_function_solver</span> <span class="o">=</span> <span class="s2">&quot;Sequential&quot;</span>
         <span class="k">elif</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;p&quot;</span><span class="p">:</span>
@@ -600,50 +649,55 @@
             <span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">parallel_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parallel_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The parallelization mode for the Hamiltonian inversions, by default &quot;K&quot;.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parallel_mode</span>
 
     <span class="nd">@parallel_mode</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">parallel_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parallel_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;a&quot;</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;All&quot;</span>
         <span class="k">elif</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;k&quot;</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;K&quot;</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">architecture</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">architecture</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The architecture of the machine that grogupy is run on, by default &#39;CPU&#39;.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__architecture</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_dh</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">sisl</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">Hamiltonian</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_dh</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">sisl</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">Hamiltonian</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;``sisl`` Hamiltonian object used in the input.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hamiltonian</span><span class="o">.</span><span class="n">_dh</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_ds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">sisl</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">DensityMatrix</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_ds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">sisl</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">DensityMatrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;``sisl`` density matrix object used in the input.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hamiltonian</span><span class="o">.</span><span class="n">_ds</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">sisl</span><span class="o">.</span><span class="n">geometry</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">sisl</span><span class="o">.</span><span class="n">geometry</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;``sisl`` geometry object.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hamiltonian</span><span class="o">.</span><span class="n">_dh</span><span class="o">.</span><span class="n">geometry</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">scf_xcf_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">scf_xcf_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Exchange field orientation in the DFT calculation.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hamiltonian</span><span class="o">.</span><span class="n">scf_xcf_orientation</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">infile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">infile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Input file used to build the Hamiltonian.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hamiltonian</span><span class="o">.</span><span class="n">infile</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Version of grogupy.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__version</span>
+
 <div class="viewcode-block" id="Builder.to_magnopy">
 <a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.to_magnopy">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_magnopy</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_magnopy</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">precision</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">comments</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the magnopy input file as string.</span>
@@ -696,7 +750,7 @@
         <span class="n">out</span> <span class="o">+=</span> <span class="n">newline</span>
         <span class="k">for</span> <span class="n">mag_ent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">magnetic_entities</span><span class="p">:</span>
             <span class="n">out</span> <span class="o">+=</span> <span class="n">mag_ent</span><span class="o">.</span><span class="n">tag</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span>
-            <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mag_ent</span><span class="o">.</span><span class="n">xyz</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">mag_ent</span><span class="o">.</span><span class="n">xyz</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">mag_ent</span><span class="o">.</span><span class="n">xyz</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mag_ent</span><span class="o">.</span><span class="n">_xyz</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">mag_ent</span><span class="o">.</span><span class="n">_xyz</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">mag_ent</span><span class="o">.</span><span class="n">_xyz</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2"> &quot;</span>
             <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mag_ent</span><span class="o">.</span><span class="n">Sx</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">mag_ent</span><span class="o">.</span><span class="n">Sy</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">mag_ent</span><span class="o">.</span><span class="n">Sz</span><span class="si">}</span><span class="s2"> # </span><span class="si">{</span><span class="n">mag_ent</span><span class="o">.</span><span class="n">Q</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="n">out</span> <span class="o">+=</span> <span class="n">newline</span>
         <span class="n">out</span> <span class="o">+=</span> <span class="n">section</span> <span class="o">+</span> <span class="n">newline</span>
@@ -740,7 +794,7 @@
 
 <div class="viewcode-block" id="Builder.add_kspace">
 <a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.add_kspace">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_kspace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kspace</span><span class="p">:</span> <span class="n">Kspace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_kspace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kspace</span><span class="p">:</span> <span class="n">Kspace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds the k-space information to the instance.</span>
 
 <span class="sd">        Parameters</span>
@@ -757,7 +811,7 @@
 
 <div class="viewcode-block" id="Builder.add_contour">
 <a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.add_contour">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_contour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contour</span><span class="p">:</span> <span class="n">Contour</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_contour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contour</span><span class="p">:</span> <span class="n">Contour</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds the energy contour information to the instance.</span>
 
 <span class="sd">        Parameters</span>
@@ -774,7 +828,7 @@
 
 <div class="viewcode-block" id="Builder.add_hamiltonian">
 <a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.add_hamiltonian">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hamiltonian</span><span class="p">:</span> <span class="n">Hamiltonian</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hamiltonian</span><span class="p">:</span> <span class="n">Hamiltonian</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds the Hamiltonian and geometrical information to the instance.</span>
 
 <span class="sd">        Parameters</span>
@@ -791,7 +845,7 @@
 
 <div class="viewcode-block" id="Builder.setup_from_range">
 <a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.setup_from_range">[docs]</a>
-    <span class="k">def</span> <span class="nf">setup_from_range</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup_from_range</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">R</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">subset</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -843,7 +897,7 @@
 
 <div class="viewcode-block" id="Builder.create_magnetic_entities">
 <a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.create_magnetic_entities">[docs]</a>
-    <span class="k">def</span> <span class="nf">create_magnetic_entities</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_magnetic_entities</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">magnetic_entities</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">MagneticEntity</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a list of MagneticEntity from a list of dictionaries.</span>
@@ -883,7 +937,7 @@
 
 <div class="viewcode-block" id="Builder.create_pairs">
 <a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.create_pairs">[docs]</a>
-    <span class="k">def</span> <span class="nf">create_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pairs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Pair</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pairs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Pair</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a list of Pair from a list of dictionaries.</span>
 
 <span class="sd">        The dictionaries must contain `ai`, `aj` and `Ruc`, based on the accepted</span>
@@ -929,7 +983,7 @@
 
 <div class="viewcode-block" id="Builder.add_magnetic_entities">
 <a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.add_magnetic_entities">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_magnetic_entities</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_magnetic_entities</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">magnetic_entities</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
             <span class="nb">dict</span><span class="p">,</span> <span class="n">MagneticEntity</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="n">MagneticEntity</span><span class="p">]]</span>
@@ -969,7 +1023,7 @@
 
 <div class="viewcode-block" id="Builder.add_pairs">
 <a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.add_pairs">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pairs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="n">Pair</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="n">Pair</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pairs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="n">Pair</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="n">Pair</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds a Pair or a list of Pair to the instance.</span>
 
 <span class="sd">        It dumps the data to the ``pairs`` instance parameter. If a list</span>
@@ -1004,7 +1058,7 @@
 
 <div class="viewcode-block" id="Builder.finalize">
 <a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.finalize">[docs]</a>
-    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;It finalizes the system and calculates infinitesimal rotations.</span>
 
 <span class="sd">        It sets up the magnetic entities and pairs by defining the rotation</span>
@@ -1048,9 +1102,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_rotated_hamiltonians</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_hamiltonian</span><span class="p">)</span>
 
             <span class="k">for</span> <span class="n">mag_ent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">magnetic_entities</span><span class="p">:</span>
-                <span class="n">mag_ent</span><span class="o">.</span><span class="n">Vu1</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
-                <span class="n">mag_ent</span><span class="o">.</span><span class="n">Vu2</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
-                <span class="n">mag_ent</span><span class="o">.</span><span class="n">Gii</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">mag_ent</span><span class="o">.</span><span class="n">_Vu1</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+                <span class="n">mag_ent</span><span class="o">.</span><span class="n">_Vu2</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+                <span class="n">mag_ent</span><span class="o">.</span><span class="n">_Gii</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                     <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
                         <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contour</span><span class="o">.</span><span class="n">eset</span><span class="p">,</span> <span class="n">mag_ent</span><span class="o">.</span><span class="n">SBS</span><span class="p">,</span> <span class="n">mag_ent</span><span class="o">.</span><span class="n">SBS</span><span class="p">),</span>
                         <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;complex128&quot;</span><span class="p">,</span>
@@ -1064,7 +1118,7 @@
                 <span class="p">)</span>
 
             <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pairs</span><span class="p">:</span>
-                <span class="n">pair</span><span class="o">.</span><span class="n">Gij</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">pair</span><span class="o">.</span><span class="n">_Gij</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                     <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
                         <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contour</span><span class="o">.</span><span class="n">eset</span><span class="p">,</span> <span class="n">pair</span><span class="o">.</span><span class="n">SBS1</span><span class="p">,</span> <span class="n">pair</span><span class="o">.</span><span class="n">SBS2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;complex128&quot;</span>
                     <span class="p">)</span>
@@ -1074,7 +1128,7 @@
                         <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contour</span><span class="o">.</span><span class="n">eset</span><span class="p">,</span> <span class="n">pair</span><span class="o">.</span><span class="n">SBS1</span><span class="p">,</span> <span class="n">pair</span><span class="o">.</span><span class="n">SBS2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;complex128&quot;</span>
                     <span class="p">)</span>
                 <span class="p">)</span>
-                <span class="n">pair</span><span class="o">.</span><span class="n">Gji</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">pair</span><span class="o">.</span><span class="n">_Gji</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                     <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
                         <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contour</span><span class="o">.</span><span class="n">eset</span><span class="p">,</span> <span class="n">pair</span><span class="o">.</span><span class="n">SBS2</span><span class="p">,</span> <span class="n">pair</span><span class="o">.</span><span class="n">SBS1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;complex128&quot;</span>
                     <span class="p">)</span>
@@ -1093,14 +1147,14 @@
 
                 <span class="k">for</span> <span class="n">mag_ent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">magnetic_entities</span><span class="p">:</span>
                     <span class="c1"># fill up the perturbed potentials (for now) based on the on-site projections</span>
-                    <span class="n">mag_ent</span><span class="o">.</span><span class="n">Vu1</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">mag_ent</span><span class="o">.</span><span class="n">_Vu1</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                         <span class="n">onsite_projection</span><span class="p">(</span>
-                            <span class="n">Vu1</span><span class="p">,</span> <span class="n">mag_ent</span><span class="o">.</span><span class="n">spin_box_indices</span><span class="p">,</span> <span class="n">mag_ent</span><span class="o">.</span><span class="n">spin_box_indices</span>
+                            <span class="n">Vu1</span><span class="p">,</span> <span class="n">mag_ent</span><span class="o">.</span><span class="n">_spin_box_indices</span><span class="p">,</span> <span class="n">mag_ent</span><span class="o">.</span><span class="n">_spin_box_indices</span>
                         <span class="p">)</span>
                     <span class="p">)</span>
-                    <span class="n">mag_ent</span><span class="o">.</span><span class="n">Vu2</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">mag_ent</span><span class="o">.</span><span class="n">_Vu2</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                         <span class="n">onsite_projection</span><span class="p">(</span>
-                            <span class="n">Vu2</span><span class="p">,</span> <span class="n">mag_ent</span><span class="o">.</span><span class="n">spin_box_indices</span><span class="p">,</span> <span class="n">mag_ent</span><span class="o">.</span><span class="n">spin_box_indices</span>
+                            <span class="n">Vu2</span><span class="p">,</span> <span class="n">mag_ent</span><span class="o">.</span><span class="n">_spin_box_indices</span><span class="p">,</span> <span class="n">mag_ent</span><span class="o">.</span><span class="n">_spin_box_indices</span>
                         <span class="p">)</span>
                     <span class="p">)</span>
 
@@ -1109,7 +1163,7 @@
 
 <div class="viewcode-block" id="Builder.solve">
 <a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.solve">[docs]</a>
-    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrapper for Greens function solver.</span>
 
 <span class="sd">        It uses the parallelization over k-points, energy and directions if ``solver``</span>
@@ -1124,12 +1178,12 @@
 
         <span class="c1"># choose architecture solver</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__architecture</span><span class="o">.</span><span class="n">lower</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;c&quot;</span><span class="p">:</span>  <span class="c1"># cpu</span>
-            <span class="kn">from</span> <span class="nn">..core.cpu_solvers</span> <span class="kn">import</span> <span class="p">(</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">.._core.cpu_solvers</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
                 <span class="n">solve_parallel_over_all</span><span class="p">,</span>
                 <span class="n">solve_parallel_over_k</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__architecture</span><span class="o">.</span><span class="n">lower</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;g&quot;</span><span class="p">:</span>  <span class="c1"># gpu</span>
-            <span class="kn">from</span> <span class="nn">..core.gpu_solvers</span> <span class="kn">import</span> <span class="p">(</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">.._core.gpu_solvers</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
                 <span class="n">solve_parallel_over_all</span><span class="p">,</span>
                 <span class="n">solve_parallel_over_k</span><span class="p">,</span>
             <span class="p">)</span>
@@ -1149,7 +1203,7 @@
 
 <div class="viewcode-block" id="Builder.copy">
 <a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.copy">[docs]</a>
-    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the deepcopy of the instance.</span>
 
 <span class="sd">        Returns</span>
@@ -1163,7 +1217,7 @@
 
 <div class="viewcode-block" id="Builder.a2M">
 <a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.a2M">[docs]</a>
-    <span class="k">def</span> <span class="nf">a2M</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">a2M</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;partial&quot;</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">MagneticEntity</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the magnetic entities that contains the given atoms.</span>
@@ -1207,68 +1261,20 @@
         <span class="k">return</span> <span class="n">M</span></div>
 
 
-<div class="viewcode-block" id="Builder.plot_magnetic_entities">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.plot_magnetic_entities">[docs]</a>
-    <span class="k">def</span> <span class="nf">plot_magnetic_entities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a plot of magnetic entities.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot_magnetic_entities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;You have to load grogupy.viz first.&quot;&quot;&quot;</span>
 
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        plotly.graph_objs.go.Figure</span>
-<span class="sd">            The created figure</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Missing visualization libraries.&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">CONFIG</span><span class="o">.</span><span class="n">viz_loaded</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">plot_magnetic_entities</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">magnetic_entities</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Missing visualization libraries.&quot;</span><span class="p">)</span></div>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connect</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;You have to load grogupy.viz first.&quot;&quot;&quot;</span>
 
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Missing visualization libraries.&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Builder.plot_pairs">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.plot_pairs">[docs]</a>
-    <span class="k">def</span> <span class="nf">plot_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connect</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a plot of pairs.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot_DM</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rescale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;You have to load grogupy.viz first.&quot;&quot;&quot;</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        connect : bool, optional</span>
-<span class="sd">            Wether to connect the pairs or not, by default False</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        plotly.graph_objs.go.Figure</span>
-<span class="sd">            The created figure</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">if</span> <span class="n">CONFIG</span><span class="o">.</span><span class="n">viz_loaded</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">plot_pairs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pairs</span><span class="p">,</span> <span class="n">connect</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Missing visualization libraries.&quot;</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="Builder.plot_DM">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.plot_DM">[docs]</a>
-    <span class="k">def</span> <span class="nf">plot_DM</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rescale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a plot of the DM vectors.</span>
-
-<span class="sd">        It can only use a finished simulation.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        rescale : float</span>
-<span class="sd">            The length of the vectors are rescaled by this</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        plotly.graph_objs.go.Figure</span>
-<span class="sd">            The created figure</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">if</span> <span class="n">CONFIG</span><span class="o">.</span><span class="n">viz_loaded</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">plot_DM</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pairs</span><span class="p">,</span> <span class="n">rescale</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Missing visualization libraries.&quot;</span><span class="p">)</span></div>
-</div>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Missing visualization libraries.&quot;</span><span class="p">)</span></div>
 
 
 
@@ -1289,7 +1295,7 @@
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     provided by <a href="https://readthedocs.org">Read the Docs</a>.
-
+   
 
 </footer>
         </div>
@@ -1300,7 +1306,7 @@
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
+  </script> 
 
 </body>
 </html>
