@@ -310,7 +310,9 @@ class MagneticEntity:
                 return False
             if not self._tags == value._tags:
                 return False
-            if not arrays_lists_equal(self._mulliken, value._mulliken):
+            if not arrays_lists_equal(self._total_mulliken, value._total_mulliken):
+                return False
+            if not arrays_lists_equal(self._local_mulliken, value._local_mulliken):
                 return False
             if not arrays_lists_equal(self._spin_box_indices, value._spin_box_indices):
                 return False
