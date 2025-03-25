@@ -20,5 +20,6 @@ nbformat
 # testing
 pytest
 pytest-randomly
+pytest-xdist
 pytest-cov
 hypothesis
