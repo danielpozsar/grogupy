@@ -293,8 +293,8 @@ def setup_from_range(
 def arrays_lists_equal(array1: Any, array2: Any) -> bool:
     """Compares two objects.
 
-    if the objects are not nested lists ending in arrays
-    or arrays, then it returns the equality relation. Otherwise it goes
+    if the objects are not arrays or nested lists ending in
+    arrays, then it returns False. Otherwise it goes
     down the list structure and checks all the arrays with
     np.allclose for equality. If the structure itself or any
     array is different, then it returns False. Otherwise it
@@ -343,7 +343,47 @@ def arrays_lists_equal(array1: Any, array2: Any) -> bool:
 
     # othervise they are not the desired structure
     else:
-        return np.all(array1 == array2)
+        False
+
+
+def arrays_None_equal(array1: Any, array2: Any) -> bool:
+    """Compares two objects.
+
+    if the objects are not arrays or None, then it returns
+    False. Otherwise it compares the arrays.
+
+    Parameters
+    ----------
+    array1: Any
+        The first object to compare
+    array2: Any
+        The second object to compare
+
+    Returns
+    -------
+    bool:
+        Wether the above described structures are equal
+    """
+
+    # if both are array, then they can be equal
+    if isinstance(array1, np.ndarray) and isinstance(array2, np.ndarray):
+        # the array shapes should be equal
+        if array1.shape == array2.shape:
+            # the array elements should be equal
+            if np.allclose(array1, array2):
+                return True
+            else:
+                return False
+        else:
+            return False
+
+    # if both are None, then they are equal
+    elif array1 is None and array2 is None:
+        return True
+
+    # othervise they are not the desired structure
+    else:
+        False
 
 
 if __name__ == "__main__":
