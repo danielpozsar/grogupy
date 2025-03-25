@@ -142,11 +142,6 @@ class Kspace:
 
         return copy.deepcopy(self)
 
-    def plot(self):
-        """You have to load grogupy.viz first."""
-
-        raise Exception("Missing visualization libraries.")
-
 
 if __name__ == "__main__":
     pass

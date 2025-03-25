@@ -1132,21 +1132,6 @@ class Builder:
 
         return M
 
-    def plot_magnetic_entities(self):
-        """You have to load grogupy.viz first."""
-
-        raise Exception("Missing visualization libraries.")
-
-    def plot_pairs(self, connect: bool = False):
-        """You have to load grogupy.viz first."""
-
-        raise Exception("Missing visualization libraries.")
-
-    def plot_DM(self, rescale: float = 1):
-        """You have to load grogupy.viz first."""
-
-        raise Exception("Missing visualization libraries.")
-
 
 if __name__ == "__main__":
     pass
