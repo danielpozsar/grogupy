@@ -22,6 +22,8 @@ import pytest
 import sisl
 
 import grogupy
+import grogupy._core
+import grogupy._core.utilities
 
 pytestmark = [pytest.mark.physics]
 
@@ -104,12 +106,16 @@ class TestPair:
         p2._dh = p._dh
         assert p == p2
 
-        p2.M1 = grogupy.load("./tests/test_magnetic_entity.pkl")
+        p2.M1 = grogupy.MagneticEntity(
+            "/Users/danielpozsar/Downloads/Fe3GeTe2/Fe3GeTe2.fdf", atom=3
+        )
         assert p != p2
         p2.M1 = p.M1
         assert p == p2
 
-        p2.M2 = grogupy.load("./tests/test_magnetic_entity.pkl")
+        p2.M2 = grogupy.MagneticEntity(
+            "/Users/danielpozsar/Downloads/Fe3GeTe2/Fe3GeTe2.fdf", atom=4
+        )
         assert p != p2
         p2.M2 = p.M2
         assert p == p2
@@ -144,7 +150,7 @@ class TestPair:
         p2.energies = p.energies
         assert p == p2
 
-        p2.J_iso = np.zeros(3)
+        p2.J_iso = 100
         assert p != p2
         p2.J_iso = p.J_iso
         assert p == p2
@@ -154,7 +160,7 @@ class TestPair:
         p2.J = p.J
         assert p == p2
 
-        p2.J_S = np.zeros(3)
+        p2.J_S = 1000 * np.ones(3)
         assert p != p2
         p2.J_S = p.J_S
         assert p == p2

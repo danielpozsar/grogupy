@@ -76,7 +76,7 @@ class TestContour:
         c2.emax = c.emax
         assert c == c2
 
-        c2.__automatic_emin = False
+        c2.__automatic_emin = True
         assert c != c2
         c2.__automatic_emin = c.__automatic_emin
         assert c == c2

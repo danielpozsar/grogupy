@@ -354,7 +354,7 @@ class TestMagneticEntity:
         assert arrays_lists_equal(
             new._atom, np.hstack((mag_ent1._atom, mag_ent2._atom))
         )
-        assert arrays_lists_equal(new._l, mag_ent1._l + mag_ent2._l)
+        assert new._l == mag_ent1._l + mag_ent2._l
         assert arrays_lists_equal(
             new._orbital_box_indices,
             np.hstack((mag_ent1._orbital_box_indices, mag_ent2._orbital_box_indices)),
@@ -474,7 +474,7 @@ class TestMagneticEntity:
         m2._atom = m._atom
         assert m == m2
 
-        m2._l = np.zeros_like(m._l)
+        m2._l = [None, [None, 10]]
         assert m != m2
         m2._l = m._l
         assert m == m2
