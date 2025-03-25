@@ -43,6 +43,7 @@ Visualization functions
 import argparse
 import importlib.util
 import pickle
+from os.path import join
 from types import ModuleType
 from typing import Union
 
@@ -384,7 +385,8 @@ def load(
         "_l",
         "_orbital_box_indices",
         "_tags",
-        "_mulliken",
+        "_total_mulliken",
+        "_local_mulliken",
         "_spin_box_indices",
         "_xyz",
         "_Vu1",
@@ -528,10 +530,82 @@ def save(
         )
 
 
+def save_UppASD(builder: Builder, folder: str, magnetic_moment: str = "total"):
+    """Writes the UppASD input files to the given folder.
+
+    The created input files are the posfile, momfile and
+    jfile. Furthermore a cell.tmp.txt file is created which
+    contains the unit cell for easy copy pasting.
+
+    Parameters
+    ----------
+    builder : Builder
+        Main simulation object containing all the data
+    folder : str
+        The out put folder where the files are created
+    magnetic_moment: str, optional
+        It switches the used spin moment in the output, can be 'total'
+        for the whole atom or atoms involved in the magnetic entity or
+        'local' if we only use the part of the mulliken projections that
+        are exactly on the magnetic entity, which may be just a subshell
+        of the atom, by default 'total'
+    """
+    posfile = []
+    momfile = []
+    # iterating over magnetic entities
+    for i, mag_ent in enumerate(builder.magnetic_entities):
+        # calculating positions in basis vector coordinates
+        basis_vector_coords = m.xyz_center @ np.linalg.inv(m._dh.cell)
+        bvc = np.around(basis_vector_coords, decimals=5)
+        # adding line to posfile
+        posfile.append(f"{i+1} {i+1} {bvc[0]:.5f} {bvc[1]:.5f} {bvc[2]:.5f}")
+
+        # if magnetic moment is local
+        if magnetic_moment.lower() == "l":
+            S = np.array([mag_ent.local_Sx, mag_ent.local_Sy, mag_ent.local_Sz])
+        # if magnetic moment is total
+        else:
+            S = np.array([mag_ent.total_Sx, mag_ent.total_Sy, mag_ent.total_Sz])
+        # get the norm of the vector
+        S_abs = np.linalg.norm(S)
+        S = S / S_abs
+        S = np.around(S, decimals=5)
+        S_abs = np.around(S_abs, decimals=5)
+        # adding line to momfile
+        momfile.append(f"{i+1} 1 {S_abs:.5f} {S[0]:.5f} {S[1]:.5f} {S[2]:.5f}")
+
+    jfile = []
+    # iterating over pairs
+    for pair in builder.pairs:
+        # iterating over magnetic entities and comparing them to the ones stored in the pairs
+        for i, mag_ent in enumerate(builder.magnetic_entities):
+            if mag_ent == pair.M1:
+                ai = i
+            if mag_ent == pair.M2:
+                aj = i
+        # this is the unit cell shift
+        shift = pair.supercell_shift
+        # -2 for convention, from Marci
+        J = np.around(-2 * pair.J_mRy.flatten(), decimals=5)
+        # adding line to jfile
+        jfile.append(
+            f"{ai} {aj} {shift[0]} {shift[1]} {shift[2]} "
+            + " ".join(map(lambda x: f"{x:.5f}", J))
+        )
+
+    # writing them to the given folder
+    with open(join(folder, "jfile"), "w") as f:
+        print(jfile, file=f)
+    with open(join(folder, "momfile"), "w") as f:
+        print(momfile, file=f)
+    with open(join(folder, "posfile"), "w") as f:
+        print(posfile, file=f)
+
+
 def save_magnopy(
     builder: Builder,
     path: str,
-    spin_moment: str = "total",
+    magnetic_moment: str = "total",
     precision: Union[None, int] = None,
     comments: bool = True,
 ) -> None:
@@ -546,8 +620,8 @@ def save_magnopy(
         The system that we want to save
     path: str
         Output path
-    spin_moment: str, optional
-        It switches the used spin moment in the output, can be 'total'
+    magnetic_moment: str, optional
+        It switches the used magnetic moment in the output, can be 'total'
         for the whole atom or atoms involved in the magnetic entity or
         'local' if we only use the part of the mulliken projections that
         are exactly on the magnetic entity, which may be just a subshell
@@ -563,7 +637,7 @@ def save_magnopy(
         path += ".magnopy.txt"
 
     data = builder.to_magnopy(
-        spin_moment=spin_moment, precision=precision, comments=comments
+        magnetic_moment=magnetic_moment, precision=precision, comments=comments
     )
     with open(path, "w") as file:
         file.write(data)
