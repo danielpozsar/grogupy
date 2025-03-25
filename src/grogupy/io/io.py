@@ -397,10 +397,14 @@ def load(
         "_MagneticEntity__tag",
         "_MagneticEntity__SBS",
         "_MagneticEntity__xyz_center",
-        "_MagneticEntity__Q",
-        "_MagneticEntity__Sx",
-        "_MagneticEntity__Sy",
-        "_MagneticEntity__Sz",
+        "_MagneticEntity__total_Q",
+        "_MagneticEntity__total_Sx",
+        "_MagneticEntity__total_Sy",
+        "_MagneticEntity__total_Sz",
+        "_MagneticEntity__local_Q",
+        "_MagneticEntity__local_Sx",
+        "_MagneticEntity__local_Sy",
+        "_MagneticEntity__local_Sz",
         "_MagneticEntity__energies_meV",
         "_MagneticEntity__energies_mRy",
         "_MagneticEntity__K_meV",
@@ -527,6 +531,7 @@ def save(
 def save_magnopy(
     builder: Builder,
     path: str,
+    spin_moment: str = "total",
     precision: Union[None, int] = None,
     comments: bool = True,
 ) -> None:
@@ -541,6 +546,12 @@ def save_magnopy(
         The system that we want to save
     path: str
         Output path
+    spin_moment: str, optional
+        It switches the used spin moment in the output, can be 'total'
+        for the whole atom or atoms involved in the magnetic entity or
+        'local' if we only use the part of the mulliken projections that
+        are exactly on the magnetic entity, which may be just a subshell
+        of the atom, by default 'total'
     precision: Union[None, int], optional
         The precision of the magnetic parameters in the output, if None
         everything is written, by default None
@@ -551,7 +562,9 @@ def save_magnopy(
     if not path.endswith(".magnopy.txt"):
         path += ".magnopy.txt"
 
-    data = builder.to_magnopy(precision=precision, comments=comments)
+    data = builder.to_magnopy(
+        spin_moment=spin_moment, precision=precision, comments=comments
+    )
     with open(path, "w") as file:
         file.write(data)
 

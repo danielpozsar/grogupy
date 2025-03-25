@@ -594,7 +594,10 @@ class Builder:
         return self.__version
 
     def to_magnopy(
-        self, precision: Union[None, int] = None, comments: bool = True
+        self,
+        spin_moment: str = "total",
+        precision: Union[None, int] = None,
+        comments: bool = True,
     ) -> str:
         """Returns the magnopy input file as string.
 
@@ -603,6 +606,12 @@ class Builder:
 
         Parameters
         ----------
+        spin_moment: str, optional
+            It switches the used spin moment in the output, can be 'total'
+            for the whole atom or atoms involved in the magnetic entity or
+            'local' if we only use the part of the mulliken projections that
+            are exactly on the magnetic entity, which may be just a subshell
+            of the atom, by default 'total'
         precision: Union[None, int], optional
             The precision of the magnetic parameters in the output, if None
             everything is written, by default None
@@ -647,7 +656,10 @@ class Builder:
         for mag_ent in self.magnetic_entities:
             out += mag_ent.tag + " "
             out += f"{mag_ent._xyz.mean(axis=0)[0]} {mag_ent._xyz.mean(axis=0)[1]} {mag_ent._xyz.mean(axis=0)[2]} "
-            out += f"{mag_ent.Sx} {mag_ent.Sy} {mag_ent.Sz} # {mag_ent.Q}"
+            if spin_moment[0].lower() == "l":
+                out += f"{mag_ent.local_Sx} {mag_ent.local_Sy} {mag_ent.local_Sz} # {mag_ent.local_Q}"
+            else:
+                out += f"{mag_ent.total_Sx} {mag_ent.total_Sy} {mag_ent.total_Sz} # {mag_ent.total_Q}"
             out += newline
         out += section + newline
         out += "notation" + newline
