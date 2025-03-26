@@ -556,7 +556,7 @@ def save_UppASD(builder: Builder, folder: str, magnetic_moment: str = "total"):
     # iterating over magnetic entities
     for i, mag_ent in enumerate(builder.magnetic_entities):
         # calculating positions in basis vector coordinates
-        basis_vector_coords = m.xyz_center @ np.linalg.inv(m._dh.cell)
+        basis_vector_coords = mag_ent.xyz_center @ np.linalg.inv(mag_ent._dh.cell)
         bvc = np.around(basis_vector_coords, decimals=5)
         # adding line to posfile
         posfile.append(f"{i+1} {i+1} {bvc[0]:.5f} {bvc[1]:.5f} {bvc[2]:.5f}")
@@ -594,7 +594,13 @@ def save_UppASD(builder: Builder, folder: str, magnetic_moment: str = "total"):
             + " ".join(map(lambda x: f"{x:.5f}", J))
         )
 
+    # cell as easily copy pastable string
+    c = np.around(mag_ent._dh.cell, 5)
+    string = f"{c[0,0]} {c[0,1]} {c[0,2]}\n{c[1,0]} {c[1,1]} {c[1,2]}\n{c[2,0]} {c[2,1]} {c[2,2]}"
+
     # writing them to the given folder
+    with open(join(folder, "cell.tmp.txt"), "w") as f:
+        print(string, file=f)
     with open(join(folder, "jfile"), "w") as f:
         print(jfile, file=f)
     with open(join(folder, "momfile"), "w") as f:
