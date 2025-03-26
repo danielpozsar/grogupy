@@ -5,7 +5,6 @@ More on the theoretical background can be seen on [arXiv](https://arxiv.org/abs/
 ## TODO
 
 - get automatic emax
-- threadpol processpool?
 - move tests to src
 - better readme
 - dependency on how we choose the perpendicular directions
@@ -13,9 +12,6 @@ More on the theoretical background can be seen on [arXiv](https://arxiv.org/abs/
 - Use ReadThe Docs [addons](https://docs.readthedocs.io/en/stable/addons.html)
 - Document
 
-- majd egyszer warning ha szigetelő, de most siesta fermi
-- which magnetic moment should we write to magnopy atoms?
-- magnopy out lx ly lz
-
-- plot functions
+- warning for insulators about the fermi level positioning
+- magnopy out lx ly lz?
 - add mesh and converge to batch
