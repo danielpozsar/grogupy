@@ -39,7 +39,7 @@ import numpy as np
 
 from . import __citation__
 from .config import CONFIG
-from .io.io import read_command_line, save, save_magnopy
+from .io.io import read_command_line, save, save_magnopy, save_UppASD
 from .physics import Builder, Contour, Hamiltonian, Kspace
 
 PRINTING = False
@@ -159,8 +159,15 @@ def main(params):
             save_magnopy(
                 simulation,
                 path=outfile,
+                magnetic_moment=params.out_magentic_moment,
                 precision=params.magnopy_precision,
                 comments=params.magnopy_comments,
+            )
+        if params.save_UppASD:
+            save_UppASD(
+                simulation,
+                path=params.outfolder,
+                magnetic_moment=params.out_magentic_moment,
             )
         if params.save_pickle:
             save(object=simulation, path=outfile, compress=params.pickle_compress_level)
