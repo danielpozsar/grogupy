@@ -160,22 +160,53 @@ def build_hh_ss(dh: sisl.physics.Hamiltonian) -> tuple[NDArray, NDArray]:
 
     NO = dh.no  # shorthand for number of orbitals in the unit cell
 
-    # preprocessing Hamiltonian and overlap matrix elements
-    h11 = dh.tocsr(dh.M11r)
-    h11 += dh.tocsr(dh.M11i) * 1.0j
+    # this is known for polarized, non-collinear and spin orbit
+    h11 = dh.tocsr(0)  # 0 is M11 or M11r
+    # If there is spin orbit interaction in the Hamiltonian add the imaginary part, else
+    # it will be zero, when we convert to complex
+    if dh.spin.kind == 3:
+        h11 += dh.tocsr(dh.M11i) * 1.0j
     h11 = h11.toarray().reshape(NO, dh.n_s, NO).transpose(0, 2, 1).astype("complex128")
 
-    h22 = dh.tocsr(dh.M22r)
-    h22 += dh.tocsr(dh.M22i) * 1.0j
+    # this is known for polarized, non-collinear and spin orbit
+    h22 = dh.tocsr(1)  # 1 is M22 or M22r
+    # If there is spin orbit interaction in the Hamiltonian add the imaginary part, else
+    # it will be zero, when we convert to complex
+    if dh.spin.kind == 3:
+        h22 += dh.tocsr(dh.M22i) * 1.0j
     h22 = h22.toarray().reshape(NO, dh.n_s, NO).transpose(0, 2, 1).astype("complex128")
 
-    h12 = dh.tocsr(dh.M12r)
-    h12 += dh.tocsr(dh.M12i) * 1.0j
-    h12 = h12.toarray().reshape(NO, dh.n_s, NO).transpose(0, 2, 1).astype("complex128")
+    # if it is non-colinear or spin orbit, then these are known
+    if dh.spin.kind == 2 or dh.spin.kind == 3:
+        h12 = dh.tocsr(2)  # 2 is dh.M12r
+        h12 += dh.tocsr(3) * 1.0j  # 3 is dh.M12i
+        h12 = (
+            h12.toarray()
+            .reshape(NO, dh.n_s, NO)
+            .transpose(0, 2, 1)
+            .astype("complex128")
+        )
+    # if it is polarized then this should be zero
+    elif dh.spin.kind == 1:
+        h12 = np.zeros_like(h11).astype("complex128")
+    else:
+        raise Exception("Unpolarized DFT calculation cannot be used!")
 
-    h21 = dh.tocsr(dh.M21r)
-    h21 += dh.tocsr(dh.M21i) * 1.0j
-    h21 = h21.toarray().reshape(NO, dh.n_s, NO).transpose(0, 2, 1).astype("complex128")
+    # if it is spin orbit, then these are known
+    if dh.spin.kind == 3:
+        h21 = dh.tocsr(dh.M21r)
+        h21 += dh.tocsr(dh.M21i) * 1.0j
+        h21 = (
+            h21.toarray()
+            .reshape(NO, dh.n_s, NO)
+            .transpose(0, 2, 1)
+            .astype("complex128")
+        )
+    # if it is non-colinear or polarized then this should be zero
+    elif dh.spin.kind == 1:
+        h21 = np.zeros_like(h11).astype("complex128")
+    else:
+        raise Exception("Unpolarized DFT calculation cannot be used!")
 
     sov = (
         dh.tocsr(dh.S_idx)
