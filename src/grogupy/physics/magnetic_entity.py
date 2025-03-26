@@ -231,13 +231,28 @@ class MagneticEntity:
         self.__SBS = len(self._spin_box_indices)
         self.__xyz_center = self._xyz.mean(axis=0)
         self.__total_Q = self._total_mulliken[0].sum()
-        self.__total_Sx = self._total_mulliken[1].sum()
-        self.__total_Sy = self._total_mulliken[2].sum()
-        self.__total_Sz = self._total_mulliken[3].sum()
+        if self._total_mulliken.shape[0] == 2:
+            self.__total_Sx = 0
+            self.__total_Sy = 0
+            self.__total_Sz = self._total_mulliken[1].sum()
+        elif self._total_mulliken.shape[0] in {3, 4}:
+            self.__total_Sx = self._total_mulliken[1].sum()
+            self.__total_Sy = self._total_mulliken[2].sum()
+            self.__total_Sz = self._total_mulliken[3].sum()
+        else:
+            raise Exception("Unpolarized DFT calculation cannot be used!")
+
         self.__local_Q = self._local_mulliken[0].sum()
-        self.__local_Sx = self._local_mulliken[1].sum()
-        self.__local_Sy = self._local_mulliken[2].sum()
-        self.__local_Sz = self._local_mulliken[3].sum()
+        if self._local_mulliken.shape[0] == 2:
+            self.__local_Sx = 0
+            self.__local_Sy = 0
+            self.__local_Sz = self._local_mulliken[1].sum()
+        elif self._local_mulliken.shape[0] in {3, 4}:
+            self.__local_Sx = self._local_mulliken[1].sum()
+            self.__local_Sy = self._local_mulliken[2].sum()
+            self.__local_Sz = self._local_mulliken[3].sum()
+        else:
+            raise Exception("Unpolarized DFT calculation cannot be used!")
         self.__energies_meV = None
         self.__energies_mRy = None
         self.__K_meV = None
@@ -387,22 +402,36 @@ class MagneticEntity:
 
     @property
     def total_Sx(self) -> NDArray:
-        """The non-collinear Sx of the atom or the atoms of the magnetic entity."""
-        self.__total_Sx = self._total_mulliken[1].sum()
-
+        """Sx of the atom or the atoms of the magnetic entity."""
+        if self._total_mulliken.shape[0] == 2:
+            self.__total_Sx = 0
+        elif self._total_mulliken.shape[0] in {3, 4}:
+            self.__total_Sx = self._total_mulliken[1].sum()
+        else:
+            Exception("Unpolarized DFT calculation cannot be used!")
         return self.__total_Sx
 
     @property
     def total_Sy(self) -> NDArray:
-        """The non-collinear Sy of the atom or the atoms of the magnetic entity."""
-        self.__total_Sy = self._total_mulliken[2].sum()
+        """Sy of the atom or the atoms of the magnetic entity."""
+        if self._total_mulliken.shape[0] == 2:
+            self.__total_Sy = 0
+        elif self._total_mulliken.shape[0] in {3, 4}:
+            self.__total_Sy = self._total_mulliken[2].sum()
+        else:
+            Exception("Unpolarized DFT calculation cannot be used!")
 
         return self.__total_Sy
 
     @property
     def total_Sz(self) -> NDArray:
-        """The non-collinear Sz of the atom or the atoms of the magnetic entity."""
-        self.__total_Sz = self._total_mulliken[3].sum()
+        """Sz of the atom or the atoms of the magnetic entity."""
+        if self._total_mulliken.shape[0] == 2:
+            self.__total_Sz = self._total_mulliken[1].sum()
+        elif self._total_mulliken.shape[0] in {3, 4}:
+            self.__total_Sz = self._total_mulliken[3].sum()
+        else:
+            Exception("Unpolarized DFT calculation cannot be used!")
 
         return self.__total_Sz
 
@@ -415,22 +444,37 @@ class MagneticEntity:
 
     @property
     def local_Sx(self) -> NDArray:
-        """The non-collinear Sx of the magnetic entity."""
-        self.__local_Sx = self._local_mulliken[1].sum()
+        """Sx of the magnetic entity."""
+        if self._local_mulliken.shape[0] == 2:
+            self.__local_Sx = 0
+        elif self._local_mulliken.shape[0] in {3, 4}:
+            self.__local_Sx = self._local_mulliken[1].sum()
+        else:
+            Exception("Unpolarized DFT calculation cannot be used!")
 
         return self.__local_Sx
 
     @property
     def local_Sy(self) -> NDArray:
-        """The non-collinear Sy of the magnetic entity."""
-        self.__local_Sy = self._local_mulliken[2].sum()
+        """Sy of the magnetic entity."""
+        if self._local_mulliken.shape[0] == 2:
+            self.__local_Sy = 0
+        elif self._local_mulliken.shape[0] in {3, 4}:
+            self.__local_Sy = self._local_mulliken[2].sum()
+        else:
+            Exception("Unpolarized DFT calculation cannot be used!")
 
         return self.__local_Sy
 
     @property
     def local_Sz(self) -> NDArray:
-        """The non-collinear Sz of the magnetic entity."""
-        self.__local_Sz = self._local_mulliken[3].sum()
+        """Sz of the magnetic entity."""
+        if self._local_mulliken.shape[0] == 2:
+            self.__local_Sz = self._local_mulliken[1].sum()
+        elif self._local_mulliken.shape[0] in {3, 4}:
+            self.__local_Sz = self._local_mulliken[3].sum()
+        else:
+            Exception("Unpolarized DFT calculation cannot be used!")
 
         return self.__local_Sz
 
