@@ -399,6 +399,7 @@ class Builder:
         out += section + newline
         out += f"grogupy version: {self.__version}" + newline
         out += f"Input file: {self.infile}" + newline
+        out += f"Spin mode: {self.hamiltonian._spin_state}" + newline
         out += section + newline
         out += f"SLURM job ID: {self.SLURM_ID}" + newline
         out += f"Architecture: {self.__architecture}" + newline

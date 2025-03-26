@@ -327,6 +327,7 @@ def load(
         "_dh",
         "_ds",
         "infile",
+        "_spin_state",
         "H",
         "S",
         "scf_xcf_orientation",

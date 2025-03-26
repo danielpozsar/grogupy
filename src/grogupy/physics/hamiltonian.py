@@ -143,6 +143,15 @@ class Hamiltonian:
                 self.infile = "Unknown!"
         else:
             raise Exception("Not valid input:", type(infile))
+        # if the Hamiltonian is unpolarized then there is no spin information
+        if self._dh.spin.kind not in {1, 2, 3}:
+            raise Exception("Unpolarized DFT calculation cannot be used!")
+        if self._dh.spin.kind == 1:
+            self._spin_state = "POLARIZED"
+        if self._dh.spin.kind == 2:
+            self._spin_state = "NON-COLINEAR"
+        if self._dh.spin.kind == 3:
+            self._spin_state = "SPIN-ORBIT"
 
         H, S = build_hh_ss(self._dh)
         self.H: Union[NDArray, None] = H
@@ -265,6 +274,7 @@ class Hamiltonian:
                 and np.allclose(self._ds.Dk().toarray(), value._ds.Dk().toarray())
                 and np.allclose(self._ds.Sk().toarray(), value._ds.Sk().toarray())
                 and self.infile == value.infile
+                and self._spin_state == value._spin_state
                 and np.allclose(self.H, value.H)
                 and np.allclose(self.S, value.S)
                 and np.allclose(self.scf_xcf_orientation, value.scf_xcf_orientation)
