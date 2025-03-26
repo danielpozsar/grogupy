@@ -551,15 +551,15 @@ def save_UppASD(builder: Builder, folder: str, magnetic_moment: str = "total"):
         are exactly on the magnetic entity, which may be just a subshell
         of the atom, by default 'total'
     """
-    posfile = []
-    momfile = []
+    posfile = ""
+    momfile = ""
     # iterating over magnetic entities
     for i, mag_ent in enumerate(builder.magnetic_entities):
         # calculating positions in basis vector coordinates
         basis_vector_coords = mag_ent.xyz_center @ np.linalg.inv(mag_ent._dh.cell)
         bvc = np.around(basis_vector_coords, decimals=5)
         # adding line to posfile
-        posfile.append(f"{i+1} {i+1} {bvc[0]:.5f} {bvc[1]:.5f} {bvc[2]:.5f}")
+        posfile += f"{i+1} {i+1} {bvc[0]:.5f} {bvc[1]:.5f} {bvc[2]:.5f}\n"
 
         # if magnetic moment is local
         if magnetic_moment.lower() == "l":
@@ -573,9 +573,9 @@ def save_UppASD(builder: Builder, folder: str, magnetic_moment: str = "total"):
         S = np.around(S, decimals=5)
         S_abs = np.around(S_abs, decimals=5)
         # adding line to momfile
-        momfile.append(f"{i+1} 1 {S_abs:.5f} {S[0]:.5f} {S[1]:.5f} {S[2]:.5f}")
+        momfile += f"{i+1} 1 {S_abs:.5f} {S[0]:.5f} {S[1]:.5f} {S[2]:.5f}\n"
 
-    jfile = []
+    jfile = ""
     # iterating over pairs
     for pair in builder.pairs:
         # iterating over magnetic entities and comparing them to the ones stored in the pairs
@@ -589,9 +589,10 @@ def save_UppASD(builder: Builder, folder: str, magnetic_moment: str = "total"):
         # -2 for convention, from Marci
         J = np.around(-2 * pair.J_mRy.flatten(), decimals=5)
         # adding line to jfile
-        jfile.append(
+        jfile += (
             f"{ai} {aj} {shift[0]} {shift[1]} {shift[2]} "
             + " ".join(map(lambda x: f"{x:.5f}", J))
+            + "\n"
         )
 
     # cell as easily copy pastable string
