@@ -225,12 +225,21 @@ as we did in the jupyter notebook examples.</p>
 <span class="n">exchange_solver</span> <span class="o">=</span> <span class="s2">&quot;Fit&quot;</span>
 <span class="n">anisotropy_solver</span> <span class="o">=</span> <span class="s2">&quot;Fit&quot;</span>
 
+<span class="c1"># either total or local, which controls if only the magnetic</span>
+<span class="c1"># entity&#39;s magnetic monent or the whole atom&#39;s magnetic moment is printed</span>
+<span class="c1"># used by all output modes</span>
+<span class="n">out_magentic_moment</span> <span class="o">=</span> <span class="s2">&quot;total&quot;</span>
+
 <span class="c1"># save the magnopy file</span>
 <span class="n">save_magnopy</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="c1"># precision of numerical values in the magnopy file</span>
 <span class="n">magnopy_precision</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="c1"># add the simulation parameters to the magnopy file as comments</span>
 <span class="n">magnopy_comments</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="c1"># save the Uppsala Atomistic Spin Dynamics software input files</span>
+<span class="c1"># uses the outfolder and out_magentic_moment</span>
+<span class="n">save_UppASD</span> <span class="o">=</span> <span class="kc">True</span>
 
 <span class="c1"># save the pickle file</span>
 <span class="n">save_pickle</span> <span class="o">=</span> <span class="kc">True</span>
