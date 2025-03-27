@@ -55,11 +55,14 @@ else:
     raise Exception
 
 
-def main(params):
+def main():
     """Main entry point of the script."""
     if PRINTING:
         print("Simulation started at:", datetime.datetime.now())
     start = timer()
+
+    # Reading input
+    params = read_command_line(__citation__)
 
     # only citation
     if params is None:
@@ -172,12 +175,10 @@ def main(params):
         if params.save_pickle:
             save(object=simulation, path=outfile, compress=params.pickle_compress_level)
 
+    if PRINTING:
+        print("Simulation ended at:", datetime.datetime.now())
+        print("GROGUPY_NORMAL_EXIT")
 
-if PRINTING:
-    print("Simulation ended at:", datetime.datetime.now())
-    print("GROGUPY_NORMAL_EXIT")
 
 if __name__ == "__main__":
-    params = read_command_line(__citation__)
-
-    main(params)
+    main()
