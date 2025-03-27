@@ -28,7 +28,7 @@ import numpy as np
 import sisl
 from numpy.typing import NDArray
 
-from .. import _tqdm
+from .._tqdm import _tqdm
 from .constants import TAU_X, TAU_Y, TAU_Z
 
 
