@@ -65,9 +65,9 @@ class Builder:
 
     Parameters
     ----------
-    ref_xcf_orientations: Union[list, NDArray]
+    ref_xcf_orientations: Union[list, NDArray], optional
         The reference directions. The perpendicular directions are created by rotating
-        the x,y,z frame to the given reference directions.
+        the x,y,z frame to the given reference directions, by default [[1,0,0], [0,1,0], [0,0,1]]
     matlabmode: bool, optional
         Wether to use the convention of the Matlab implementation, by default False
 
@@ -155,32 +155,11 @@ class Builder:
     root_node = 0
 
     def __init__(
-        self, ref_xcf_orientations: Union[list, NDArray], matlabmode: bool = False
+        self,
+        ref_xcf_orientations: Union[list, NDArray] = [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+        matlabmode: bool = False,
     ) -> None:
-        """Initialize simulation.
-
-        Parameters
-        ----------
-        ref_xcf_orientations: Union[list, NDArray]
-            The reference directions. The perpendicular directions are created by rotating
-            the x,y,z frame to the given reference directions.
-        matlabmode: bool, optional
-            Wether to use the convention of the Matlab implementation, by default False
-
-        Examples
-        --------
-        Creating a Simulation from the DFT exchange field orientation,  Hamiltonian, Kspace
-        and Contour.
-
-        >>> kspace, contour, hamiltonian = getfixture('setup')
-        >>> simulation = Builder([[1,0,0], [0,1,0], [0,0,1]])
-        >>> simulation.add_kspace(kspace)
-        >>> simulation.add_contour(contour)
-        >>> simulation.add_hamiltonian(hamiltonian)
-        >>> simulation
-        <grogupy.Builder npairs=0, numk=1, kset=[1 1 1], eset=100>
-
-        """
+        """Initialize simulation."""
 
         #: Contains a DefaultTimer instance to measure runtime
         self.times: DefaultTimer = DefaultTimer()
