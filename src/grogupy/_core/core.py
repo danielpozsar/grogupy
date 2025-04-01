@@ -232,7 +232,7 @@ def build_hh_ss(dh: sisl.physics.Hamiltonian) -> tuple[NDArray, NDArray]:
     # From now on everything is in SPIN BOX!!
     if CONFIG.is_CPU:
         hh = []
-        for i in _tqdm(range(dh.lattice.nsc.prod()), desc="Spin box Hamiltonian"):
+        for i in _tqdm(range(dh.n_s), desc="Spin box Hamiltonian"):
             row1 = np.hstack([h11[:, :, i], h12[:, :, i]])
             row2 = np.hstack([h21[:, :, i], h22[:, :, i]])
             block = np.vstack([row1, row2])
@@ -240,7 +240,7 @@ def build_hh_ss(dh: sisl.physics.Hamiltonian) -> tuple[NDArray, NDArray]:
         hh = np.array(hh)
 
         ss = []
-        for i in _tqdm(range(dh.lattice.nsc.prod()), desc="Spin box Overlap matrix"):
+        for i in _tqdm(range(dh.n_s), desc="Spin box Overlap matrix"):
             row1 = np.hstack([sov[:, :, i], sov[:, :, i] * 0])
             row2 = np.hstack([sov[:, :, i] * 0, sov[:, :, i]])
             block = np.vstack([row1, row2])
@@ -263,14 +263,14 @@ def build_hh_ss(dh: sisl.physics.Hamiltonian) -> tuple[NDArray, NDArray]:
         U = cp.array(U)
 
         hh = []
-        for i in _tqdm(range(dh.lattice.nsc.prod()), desc="Spin box Hamiltonian"):
+        for i in _tqdm(range(dh.n_s), desc="Spin box Hamiltonian"):
             row1 = cp.hstack([h11[:, :, i], h12[:, :, i]])
             row2 = cp.hstack([h21[:, :, i], h22[:, :, i]])
             block = cp.vstack([row1, row2])
             hh.append(U.T @ block @ U)
 
         ss = []
-        for i in _tqdm(range(dh.lattice.nsc.prod()), desc="Spin box Overlap matrix"):
+        for i in _tqdm(range(dh.n_s), desc="Spin box Overlap matrix"):
             row1 = cp.hstack([sov[:, :, i], sov[:, :, i] * 0])
             row2 = cp.hstack([sov[:, :, i] * 0, sov[:, :, i]])
             block = cp.vstack([row1, row2])
