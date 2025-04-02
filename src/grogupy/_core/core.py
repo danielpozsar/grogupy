@@ -203,7 +203,7 @@ def build_hh_ss(dh: sisl.physics.Hamiltonian) -> tuple[NDArray, NDArray]:
             .astype("complex128")
         )
     # if it is non-colinear or polarized then this should be zero
-    elif dh.spin.kind == 1:
+    elif dh.spin.kind == 1 or dh.spin.kind == 2:
         h21 = np.zeros_like(h11).astype("complex128")
     else:
         raise Exception("Unpolarized DFT calculation cannot be used!")
