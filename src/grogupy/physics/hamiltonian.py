@@ -141,6 +141,8 @@ class Hamiltonian:
                 self._dh = infile[0]
                 self._ds = infile[1]
                 self.infile = "Unknown!"
+            else:
+                raise Exception("Not valid input:", (type(infile[0]), type(infile[1])))
         else:
             raise Exception("Not valid input:", type(infile))
         # if the Hamiltonian is unpolarized then there is no spin information
