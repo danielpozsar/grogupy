@@ -213,15 +213,15 @@ def setup_from_range(
     # if subset is not given, then use all the atoms in the
     # unit cell
     if subset is None:
-        uc_atoms = range(len(dh.atoms))
-        uc_out_atoms = range(len(dh.atoms))
+        uc_atoms = range(dh.na)
+        uc_out_atoms = range(dh.na)
 
     elif isinstance(subset, list):
         # case 2
         # if only the unit cell atoms are given
         if isinstance(subset[0], int):
             uc_atoms = subset
-            uc_out_atoms = range(len(dh.atoms))
+            uc_out_atoms = range(dh.na)
 
         # case 3
         # if the unit cell atoms and the atoms outside the unit cell
