@@ -169,7 +169,7 @@ def main():
         if params.save_UppASD:
             save_UppASD(
                 simulation,
-                path=params.outfolder,
+                folder=params.outfolder,
                 magnetic_moment=params.out_magentic_moment,
             )
         if params.save_pickle:
