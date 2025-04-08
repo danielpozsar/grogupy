@@ -166,14 +166,19 @@ def main():
                 precision=params.magnopy_precision,
                 comments=params.magnopy_comments,
             )
+            print("Saved magnopy")
+
         if params.save_UppASD:
             save_UppASD(
                 simulation,
                 folder=params.outfolder,
                 magnetic_moment=params.out_magentic_moment,
             )
+            print("Saved UppASD")
+
         if params.save_pickle:
             save(object=simulation, path=outfile, compress=params.pickle_compress_level)
+            print("Saved pickle")
 
     if PRINTING:
         print("Simulation ended at:", datetime.datetime.now())
