@@ -962,7 +962,10 @@ class Builder:
             new_hamiltonian.rotate(orient["o"])
             self._rotated_hamiltonians.append(new_hamiltonian)
 
-            for mag_ent in self.magnetic_entities:
+            for mag_ent in _tqdm(
+                self.magnetic_entities,
+                desc="Setup magnetic entities for rotated hamiltonian",
+            ):
                 mag_ent._Vu1.append([])
                 mag_ent._Vu2.append([])
                 mag_ent._Gii.append(
@@ -978,7 +981,7 @@ class Builder:
                     )
                 )
 
-            for pair in self.pairs:
+            for pair in _tqdm(self.pairs, desc="Setup pairs for rotated hamiltonian"):
                 pair._Gij.append(
                     np.zeros(
                         (self.contour.eset, pair.SBS1, pair.SBS2), dtype="complex128"
@@ -1006,7 +1009,10 @@ class Builder:
                 Tu: NDArray = np.kron(np.eye(self.hamiltonian.NO, dtype=int), tau_u(u))
                 Vu1, Vu2 = calc_Vu(new_hamiltonian.H_XCF_uc, Tu)
 
-                for mag_ent in self.magnetic_entities:
+                for mag_ent in _tqdm(
+                    self.magnetic_entities,
+                    desc="Setup perturbations for rotated hamiltonian",
+                ):
                     # fill up the perturbed potentials (for now) based on the on-site projections
                     mag_ent._Vu1[-1].append(
                         onsite_projection(
