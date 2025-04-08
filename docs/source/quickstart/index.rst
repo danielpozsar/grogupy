@@ -39,7 +39,7 @@ Installation
 
         .. code-block:: bash
 
-            git clone https://github.com/danielpozsar/grogupy.git
+            git clone https://github.com/danielpozsar/grogu.git
             python -m build
             pip install grogupy-1.0.0-py3-none-any
 
