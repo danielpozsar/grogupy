@@ -487,14 +487,14 @@ def save(
             out_dict = strip_dict_structure(
                 out_dict,
                 pops=[
-                    "Gii",
+                    "_Gii",
                     "_Gii_tmp",
-                    "Gij",
+                    "_Gij",
                     "_Gij_tmp",
-                    "Gji",
+                    "_Gji",
                     "_Gji_tmp",
-                    "Vu1",
-                    "Vu2",
+                    "_Vu1",
+                    "_Vu2",
                 ],
                 setto=[],
             )
@@ -504,14 +504,14 @@ def save(
             out_dict = strip_dict_structure(
                 out_dict,
                 pops=[
-                    "Gii",
+                    "_Gii",
                     "_Gii_tmp",
-                    "Gij",
+                    "_Gij",
                     "_Gij_tmp",
-                    "Gji",
+                    "_Gji",
                     "_Gji_tmp",
-                    "Vu1",
-                    "Vu2",
+                    "_Vu1",
+                    "_Vu2",
                 ],
                 setto=[],
             )
