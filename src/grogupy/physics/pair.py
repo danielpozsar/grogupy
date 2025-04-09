@@ -77,8 +77,6 @@ class Pair:
         Calculates the exchange tensor from the energies.
     fit_exchange_tensor(ref_xcf) :
         Fits the exchange tensor to the energies.
-    to_dict(all) :
-        Returns the instance data as a dictionary.
     add_G_tmp(i, Gk, k, weight) :
         Adds the calculated Greens function to the temporary Greens function.
     copy() :
