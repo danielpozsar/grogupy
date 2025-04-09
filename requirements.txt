@@ -1,7 +1,7 @@
 # Package dependencies
 numpy
 scipy
-sisl==0.14.3
+sisl
 netCDF4
 openmpi
 mpi4py
