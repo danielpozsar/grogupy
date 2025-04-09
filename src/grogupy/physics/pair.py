@@ -22,6 +22,7 @@
 _extended_summary_
 """
 import copy
+import warnings
 from typing import Union
 
 import numpy as np
@@ -335,7 +336,12 @@ class Pair:
     @property
     def cell(self):
         """Unit cell of the system."""
-        self.__cell = self._dh.cell
+        try:
+            self.__cell = self._dh.cell
+        except:
+            warnings.warn(
+                "Property could not be calculated. This is only acceptable for loaded Hamiltonian!"
+            )
         return self.__cell
 
     @property

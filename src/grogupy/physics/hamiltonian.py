@@ -303,12 +303,22 @@ class Hamiltonian:
 
     @property
     def NO(self) -> int:
-        self.__no = self._dh.no
+        try:
+            self.__no = self._dh.no
+        except:
+            warnings.warn(
+                "Property could not be calculated. This is only acceptable for loaded Hamiltonian!"
+            )
         return self.__no
 
     @property
     def cell(self) -> NDArray:
-        self.__cell = self._dh.geometry.cell
+        try:
+            self.__cell = self._dh.geometry.cell
+        except:
+            warnings.warn(
+                "Property could not be calculated. This is only acceptable for loaded Hamiltonian!"
+            )
         return self.__cell
 
     @property
@@ -317,12 +327,17 @@ class Hamiltonian:
 
     @property
     def sc_off(self) -> NDArray:
-        self.__sc_off = self._dh.geometry.sc_off
+        try:
+            self.__sc_off = self._dh.geometry.sc_off
+        except:
+            warnings.warn(
+                "Property could not be calculated. This is only acceptable for loaded Hamiltonian!"
+            )
         return self.__sc_off
 
     @property
     def uc_in_sc_index(self) -> int:
-        self.__uc_in_sc_index = self._dh.lattice.sc_index([0, 0, 0])
+        self.__uc_in_sc_index = self._dh.sc_index([0, 0, 0])
         return self.__uc_in_sc_index
 
     @property
