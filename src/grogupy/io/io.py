@@ -295,12 +295,10 @@ def load(
     """
     # load pickled file
     if isinstance(infile, str):
-        try:
-            with open(infile, "rb") as file:
-                infile = pickle.load(file)
-        except:
-            with open(infile + ".pkl", "rb") as file:
-                infile = pickle.load(file)
+        if not infile.endswith(".pkl"):
+            infile += ".pkl"
+        with open(infile, "rb") as file:
+            infile = pickle.load(file)
 
     if list(infile.keys()) == [
         "times",
