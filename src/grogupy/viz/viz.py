@@ -70,8 +70,8 @@ def plot_contour(contour: "Contour") -> go.Figure:
     # Update the layout
     fig.update_layout(
         autosize=False,
-        width=1200,
-        height=700,
+        width=800,
+        height=500,
         title="Energy contour integral",
         xaxis_title="Real axis [eV]",
         yaxis_title="Imaginary axis [eV]",
@@ -128,8 +128,9 @@ def plot_kspace(kspace: "Kspace") -> go.Figure:
 
     layout = go.Layout(
         autosize=False,
-        width=1200,
-        height=700,
+        title="Brillouin zone sampling",
+        width=800,
+        height=500,
         scene=dict(
             aspectmode="data",
             xaxis=dict(title="X Axis", showgrid=True, gridwidth=1),
@@ -189,8 +190,8 @@ def plot_magnetic_entities(
     # Create layout
     fig.update_layout(
         autosize=False,
-        width=1200,
-        height=700,
+        width=800,
+        height=500,
         scene=dict(
             aspectmode="data",
             xaxis=dict(title="X Axis", showgrid=True, gridwidth=1),
@@ -306,8 +307,8 @@ def plot_pairs(pairs: Union[Builder, list["Pair"]], connect: bool = False) -> go
     # Create layout
     fig.update_layout(
         autosize=False,
-        width=1200,
-        height=700,
+        width=800,
+        height=500,
         scene=dict(
             aspectmode="data",
             xaxis=dict(title="X Axis", showgrid=True, gridwidth=1),
@@ -411,8 +412,8 @@ def plot_DM(pairs: Union[Builder, list["Pair"]], rescale: float = 1) -> go.Figur
     # Create layout
     fig.update_layout(
         autosize=False,
-        width=1200,
-        height=700,
+        width=800,
+        height=500,
         scene=dict(
             aspectmode="data",
             xaxis=dict(title="X Axis", showgrid=True, gridwidth=1),
