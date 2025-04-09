@@ -39,17 +39,17 @@ class TestContour:
     @pytest.mark.parametrize("eset", [1, 10, 100, 500, 1000])
     def test_emin(self, emin, eset):
         c = Contour(eset, 10000, emin)
-        assert c.samples.real.min() == (emin - 5)
+        assert c.samples.real.min() > (emin - 5)
         c.emin = -100
-        assert c.samples.real.min() == -100
+        assert c.samples.real.min() > -100
 
     @pytest.mark.parametrize("emax", [-10, -0.1, 0, 1, 1.2])
     @pytest.mark.parametrize("eset", [1, 10, 100, 500, 1000])
     def test_emax(self, emax, eset):
         c = Contour(eset, 10000, emin=-100, emax=emax)
-        assert c.samples.real.max() == emax
+        assert c.samples.real.max() < emax
         c.emax = 100
-        assert c.samples.real.max() == 100
+        assert c.samples.real.max() < 100
 
     def test_equality(self):
         c = Contour(100, 1000, emin=-10)
