@@ -30,7 +30,7 @@ pytestmark = [pytest.mark.physics]
 
 class TestPair:
     def test_generation(self):
-        fdf = "/Users/danielpozsar/Downloads/Fe3GeTe2/Fe3GeTe2.fdf"
+        fdf = "./benchmarks/Fe3GeTe2/Fe3GeTe2.fdf"
         m1 = grogupy.MagneticEntity(fdf, 1, 2)
         m2 = grogupy.MagneticEntity(fdf, 2, 0)
 
@@ -99,23 +99,17 @@ class TestPair:
         p2 = p.copy()
         assert p == p2
 
-        p2._dh = sisl.get_sile(
-            "/Users/danielpozsar/Downloads/Fe3GeTe2/Fe3GeTe2.fdf"
-        ).read_hamiltonian()
+        p2._dh = sisl.get_sile("./benchmarks/Fe3GeTe2/Fe3GeTe2.fdf").read_hamiltonian()
         assert p != p2
         p2._dh = p._dh
         assert p == p2
 
-        p2.M1 = grogupy.MagneticEntity(
-            "/Users/danielpozsar/Downloads/Fe3GeTe2/Fe3GeTe2.fdf", atom=3
-        )
+        p2.M1 = grogupy.MagneticEntity("./benchmarks/Fe3GeTe2/Fe3GeTe2.fdf", atom=3)
         assert p != p2
         p2.M1 = p.M1
         assert p == p2
 
-        p2.M2 = grogupy.MagneticEntity(
-            "/Users/danielpozsar/Downloads/Fe3GeTe2/Fe3GeTe2.fdf", atom=4
-        )
+        p2.M2 = grogupy.MagneticEntity("./benchmarks/Fe3GeTe2/Fe3GeTe2.fdf", atom=4)
         assert p != p2
         p2.M2 = p.M2
         assert p == p2
@@ -219,13 +213,13 @@ class TestPair:
     )
     def test_copy(self, atom, l, orb, shift):
         m1 = grogupy.MagneticEntity(
-            "/Users/danielpozsar/Downloads/Fe3GeTe2/Fe3GeTe2.fdf",
+            "./benchmarks/Fe3GeTe2/Fe3GeTe2.fdf",
             atom,
             l,
             orb,
         )
         m2 = grogupy.MagneticEntity(
-            "/Users/danielpozsar/Downloads/Fe3GeTe2/Fe3GeTe2.fdf",
+            "./benchmarks/Fe3GeTe2/Fe3GeTe2.fdf",
             atom,
             l,
             orb,
