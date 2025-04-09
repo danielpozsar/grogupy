@@ -11,6 +11,7 @@ black[jupyter]
 # dev-tools
 pre-commit
 isort
+ipykernel
 
 # plotting
 matplotlib
