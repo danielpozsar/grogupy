@@ -2,6 +2,7 @@
 sphinx
 sphinx_rtd_theme
 rst2pdf
+sphinx-copybutton
 
 # documentation
 numpydoc
