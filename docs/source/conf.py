@@ -75,7 +75,6 @@ autoclass_content = "class"
 autodoc_default_options = {
     "members": True,
     "undoc-members": True,
-    "special-members": "__call__",
     "inherited-members": True,
     "show-inheritance": True,
 }
