@@ -30,7 +30,7 @@ Visualization functions
    plot_kspace
    plot_magnetic_entities
    plot_pairs
-   plot_DM
+   plot_DMI
 
 """
 
@@ -320,7 +320,7 @@ def plot_pairs(pairs: Union[Builder, list["Pair"]], connect: bool = False) -> go
     return fig
 
 
-def plot_DM(pairs: Union[Builder, list["Pair"]], rescale: float = 1) -> go.Figure:
+def plot_DMI(pairs: Union[Builder, list["Pair"]], rescale: float = 1) -> go.Figure:
     """Creates a plot of the DM vectors from a list of pairs.
 
     It can only use pairs from a finished simulation. The magnitude of

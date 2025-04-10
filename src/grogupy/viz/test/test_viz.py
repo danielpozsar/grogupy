@@ -23,7 +23,7 @@ import pytest
 import grogupy
 from grogupy.viz import (
     plot_contour,
-    plot_DM,
+    plot_DMI,
     plot_kspace,
     plot_magnetic_entities,
     plot_pairs,
@@ -57,8 +57,8 @@ class TestPlots:
         assert isinstance(fig, go.Figure)
 
     @pytest.mark.parametrize("rescale", [-1, 0, 0.1, 1])
-    def test_DM(self, setup, rescale):
-        fig = plot_DM(setup.pairs, rescale)
+    def test_DMI(self, setup, rescale):
+        fig = plot_DMI(setup.pairs, rescale)
         assert isinstance(fig, go.Figure)
 
 
