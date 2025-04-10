@@ -40,7 +40,6 @@ Visualization functions
    read_grogupy_fdf
 
 """
-import argparse
 import importlib.util
 import pickle
 from os.path import join
@@ -1018,52 +1017,22 @@ def read_fdf(path: str) -> tuple[dict, list, list]:
     return fdf_arguments, magnetic_entities, pairs
 
 
-def read_command_line(citation: str) -> Union[None, ModuleType]:
-    """Reading command line parameters for command line tools.
-
-    Options:
-    The first argument is a .py file
-    that contains the input parameters.
-    --cite returns citations
+def read_py(path: str) -> ModuleType:
+    """Reading input parameters from a .py file.
 
     Parameters
     ----------
-    citation: str
-        The citation that should be printed.
+    path: str
+        The path to the input file
 
     Returns
     -------
-    params : Union[None, ModuleType]
+    params : ModuleType
         The input parameters
     """
 
-    # setup parser
-    parser = argparse.ArgumentParser(
-        description="Load Python variables from a .py file."
-    )
-    parser.add_argument(
-        "file", nargs="?", help="Path to a Python file containing variables to load"
-    )
-    parser.add_argument(
-        "--cite",
-        dest="cite",
-        action="store_true",
-        default=False,
-        help="Print the citation of the package",
-    )
-    # parameters from command line
-    args = parser.parse_args()
-
-    # print citation if needed
-    if args.cite:
-        print(citation)
-        if args.file is None:
-            return
-
     # Create the spec
-    spec = importlib.util.spec_from_file_location(
-        "grogupy_command_line_input", args.file
-    )
+    spec = importlib.util.spec_from_file_location("grogupy_command_line_input", path)
 
     # Create the module
     params = importlib.util.module_from_spec(spec)
