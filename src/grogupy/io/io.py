@@ -37,7 +37,7 @@ Visualization functions
    save
    save_magnopy
    read_magnopy
-   read_grogupy_fdf
+   read_fdf
 
 """
 import importlib.util

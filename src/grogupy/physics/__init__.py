@@ -34,7 +34,7 @@ Functions
     builder
     contour
     kspace
-    magnetism
+    utilities
 
 
 Background information

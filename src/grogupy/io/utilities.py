@@ -26,7 +26,6 @@ Utility functions
 .. autosummary::
    :toctree: _generated/
 
-    process_input_args
     decipher
     decipher_all_by_pos
     decipher_all_by_tag
