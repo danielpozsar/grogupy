@@ -47,12 +47,12 @@ license = "MIT"
 license-files = ["LICENSE"]
 
 [project.optional-dependencies]
-tqdm = ["tqdm"]
 viz = ["plotly", "nbconvert"]
 gpu = ["cupy-cuda12x"]
 
 [project.scripts]
-grogupy_run = "grogupy.cli:main"
+grogupy_run = "grogupy.cli.run:main"
+grogupy_analyze = "grogupy.cli.analyze:main"
 
 [project.urls]
 Homepage = "https://danielpozsar.web.elte.hu/grogu/"
