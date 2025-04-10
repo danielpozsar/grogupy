@@ -9,6 +9,7 @@
   <title>Contributing to grogupy &mdash; grogupy</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom_styles.css" />
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
@@ -16,9 +17,11 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=8d563738"></script>
-      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/documentation_options.js?v=1fd71caa"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
       <script src="../_static/design-tabs.js?v=f930bc37"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/theme.js"></script>
@@ -56,7 +59,6 @@
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../visualizations/index.html">Visualizations</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
 <ul>
@@ -67,7 +69,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing to grogupy</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#create-environment">Create environment</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#build-wheel">Build wheel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#build-and-upload-wheel">Build and upload wheel</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#build-documentation">Build documentation</a></li>
 </ul>
 </li>
@@ -108,11 +110,8 @@
 However here is a summary for the ‘approved’ developers.</p>
 <section id="create-environment">
 <h2>Create environment<a class="headerlink" href="#create-environment" title="Link to this heading"></a></h2>
-<p>First you have to clone the repository from Github or Gitea. Gitea is the
-old development platform, so it should only be used for tracking early stage
-changes in the code.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://gitea.vo.elte.hu/et209d/grogupy.git
-git<span class="w"> </span>clone<span class="w"> </span>https://github.com/danielpozsar/grogupy.git
+<p>First you have to clone the repository from Github.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/danielpozsar/grogu.git
 </pre></div>
 </div>
 <p>Then the easiest way is to create a a virtual environment (.venv), for
@@ -135,12 +134,12 @@ pre-commit<span class="w"> </span>run<span class="w"> </span>--all-files
 </pre></div>
 </div>
 </section>
-<section id="build-wheel">
-<h2>Build wheel<a class="headerlink" href="#build-wheel" title="Link to this heading"></a></h2>
+<section id="build-and-upload-wheel">
+<h2>Build and upload wheel<a class="headerlink" href="#build-and-upload-wheel" title="Link to this heading"></a></h2>
 <p>You can find a detailed documentation on <a class="reference external" href="https://packaging.python.org/en/latest/tutorials/packaging-projects/">PYPI</a>, but you can read here a
-short summary. First you need some API Tokens for Test PYPI, to be able
-to upload. You can read about this <a class="reference external" href="https://test.pypi.org/help/#apitoken">here</a>
-. I own the current project, so you have to contact me.</p>
+short summary. First you need some API Tokens for PyPi, to be able
+to upload. You can read about this <a class="reference external" href="https://test.pypi.org/help/#apitoken">here</a>.
+I own the current project, so you have to contact me.</p>
 <p>Use the following commands for a quick setup from the <strong>grogupy_project</strong>
 folder:</p>
 <ul class="simple">
@@ -150,15 +149,20 @@ folder:</p>
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Push to PYPI repository.</p></li>
+<li><p>Install wheel.</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>twine<span class="w"> </span>upload<span class="w"> </span>dist/*
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>dist/grogupy&lt;version&gt;
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Or install right away from the <cite>dist/</cite> directory.</p></li>
+<li><p>Run tests.</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>grogupy-0.0.0-py3-none-any
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pytest
+</pre></div>
+</div>
+<p>If you want to upload to the PYPI repository, then don’t forget to
+rewrite the version numbers.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>twine<span class="w"> </span>upload<span class="w"> </span>dist/*
 </pre></div>
 </div>
 </section>
@@ -179,12 +183,6 @@ package it is advised to use automatic documentation generation.</p>
 remove it by running <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">clean</span></code>.</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>html
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>To build a pdf containing the documentation use the rst2pdf extension.</p></li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sphinx-build<span class="w"> </span>-b<span class="w"> </span>pdf<span class="w"> </span>.<span class="w"> </span>_build/pdf
 </pre></div>
 </div>
 </section>

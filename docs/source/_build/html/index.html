@@ -11,6 +11,7 @@
   <title>grogupy: Relativistic magnetic interactions from non-orthogonal basis sets &mdash; grogupy</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
       <link rel="stylesheet" type="text/css" href="_static/css/custom_styles.css" />
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
@@ -18,9 +19,11 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=8d563738"></script>
-      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/documentation_options.js?v=1fd71caa"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
       <script src="_static/design-tabs.js?v=f930bc37"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
       <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -59,7 +62,6 @@
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="visualizations/index.html">Visualizations</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
 <ul>
@@ -106,8 +108,8 @@
 density functional theory (DFT) calculations. Because the underlying theory
 focuses on non-orthogonal basis sets, the most straightforward software to
 use for the DFT calculation is <a class="reference external" href="https://siesta-project.org/siesta/">Siesta</a>.</p>
-<p>It is based on the grogupy matlab implementation and the <a class="reference external" href="https://sisl.readthedocs.io/en/latest/index.html">sisl</a> package and this work
-was carried out by the <a class="reference external" href="https://trilmax.elte.hu">TRILMAX</a>.</p>
+<p>It is based on the grogupy matlab implementation and the <a class="reference external" href="https://sisl.readthedocs.io/en/latest/index.html">sisl</a> package. grogupy was created
+by the <a href="#id1"><span class="problematic" id="id2">`TRILMAX Consortium&lt;https://trilmax.elte.hu&gt;`_</span></a>.</p>
 <p>More on the theoretical background can be seen on <a class="reference external" href="https://arxiv.org/abs/2309.02558">arXiv</a>.</p>
 <div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
 <div class="sd-row sd-row-cols-1 sd-row-cols-xs-1 sd-row-cols-sm-1 sd-row-cols-md-2 sd-row-cols-lg-2 sd-g-2 sd-g-xs-2 sd-g-sm-2 sd-g-md-2 sd-g-lg-2 docutils">

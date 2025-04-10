@@ -7,14 +7,11 @@ However here is a summary for the 'approved' developers.
 Create environment
 ------------------
 
-First you have to clone the repository from Github or Gitea. Gitea is the
-old development platform, so it should only be used for tracking early stage
-changes in the code.
+First you have to clone the repository from Github.
 
 .. code-block:: bash
 
-    git clone https://gitea.vo.elte.hu/et209d/grogupy.git
-    git clone https://github.com/danielpozsar/grogupy.git
+    git clone https://github.com/danielpozsar/grogu.git
 
 Then the easiest way is to create a a virtual environment (.venv), for
 example with VSCode.
@@ -40,14 +37,14 @@ differences.
 
 
 
-Build wheel
------------
+Build and upload wheel
+----------------------
 
 You can find a detailed documentation on `PYPI <https://packaging.python.
 org/en/latest/tutorials/packaging-projects/>`_, but you can read here a
-short summary. First you need some API Tokens for Test PYPI, to be able
-to upload. You can read about this `here <https://test.pypi.org/help/#apitoken>`_
-. I own the current project, so you have to contact me.
+short summary. First you need some API Tokens for PyPi, to be able
+to upload. You can read about this `here <https://test.pypi.org/help/#apitoken>`_. 
+I own the current project, so you have to contact me.
 
 Use the following commands for a quick setup from the **grogupy_project**
 folder:
@@ -58,17 +55,24 @@ folder:
 
     python -m build
 
-* Push to PYPI repository.
+* Install wheel.
+
+.. code-block:: bash
+
+    pip install dist/grogupy<version>
+
+* Run tests.
+
+.. code-block:: bash
+
+    pytest
+
+If you want to upload to the PYPI repository, then don't forget to 
+rewrite the version numbers.
 
 .. code-block:: bash
 
     python -m twine upload dist/*
-
-* Or install right away from the `dist/` directory.
-
-.. code-block:: bash
-
-    pip install grogupy-0.0.0-py3-none-any
 
 Build documentation
 -------------------
@@ -90,9 +94,3 @@ package it is advised to use automatic documentation generation.
 .. code-block:: bash
 
     make html
-
-* To build a pdf containing the documentation use the rst2pdf extension.
-
-.. code-block:: bash
-
-    sphinx-build -b pdf . _build/pdf

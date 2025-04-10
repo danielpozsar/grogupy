@@ -8,6 +8,7 @@
   <title>grogupy.io.io &mdash; grogupy</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css" />
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
@@ -15,9 +16,11 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=8d563738"></script>
-      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/documentation_options.js?v=1fd71caa"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
       <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -53,7 +56,6 @@
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../visualizations/index.html">Visualizations</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
 <ul>
@@ -134,10 +136,9 @@
 <span class="sd">   save</span>
 <span class="sd">   save_magnopy</span>
 <span class="sd">   read_magnopy</span>
-<span class="sd">   read_grogupy_fdf</span>
+<span class="sd">   read_fdf</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">importlib.util</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">os.path</span><span class="w"> </span><span class="kn">import</span> <span class="n">join</span>
@@ -226,7 +227,7 @@
 
 
 <div class="viewcode-block" id="load_Kspace">
-<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.load_KSpace.html#grogupy.io.io.load_Kspace">[docs]</a>
+<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.load_Kspace.html#grogupy.io.io.load_Kspace">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">load_Kspace</span><span class="p">(</span><span class="n">infile</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Kspace</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Recreates the instance from a pickled state.</span>
 
@@ -396,7 +397,7 @@
 
 
 <div class="viewcode-block" id="load">
-<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.load.html#grogupy.io.io.load">[docs]</a>
+<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.load.html#grogupy.io.io.load">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span>
     <span class="n">infile</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">DefaultTimer</span><span class="p">,</span> <span class="n">Contour</span><span class="p">,</span> <span class="n">Kspace</span><span class="p">,</span> <span class="n">MagneticEntity</span><span class="p">,</span> <span class="n">Pair</span><span class="p">,</span> <span class="n">Hamiltonian</span><span class="p">,</span> <span class="n">Builder</span><span class="p">]:</span>
@@ -415,12 +416,10 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># load pickled file</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-                <span class="n">infile</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
-        <span class="k">except</span><span class="p">:</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">infile</span> <span class="o">+</span> <span class="s2">&quot;.pkl&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-                <span class="n">infile</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">infile</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.pkl&quot;</span><span class="p">):</span>
+            <span class="n">infile</span> <span class="o">+=</span> <span class="s2">&quot;.pkl&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">infile</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">list</span><span class="p">(</span><span class="n">infile</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">==</span> <span class="p">[</span>
         <span class="s2">&quot;times&quot;</span><span class="p">,</span>
@@ -558,7 +557,7 @@
 
 
 <div class="viewcode-block" id="save">
-<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.save.html#grogupy.io.io.save">[docs]</a>
+<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.save.html#grogupy.io.io.save">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span>
     <span class="nb">object</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
         <span class="n">DefaultTimer</span><span class="p">,</span> <span class="n">Contour</span><span class="p">,</span> <span class="n">Kspace</span><span class="p">,</span> <span class="n">MagneticEntity</span><span class="p">,</span> <span class="n">Pair</span><span class="p">,</span> <span class="n">Hamiltonian</span><span class="p">,</span> <span class="n">Builder</span>
@@ -612,14 +611,14 @@
             <span class="n">out_dict</span> <span class="o">=</span> <span class="n">strip_dict_structure</span><span class="p">(</span>
                 <span class="n">out_dict</span><span class="p">,</span>
                 <span class="n">pops</span><span class="o">=</span><span class="p">[</span>
-                    <span class="s2">&quot;Gii&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;_Gii&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;_Gii_tmp&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;Gij&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;_Gij&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;_Gij_tmp&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;Gji&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;_Gji&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;_Gji_tmp&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;Vu1&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;Vu2&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;_Vu1&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;_Vu2&quot;</span><span class="p">,</span>
                 <span class="p">],</span>
                 <span class="n">setto</span><span class="o">=</span><span class="p">[],</span>
             <span class="p">)</span>
@@ -629,14 +628,14 @@
             <span class="n">out_dict</span> <span class="o">=</span> <span class="n">strip_dict_structure</span><span class="p">(</span>
                 <span class="n">out_dict</span><span class="p">,</span>
                 <span class="n">pops</span><span class="o">=</span><span class="p">[</span>
-                    <span class="s2">&quot;Gii&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;_Gii&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;_Gii_tmp&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;Gij&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;_Gij&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;_Gij_tmp&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;Gji&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;_Gji&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;_Gji_tmp&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;Vu1&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;Vu2&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;_Vu1&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;_Vu2&quot;</span><span class="p">,</span>
                 <span class="p">],</span>
                 <span class="n">setto</span><span class="o">=</span><span class="p">[],</span>
             <span class="p">)</span>
@@ -735,7 +734,7 @@
 
 
 <div class="viewcode-block" id="save_magnopy">
-<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.save_magnopy.html#grogupy.io.io.save_magnopy">[docs]</a>
+<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.save_magnopy.html#grogupy.io.io.save_magnopy">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">save_magnopy</span><span class="p">(</span>
     <span class="n">builder</span><span class="p">:</span> <span class="n">Builder</span><span class="p">,</span>
     <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -779,7 +778,7 @@
 
 
 <div class="viewcode-block" id="read_magnopy">
-<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.read_magnopy.html#grogupy.io.io.read_magnopy">[docs]</a>
+<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.read_magnopy.html#grogupy.io.io.read_magnopy">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">read_magnopy</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This function reads the magnopy input file and return a dictionary</span>
 
@@ -1015,6 +1014,8 @@
 
 
 
+<div class="viewcode-block" id="read_fdf">
+<a class="viewcode-back" href="../../../API/io/_generated/grogupy.io.io.read_fdf.html#grogupy.io.io.read_fdf">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">read_fdf</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;It reads the simulation parameters, magnetic entities and pairs from the fdf</span>
 
@@ -1147,55 +1148,26 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Unrecognizable magnetic entity in .fdf!&quot;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">fdf_arguments</span><span class="p">,</span> <span class="n">magnetic_entities</span><span class="p">,</span> <span class="n">pairs</span>
+    <span class="k">return</span> <span class="n">fdf_arguments</span><span class="p">,</span> <span class="n">magnetic_entities</span><span class="p">,</span> <span class="n">pairs</span></div>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">read_command_line</span><span class="p">(</span><span class="n">citation</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">ModuleType</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reading command line parameters for command line tools.</span>
 
-<span class="sd">    Options:</span>
-<span class="sd">    The first argument is a .py file</span>
-<span class="sd">    that contains the input parameters.</span>
-<span class="sd">    --cite returns citations</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_py</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ModuleType</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reading input parameters from a .py file.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    citation: str</span>
-<span class="sd">        The citation that should be printed.</span>
+<span class="sd">    path: str</span>
+<span class="sd">        The path to the input file</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    params : Union[None, ModuleType]</span>
+<span class="sd">    params : ModuleType</span>
 <span class="sd">        The input parameters</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1"># setup parser</span>
-    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Load Python variables from a .py file.&quot;</span>
-    <span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;file&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;?&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Path to a Python file containing variables to load&quot;</span>
-    <span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--cite&quot;</span><span class="p">,</span>
-        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;cite&quot;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Print the citation of the package&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="c1"># parameters from command line</span>
-    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
-
-    <span class="c1"># print citation if needed</span>
-    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">cite</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">citation</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span>
-
     <span class="c1"># Create the spec</span>
-    <span class="n">spec</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">spec_from_file_location</span><span class="p">(</span>
-        <span class="s2">&quot;grogupy_command_line_input&quot;</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">file</span>
-    <span class="p">)</span>
+    <span class="n">spec</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">spec_from_file_location</span><span class="p">(</span><span class="s2">&quot;grogupy_command_line_input&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
 
     <span class="c1"># Create the module</span>
     <span class="n">params</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">module_from_spec</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>

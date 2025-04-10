@@ -8,6 +8,7 @@
   <title>grogupy.physics.builder &mdash; grogupy</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css" />
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
@@ -15,9 +16,11 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=8d563738"></script>
-      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/documentation_options.js?v=1fd71caa"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
       <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -53,7 +56,6 @@
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../visualizations/index.html">Visualizations</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
 <ul>
@@ -1093,7 +1095,10 @@
             <span class="n">new_hamiltonian</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">orient</span><span class="p">[</span><span class="s2">&quot;o&quot;</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_rotated_hamiltonians</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_hamiltonian</span><span class="p">)</span>
 
-            <span class="k">for</span> <span class="n">mag_ent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">magnetic_entities</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">mag_ent</span> <span class="ow">in</span> <span class="n">_tqdm</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">magnetic_entities</span><span class="p">,</span>
+                <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Setup magnetic entities for rotated hamiltonian&quot;</span><span class="p">,</span>
+            <span class="p">):</span>
                 <span class="n">mag_ent</span><span class="o">.</span><span class="n">_Vu1</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
                 <span class="n">mag_ent</span><span class="o">.</span><span class="n">_Vu2</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
                 <span class="n">mag_ent</span><span class="o">.</span><span class="n">_Gii</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
@@ -1109,7 +1114,7 @@
                     <span class="p">)</span>
                 <span class="p">)</span>
 
-            <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pairs</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">_tqdm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pairs</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Setup pairs for rotated hamiltonian&quot;</span><span class="p">):</span>
                 <span class="n">pair</span><span class="o">.</span><span class="n">_Gij</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                     <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
                         <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contour</span><span class="o">.</span><span class="n">eset</span><span class="p">,</span> <span class="n">pair</span><span class="o">.</span><span class="n">SBS1</span><span class="p">,</span> <span class="n">pair</span><span class="o">.</span><span class="n">SBS2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;complex128&quot;</span>
@@ -1137,7 +1142,10 @@
                 <span class="n">Tu</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hamiltonian</span><span class="o">.</span><span class="n">NO</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">),</span> <span class="n">tau_u</span><span class="p">(</span><span class="n">u</span><span class="p">))</span>
                 <span class="n">Vu1</span><span class="p">,</span> <span class="n">Vu2</span> <span class="o">=</span> <span class="n">calc_Vu</span><span class="p">(</span><span class="n">new_hamiltonian</span><span class="o">.</span><span class="n">H_XCF_uc</span><span class="p">,</span> <span class="n">Tu</span><span class="p">)</span>
 
-                <span class="k">for</span> <span class="n">mag_ent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">magnetic_entities</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">mag_ent</span> <span class="ow">in</span> <span class="n">_tqdm</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">magnetic_entities</span><span class="p">,</span>
+                    <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Setup perturbations for rotated hamiltonian&quot;</span><span class="p">,</span>
+                <span class="p">):</span>
                     <span class="c1"># fill up the perturbed potentials (for now) based on the on-site projections</span>
                     <span class="n">mag_ent</span><span class="o">.</span><span class="n">_Vu1</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                         <span class="n">onsite_projection</span><span class="p">(</span>

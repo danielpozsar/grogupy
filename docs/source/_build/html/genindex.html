@@ -8,6 +8,7 @@
   <title>Index &mdash; grogupy</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
       <link rel="stylesheet" type="text/css" href="_static/css/custom_styles.css" />
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
@@ -15,9 +16,11 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=8d563738"></script>
-      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/documentation_options.js?v=1fd71caa"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
       <script src="_static/design-tabs.js?v=f930bc37"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
@@ -53,7 +56,6 @@
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="visualizations/index.html">Visualizations</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
 <ul>
@@ -140,10 +142,10 @@
 </li>
       <li><a href="API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.add_magnetic_entities">add_magnetic_entities() (grogupy.physics.builder.Builder method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.add_pairs">add_pairs() (grogupy.physics.builder.Builder method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.anisotropy_solver">anisotropy_solver (grogupy.physics.builder.Builder attribute)</a>
 
       <ul>
@@ -158,11 +160,17 @@
       </ul></li>
       <li><a href="API/physics/_generated/grogupy.physics.contour.html#grogupy.physics.contour.Contour.automatic_emin">automatic_emin (grogupy.physics.contour.Contour property)</a>
 </li>
+      <li><a href="API/physics/_generated/grogupy.physics.utilities.html#grogupy.physics.utilities.automatic_emin">automatic_emin() (in module grogupy.physics.utilities)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="API/physics/_generated/grogupy.physics.utilities.html#grogupy.physics.utilities.blow_up_orbindx">blow_up_orbindx() (in module grogupy.physics.utilities)</a>
+</li>
+  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder">Builder (class in grogupy.physics.builder)</a>
 </li>
@@ -172,10 +180,16 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="API/physics/_generated/grogupy.physics.utilities.html#grogupy.physics.utilities.calculate_anisotropy_tensor">calculate_anisotropy_tensor() (in module grogupy.physics.utilities)</a>
+</li>
+      <li><a href="API/physics/_generated/grogupy.physics.utilities.html#grogupy.physics.utilities.calculate_exchange_tensor">calculate_exchange_tensor() (in module grogupy.physics.utilities)</a>
+</li>
       <li><a href="API/physics/_generated/grogupy.physics.contour.html#grogupy.physics.contour.Contour">Contour (class in grogupy.physics.contour)</a>
 </li>
       <li><a href="API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.contour">contour (grogupy.physics.builder.Builder attribute)</a>, <a href="API/physics/_generated/grogupy.physics.builder.html#id6">[1]</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.copy">copy() (grogupy.physics.builder.Builder method)</a>
 
       <ul>
@@ -184,8 +198,6 @@
         <li><a href="API/physics/_generated/grogupy.physics.kspace.html#grogupy.physics.kspace.Kspace.copy">(grogupy.physics.kspace.Kspace method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.create_magnetic_entities">create_magnetic_entities() (grogupy.physics.builder.Builder method)</a>
 </li>
       <li><a href="API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.create_pairs">create_pairs() (grogupy.physics.builder.Builder method)</a>
@@ -235,12 +247,20 @@
       <li><a href="API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.finalize">finalize() (grogupy.physics.builder.Builder method)</a>
 </li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="API/physics/_generated/grogupy.physics.utilities.html#grogupy.physics.utilities.fit_anisotropy_tensor">fit_anisotropy_tensor() (in module grogupy.physics.utilities)</a>
+</li>
+      <li><a href="API/physics/_generated/grogupy.physics.utilities.html#grogupy.physics.utilities.fit_exchange_tensor">fit_exchange_tensor() (in module grogupy.physics.utilities)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.geometry">geometry (grogupy.physics.builder.Builder property)</a>
+</li>
+      <li><a href="API/physics/_generated/grogupy.physics.utilities.html#grogupy.physics.utilities.get_number_of_electrons">get_number_of_electrons() (in module grogupy.physics.utilities)</a>
 </li>
       <li><a href="API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.greens_function_solver">greens_function_solver (grogupy.physics.builder.Builder attribute)</a>
 
@@ -271,6 +291,13 @@
         <li><a href="API/physics/_generated/grogupy.physics.kspace.html#module-grogupy.physics.kspace">module</a>
 </li>
       </ul></li>
+      <li>
+    grogupy.physics.utilities
+
+      <ul>
+        <li><a href="API/physics/_generated/grogupy.physics.utilities.html#module-grogupy.physics.utilities">module</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -291,6 +318,10 @@
         <li><a href="API/physics/_generated/grogupy.physics.builder.html#id10">(grogupy.physics.builder.Builder property)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="API/physics/_generated/grogupy.physics.utilities.html#grogupy.physics.utilities.interaction_energy">interaction_energy() (in module grogupy.physics.utilities)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -317,19 +348,23 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="API/io/_generated/grogupy.io.io.load.html#grogupy.io.io.load">load() (in module grogupy.io.io)</a>
+      <li><a href="API/io/_generated/grogupy.io.load.html#grogupy.io.load">load() (in module grogupy.io)</a>
+
+      <ul>
+        <li><a href="API/io/_generated/grogupy.io.io.load.html#grogupy.io.io.load">(in module grogupy.io.io)</a>
 </li>
+      </ul></li>
       <li><a href="API/io/_generated/grogupy.io.io.load_Builder.html#grogupy.io.io.load_Builder">load_Builder() (in module grogupy.io.io)</a>
 </li>
       <li><a href="API/io/_generated/grogupy.io.io.load_Contour.html#grogupy.io.io.load_Contour">load_Contour() (in module grogupy.io.io)</a>
 </li>
-      <li><a href="API/io/_generated/grogupy.io.io.load_DefaultTimer.html#grogupy.io.io.load_DefaultTimer">load_DefaultTimer() (in module grogupy.io.io)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="API/io/_generated/grogupy.io.io.load_DefaultTimer.html#grogupy.io.io.load_DefaultTimer">load_DefaultTimer() (in module grogupy.io.io)</a>
+</li>
       <li><a href="API/io/_generated/grogupy.io.io.load_Hamiltonian.html#grogupy.io.io.load_Hamiltonian">load_Hamiltonian() (in module grogupy.io.io)</a>
 </li>
-      <li><a href="API/io/_generated/grogupy.io.io.load_KSpace.html#grogupy.io.io.load_Kspace">load_Kspace() (in module grogupy.io.io)</a>
+      <li><a href="API/io/_generated/grogupy.io.io.load_Kspace.html#grogupy.io.io.load_Kspace">load_Kspace() (in module grogupy.io.io)</a>
 </li>
       <li><a href="API/io/_generated/grogupy.io.io.load_MagneticEntity.html#grogupy.io.io.load_MagneticEntity">load_MagneticEntity() (in module grogupy.io.io)</a>
 </li>
@@ -354,6 +389,8 @@
         <li><a href="API/physics/_generated/grogupy.physics.contour.html#module-grogupy.physics.contour">grogupy.physics.contour</a>
 </li>
         <li><a href="API/physics/_generated/grogupy.physics.kspace.html#module-grogupy.physics.kspace">grogupy.physics.kspace</a>
+</li>
+        <li><a href="API/physics/_generated/grogupy.physics.utilities.html#module-grogupy.physics.utilities">grogupy.physics.utilities</a>
 </li>
       </ul></li>
   </ul></td>
@@ -386,6 +423,8 @@
         <li><a href="API/physics/_generated/grogupy.physics.builder.html#id14">(grogupy.physics.builder.Builder property)</a>
 </li>
       </ul></li>
+      <li><a href="API/physics/_generated/grogupy.physics.utilities.html#grogupy.physics.utilities.parse_magnetic_entity">parse_magnetic_entity() (in module grogupy.physics.utilities)</a>
+</li>
       <li><a href="API/physics/_generated/grogupy.physics.contour.html#grogupy.physics.contour.Contour.plot">plot() (grogupy.physics.contour.Contour method)</a>
 
       <ul>
@@ -396,10 +435,10 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.plot_DM">plot_DM() (grogupy.physics.builder.Builder method)</a>
+      <li><a href="API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.plot_DMI">plot_DMI() (grogupy.physics.builder.Builder method)</a>
 
       <ul>
-        <li><a href="API/viz/_generated/grogupy.viz.viz.plot_DM.html#grogupy.viz.viz.plot_DM">(in module grogupy.viz.viz)</a>
+        <li><a href="API/viz/_generated/grogupy.viz.viz.plot_DMI.html#grogupy.viz.viz.plot_DMI">(in module grogupy.viz.viz)</a>
 </li>
       </ul></li>
       <li><a href="API/viz/_generated/grogupy.viz.viz.plot_kspace.html#grogupy.viz.viz.plot_kspace">plot_kspace() (in module grogupy.viz.viz)</a>
@@ -422,8 +461,14 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="API/io/_generated/grogupy.io.io.read_magnopy.html#grogupy.io.io.read_magnopy">read_magnopy() (in module grogupy.io.io)</a>
+      <li><a href="API/io/_generated/grogupy.io.io.read_fdf.html#grogupy.io.io.read_fdf">read_fdf() (in module grogupy.io.io)</a>
 </li>
+      <li><a href="API/io/_generated/grogupy.io.read_magnopy.html#grogupy.io.read_magnopy">read_magnopy() (in module grogupy.io)</a>
+
+      <ul>
+        <li><a href="API/io/_generated/grogupy.io.io.read_magnopy.html#grogupy.io.io.read_magnopy">(in module grogupy.io.io)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.ref_xcf_orientations">ref_xcf_orientations (grogupy.physics.builder.Builder attribute)</a>
@@ -438,10 +483,18 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="API/physics/_generated/grogupy.physics.contour.html#grogupy.physics.contour.Contour.samples">samples (grogupy.physics.contour.Contour attribute)</a>
 </li>
-      <li><a href="API/io/_generated/grogupy.io.io.save.html#grogupy.io.io.save">save() (in module grogupy.io.io)</a>
+      <li><a href="API/io/_generated/grogupy.io.save.html#grogupy.io.save">save() (in module grogupy.io)</a>
+
+      <ul>
+        <li><a href="API/io/_generated/grogupy.io.io.save.html#grogupy.io.io.save">(in module grogupy.io.io)</a>
 </li>
-      <li><a href="API/io/_generated/grogupy.io.io.save_magnopy.html#grogupy.io.io.save_magnopy">save_magnopy() (in module grogupy.io.io)</a>
+      </ul></li>
+      <li><a href="API/io/_generated/grogupy.io.save_magnopy.html#grogupy.io.save_magnopy">save_magnopy() (in module grogupy.io)</a>
+
+      <ul>
+        <li><a href="API/io/_generated/grogupy.io.io.save_magnopy.html#grogupy.io.io.save_magnopy">(in module grogupy.io.io)</a>
 </li>
+      </ul></li>
       <li><a href="API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.scf_xcf_orientation">scf_xcf_orientation (grogupy.physics.builder.Builder attribute)</a>
 
       <ul>
@@ -450,6 +503,8 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="API/physics/_generated/grogupy.physics.utilities.html#grogupy.physics.utilities.second_order_energy">second_order_energy() (in module grogupy.physics.utilities)</a>
+</li>
       <li><a href="API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.setup">setup() (in module grogupy.physics.builder)</a>
 </li>
       <li><a href="API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.setup_from_range">setup_from_range() (grogupy.physics.builder.Builder method)</a>
@@ -457,6 +512,8 @@
       <li><a href="API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.SLURM_ID">SLURM_ID (grogupy.physics.builder.Builder attribute)</a>
 </li>
       <li><a href="API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.solve">solve() (grogupy.physics.builder.Builder method)</a>
+</li>
+      <li><a href="API/physics/_generated/grogupy.physics.utilities.html#grogupy.physics.utilities.spin_tracer">spin_tracer() (in module grogupy.physics.utilities)</a>
 </li>
       <li><a href="API/io/_generated/grogupy.io.utilities.strip_dict_structure.html#grogupy.io.utilities.strip_dict_structure">strip_dict_structure() (in module grogupy.io.utilities)</a>
 </li>

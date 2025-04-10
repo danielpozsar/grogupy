@@ -16,11 +16,11 @@ Setting Environment Variables
 
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/software/packages/cuda/12.3/targets/x86_64-linux/lib
 
-2. **grogupy_ARCHITECTURE**: This variable sets the architecture
+2. **GROGUPY_ARCHITECTURE**: This variable sets the architecture
    for the grogupy project. By default, the architecture is set to
-   CPU. To change it to GPU, you can set the `grogupy_ARCHITECTURE`
+   CPU. To change it to GPU, you can set the `GROGUPY_ARCHITECTURE`
    environment variable:
 
 .. code-block:: bash
 
-    export grogupy_ARCHITECTURE=GPU
+    export GROGUPY_ARCHITECTURE=GPU

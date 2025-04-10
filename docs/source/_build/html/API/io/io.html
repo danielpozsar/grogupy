@@ -9,6 +9,7 @@
   <title>Visualization functions &mdash; grogupy</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom_styles.css" />
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
@@ -16,9 +17,11 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=8d563738"></script>
-      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/documentation_options.js?v=1fd71caa"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
       <script src="../../_static/design-tabs.js?v=f930bc37"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -56,7 +59,6 @@
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../visualizations/index.html">Visualizations</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
 <ul class="current">
@@ -68,6 +70,7 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Visualization functions</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="_generated/grogupy.io.io.load_DefaultTimer.html">grogupy.io.io.load_DefaultTimer</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_generated/grogupy.io.io.load_Contour.html">grogupy.io.io.load_Contour</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_generated/grogupy.io.io.load_Kspace.html">grogupy.io.io.load_Kspace</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_generated/grogupy.io.io.load_MagneticEntity.html">grogupy.io.io.load_MagneticEntity</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_generated/grogupy.io.io.load_Pair.html">grogupy.io.io.load_Pair</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_generated/grogupy.io.io.load_Hamiltonian.html">grogupy.io.io.load_Hamiltonian</a></li>
@@ -76,6 +79,7 @@
 <li class="toctree-l4"><a class="reference internal" href="_generated/grogupy.io.io.save.html">grogupy.io.io.save</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_generated/grogupy.io.io.save_magnopy.html">grogupy.io.io.save_magnopy</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_generated/grogupy.io.io.read_magnopy.html">grogupy.io.io.read_magnopy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_generated/grogupy.io.io.read_fdf.html">grogupy.io.io.read_fdf</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="utilities.html">Utility functions</a></li>
@@ -133,7 +137,7 @@
 <tr class="row-even"><td><p><a class="reference internal" href="_generated/grogupy.io.io.load_Contour.html#grogupy.io.io.load_Contour" title="grogupy.io.io.load_Contour"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_Contour</span></code></a>(infile)</p></td>
 <td><p>Recreates the instance from a pickled state.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_generated/grogupy.io.io.load_KSpace.html#grogupy.io.io.load_Kspace" title="grogupy.io.io.load_Kspace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_Kspace</span></code></a>(infile)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_generated/grogupy.io.io.load_Kspace.html#grogupy.io.io.load_Kspace" title="grogupy.io.io.load_Kspace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_Kspace</span></code></a>(infile)</p></td>
 <td><p>Recreates the instance from a pickled state.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="_generated/grogupy.io.io.load_MagneticEntity.html#grogupy.io.io.load_MagneticEntity" title="grogupy.io.io.load_MagneticEntity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_MagneticEntity</span></code></a>(infile)</p></td>
@@ -159,6 +163,9 @@
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="_generated/grogupy.io.io.read_magnopy.html#grogupy.io.io.read_magnopy" title="grogupy.io.io.read_magnopy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_magnopy</span></code></a>(file)</p></td>
 <td><p>This function reads the magnopy input file and return a dictionary</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_generated/grogupy.io.io.read_fdf.html#grogupy.io.io.read_fdf" title="grogupy.io.io.read_fdf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_fdf</span></code></a>(path)</p></td>
+<td><p>It reads the simulation parameters, magnetic entities and pairs from the fdf</p></td>
 </tr>
 </tbody>
 </table>
