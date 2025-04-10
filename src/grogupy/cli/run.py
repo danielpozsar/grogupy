@@ -17,30 +17,17 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-"""
-Command line interface for grogupy
-==================================
-
-This module does not contain functions, but provides a command line
-interface for grogupy. It loads the input parameters from a Python
-file and runs the simulation.
-
-Examples
---------
-
-For examples, see the `running in HPC <.._running_in_hpc>`_ section in the documentation.
-
-"""
+import argparse
 import datetime
 from os.path import join
 from timeit import default_timer as timer
 
 import numpy as np
 
-from . import __citation__
-from .config import CONFIG
-from .io.io import read_command_line, save, save_magnopy, save_UppASD
-from .physics import Builder, Contour, Hamiltonian, Kspace
+from .. import __citation__, __definitely_not_grogu__
+from ..config import CONFIG
+from ..io.io import read_py, save, save_magnopy, save_UppASD
+from ..physics import Builder, Contour, Hamiltonian, Kspace
 
 PRINTING = False
 if CONFIG.is_CPU:
@@ -61,8 +48,31 @@ def main():
         print("Simulation started at:", datetime.datetime.now())
     start = timer()
 
+    # setup parser
+    parser = argparse.ArgumentParser(
+        description="Load Python variables from a .py file."
+    )
+    parser.add_argument(
+        "file", nargs="?", help="Path to a Python file containing variables to load."
+    )
+    parser.add_argument(
+        "--cite",
+        dest="cite",
+        action="store_true",
+        default=False,
+        help="Print the citation of the package.",
+    )
+    # parameters from command line
+    args = parser.parse_args()
+
+    # print citation if needed
+    if args.cite:
+        print(__citation__ + __definitely_not_grogu__)
+        if args.file is None:
+            return
+
     # Reading input
-    params = read_command_line(__citation__)
+    params = read_py(args.file)
 
     # only citation
     if params is None:
@@ -181,6 +191,7 @@ def main():
             print("Saved pickle")
 
     if PRINTING:
+        print(__definitely_not_grogu__)
         print("Simulation ended at:", datetime.datetime.now())
         print("GROGUPY_NORMAL_EXIT")
 
