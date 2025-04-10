@@ -38,7 +38,7 @@ Functions
     plot_kspace               Plots the k-space for the Brillouin-zone sampling.
     plot_magnetic_entities    Plots the magnetic entities.
     plot_pairs                Plots the pairs.
-    plot_DM                   Plots the DM vectors.
+    plot_DMI                   Plots the DMI vectors.
 
 
 Background information
@@ -57,12 +57,12 @@ For examples, see the various functions.
 
 from ..config import CONFIG
 from ..physics import Builder, Contour, Kspace
-from .viz import plot_contour, plot_DM, plot_kspace, plot_magnetic_entities, plot_pairs
+from .viz import plot_contour, plot_DMI, plot_kspace, plot_magnetic_entities, plot_pairs
 
 CONFIG._Config__viz_loaded = True
 
 setattr(Contour, "plot", plot_contour)
 setattr(Kspace, "plot", plot_kspace)
-setattr(Builder, "plot_DM", plot_DM)
+setattr(Builder, "plot_DMI", plot_DMI)
 setattr(Builder, "plot_magnetic_entities", plot_magnetic_entities)
 setattr(Builder, "plot_pairs", plot_pairs)
