@@ -29,7 +29,7 @@ sys.path.insert(0, os.path.abspath("../../src"))
 project = "grogupy documentation"
 copyright = "2024, grogupy"
 author = "Author"
-release = "1.0.0"
+release = "0.0.6"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -50,6 +50,7 @@ extensions = [
     "sphinx.ext.coverage",
     "sphinx.ext.viewcode",
     "sphinx_design",
+    "sphinx_copybutton",
     "sphinxcontrib.bibtex",
     "rst2pdf.pdfbuilder",
     "nbsphinx",
@@ -139,11 +140,6 @@ bibtex_default_style = "plain"
 master_doc = "index"
 bibtex_encoding = "latin"
 bibtex_tooltips = True
-
-# pdf documentation
-pdf_documents = [
-    ("index", "grogupy_documentation", "grogupy documentation", "Daniel Pozsar"),
-]
 
 templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
