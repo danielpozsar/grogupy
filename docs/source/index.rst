@@ -22,8 +22,8 @@ focuses on non-orthogonal basis sets, the most straightforward software to
 use for the DFT calculation is `Siesta <https://siesta-project.org/siesta/>`_.
 
 It is based on the grogupy matlab implementation and the `sisl
-<https://sisl.readthedocs.io/en/latest/index.html>`_ package and this work
-was carried out by the `TRILMAX <https://trilmax.elte.hu>`_.
+<https://sisl.readthedocs.io/en/latest/index.html>`_ package. grogupy was created 
+by the `TRILMAX Consortium<https://trilmax.elte.hu>`_.
 
 More on the theoretical background can be seen on `arXiv
 <https://arxiv.org/abs/2309.02558>`_.

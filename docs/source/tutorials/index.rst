@@ -6,4 +6,4 @@ Welcome to the grogupy tutorials! Here, you will find a series of step-by-step g
 .. toctree::
    :maxdepth: 2
 
-Stay tuned for more tutorials coming soon!
+Coming soon...

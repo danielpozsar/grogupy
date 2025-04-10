@@ -18,17 +18,6 @@ Installation
 
             python3 -m pip install --index-url https://test.pypi.org/simple/ grogupy
 
-    .. grid-item-card:: Using conda
-        :columns: 12 12 12 12
-
-        grogupy is also available on `Anaconda/Miniconda <https://docs.conda.io/projects/conda/en/latest/>`_.
-
-        ++++
-
-        .. code-block:: bash
-
-            python3 -m pip install --index-url https://test.pypi.org/simple/ grogupy
-
     .. grid-item-card:: Using source code
         :columns: 12 12 12 12
 
@@ -41,7 +30,7 @@ Installation
 
             git clone https://github.com/danielpozsar/grogu.git
             python -m build
-            pip install grogupy-1.0.0-py3-none-any
+            pip install dist/grogupy-0.0.6-py3-none-any
 
 
 
