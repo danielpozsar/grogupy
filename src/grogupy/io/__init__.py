@@ -53,4 +53,4 @@ For examples, see the various functions.
 
 """
 
-from .io import load, save, save_magnopy, save_UppASD
+from .io import load, read_magnopy, save, save_magnopy, save_UppASD
