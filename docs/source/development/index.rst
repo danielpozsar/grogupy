@@ -16,7 +16,7 @@ First you have to clone the repository from Github.
 Then the easiest way is to create a a virtual environment (.venv), for
 example with VSCode.
 
-* Use python 3.9.6
+* Use at least python 3.9
 
 * install dependencies from:
 
