@@ -14,7 +14,7 @@ readme = "README.md"
 kewords = [
     "density-function-theory",
     "solid-state-physics",
-    "magnetic-materials"
+    "magnetic-materials",
     "heisenberg-model",
     "solid-state",
     "magnetism",
@@ -34,7 +34,7 @@ dependencies = [
 ]
 
 classifiers = [
-    Development Status :: 4 - Beta,
+    "Development Status :: 4 - Beta",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
