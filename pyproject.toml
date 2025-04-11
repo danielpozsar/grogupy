@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "grogupy"
-version = "0.0.6"
+version = "0.0.7"
 authors = [
   { name="Laszlo Oroszlany", email="laszlo.oroszlany@ttk.elte.hu" },
   { name="Daniel Tibor Pozsar", email="danielpozsar@student.elte.hu" },
@@ -12,35 +12,45 @@ authors = [
 description = "Python package calculating relativistic magnetic interactions for the generalised Heisenberg model."
 readme = "README.md"
 kewords = [
-    "physics",
-    "dft",
     "density-function-theory",
     "solid-state-physics",
-    "heisenberg-model",
-    "magnetism",
-    "siesta",
-    "wannier90",
-    "solid-state",
     "magnetic-materials"
+    "heisenberg-model",
+    "solid-state",
+    "magnetism",
+    "wannier90",
+    "physics",
+    "siesta",
+    "dft",
 ]
 requires-python = ">=3.9"
 dependencies = [
   "numpy",
-  "scipy",
   "sisl",
+  "scipy",
+  "mpi4py",
   "netcdf4",
   "openmpi",
-  "mpi4py",
 ]
 
 classifiers = [
-    "Development Status :: 3 - Alpha",
-    "Programming Language :: Python",
+    Development Status :: 4 - Beta,
     "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Programming Language :: Python :: 3 :: Only",
-    "Topic :: Scientific/Engineering :: Physics",
+    
     "License :: OSI Approved :: MIT License",
+    
     "Operating System :: OS Independent",
+    "Environment :: GPU :: NVIDIA CUDA :: 12",
+    
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Natural Language :: English"
 ]
 
 license = "MIT"
@@ -55,10 +65,10 @@ grogupy_run = "grogupy.cli.run:main"
 grogupy_analyze = "grogupy.cli.analyze:main"
 
 [project.urls]
-Homepage = "https://danielpozsar.web.elte.hu/grogu/"
-Documentation = "https://danielpozsar.web.elte.hu/grogu/"
-Repository = "https://github.com/danielpozsar/grogu"
-Issues = "https://github.com/danielpozsar/grogu/issues"
+Homepage = "https://danielpozsar.web.elte.hu/grogupy/"
+Documentation = "https://danielpozsar.web.elte.hu/grogupy/"
+Repository = "https://github.com/danielpozsar/grogupy"
+Issues = "https://github.com/danielpozsar/grogupy/issues"
 
 [tool.pytest.ini_options]
 testpaths = [
