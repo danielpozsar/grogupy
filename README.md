@@ -13,5 +13,10 @@ More on the theoretical background can be seen on [arXiv](https://arxiv.org/abs/
 - Document
 
 - warning for insulators about the fermi level positioning
-- magnopy out lx ly lz?
 - add mesh and converge to batch
+
+-openmx run Fe
+-openmx get smaller basis
+
+Viktor spinlib
+Triangulének
