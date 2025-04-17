@@ -19,6 +19,7 @@
 # SOFTWARE.
 import argparse
 import datetime
+import pickle
 from os.path import join
 from timeit import default_timer as timer
 
@@ -156,8 +157,48 @@ def main():
     if PRINTING:
         print("setup:", (timer() - start) / 60, " min")
         print(simulation)
-    # Solve
-    simulation.solve()
+
+    if params.max_pairs_per_loop < len(simulation.pairs):
+        number_of_chunks = np.floor(simulation.pairs / params.max_pairs_per_loop)
+        pair_chunks = np.array_split(simulation.pairs, number_of_chunks)
+
+        if PRINTING:
+            print(
+                "################################################################################"
+            )
+            print(
+                "################################################################################"
+            )
+            print(
+                "################################################################################"
+            )
+            print(
+                "Maximum number of pairs per loop exceeded! To avoid memory overflow pairs are being separated."
+            )
+            print(f"Maximum number of pairs per loop {params.max_pairs_per_loop}")
+            print(
+                f"pairs are being separated to {number_of_chunks} chunks, each chunk containing {[len(c) for c in pair_chunks]} pairs."
+            )
+            print("These will be ran as separate and they will be concatenated.")
+
+        # run chunks
+        for i, chunk in enumerate(pair_chunks):
+            simulation.pairs = chunk
+            simulation.solve()
+            save(
+                object=simulation,
+                path=params.outfolder + "grogupy_temp_" + str(i),
+                compress=params.pickle_compress_level,
+            )
+        new_pairs = []
+        for i in range(len(pair_chunks)):
+            with open(params.outfolder + "grogupy_temp_" + str(i) + ".pkl", "rb") as f:
+                new_pairs.append(pickle.load(f)["pairs"])
+        simulation.pairs = new_pairs
+
+    else:
+        # Solve
+        simulation.solve()
 
     if PRINTING:
         print("solved:", (timer() - start) / 60, "min")
