@@ -91,8 +91,6 @@ def main():
     )
 
     # Add solvers and parallellizations
-    simulation.greens_function_solver = params.greens_function_solver
-    simulation.parallel_mode = params.parallel_mode
     simulation.exchange_solver = params.exchange_solver
     simulation.anisotropy_solver = params.anisotropy_solver
 
