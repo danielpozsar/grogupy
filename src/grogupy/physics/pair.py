@@ -188,7 +188,7 @@ class Pair:
         self._Gij_tmp: list[NDArray] = []
         self._Gji_tmp: list[NDArray] = []
 
-        self.energies: Union[None, NDArray] = None
+        self.energies: Union[list, NDArray] = None
         self.J_iso: Union[float, None] = None
         self.J: Union[NDArray, None] = None
         self.J_S: Union[NDArray, None] = None

@@ -216,7 +216,7 @@ class MagneticEntity:
         self._Gii: list[NDArray] = []
         self._Gii_tmp: list[NDArray] = []
 
-        self.energies: Union[None, NDArray] = None
+        self.energies: Union[list, NDArray] = None
         self.K: Union[None, NDArray] = None
         self.K_consistency: Union[None, float] = None
 
@@ -538,7 +538,7 @@ class MagneticEntity:
         self._Vu2: list[list[NDArray]] = []
         self._Gii: list[NDArray] = []
         self._Gii_tmp: list[NDArray] = []
-        self.energies: list[NDArray] = []
+        self.energies: list[NDArray] = None
         self.K: Union[None, NDArray] = None
         self.K_consistency: Union[None, float] = None
 
