@@ -346,8 +346,6 @@ def load(
         "supercell_shift",
         "_Gij",
         "_Gji",
-        "_Gij_tmp",
-        "_Gji_tmp",
         "energies",
         "J_iso",
         "J",
@@ -390,7 +388,6 @@ def load(
         "_Vu1",
         "_Vu2",
         "_Gii",
-        "_Gii_tmp",
         "energies",
         "K",
         "K_consistency",
@@ -451,7 +448,7 @@ def save(
        on the sisl version
 
     2. This contains compression 1, but sets the keys "Gii",
-       "_Gii_tmp", "Gij", "_Gij_tmp", "Gji", "_Gji_tmp",
+       "Gij", "Gji",
        "Vu1" and "Vu2" to [], to save space
 
     3. This contains compression 1 and 2, but sets the keys
@@ -487,11 +484,8 @@ def save(
                 out_dict,
                 pops=[
                     "_Gii",
-                    "_Gii_tmp",
                     "_Gij",
-                    "_Gij_tmp",
                     "_Gji",
-                    "_Gji_tmp",
                     "_Vu1",
                     "_Vu2",
                 ],
@@ -504,11 +498,8 @@ def save(
                 out_dict,
                 pops=[
                     "_Gii",
-                    "_Gii_tmp",
                     "_Gij",
-                    "_Gij_tmp",
                     "_Gji",
-                    "_Gji_tmp",
                     "_Vu1",
                     "_Vu2",
                 ],
