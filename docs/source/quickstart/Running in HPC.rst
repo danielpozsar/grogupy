@@ -114,10 +114,10 @@ as we did in the jupyter notebook examples.
     atomic_subset = "Cr"
     kwargs_for_mag_ent = dict(l=2)
 
+    # maximum number of pairs per loop, reduce it to avoid memory overflow
+    max_pairs_per_loop = 10000 
     # sequential solver is better for large systems
     greens_function_solver = "Parallel"
-    # always use K for now
-    parallel_mode = "K"
     # the calculation of J and K from the energy derivations, either Fit or grogupy
     exchange_solver = "Fit"
     anisotropy_solver = "Fit"
