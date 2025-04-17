@@ -131,10 +131,6 @@ class MagneticEntity:
         Calculates the energies of the infinitesimal rotations.
     calculate_anisotropy() :
         Calculates the anisotropy matrix and the consistency from the energies.
-    to_dict(all) :
-        Returns the instance data as a dictionary.
-    add_G_tmp(i, Gk, weight) :
-        Adds the calculated Greens function to the temporary Greens function.
     copy() :
         Return a copy of this MagneticEntity
 
@@ -546,25 +542,6 @@ class MagneticEntity:
         self.energies: list[NDArray] = []
         self.K: Union[None, NDArray] = None
         self.K_consistency: Union[None, float] = None
-
-    def add_G_tmp(self, i: int, Gk: NDArray, weight: float) -> None:
-        """Adds the calculated Greens function to the temporary Greens function.
-
-        It is used in the parallel solution of the Hamiltonian inversions.
-
-        Parameters
-        ----------
-        i: int
-            The index of the `ref_xcf_orientation`
-        Gk: NDArray
-            The Greens function projection on a specific k-point
-        weight: float
-            The weight of the k-point
-        """
-        self._Gii_tmp[i] += (
-            onsite_projection(Gk, self._spin_box_indices, self._spin_box_indices)
-            * weight
-        )
 
     def calculate_energies(self, weights: NDArray, matlabmode: bool = False) -> None:
         """Calculates the energies of the infinitesimal rotations.

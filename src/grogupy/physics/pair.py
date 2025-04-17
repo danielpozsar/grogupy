@@ -77,8 +77,6 @@ class Pair:
         Calculates the exchange tensor from the energies.
     fit_exchange_tensor(ref_xcf) :
         Fits the exchange tensor to the energies.
-    add_G_tmp(i, Gk, k, weight) :
-        Adds the calculated Greens function to the temporary Greens function.
     copy() :
         Return a copy of this Pair
 
@@ -558,32 +556,6 @@ class Pair:
         self.J_iso_mRy
         self.D_meV
         self.D_mRy
-
-    def add_G_tmp(self, i: int, Gk: NDArray, k: NDArray, weight: float) -> None:
-        """Adds the calculated Greens function to the temporary Greens function.
-
-        It is used in the parallel solution of the Hamiltonian inversions. Now the
-        supercell shift is needed, because it introduces a phase shift to the Greens
-        function.
-
-        Parameters
-        ----------
-        i: int
-            The index of the `ref_xcf_orientation`
-        Gk: NDArray
-            The Greens function projection on a specific k-point
-        k: NDArray
-            It is the supercell shift of the second magnetic entity
-        weight: float
-            The weight of the k-point
-        """
-
-        # add phase shift based on the cell difference
-        phase: NDArray = np.exp(1j * 2 * np.pi * k @ self.supercell_shift.T)
-
-        # store the Greens function slice of the magnetic entities
-        self._Gij_tmp[i] += onsite_projection(Gk, self.SBI1, self.SBI2) * phase * weight
-        self._Gji_tmp[i] += onsite_projection(Gk, self.SBI2, self.SBI1) / phase * weight
 
     def copy(self):
         """Returns the deepcopy of the instance.
