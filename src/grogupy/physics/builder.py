@@ -124,8 +124,6 @@ class Builder:
         List of pairs
     greens_function_solver: {"Sequential", "Parallel"}
         The solution method for the Hamiltonian inversion, by default "Sequential"
-    parallel_mode: {"All", "K"}
-        The parallelization mode for the Hamiltonian inversions, by default "K"
     exchange_solver: {"Fit", "grogupy"}
         The solution method for the exchange tensor, by default "Fit"
     anisotropy_solver: {"Fit", "grogupy"}
@@ -527,13 +525,6 @@ class Builder:
     def parallel_mode(self) -> str:
         """The parallelization mode for the Hamiltonian inversions, by default "K"."""
         return self.__parallel_mode
-
-    @parallel_mode.setter
-    def parallel_mode(self, value: str) -> None:
-        if value.lower()[0] == "a":
-            value = "All"
-        elif value.lower()[0] == "k":
-            value = "K"
 
     @property
     def architecture(self) -> str:
@@ -945,25 +936,13 @@ class Builder:
 
         # choose architecture solver
         if self.__architecture.lower()[0] == "c":  # cpu
-            from .._core.cpu_solvers import (
-                solve_parallel_over_all,
-                solve_parallel_over_k,
-            )
+            from .._core.cpu_solvers import solve_parallel_over_k
         elif self.__architecture.lower()[0] == "g":  # gpu
-            from .._core.gpu_solvers import (
-                solve_parallel_over_all,
-                solve_parallel_over_k,
-            )
+            from .._core.gpu_solvers import solve_parallel_over_k
         else:
-            raise Exception(f"Unknown parallel mode: {self.parallel_mode}")
+            raise Exception(f"Unknown architecture: {self.__architecture}")
 
-        # choose parallelization mode
-        if self.parallel_mode.lower()[0] == "a":  # parallel over all
-            solve_parallel_over_all(self)
-        elif self.parallel_mode.lower()[0] == "k":  # parallel over k
-            solve_parallel_over_k(self)
-        else:
-            raise Exception(f"Unknown parallel mode: {self.parallel_mode}")
+        solve_parallel_over_k(self)
 
         self.times.measure("solution", restart=True)
 
