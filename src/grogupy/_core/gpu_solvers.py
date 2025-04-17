@@ -315,21 +315,5 @@ def solve_parallel_over_k(
                 pair.calculate_exchange_tensor()
 
 
-def solve_parallel_over_all(
-    builder: "Builder",
-) -> None:
-    """It calculates the energies by the Greens function method
-
-    It inverts the Hamiltonians of all directions set up in the given
-    k-points at the given energy levels. The solution is parallelized over
-    k-points, energies and Hamiltonian orientations, which is the most general
-    solution method. There is an overhead for the sample generation. It uses
-    the number of GPUs given. And determines the parallelization over energy
-    levels from the ``builder.greens_function_solver`` attribute.
-    """
-
-    raise Exception("Not implemented!")
-
-
 if __name__ == "__main__":
     pass
