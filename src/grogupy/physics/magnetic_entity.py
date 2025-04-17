@@ -34,7 +34,6 @@ import numpy as np
 import sisl
 
 from .. import __version__
-from .._core.core import onsite_projection
 from .._core.utilities import arrays_lists_equal, arrays_None_equal
 from .utilities import (
     blow_up_orbindx,
