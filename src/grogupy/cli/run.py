@@ -94,7 +94,7 @@ def main():
     simulation.greens_function_solver = params.greens_function_solver
     simulation.exchange_solver = params.exchange_solver
     simulation.anisotropy_solver = params.anisotropy_solver
-
+    simulation.low_memory_mode = params.low_memory_mode
     # Define Kspace
     kspace = Kspace(
         kset=params.kset,

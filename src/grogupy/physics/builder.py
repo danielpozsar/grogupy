@@ -171,6 +171,7 @@ class Builder:
         self.pairs: list[Pair] = []
 
         # fix the architecture
+        self.__low_memory_mode = True
         self.__greens_function_solver: str = "Sequential"
         self.__parallel_mode: str = "K"
         self.__architecture = CONFIG.architecture
@@ -504,6 +505,20 @@ class Builder:
                     ref_xcf["vw"].append(vw_mix)
         else:
             raise Exception(f"Unrecognized solution method: {value}")
+
+    @property
+    def low_memory_mode(self) -> str:
+        """The memory mode of the calculation."""
+        return self.__low_memory_mode
+
+    @low_memory_mode.setter
+    def low_memory_mode(self, value: bool) -> None:
+        if value == False:
+            self.__low_memory_mode = False
+        elif value == True:
+            self.__low_memory_mode = True
+        else:
+            raise Exception("This must be Bool!")
 
     @property
     def greens_function_solver(self) -> str:
