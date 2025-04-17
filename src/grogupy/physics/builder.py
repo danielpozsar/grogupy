@@ -33,8 +33,7 @@ import sisl
 from numpy.typing import NDArray
 
 from .. import __version__
-from .._core.core import calc_Vu, onsite_projection
-from .._core.utilities import RotMa2b, setup_from_range, tau_u
+from .._core.utilities import RotMa2b, setup_from_range
 from .._tqdm import _tqdm
 from ..batch.timing import DefaultTimer
 from ..config import CONFIG
@@ -100,8 +99,6 @@ class Builder:
         Creates a list of MagneticEntity from a list of dictionaries.
     create_pairs(pairs) :
         Creates a list of Pair from a list of dictionaries.
-    finalize() :
-        It finalizes the system and calculates infinitesimal rotations.
     solve() :
         Wrapper for Greens function solver.
     to_magnopy(): str
@@ -919,114 +916,6 @@ class Builder:
             # add pairs
             self.pairs.append(pair)
 
-    def finalize(self) -> None:
-        """It finalizes the system and calculates infinitesimal rotations.
-
-        It sets up the magnetic entities and pairs by defining the rotation
-        and Greens function holder that will be filled up upon simulation. It
-        can be used to reset a simulation as it cleans the Pair and Magnetic Entity
-        instances.
-        """
-
-        self.times.restart()
-
-        if (
-            self.anisotropy_solver.lower()[0] == "g"
-            and self.exchange_solver.lower()[0] == "g"
-            and len(self.ref_xcf_orientations) > 3
-        ):
-            warnings.warn(
-                "There are unnecessary orientations for the anisotropy and exchange solvers!"
-            )
-
-        elif (
-            self.anisotropy_solver.lower()[0] == "f"
-            and self.exchange_solver.lower()[0] == "f"
-            and np.array([len(i["vw"]) > 2 for i in self.ref_xcf_orientations]).any()
-        ):
-            warnings.warn(
-                "There are unnecessary perpendicular directions for the anisotropy and exchange solvers!"
-            )
-
-        # hamiltonians, reset magnetic entities and pairs
-        self._rotated_hamiltonians = []
-        for mag_ent in self.magnetic_entities:
-            mag_ent.reset()
-        for pair in self.pairs:
-            pair.reset()
-
-        # iterate over the reference directions (quantization axes)
-        for orient in self.ref_xcf_orientations:
-            # obtain rotated exchange field and Hamiltonian
-            new_hamiltonian = self.hamiltonian.copy()
-            new_hamiltonian.rotate(orient["o"])
-            self._rotated_hamiltonians.append(new_hamiltonian)
-
-            for mag_ent in _tqdm(
-                self.magnetic_entities,
-                desc="Setup magnetic entities for rotated hamiltonian",
-            ):
-                mag_ent._Vu1.append([])
-                mag_ent._Vu2.append([])
-                mag_ent._Gii.append(
-                    np.zeros(
-                        (self.contour.eset, mag_ent.SBS, mag_ent.SBS),
-                        dtype="complex128",
-                    )
-                )
-                mag_ent._Gii_tmp.append(
-                    np.zeros(
-                        (self.contour.eset, mag_ent.SBS, mag_ent.SBS),
-                        dtype="complex128",
-                    )
-                )
-
-            for pair in _tqdm(self.pairs, desc="Setup pairs for rotated hamiltonian"):
-                pair._Gij.append(
-                    np.zeros(
-                        (self.contour.eset, pair.SBS1, pair.SBS2), dtype="complex128"
-                    )
-                )
-                pair._Gij_tmp.append(
-                    np.zeros(
-                        (self.contour.eset, pair.SBS1, pair.SBS2), dtype="complex128"
-                    )
-                )
-                pair._Gji.append(
-                    np.zeros(
-                        (self.contour.eset, pair.SBS2, pair.SBS1), dtype="complex128"
-                    )
-                )
-                pair._Gji_tmp.append(
-                    np.zeros(
-                        (self.contour.eset, pair.SBS2, pair.SBS1), dtype="complex128"
-                    )
-                )
-
-            # these are the rotations (for now) perpendicular to the quantization axis
-            for u in orient["vw"]:
-                # section 2.H
-                Tu: NDArray = np.kron(np.eye(self.hamiltonian.NO, dtype=int), tau_u(u))
-                Vu1, Vu2 = calc_Vu(new_hamiltonian.H_XCF_uc, Tu)
-
-                for mag_ent in _tqdm(
-                    self.magnetic_entities,
-                    desc="Setup perturbations for rotated hamiltonian",
-                ):
-                    # fill up the perturbed potentials (for now) based on the on-site projections
-                    mag_ent._Vu1[-1].append(
-                        onsite_projection(
-                            Vu1, mag_ent._spin_box_indices, mag_ent._spin_box_indices
-                        )
-                    )
-                    mag_ent._Vu2[-1].append(
-                        onsite_projection(
-                            Vu2, mag_ent._spin_box_indices, mag_ent._spin_box_indices
-                        )
-                    )
-
-        self.times.measure("finalize", restart=True)
-
     def solve(self) -> None:
         """Wrapper for Greens function solver.
 
@@ -1037,8 +926,22 @@ class Builder:
         # reset times
         self.times.restart()
 
-        # finalize automatically
-        self.finalize()
+        # check to optimize calculation
+        if (
+            self.anisotropy_solver.lower()[0] == "g"
+            or self.exchange_solver.lower()[0] == "g"
+        ) and len(self.ref_xcf_orientations) > 3:
+            warnings.warn(
+                "There are unnecessary orientations for the anisotropy or the exchange solver!"
+            )
+
+        elif (
+            self.anisotropy_solver.lower()[0] == "f"
+            or self.exchange_solver.lower()[0] == "f"
+        ) and np.array([len(i["vw"]) > 2 for i in self.ref_xcf_orientations]).any():
+            warnings.warn(
+                "There are unnecessary perpendicular directions for the anisotropy or exchange solver!"
+            )
 
         # choose architecture solver
         if self.__architecture.lower()[0] == "c":  # cpu
