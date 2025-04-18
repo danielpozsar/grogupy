@@ -371,7 +371,6 @@ class TestMagneticEntity:
         mag_ent._Vu1 = 1
         mag_ent._Vu2 = None
         mag_ent._Gii = np.array([10])
-        mag_ent._Gii_tmp = "[]"
         mag_ent.energies = 3.14
         mag_ent.K = (10, 20, 30)
         mag_ent.K_consistency = 2
@@ -381,7 +380,7 @@ class TestMagneticEntity:
         assert mag_ent._Vu2 == []
         assert mag_ent._Gii == []
         assert mag_ent._Gii_tmp == []
-        assert mag_ent.energies == []
+        assert mag_ent.energies is None
         assert mag_ent.K is None
         assert mag_ent.K_consistency is None
 
