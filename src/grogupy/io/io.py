@@ -306,6 +306,7 @@ def load(
         "hamiltonian",
         "magnetic_entities",
         "pairs",
+        "_Builder__low_memory_mode",
         "_Builder__greens_function_solver",
         "_Builder__parallel_mode",
         "_Builder__architecture",
