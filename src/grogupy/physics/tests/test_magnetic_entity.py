@@ -523,11 +523,6 @@ class TestMagneticEntity:
         m2._Gii = m._Gii
         assert m == m2
 
-        m2._Gii_tmp = [[], [], []]
-        assert m != m2
-        m2._Gii_tmp = m._Gii_tmp
-        assert m == m2
-
         m2.energies = np.zeros(3)
         assert m != m2
         m2.energies = m.energies

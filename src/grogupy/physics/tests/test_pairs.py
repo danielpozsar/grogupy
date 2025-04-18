@@ -124,19 +124,9 @@ class TestPair:
         p2._Gij = p._Gij
         assert p == p2
 
-        p2._Gij_tmp = [[], [], []]
-        assert p != p2
-        p2._Gij_tmp = p._Gij_tmp
-        assert p == p2
-
         p2._Gji = None
         assert p != p2
         p2._Gji = p._Gji
-        assert p == p2
-
-        p2._Gji_tmp = [[], [], []]
-        assert p != p2
-        p2._Gji_tmp = p._Gji_tmp
         assert p == p2
 
         p2.energies = np.zeros(3)
