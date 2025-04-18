@@ -338,8 +338,6 @@ class MagneticEntity:
                 return False
             if not arrays_lists_equal(self._Gii, value._Gii):
                 return False
-            if not arrays_lists_equal(self._Gii_tmp, value._Gii_tmp):
-                return False
             if not arrays_None_equal(self.energies, value.energies):
                 return False
             if not arrays_None_equal(self.K, value.K):

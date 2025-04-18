@@ -264,10 +264,6 @@ class Pair:
                 return False
             if not arrays_lists_equal(self._Gji, value._Gji):
                 return False
-            if not arrays_lists_equal(self._Gij_tmp, value._Gij_tmp):
-                return False
-            if not arrays_lists_equal(self._Gji_tmp, value._Gji_tmp):
-                return False
             if not arrays_None_equal(self.energies, value.energies):
                 return False
             if not arrays_None_equal(self.J, value.J):

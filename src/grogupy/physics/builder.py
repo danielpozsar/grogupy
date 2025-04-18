@@ -316,6 +316,7 @@ class Builder:
                 and self.kspace == value.kspace
                 and self.contour == value.contour
                 and self.hamiltonian == value.hamiltonian
+                and self.__low_memory_mode == value.__low_memory_mode
                 and self.__greens_function_solver == value.__greens_function_solver
                 and self.__parallel_mode == value.__parallel_mode
                 and self.__architecture == value.__architecture

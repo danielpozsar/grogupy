@@ -240,14 +240,11 @@ class TestIO:
 
         dat = []
         for string in [
-            "Gii",
-            "_Gii_tmp",
-            "Gij",
-            "_Gij_tmp",
-            "Gji",
-            "_Gji_tmp",
-            "Vu1",
-            "Vu2",
+            "_Gii",
+            "_Gij",
+            "_Gji",
+            "_Vu1",
+            "_Vu2",
         ]:
             temp = parse(dictionary, string)
             for t in temp:
@@ -270,14 +267,11 @@ class TestIO:
 
         dat = []
         for string in [
-            "Gii",
-            "_Gii_tmp",
-            "Gij",
-            "_Gij_tmp",
-            "Gji",
-            "_Gji_tmp",
-            "Vu1",
-            "Vu2",
+            "_Gii",
+            "_Gij",
+            "_Gji",
+            "_Vu1",
+            "_Vu2",
         ]:
             temp = parse(dictionary, string)
             for t in temp:
