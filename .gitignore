@@ -23,7 +23,7 @@ docs/source/api/generated
 *generated
 
 # Debug
-*.coverage
+*.coverage*
 
 # Benchmarks
 benchmarks
