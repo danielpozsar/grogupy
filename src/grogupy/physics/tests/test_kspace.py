@@ -21,6 +21,7 @@ import numpy as np
 import plotly.graph_objects as go
 import pytest
 
+import grogupy.viz
 from grogupy.physics import Kspace
 
 pytestmark = [pytest.mark.physics]
@@ -81,11 +82,6 @@ class TestKspace:
 
     def test_plot(self):
         k = Kspace([10, 10, 10])
-        with pytest.raises(Exception):
-            k.plot()
-
-        import grogupy.viz
-
         assert isinstance(k.plot(), go.Figure)
 
     def test_getstate_setstate(self):

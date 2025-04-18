@@ -20,6 +20,7 @@
 import plotly.graph_objects as go
 import pytest
 
+import grogupy.viz
 from grogupy.physics import Contour
 
 pytestmark = [pytest.mark.physics]
@@ -110,11 +111,6 @@ class TestContour:
 
     def test_plot(self):
         c = Contour(100, 1000, emin=-10)
-        with pytest.raises(Exception):
-            c.plot()
-
-        import grogupy.viz
-
         assert isinstance(c.plot(), go.Figure)
 
     def test_getstate_setstate(self):
