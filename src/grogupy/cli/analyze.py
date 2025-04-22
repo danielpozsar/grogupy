@@ -79,7 +79,7 @@ def main():
     fig = plot_pairs(system)
     fig.write_html(name + ".pairs.html")
 
-    fig = plot_DMI(system)
+    fig = plot_DMI(system).add_traces(system.plot_pairs(connect=True).data)
     fig.write_html(name + ".DMIs.html")
 
 
