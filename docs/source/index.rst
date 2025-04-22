@@ -16,17 +16,24 @@
 grogupy: Relativistic magnetic interactions from non-orthogonal basis sets
 ==========================================================================
 
-grogupy was created to easily extract magnetic interaction parameters from
-density functional theory (DFT) calculations. Because the underlying theory
-focuses on non-orthogonal basis sets, the most straightforward software to
-use for the DFT calculation is `Siesta <https://siesta-project.org/siesta/>`_.
+[![PyPI version](https://badge.fury.io/py/grogupy.svg)](https://badge.fury.io/py/grogupy)
+![Static Badge](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12%20%7C%203.13%20%7C-blue)
+![Static Badge](https://img.shields.io/badge/License-MIT-blue)
+![Static Badge](https://img.shields.io/badge/Code%20style-Black-black)
 
-It is based on the grogupy matlab implementation and the `sisl
-<https://sisl.readthedocs.io/en/latest/index.html>`_ package. grogupy was created 
-by the `TRILMAX Consortium <https://trilmax.elte.hu>`_.
-
-More on the theoretical background can be seen on `arXiv
-<https://arxiv.org/abs/2309.02558>`_.
+grogupy is an open-source package created to easily extract magnetic interaction 
+parameters from density functional theory (DFT) calculations. It can also handle 
+very large systems, with hundreds of atoms in the unit cell using GPU acceleration. 
+Because the underlying theory focuses on non-orthogonal, LCAO, basis sets, the 
+most straightforward software, and our recommendation to use for the DFT part is 
+`Siesta <https://siesta-project.org/siesta/>`_. In principle any plane wave based 
+DFT software could be used with Wannierization, but the magnetic parameters are 
+very sensitive to the atomic positions and Wannier orbitals might be off centered.
+grogupy can extract magnetic parameters from different levels of theoretical 
+complexity, for example it can use as input collinear, non-collinear and spin-orbit
+Hamiltonians using `sisl <https://sisl.readthedocs.io/en/latest/index.html>`_. More 
+on the theoretical background can be found on `arXiv <https://arxiv.org/abs/2309.02558>`_. 
+grogupy was created by the `TRILMAX Consortium <https://trilmax.elte.hu>`_.
 
 .. grid:: 1 1 2 2
     :gutter: 2
