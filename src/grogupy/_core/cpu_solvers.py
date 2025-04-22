@@ -20,7 +20,6 @@
 """cpu_solvers.py
 """
 
-from itertools import product
 from typing import TYPE_CHECKING
 
 from numpy.typing import NDArray
@@ -32,7 +31,9 @@ import numpy as np
 
 from .._tqdm import _tqdm
 from ..config import CONFIG
-from .core import onsite_projection, parallel_Gk, sequential_Gk
+from ..physics.utilities import interaction_energy, second_order_energy
+from .core import calc_Vu, onsite_projection, parallel_Gk, sequential_Gk
+from .utilities import tau_u
 
 
 def solve_parallel_over_k(
@@ -47,6 +48,7 @@ def solve_parallel_over_k(
     the fastest solution method for a smaller number of nodes.
     """
 
+    # Initialize MPI
     from mpi4py import MPI
 
     comm = MPI.COMM_WORLD
@@ -54,23 +56,54 @@ def solve_parallel_over_k(
     root_node = 0
     rank = comm.Get_rank()
 
+    # split k points to parallelize
     parallel_k = np.array_split(builder.kspace.kpoints, parallel_size)
     parallel_w = np.array_split(builder.kspace.weights, parallel_size)
-
     if rank == root_node:
         parallel_k[root_node] = _tqdm(
             parallel_k[root_node], desc=f"Parallel over k on CPU{rank}:"
         )
 
-    # sampling the integrand on the contour and the BZ
-    for i, k in enumerate(parallel_k[rank]):
-        # weight of k point in BZ integral
-        wk: float = parallel_w[rank][i]
+    # reset hamiltonians, magnetic entities and pairs
+    builder._rotated_hamiltonians = []
+    for mag_ent in builder.magnetic_entities:
+        mag_ent.reset()
+        mag_ent.energies = []
+    for pair in builder.pairs:
+        pair.reset()
+        pair.energies = []
 
-        # iterate over reference directions
-        for j, hamiltonian_orientation in enumerate(builder._rotated_hamiltonians):
+    # iterate over the reference directions (quantization axes)
+    for orient in builder.ref_xcf_orientations:
+        # obtain rotated exchange field and Hamiltonian
+        rot_H = builder.hamiltonian.copy()
+        rot_H.rotate(orient["o"])
+
+        # setup empty Greens function holders for integration
+        for mag_ent in _tqdm(
+            builder.magnetic_entities,
+            desc="Setup magnetic entities for rotated hamiltonian",
+        ):
+            mag_ent._Gii_tmp = np.zeros(
+                (builder.contour.eset, mag_ent.SBS, mag_ent.SBS),
+                dtype="complex128",
+            )
+
+        for pair in _tqdm(builder.pairs, desc="Setup pairs for rotated hamiltonian"):
+            pair._Gij_tmp = np.zeros(
+                (builder.contour.eset, pair.SBS1, pair.SBS2), dtype="complex128"
+            )
+            pair._Gji_tmp = np.zeros(
+                (builder.contour.eset, pair.SBS2, pair.SBS1), dtype="complex128"
+            )
+
+        # sampling the integrand on the contour and the BZ
+        for j, k in enumerate(parallel_k[rank]):
+            # weight of k point in BZ integral
+            wk: float = parallel_w[rank][j]
+
             # calculate Hamiltonian and Overlap matrix in a given k point
-            Hk, Sk = hamiltonian_orientation.HkSk(k)
+            Hk, Sk = rot_H.HkSk(k)
 
             if builder.greens_function_solver.lower()[0] == "p":  # parallel solver
                 Gk = parallel_Gk(
@@ -90,156 +123,167 @@ def solve_parallel_over_k(
 
             # store the Greens function slice of the magnetic entities
             for mag_ent in builder.magnetic_entities:
-                mag_ent.add_G_tmp(j, Gk, wk)
+                mag_ent._Gii_tmp += (
+                    onsite_projection(
+                        Gk, mag_ent._spin_box_indices, mag_ent._spin_box_indices
+                    )
+                    * wk
+                )
 
             for pair in builder.pairs:
-                pair.add_G_tmp(j, Gk, k, wk)
+                # add phase shift based on the cell difference
+                phase: NDArray = np.exp(1j * 2 * np.pi * k @ pair.supercell_shift.T)
 
-    # sum reduce partial results of mpi nodes
-    for i in range(len(builder._rotated_hamiltonians)):
-        for mag_ent in builder.magnetic_entities:
-            comm.Reduce(mag_ent._Gii_tmp[i], mag_ent._Gii[i], root=root_node)
-
-            if builder.anisotropy_solver.lower()[0] == "f":  # fit
-                # mag_ent.calculate_energies(builder.contour.weights, False)
-                mag_ent.calculate_energies(builder.contour.weights, False)
-                mag_ent.fit_anisotropy_tensor(builder.ref_xcf_orientations)
-            elif builder.anisotropy_solver.lower()[0] == "g":  # grogupy
-                # mag_ent.calculate_energies(builder.contour.weights, True)
-                mag_ent.calculate_energies(builder.contour.weights, True)
-                mag_ent.calculate_anisotropy()
-
-        for pair in builder.pairs:
-            comm.Reduce(pair._Gij_tmp[i], pair._Gij[i], root=root_node)
-            comm.Reduce(pair._Gji_tmp[i], pair._Gji[i], root=root_node)
-
-            # pair.calculate_energies(builder.contour.weights)
-            pair.calculate_energies(builder.contour.weights)
-            if builder.exchange_solver.lower()[0] == "f":  # fit
-                pair.fit_exchange_tensor(builder.ref_xcf_orientations)
-            elif builder.exchange_solver.lower()[0] == "g":  # grogupy
-                pair.calculate_exchange_tensor()
-
-
-def solve_parallel_over_all(
-    builder: "Builder",
-) -> None:
-    """It calculates the energies by the Greens function method
-
-    It inverts the Hamiltonians of all directions set up in the given
-    k-points at the given energy levels. The solution is parallelized over
-    k-points and Hamiltonian orientations. There is an overhead for the sample generation.
-    """
-
-    from mpi4py import MPI
-
-    comm = MPI.COMM_WORLD
-    parallel_size = CONFIG.parallel_size
-    root_node = 0
-    rank = comm.Get_rank()
-
-    kset_space = np.linspace(
-        0, len(builder.kspace.kpoints) - 1, len(builder.kspace.kpoints), dtype=int
-    )
-    orient_space = np.linspace(
-        0,
-        len(builder.ref_xcf_orientations) - 1,
-        len(builder.ref_xcf_orientations),
-        dtype=int,
-    )
-
-    combinations = product(kset_space, orient_space)
-    combinations = np.array_split(np.array(list(combinations)), parallel_size)
-
-    if rank == root_node:
-        total = (
-            np.prod(
-                (
-                    len(builder.kspace.kpoints),
-                    len(builder.ref_xcf_orientations),
+                # store the Greens function slice of the pairs
+                pair._Gij_tmp += (
+                    onsite_projection(Gk, pair.SBI1, pair.SBI2) * phase * wk
                 )
-            )
-            / parallel_size
-        )
-        combinations[root_node] = _tqdm(
-            combinations[root_node],
-            total=total,
-            desc=f"Parallel over all on CPU{rank}: ",
-        )
-
-    for k_idx, o_idx in combinations[rank]:
-        Hk, Sk = builder._rotated_hamiltonians[o_idx].HkSk(
-            builder.kspace.kpoints[k_idx]
-        )
-        # fills the holder sequentially by the Greens function on a given energy
-
-        # this looks ugly, but in this case we always use the inversion method from
-        # the _core.core Green's function solver, which may use numpy or scipy
-
-        if builder.greens_function_solver.lower()[0] == "p":  # parallel solver
-            Gk = parallel_Gk(
-                Hk,
-                Sk,
-                builder.contour.samples,
-                builder.contour.eset,
-            )
-        elif builder.greens_function_solver.lower()[0] == "s":  # sequential solver
-            # solve Greens function sequentially for the energies, because of memory bound
-            Gk = sequential_Gk(
-                Hk,
-                Sk,
-                builder.contour.samples,
-                builder.contour.eset,
-            )
-
-        # store the Greens function slice of the magnetic entities
-        for mag_ent in builder.magnetic_entities:
-            mag_ent._Gii_tmp[o_idx] += (
-                onsite_projection(
-                    Gk, mag_ent._spin_box_indices, mag_ent._spin_box_indices
+                pair._Gji_tmp += (
+                    onsite_projection(Gk, pair.SBI2, pair.SBI1) / phase * wk
                 )
-                * builder.kspace.weights[k_idx]
-            )
 
-        for pair in builder.pairs:
-            # add phase shift based on the cell difference
-            phase: NDArray = np.exp(
-                1j * 2 * np.pi * builder.kspace.kpoints[k_idx] @ pair.supercell_shift.T
-            )
-
-            # store the Greens function slice of the magnetic entities
-            pair._Gij_tmp[o_idx] += (
-                onsite_projection(Gk, pair.SBI1, pair.SBI2)
-                * phase
-                * builder.kspace.weights[k_idx]
-            )
-            pair._Gji_tmp[o_idx] += (
-                onsite_projection(Gk, pair.SBI2, pair.SBI1)
-                / phase
-                * builder.kspace.weights[k_idx]
-            )
-
-    # sum reduce partial results of mpi nodes
-    for i in range(len(builder._rotated_hamiltonians)):
+        comm.Barrier()
+        # sum reduce partial results of mpi nodes and delete temprorary stuff
         for mag_ent in builder.magnetic_entities:
-            comm.Reduce(mag_ent._Gii_tmp[i], mag_ent._Gii[i], root=root_node)
+            # initialize rotation storage
+            mag_ent._Vu1_tmp = []
+            mag_ent._Vu2_tmp = []
 
-            if builder.anisotropy_solver.lower()[0] == "f":  # fit
-                mag_ent.calculate_energies(builder.contour.weights, False)
-                mag_ent.fit_anisotropy_tensor(builder.ref_xcf_orientations)
-            elif builder.anisotropy_solver.lower()[0] == "g":  # grogupy
-                mag_ent.calculate_energies(builder.contour.weights, True)
-                mag_ent.calculate_anisotropy()
+            mag_ent._Gii_reduce = np.zeros(
+                (builder.contour.eset, mag_ent.SBS, mag_ent.SBS),
+                dtype="complex128",
+            )
+            comm.Reduce(mag_ent._Gii_tmp, mag_ent._Gii_reduce, root=root_node)
+            del mag_ent._Gii_tmp
 
         for pair in builder.pairs:
-            comm.Reduce(pair._Gij_tmp[i], pair._Gij[i], root=root_node)
-            comm.Reduce(pair._Gji_tmp[i], pair._Gji[i], root=root_node)
+            pair._Gij_reduce = np.zeros(
+                (builder.contour.eset, pair.SBS1, pair.SBS2), dtype="complex128"
+            )
+            pair._Gji_reduce = np.zeros(
+                (builder.contour.eset, pair.SBS2, pair.SBS1), dtype="complex128"
+            )
+            comm.Reduce(pair._Gij_tmp, pair._Gij_reduce, root=root_node)
+            comm.Reduce(pair._Gji_tmp, pair._Gji_reduce, root=root_node)
+            del pair._Gij_tmp
+            del pair._Gji_tmp
 
-            pair.calculate_energies(builder.contour.weights)
-            if builder.exchange_solver.lower()[0] == "f":  # fit
-                pair.fit_exchange_tensor(builder.ref_xcf_orientations)
-            elif builder.exchange_solver.lower()[0] == "g":  # grogupy
-                pair.calculate_exchange_tensor()
+        # these are the rotations mostly perpendicular to the quantization axis
+        for u in orient["vw"]:
+            # section 2.H
+            Tu: NDArray = np.kron(np.eye(builder.hamiltonian.NO, dtype=int), tau_u(u))
+            Vu1, Vu2 = calc_Vu(rot_H.H_XCF_uc, Tu)
+
+            for mag_ent in _tqdm(
+                builder.magnetic_entities,
+                desc="Setup perturbations for rotated hamiltonian",
+            ):
+                # fill up the perturbed potentials (for now) based on the on-site projections
+                mag_ent._Vu1_tmp.append(
+                    onsite_projection(
+                        Vu1, mag_ent._spin_box_indices, mag_ent._spin_box_indices
+                    )
+                )
+                mag_ent._Vu2_tmp.append(
+                    onsite_projection(
+                        Vu2, mag_ent._spin_box_indices, mag_ent._spin_box_indices
+                    )
+                )
+
+        # calculate energies in the current reference hamiltonian direction
+        for mag_ent in builder.magnetic_entities:
+            storage: list[float] = []
+            # iterate over the first and second order local perturbations
+            Gii = mag_ent._Gii_reduce
+            V1 = mag_ent._Vu1_tmp
+            V2 = mag_ent._Vu2_tmp
+
+            # fill up the magnetic entities list with the energies
+            storage.append(
+                second_order_energy(V1[0], V2[0], Gii, builder.contour.weights)
+            )
+            storage.append(
+                interaction_energy(V1[0], V1[1], Gii, Gii, builder.contour.weights)
+            )
+            storage.append(
+                interaction_energy(V1[1], V1[0], Gii, Gii, builder.contour.weights)
+            )
+            storage.append(
+                second_order_energy(V1[1], V2[1], Gii, builder.contour.weights)
+            )
+            if builder.anisotropy_solver.lower()[0] == "g":  # grogupy
+                storage.append(
+                    second_order_energy(V1[2], V2[2], Gii, builder.contour.weights)
+                )
+            mag_ent.energies.append(storage)
+
+        # calculate energies in the current reference hamiltonian direction
+        for pair in builder.pairs:
+            Gij, Gji = pair._Gij_reduce, pair._Gji_reduce
+            storage: list = []
+            # iterate over the first order local perturbations in all possible orientations for the two sites
+            # actually all possible orientations without the orientation for the off-diagonal anisotropy
+            # that is why we only take the first two of each Vu1
+            for Vui in pair.M1._Vu1_tmp[:2]:
+                for Vuj in pair.M2._Vu1_tmp[:2]:
+                    storage.append(
+                        interaction_energy(Vui, Vuj, Gij, Gji, builder.contour.weights)
+                    )
+            # fill up the pairs dictionary with the energies
+            pair.energies.append(storage)
+
+        # if we want to keep all the information for some reason we can do it
+        if not builder.low_memory_mode:
+            builder._rotated_hamiltonians.append(rot_H)
+            for mag_ent in builder.magnetic_entities:
+                mag_ent._Vu1.append(mag_ent._Vu1_tmp)
+                mag_ent._Vu2.append(mag_ent._Vu2_tmp)
+                mag_ent._Gii.append(mag_ent._Gii_reduce)
+            for pair in builder.pairs:
+                pair._Gij.append(pair._Gij_reduce)
+                pair._Gji.append(pair._Gji_reduce)
+        # or fill with empty stuff
+        else:
+            for mag_ent in builder.magnetic_entities:
+                mag_ent._Vu1.append([])
+                mag_ent._Vu2.append([])
+                mag_ent._Gii.append([])
+            for pair in builder.pairs:
+                pair._Gij.append([])
+                pair._Gji.append([])
+
+    # finalize energies of the magnetic entities and pairs
+    # calcualte magnetic parameters
+    for mag_ent in builder.magnetic_entities:
+        # delete temporary stuff
+        del mag_ent._Gii_reduce
+        del mag_ent._Vu1_tmp
+        del mag_ent._Vu2_tmp
+
+        # convert to NDArray
+        mag_ent.energies: NDArray = np.array(mag_ent.energies)
+        # call these so they are updated
+        mag_ent.energies_meV
+        mag_ent.energies_mRy
+        if builder.anisotropy_solver.lower()[0] == "f":  # fit
+            mag_ent.fit_anisotropy_tensor(builder.ref_xcf_orientations)
+        elif builder.anisotropy_solver.lower()[0] == "g":  # grogupy
+            mag_ent.calculate_anisotropy()
+
+    for pair in builder.pairs:
+        # delete temporary stuff
+        del pair._Gij_reduce
+        del pair._Gji_reduce
+
+        # convert to NDArray
+        pair.energies: NDArray = np.array(pair.energies)
+        # call these so they are updated
+        pair.energies_meV
+        pair.energies_mRy
+        if builder.exchange_solver.lower()[0] == "f":  # fit
+            pair.fit_exchange_tensor(builder.ref_xcf_orientations)
+        elif builder.exchange_solver.lower()[0] == "g":  # grogupy
+            pair.calculate_exchange_tensor()
 
 
 if __name__ == "__main__":
