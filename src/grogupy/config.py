@@ -21,9 +21,10 @@ from os import environ
 
 
 class Config:
-    def __init__(self, architecture: str):
+    def __init__(self, architecture: str, tqdm: str):
         self.__viz_loaded = False
 
+        # get architecture
         if architecture.lower() == "cpu":
             self.__architecture = "CPU"
         elif architecture.lower() == "gpu":
@@ -40,6 +41,12 @@ class Config:
             import cupy as cp
 
             self.__parallel_size = cp.cuda.runtime.getDeviceCount()
+
+        # get tqdm
+        if tqdm[0].lower() == "1" or tqdm[0].lower() == "t":
+            self.__tqdm_requested = True
+        else:
+            self.__tqdm_requested = False
 
     @property
     def viz_loaded(self):
@@ -61,8 +68,14 @@ class Config:
     def is_GPU(self):
         return self.__architecture == "GPU"
 
+    @property
+    def tqdm_requested(self):
+        return self.__tqdm_requested
 
-CONFIG = Config(environ.get("GROGUPY_ARCHITECTURE", "CPU"))
+
+CONFIG = Config(
+    environ.get("GROGUPY_ARCHITECTURE", "CPU"), environ.get("GROGUPY_TQDM", "TRUE")
+)
 
 if __name__ == "__main__":
     pass
