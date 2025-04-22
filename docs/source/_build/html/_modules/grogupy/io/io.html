@@ -16,7 +16,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=1fd71caa"></script>
+      <script src="../../../_static/documentation_options.js?v=bbaf98b3"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -428,6 +428,7 @@
         <span class="s2">&quot;hamiltonian&quot;</span><span class="p">,</span>
         <span class="s2">&quot;magnetic_entities&quot;</span><span class="p">,</span>
         <span class="s2">&quot;pairs&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_Builder__low_memory_mode&quot;</span><span class="p">,</span>
         <span class="s2">&quot;_Builder__greens_function_solver&quot;</span><span class="p">,</span>
         <span class="s2">&quot;_Builder__parallel_mode&quot;</span><span class="p">,</span>
         <span class="s2">&quot;_Builder__architecture&quot;</span><span class="p">,</span>
@@ -468,8 +469,6 @@
         <span class="s2">&quot;supercell_shift&quot;</span><span class="p">,</span>
         <span class="s2">&quot;_Gij&quot;</span><span class="p">,</span>
         <span class="s2">&quot;_Gji&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;_Gij_tmp&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;_Gji_tmp&quot;</span><span class="p">,</span>
         <span class="s2">&quot;energies&quot;</span><span class="p">,</span>
         <span class="s2">&quot;J_iso&quot;</span><span class="p">,</span>
         <span class="s2">&quot;J&quot;</span><span class="p">,</span>
@@ -512,7 +511,6 @@
         <span class="s2">&quot;_Vu1&quot;</span><span class="p">,</span>
         <span class="s2">&quot;_Vu2&quot;</span><span class="p">,</span>
         <span class="s2">&quot;_Gii&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;_Gii_tmp&quot;</span><span class="p">,</span>
         <span class="s2">&quot;energies&quot;</span><span class="p">,</span>
         <span class="s2">&quot;K&quot;</span><span class="p">,</span>
         <span class="s2">&quot;K_consistency&quot;</span><span class="p">,</span>
@@ -576,7 +574,7 @@
 <span class="sd">       on the sisl version</span>
 
 <span class="sd">    2. This contains compression 1, but sets the keys &quot;Gii&quot;,</span>
-<span class="sd">       &quot;_Gii_tmp&quot;, &quot;Gij&quot;, &quot;_Gij_tmp&quot;, &quot;Gji&quot;, &quot;_Gji_tmp&quot;,</span>
+<span class="sd">       &quot;Gij&quot;, &quot;Gji&quot;,</span>
 <span class="sd">       &quot;Vu1&quot; and &quot;Vu2&quot; to [], to save space</span>
 
 <span class="sd">    3. This contains compression 1 and 2, but sets the keys</span>
@@ -612,11 +610,8 @@
                 <span class="n">out_dict</span><span class="p">,</span>
                 <span class="n">pops</span><span class="o">=</span><span class="p">[</span>
                     <span class="s2">&quot;_Gii&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;_Gii_tmp&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;_Gij&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;_Gij_tmp&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;_Gji&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;_Gji_tmp&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;_Vu1&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;_Vu2&quot;</span><span class="p">,</span>
                 <span class="p">],</span>
@@ -629,11 +624,8 @@
                 <span class="n">out_dict</span><span class="p">,</span>
                 <span class="n">pops</span><span class="o">=</span><span class="p">[</span>
                     <span class="s2">&quot;_Gii&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;_Gii_tmp&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;_Gij&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;_Gij_tmp&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;_Gji&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;_Gji_tmp&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;_Vu1&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;_Vu2&quot;</span><span class="p">,</span>
                 <span class="p">],</span>

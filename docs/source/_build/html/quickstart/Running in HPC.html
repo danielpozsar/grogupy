@@ -219,10 +219,12 @@ as we did in the jupyter notebook examples.</p>
 <span class="n">atomic_subset</span> <span class="o">=</span> <span class="s2">&quot;Cr&quot;</span>
 <span class="n">kwargs_for_mag_ent</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">l</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
+<span class="c1"># maximum number of pairs per loop, reduce it to avoid memory overflow</span>
+<span class="n">max_pairs_per_loop</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="c1"># in low memory mode we discard</span>
+<span class="n">low_memory_mode</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="c1"># sequential solver is better for large systems</span>
 <span class="n">greens_function_solver</span> <span class="o">=</span> <span class="s2">&quot;Parallel&quot;</span>
-<span class="c1"># always use K for now</span>
-<span class="n">parallel_mode</span> <span class="o">=</span> <span class="s2">&quot;K&quot;</span>
 <span class="c1"># the calculation of J and K from the energy derivations, either Fit or grogupy</span>
 <span class="n">exchange_solver</span> <span class="o">=</span> <span class="s2">&quot;Fit&quot;</span>
 <span class="n">anisotropy_solver</span> <span class="o">=</span> <span class="s2">&quot;Fit&quot;</span>

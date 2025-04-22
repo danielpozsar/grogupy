@@ -16,7 +16,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=1fd71caa"></script>
+      <script src="../../../_static/documentation_options.js?v=bbaf98b3"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -132,8 +132,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">NDArray</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.._core.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_Vu</span><span class="p">,</span> <span class="n">onsite_projection</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.._core.utilities</span><span class="w"> </span><span class="kn">import</span> <span class="n">RotMa2b</span><span class="p">,</span> <span class="n">setup_from_range</span><span class="p">,</span> <span class="n">tau_u</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.._core.utilities</span><span class="w"> </span><span class="kn">import</span> <span class="n">RotMa2b</span><span class="p">,</span> <span class="n">setup_from_range</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">_tqdm</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..batch.timing</span><span class="w"> </span><span class="kn">import</span> <span class="n">DefaultTimer</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..config</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONFIG</span>
@@ -204,8 +203,6 @@
 <span class="sd">        Creates a list of MagneticEntity from a list of dictionaries.</span>
 <span class="sd">    create_pairs(pairs) :</span>
 <span class="sd">        Creates a list of Pair from a list of dictionaries.</span>
-<span class="sd">    finalize() :</span>
-<span class="sd">        It finalizes the system and calculates infinitesimal rotations.</span>
 <span class="sd">    solve() :</span>
 <span class="sd">        Wrapper for Greens function solver.</span>
 <span class="sd">    to_magnopy(): str</span>
@@ -231,8 +228,6 @@
 <span class="sd">        List of pairs</span>
 <span class="sd">    greens_function_solver: {&quot;Sequential&quot;, &quot;Parallel&quot;}</span>
 <span class="sd">        The solution method for the Hamiltonian inversion, by default &quot;Sequential&quot;</span>
-<span class="sd">    parallel_mode: {&quot;All&quot;, &quot;K&quot;}</span>
-<span class="sd">        The parallelization mode for the Hamiltonian inversions, by default &quot;K&quot;</span>
 <span class="sd">    exchange_solver: {&quot;Fit&quot;, &quot;grogupy&quot;}</span>
 <span class="sd">        The solution method for the exchange tensor, by default &quot;Fit&quot;</span>
 <span class="sd">    anisotropy_solver: {&quot;Fit&quot;, &quot;grogupy&quot;}</span>
@@ -280,6 +275,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">pairs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Pair</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="c1"># fix the architecture</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__low_memory_mode</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__greens_function_solver</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Sequential&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__parallel_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;K&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__architecture</span> <span class="o">=</span> <span class="n">CONFIG</span><span class="o">.</span><span class="n">architecture</span>
@@ -424,6 +420,7 @@
                 <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">kspace</span> <span class="o">==</span> <span class="n">value</span><span class="o">.</span><span class="n">kspace</span>
                 <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">contour</span> <span class="o">==</span> <span class="n">value</span><span class="o">.</span><span class="n">contour</span>
                 <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">hamiltonian</span> <span class="o">==</span> <span class="n">value</span><span class="o">.</span><span class="n">hamiltonian</span>
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__low_memory_mode</span> <span class="o">==</span> <span class="n">value</span><span class="o">.</span><span class="n">__low_memory_mode</span>
                 <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__greens_function_solver</span> <span class="o">==</span> <span class="n">value</span><span class="o">.</span><span class="n">__greens_function_solver</span>
                 <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parallel_mode</span> <span class="o">==</span> <span class="n">value</span><span class="o">.</span><span class="n">__parallel_mode</span>
                 <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__architecture</span> <span class="o">==</span> <span class="n">value</span><span class="o">.</span><span class="n">__architecture</span>
@@ -615,6 +612,20 @@
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognized solution method: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">low_memory_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The memory mode of the calculation.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__low_memory_mode</span>
+
+    <span class="nd">@low_memory_mode</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">low_memory_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__low_memory_mode</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="n">value</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__low_memory_mode</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;This must be Bool!&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">greens_function_solver</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The solution method for the Hamiltonian inversion, by default &quot;Sequential&quot;.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__greens_function_solver</span>
@@ -634,13 +645,6 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">parallel_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The parallelization mode for the Hamiltonian inversions, by default &quot;K&quot;.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parallel_mode</span>
-
-    <span class="nd">@parallel_mode</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">parallel_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;a&quot;</span><span class="p">:</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;All&quot;</span>
-        <span class="k">elif</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;k&quot;</span><span class="p">:</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;K&quot;</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">architecture</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -1050,117 +1054,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pair</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="Builder.finalize">
-<a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.finalize">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;It finalizes the system and calculates infinitesimal rotations.</span>
-
-<span class="sd">        It sets up the magnetic entities and pairs by defining the rotation</span>
-<span class="sd">        and Greens function holder that will be filled up upon simulation. It</span>
-<span class="sd">        can be used to reset a simulation as it cleans the Pair and Magnetic Entity</span>
-<span class="sd">        instances.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">times</span><span class="o">.</span><span class="n">restart</span><span class="p">()</span>
-
-        <span class="k">if</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">anisotropy_solver</span><span class="o">.</span><span class="n">lower</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;g&quot;</span>
-            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">exchange_solver</span><span class="o">.</span><span class="n">lower</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;g&quot;</span>
-            <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_xcf_orientations</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span>
-        <span class="p">):</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;There are unnecessary orientations for the anisotropy and exchange solvers!&quot;</span>
-            <span class="p">)</span>
-
-        <span class="k">elif</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">anisotropy_solver</span><span class="o">.</span><span class="n">lower</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;f&quot;</span>
-            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">exchange_solver</span><span class="o">.</span><span class="n">lower</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;f&quot;</span>
-            <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="s2">&quot;vw&quot;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_xcf_orientations</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
-        <span class="p">):</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;There are unnecessary perpendicular directions for the anisotropy and exchange solvers!&quot;</span>
-            <span class="p">)</span>
-
-        <span class="c1"># hamiltonians, reset magnetic entities and pairs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_rotated_hamiltonians</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">mag_ent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">magnetic_entities</span><span class="p">:</span>
-            <span class="n">mag_ent</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pairs</span><span class="p">:</span>
-            <span class="n">pair</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
-
-        <span class="c1"># iterate over the reference directions (quantization axes)</span>
-        <span class="k">for</span> <span class="n">orient</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_xcf_orientations</span><span class="p">:</span>
-            <span class="c1"># obtain rotated exchange field and Hamiltonian</span>
-            <span class="n">new_hamiltonian</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hamiltonian</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-            <span class="n">new_hamiltonian</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">orient</span><span class="p">[</span><span class="s2">&quot;o&quot;</span><span class="p">])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_rotated_hamiltonians</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_hamiltonian</span><span class="p">)</span>
-
-            <span class="k">for</span> <span class="n">mag_ent</span> <span class="ow">in</span> <span class="n">_tqdm</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">magnetic_entities</span><span class="p">,</span>
-                <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Setup magnetic entities for rotated hamiltonian&quot;</span><span class="p">,</span>
-            <span class="p">):</span>
-                <span class="n">mag_ent</span><span class="o">.</span><span class="n">_Vu1</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
-                <span class="n">mag_ent</span><span class="o">.</span><span class="n">_Vu2</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
-                <span class="n">mag_ent</span><span class="o">.</span><span class="n">_Gii</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-                        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contour</span><span class="o">.</span><span class="n">eset</span><span class="p">,</span> <span class="n">mag_ent</span><span class="o">.</span><span class="n">SBS</span><span class="p">,</span> <span class="n">mag_ent</span><span class="o">.</span><span class="n">SBS</span><span class="p">),</span>
-                        <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;complex128&quot;</span><span class="p">,</span>
-                    <span class="p">)</span>
-                <span class="p">)</span>
-                <span class="n">mag_ent</span><span class="o">.</span><span class="n">_Gii_tmp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-                        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contour</span><span class="o">.</span><span class="n">eset</span><span class="p">,</span> <span class="n">mag_ent</span><span class="o">.</span><span class="n">SBS</span><span class="p">,</span> <span class="n">mag_ent</span><span class="o">.</span><span class="n">SBS</span><span class="p">),</span>
-                        <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;complex128&quot;</span><span class="p">,</span>
-                    <span class="p">)</span>
-                <span class="p">)</span>
-
-            <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">_tqdm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pairs</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Setup pairs for rotated hamiltonian&quot;</span><span class="p">):</span>
-                <span class="n">pair</span><span class="o">.</span><span class="n">_Gij</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-                        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contour</span><span class="o">.</span><span class="n">eset</span><span class="p">,</span> <span class="n">pair</span><span class="o">.</span><span class="n">SBS1</span><span class="p">,</span> <span class="n">pair</span><span class="o">.</span><span class="n">SBS2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;complex128&quot;</span>
-                    <span class="p">)</span>
-                <span class="p">)</span>
-                <span class="n">pair</span><span class="o">.</span><span class="n">_Gij_tmp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-                        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contour</span><span class="o">.</span><span class="n">eset</span><span class="p">,</span> <span class="n">pair</span><span class="o">.</span><span class="n">SBS1</span><span class="p">,</span> <span class="n">pair</span><span class="o">.</span><span class="n">SBS2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;complex128&quot;</span>
-                    <span class="p">)</span>
-                <span class="p">)</span>
-                <span class="n">pair</span><span class="o">.</span><span class="n">_Gji</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-                        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contour</span><span class="o">.</span><span class="n">eset</span><span class="p">,</span> <span class="n">pair</span><span class="o">.</span><span class="n">SBS2</span><span class="p">,</span> <span class="n">pair</span><span class="o">.</span><span class="n">SBS1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;complex128&quot;</span>
-                    <span class="p">)</span>
-                <span class="p">)</span>
-                <span class="n">pair</span><span class="o">.</span><span class="n">_Gji_tmp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-                        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contour</span><span class="o">.</span><span class="n">eset</span><span class="p">,</span> <span class="n">pair</span><span class="o">.</span><span class="n">SBS2</span><span class="p">,</span> <span class="n">pair</span><span class="o">.</span><span class="n">SBS1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;complex128&quot;</span>
-                    <span class="p">)</span>
-                <span class="p">)</span>
-
-            <span class="c1"># these are the rotations (for now) perpendicular to the quantization axis</span>
-            <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">orient</span><span class="p">[</span><span class="s2">&quot;vw&quot;</span><span class="p">]:</span>
-                <span class="c1"># section 2.H</span>
-                <span class="n">Tu</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hamiltonian</span><span class="o">.</span><span class="n">NO</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">),</span> <span class="n">tau_u</span><span class="p">(</span><span class="n">u</span><span class="p">))</span>
-                <span class="n">Vu1</span><span class="p">,</span> <span class="n">Vu2</span> <span class="o">=</span> <span class="n">calc_Vu</span><span class="p">(</span><span class="n">new_hamiltonian</span><span class="o">.</span><span class="n">H_XCF_uc</span><span class="p">,</span> <span class="n">Tu</span><span class="p">)</span>
-
-                <span class="k">for</span> <span class="n">mag_ent</span> <span class="ow">in</span> <span class="n">_tqdm</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">magnetic_entities</span><span class="p">,</span>
-                    <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Setup perturbations for rotated hamiltonian&quot;</span><span class="p">,</span>
-                <span class="p">):</span>
-                    <span class="c1"># fill up the perturbed potentials (for now) based on the on-site projections</span>
-                    <span class="n">mag_ent</span><span class="o">.</span><span class="n">_Vu1</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                        <span class="n">onsite_projection</span><span class="p">(</span>
-                            <span class="n">Vu1</span><span class="p">,</span> <span class="n">mag_ent</span><span class="o">.</span><span class="n">_spin_box_indices</span><span class="p">,</span> <span class="n">mag_ent</span><span class="o">.</span><span class="n">_spin_box_indices</span>
-                        <span class="p">)</span>
-                    <span class="p">)</span>
-                    <span class="n">mag_ent</span><span class="o">.</span><span class="n">_Vu2</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                        <span class="n">onsite_projection</span><span class="p">(</span>
-                            <span class="n">Vu2</span><span class="p">,</span> <span class="n">mag_ent</span><span class="o">.</span><span class="n">_spin_box_indices</span><span class="p">,</span> <span class="n">mag_ent</span><span class="o">.</span><span class="n">_spin_box_indices</span>
-                        <span class="p">)</span>
-                    <span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">times</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="s2">&quot;finalize&quot;</span><span class="p">,</span> <span class="n">restart</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="Builder.solve">
 <a class="viewcode-back" href="../../../API/physics/_generated/grogupy.physics.builder.html#grogupy.physics.builder.Builder.solve">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -1173,30 +1066,32 @@
         <span class="c1"># reset times</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">times</span><span class="o">.</span><span class="n">restart</span><span class="p">()</span>
 
-        <span class="c1"># finalize automatically</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">finalize</span><span class="p">()</span>
+        <span class="c1"># check to optimize calculation</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">anisotropy_solver</span><span class="o">.</span><span class="n">lower</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;g&quot;</span>
+            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">exchange_solver</span><span class="o">.</span><span class="n">lower</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;g&quot;</span>
+        <span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_xcf_orientations</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;There are unnecessary orientations for the anisotropy or the exchange solver!&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">elif</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">anisotropy_solver</span><span class="o">.</span><span class="n">lower</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;f&quot;</span>
+            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">exchange_solver</span><span class="o">.</span><span class="n">lower</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;f&quot;</span>
+        <span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="s2">&quot;vw&quot;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_xcf_orientations</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;There are unnecessary perpendicular directions for the anisotropy or exchange solver!&quot;</span>
+            <span class="p">)</span>
 
         <span class="c1"># choose architecture solver</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__architecture</span><span class="o">.</span><span class="n">lower</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;c&quot;</span><span class="p">:</span>  <span class="c1"># cpu</span>
-            <span class="kn">from</span><span class="w"> </span><span class="nn">.._core.cpu_solvers</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-                <span class="n">solve_parallel_over_all</span><span class="p">,</span>
-                <span class="n">solve_parallel_over_k</span><span class="p">,</span>
-            <span class="p">)</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">.._core.cpu_solvers</span><span class="w"> </span><span class="kn">import</span> <span class="n">solve_parallel_over_k</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__architecture</span><span class="o">.</span><span class="n">lower</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;g&quot;</span><span class="p">:</span>  <span class="c1"># gpu</span>
-            <span class="kn">from</span><span class="w"> </span><span class="nn">.._core.gpu_solvers</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-                <span class="n">solve_parallel_over_all</span><span class="p">,</span>
-                <span class="n">solve_parallel_over_k</span><span class="p">,</span>
-            <span class="p">)</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">.._core.gpu_solvers</span><span class="w"> </span><span class="kn">import</span> <span class="n">solve_parallel_over_k</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown parallel mode: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">parallel_mode</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown architecture: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__architecture</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="c1"># choose parallelization mode</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parallel_mode</span><span class="o">.</span><span class="n">lower</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;a&quot;</span><span class="p">:</span>  <span class="c1"># parallel over all</span>
-            <span class="n">solve_parallel_over_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">parallel_mode</span><span class="o">.</span><span class="n">lower</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;k&quot;</span><span class="p">:</span>  <span class="c1"># parallel over k</span>
-            <span class="n">solve_parallel_over_k</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown parallel mode: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">parallel_mode</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">solve_parallel_over_k</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">times</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="s2">&quot;solution&quot;</span><span class="p">,</span> <span class="n">restart</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
