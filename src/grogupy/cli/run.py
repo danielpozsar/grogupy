@@ -19,7 +19,7 @@
 # SOFTWARE.
 import argparse
 import datetime
-import pickle
+import os
 from os.path import join
 from timeit import default_timer as timer
 
@@ -27,7 +27,7 @@ import numpy as np
 
 from .. import __citation__, __definitely_not_grogu__
 from ..config import CONFIG
-from ..io.io import read_py, save, save_magnopy, save_UppASD
+from ..io.io import load, read_py, save, save_magnopy, save_UppASD
 from ..physics import Builder, Contour, Hamiltonian, Kspace
 
 PRINTING = False
@@ -158,7 +158,9 @@ def main():
         print(simulation)
 
     if params.max_pairs_per_loop < len(simulation.pairs):
-        number_of_chunks = np.floor(simulation.pairs / params.max_pairs_per_loop)
+        number_of_chunks = (
+            np.floor(len(simulation.pairs) / params.max_pairs_per_loop) + 1
+        )
         pair_chunks = np.array_split(simulation.pairs, number_of_chunks)
 
         if PRINTING:
@@ -186,13 +188,12 @@ def main():
             simulation.solve()
             save(
                 object=simulation,
-                path=params.outfolder + "grogupy_temp_" + str(i),
+                path=join(params.outfolder, "grogupy_temp_" + str(i)),
                 compress=params.pickle_compress_level,
             )
         new_pairs = []
         for i in range(len(pair_chunks)):
-            with open(params.outfolder + "grogupy_temp_" + str(i) + ".pkl", "rb") as f:
-                new_pairs.append(pickle.load(f)["pairs"])
+            new_pairs += load("./grogupy_temp_" + str(i) + ".pkl").pairs
         simulation.pairs = new_pairs
 
     else:
@@ -231,6 +232,10 @@ def main():
             print("Saved pickle")
 
     if PRINTING:
+        if params.max_pairs_per_loop < len(simulation.pairs):
+            for i in range(len(pair_chunks)):
+                os.remove("./grogupy_temp_" + str(i) + ".pkl")
+
         print(__definitely_not_grogu__)
         print("Simulation ended at:", datetime.datetime.now())
         print("GROGUPY_NORMAL_EXIT")
