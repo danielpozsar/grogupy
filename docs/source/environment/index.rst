@@ -24,3 +24,10 @@ Setting Environment Variables
 .. code-block:: bash
 
     export GROGUPY_ARCHITECTURE=GPU
+
+3. **GROGUPY_TQDM**: With this variable you can request ``tqdm`` for 
+   a nice progress bar. It can be set to true of false.
+
+.. code-block:: bash
+
+    export GROGUPY_TQDM=TRUE
