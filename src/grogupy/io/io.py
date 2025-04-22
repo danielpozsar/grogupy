@@ -17,29 +17,6 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-"""
-Visualization functions
-=======================
-
-.. currentmodule:: grogupy.io.io
-
-.. autosummary::
-   :toctree: _generated/
-
-   load_DefaultTimer
-   load_Contour
-   load_Kspace
-   load_MagneticEntity
-   load_Pair
-   load_Hamiltonian
-   load_Builder
-   load
-   save
-   save_magnopy
-   read_magnopy
-   read_fdf
-
-"""
 import importlib.util
 import pickle
 from os.path import join

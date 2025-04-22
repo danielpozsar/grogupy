@@ -35,9 +35,22 @@ Functions
 .. autosummary::
    :toctree: _generated/
 
-    load                   General loader for any grogupy instance.
-    save                   Saves instances in a pickled dictionary.
-    save_magnopy           Saves instances in magnopy input format.
+   load_DefaultTimer
+   load_Contour
+   load_Kspace
+   load_MagneticEntity
+   load_Pair
+   load_Hamiltonian
+   load_Builder
+   load                     General loader for any grogupy instance.
+   save                     Saves instances in a pickled dictionary.
+   read_magnopy
+   save_magnopy             Saves instances in magnopy input format.
+   read_fdf
+   decipher
+   decipher_all_by_pos
+   decipher_all_by_tag
+   strip_dict_structure
 
 Background information
 ----------------------

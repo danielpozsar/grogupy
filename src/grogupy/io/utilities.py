@@ -17,20 +17,6 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-"""
-Utility functions
-=================
-.. currentmodule:: grogupy.io.utilities
-
-
-.. autosummary::
-   :toctree: _generated/
-
-    decipher
-    decipher_all_by_pos
-    decipher_all_by_tag
-    strip_dict_structure
-"""
 import re
 from typing import Any, Union
 
