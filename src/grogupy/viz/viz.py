@@ -328,7 +328,7 @@ def plot_DMI(pairs: Union[Builder, list["Pair"]], rescale: float = 1) -> go.Figu
 
     Parameters
     ----------
-    pairs : Union[Builder, list["Pair"]]
+    pairs : Union[Builder, list[Pair]]
         The pairs that contain the tags, coordinates and the DM vectors
     rescale : float, optional
         The length of the vectors are rescaled by this, by default 1

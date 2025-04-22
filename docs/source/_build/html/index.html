@@ -104,13 +104,23 @@
              
   <section id="grogupy-relativistic-magnetic-interactions-from-non-orthogonal-basis-sets">
 <h1>grogupy: Relativistic magnetic interactions from non-orthogonal basis sets<a class="headerlink" href="#grogupy-relativistic-magnetic-interactions-from-non-orthogonal-basis-sets" title="Link to this heading"></a></h1>
-<p>grogupy was created to easily extract magnetic interaction parameters from
-density functional theory (DFT) calculations. Because the underlying theory
-focuses on non-orthogonal basis sets, the most straightforward software to
-use for the DFT calculation is <a class="reference external" href="https://siesta-project.org/siesta/">Siesta</a>.</p>
-<p>It is based on the grogupy matlab implementation and the <a class="reference external" href="https://sisl.readthedocs.io/en/latest/index.html">sisl</a> package. grogupy was created
-by the <a class="reference external" href="https://trilmax.elte.hu">TRILMAX Consortium</a>.</p>
-<p>More on the theoretical background can be seen on <a class="reference external" href="https://arxiv.org/abs/2309.02558">arXiv</a>.</p>
+<p>[![PyPI version](<a class="reference external" href="https://badge.fury.io/py/grogupy.svg)](https://badge.fury.io/py/grogupy">https://badge.fury.io/py/grogupy.svg)](https://badge.fury.io/py/grogupy</a>)
+![Static Badge](<a class="reference external" href="https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12%20%7C%203.13%20%7C-blue">https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12%20%7C%203.13%20%7C-blue</a>)
+![Static Badge](<a class="reference external" href="https://img.shields.io/badge/License-MIT-blue">https://img.shields.io/badge/License-MIT-blue</a>)
+![Static Badge](<a class="reference external" href="https://img.shields.io/badge/Code%20style-Black-black">https://img.shields.io/badge/Code%20style-Black-black</a>)</p>
+<p>grogupy is an open-source package created to easily extract magnetic interaction
+parameters from density functional theory (DFT) calculations. It can also handle
+very large systems, with hundreds of atoms in the unit cell using GPU acceleration.
+Because the underlying theory focuses on non-orthogonal, LCAO, basis sets, the
+most straightforward software, and our recommendation to use for the DFT part is
+<a class="reference external" href="https://siesta-project.org/siesta/">Siesta</a>. In principle any plane wave based
+DFT software could be used with Wannierization, but the magnetic parameters are
+very sensitive to the atomic positions and Wannier orbitals might be off centered.
+grogupy can extract magnetic parameters from different levels of theoretical
+complexity, for example it can use as input collinear, non-collinear and spin-orbit
+Hamiltonians using <a class="reference external" href="https://sisl.readthedocs.io/en/latest/index.html">sisl</a>. More
+on the theoretical background can be found on <a class="reference external" href="https://arxiv.org/abs/2309.02558">arXiv</a>.
+grogupy was created by the <a class="reference external" href="https://trilmax.elte.hu">TRILMAX Consortium</a>.</p>
 <div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
 <div class="sd-row sd-row-cols-1 sd-row-cols-xs-1 sd-row-cols-sm-1 sd-row-cols-md-2 sd-row-cols-lg-2 sd-g-2 sd-g-xs-2 sd-g-sm-2 sd-g-md-2 sd-g-lg-2 docutils">
 <div class="sd-col sd-d-flex-row docutils">
