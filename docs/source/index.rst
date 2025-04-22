@@ -16,10 +16,18 @@
 grogupy: Relativistic magnetic interactions from non-orthogonal basis sets
 ==========================================================================
 
-[![PyPI version](https://badge.fury.io/py/grogupy.svg)](https://badge.fury.io/py/grogupy)
-![Static Badge](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12%20%7C%203.13%20%7C-blue)
-![Static Badge](https://img.shields.io/badge/License-MIT-blue)
-![Static Badge](https://img.shields.io/badge/Code%20style-Black-black)
+
+.. image:: https://badge.fury.io/py/grogupy.svg
+  :target: https://badge.fury.io/py/grogupy
+
+.. image:: https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12%20%7C%203.13%20%7C-blue
+  :target: https://www.python.org
+
+.. image:: https://img.shields.io/badge/License-MIT-blue
+  :target: https://tlo.mit.edu/understand-ip/exploring-mit-open-source-license-comprehensive-guide
+
+.. image:: https://img.shields.io/badge/Code%20style-Black-black
+  :target: https://github.com/psf/black/
 
 grogupy is an open-source package created to easily extract magnetic interaction 
 parameters from density functional theory (DFT) calculations. It can also handle 
@@ -79,7 +87,6 @@ grogupy was created by the `TRILMAX Consortium <https://trilmax.elte.hu>`_.
    :caption: User Guide
 
    tutorials/index
-   visualizations/index
 
 .. toctree::
    :hidden:

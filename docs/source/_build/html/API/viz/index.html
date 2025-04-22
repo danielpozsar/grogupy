@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Visualizations &mdash; grogupy</title>
+  <title>Visualization &mdash; grogupy</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -27,8 +27,8 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Visualization functions" href="viz.html" />
-    <link rel="prev" title="grogupy.io.utilities.strip_dict_structure" href="../io/_generated/grogupy.io.utilities.strip_dict_structure.html" /> 
+    <link rel="next" title="grogupy.viz.plot_contour" href="_generated/grogupy.viz.plot_contour.html" />
+    <link rel="prev" title="API reference" href="../modules.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -63,15 +63,18 @@
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../modules.html">API reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../core/index.html">Core</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../physics/index.html">Physics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../batch/index.html">Batch</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Visualizations</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="viz.html">Visualization functions</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Visualization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="_generated/grogupy.viz.plot_contour.html">grogupy.viz.plot_contour</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_generated/grogupy.viz.plot_kspace.html">grogupy.viz.plot_kspace</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_generated/grogupy.viz.plot_magnetic_entities.html">grogupy.viz.plot_magnetic_entities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_generated/grogupy.viz.plot_pairs.html">grogupy.viz.plot_pairs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_generated/grogupy.viz.plot_DMI.html">grogupy.viz.plot_DMI</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../cli.html">Command line interface for grogupy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#background-information">Background information</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../environment/index.html">Environment Variables</a></li>
@@ -101,7 +104,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../modules.html">API reference</a></li>
-      <li class="breadcrumb-item active">Visualizations</li>
+      <li class="breadcrumb-item active">Visualization</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/API/viz/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -111,28 +114,49 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="visualizations">
-<h1>Visualizations<a class="headerlink" href="#visualizations" title="Link to this heading"></a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="viz.html">Visualization functions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="_generated/grogupy.viz.viz.plot_contour.html">grogupy.viz.viz.plot_contour</a></li>
-<li class="toctree-l2"><a class="reference internal" href="_generated/grogupy.viz.viz.plot_kspace.html">grogupy.viz.viz.plot_kspace</a></li>
-<li class="toctree-l2"><a class="reference internal" href="_generated/grogupy.viz.viz.plot_magnetic_entities.html">grogupy.viz.viz.plot_magnetic_entities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="_generated/grogupy.viz.viz.plot_pairs.html">grogupy.viz.viz.plot_pairs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="_generated/grogupy.viz.viz.plot_DMI.html">grogupy.viz.viz.plot_DMI</a></li>
-</ul>
-</li>
-</ul>
-</div>
+  <section id="visualization">
+<h1>Visualization<a class="headerlink" href="#visualization" title="Link to this heading"></a></h1>
+<p>This submodule contains various routines to plot the system of magnetic entities
+and pairs. Furthermore it will be able to plot the calculated magnetic exchange
+parameters.</p>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="_generated/grogupy.viz.plot_contour.html#grogupy.viz.plot_contour" title="grogupy.viz.plot_contour"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_contour</span></code></a>(contour)</p></td>
+<td><p>Creates a plot from the contour sample points.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_generated/grogupy.viz.plot_kspace.html#grogupy.viz.plot_kspace" title="grogupy.viz.plot_kspace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_kspace</span></code></a>(kspace)</p></td>
+<td><p>Creates a plot from the Brillouin zone sample points.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_generated/grogupy.viz.plot_magnetic_entities.html#grogupy.viz.plot_magnetic_entities" title="grogupy.viz.plot_magnetic_entities"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_magnetic_entities</span></code></a>(magnetic_entities)</p></td>
+<td><p>Creates a plot from a list of magnetic entities.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_generated/grogupy.viz.plot_pairs.html#grogupy.viz.plot_pairs" title="grogupy.viz.plot_pairs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pairs</span></code></a>(pairs[, connect])</p></td>
+<td><p>Creates a plot from a list of pairs.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_generated/grogupy.viz.plot_DMI.html#grogupy.viz.plot_DMI" title="grogupy.viz.plot_DMI"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_DMI</span></code></a>(pairs[, rescale])</p></td>
+<td><p>Creates a plot of the DM vectors from a list of pairs.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="background-information">
+<h2>Background information<a class="headerlink" href="#background-information" title="Link to this heading"></a></h2>
+<p>Currently all the functions are using the <code class="docutils literal notranslate"><span class="pre">plotly</span></code> library.
+This decision was made because it can be used in the Jupyter
+environment and supports interactive and 3D plots.</p>
+<p class="rubric">Examples</p>
+<p>For examples, see the various functions.</p>
+</section>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../io/_generated/grogupy.io.utilities.strip_dict_structure.html" class="btn btn-neutral float-left" title="grogupy.io.utilities.strip_dict_structure" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="viz.html" class="btn btn-neutral float-right" title="Visualization functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../modules.html" class="btn btn-neutral float-left" title="API reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="_generated/grogupy.viz.plot_contour.html" class="btn btn-neutral float-right" title="grogupy.viz.plot_contour" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

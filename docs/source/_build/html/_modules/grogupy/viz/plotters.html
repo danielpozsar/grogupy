@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>grogupy.viz.viz &mdash; grogupy</title>
+  <title>grogupy.viz.plotters &mdash; grogupy</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -87,7 +87,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">grogupy.viz.viz</li>
+      <li class="breadcrumb-item active">grogupy.viz.plotters</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -96,7 +96,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for grogupy.viz.viz</h1><div class="highlight"><pre>
+  <h1>Source code for grogupy.viz.plotters</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (c) [2024-2025] [Laszlo Oroszlany, Daniel Pozsar]</span>
 <span class="c1">#</span>
 <span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
@@ -116,22 +116,6 @@
 <span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
 <span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
 <span class="c1"># SOFTWARE.</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Visualization functions</span>
-<span class="sd">=======================</span>
-
-<span class="sd">.. currentmodule:: grogupy.viz.viz</span>
-
-<span class="sd">.. autosummary::</span>
-<span class="sd">   :toctree: _generated/</span>
-
-<span class="sd">   plot_contour</span>
-<span class="sd">   plot_kspace</span>
-<span class="sd">   plot_magnetic_entities</span>
-<span class="sd">   plot_pairs</span>
-<span class="sd">   plot_DMI</span>
-
-<span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Union</span>
 
@@ -148,7 +132,7 @@
 
 
 <div class="viewcode-block" id="plot_contour">
-<a class="viewcode-back" href="../../../API/viz/_generated/grogupy.viz.viz.plot_contour.html#grogupy.viz.viz.plot_contour">[docs]</a>
+<a class="viewcode-back" href="../../../API/viz/_generated/grogupy.viz.plot_contour.html#grogupy.viz.plot_contour">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">plot_contour</span><span class="p">(</span><span class="n">contour</span><span class="p">:</span> <span class="s2">&quot;Contour&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates a plot from the contour sample points.</span>
 
@@ -196,7 +180,7 @@
 
 
 <div class="viewcode-block" id="plot_kspace">
-<a class="viewcode-back" href="../../../API/viz/_generated/grogupy.viz.viz.plot_kspace.html#grogupy.viz.viz.plot_kspace">[docs]</a>
+<a class="viewcode-back" href="../../../API/viz/_generated/grogupy.viz.plot_kspace.html#grogupy.viz.plot_kspace">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">plot_kspace</span><span class="p">(</span><span class="n">kspace</span><span class="p">:</span> <span class="s2">&quot;Kspace&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates a plot from the Brillouin zone sample points.</span>
 
@@ -251,7 +235,7 @@
 
 
 <div class="viewcode-block" id="plot_magnetic_entities">
-<a class="viewcode-back" href="../../../API/viz/_generated/grogupy.viz.viz.plot_magnetic_entities.html#grogupy.viz.viz.plot_magnetic_entities">[docs]</a>
+<a class="viewcode-back" href="../../../API/viz/_generated/grogupy.viz.plot_magnetic_entities.html#grogupy.viz.plot_magnetic_entities">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">plot_magnetic_entities</span><span class="p">(</span>
     <span class="n">magnetic_entities</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Builder</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="s2">&quot;MagneticEntity&quot;</span><span class="p">]],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
@@ -259,7 +243,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    magnetic_entities : Union[Builder, list[&quot;MagneticEntity&quot;]]</span>
+<span class="sd">    magnetic_entities : Union[Builder, list[MagneticEntity]]</span>
 <span class="sd">        The magnetic entities that contain the tags and coordinates</span>
 
 <span class="sd">    Returns</span>
@@ -312,7 +296,7 @@
 
 
 <div class="viewcode-block" id="plot_pairs">
-<a class="viewcode-back" href="../../../API/viz/_generated/grogupy.viz.viz.plot_pairs.html#grogupy.viz.viz.plot_pairs">[docs]</a>
+<a class="viewcode-back" href="../../../API/viz/_generated/grogupy.viz.plot_pairs.html#grogupy.viz.plot_pairs">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">plot_pairs</span><span class="p">(</span><span class="n">pairs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Builder</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="s2">&quot;Pair&quot;</span><span class="p">]],</span> <span class="n">connect</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates a plot from a list of pairs.</span>
 
@@ -432,7 +416,7 @@
 
 
 <div class="viewcode-block" id="plot_DMI">
-<a class="viewcode-back" href="../../../API/viz/_generated/grogupy.viz.viz.plot_DMI.html#grogupy.viz.viz.plot_DMI">[docs]</a>
+<a class="viewcode-back" href="../../../API/viz/_generated/grogupy.viz.plot_DMI.html#grogupy.viz.plot_DMI">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">plot_DMI</span><span class="p">(</span><span class="n">pairs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Builder</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="s2">&quot;Pair&quot;</span><span class="p">]],</span> <span class="n">rescale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates a plot of the DM vectors from a list of pairs.</span>
 
