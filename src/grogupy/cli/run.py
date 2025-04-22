@@ -99,8 +99,6 @@ def main():
     kspace = Kspace(
         kset=params.kset,
     )
-    if PRINTING:
-        print(kspace)
 
     # Define Contour
     contour = Contour(
@@ -112,16 +110,12 @@ def main():
         emax_shift=params.emax_shift,
         eigfile=infile,
     )
-    if PRINTING:
-        print(contour)
 
     # Define Hamiltonian from sisl
     hamiltonian = Hamiltonian(
         infile=infile,
         scf_xcf_orientation=params.scf_xcf_orientation,
     )
-    if PRINTING:
-        print(hamiltonian)
 
     # Add instances to the simulation
     simulation.add_kspace(kspace)
@@ -155,7 +149,21 @@ def main():
 
     if PRINTING:
         print("setup:", (timer() - start) / 60, " min")
+        print("\n\n\n")
+        print(
+            "################################################################################"
+        )
+        print(
+            "################################################################################"
+        )
         print(simulation)
+        print(
+            "################################################################################"
+        )
+        print(
+            "################################################################################"
+        )
+        print("\n\n\n")
 
     if params.max_pairs_per_loop < len(simulation.pairs):
         number_of_chunks = (
@@ -164,9 +172,7 @@ def main():
         pair_chunks = np.array_split(simulation.pairs, number_of_chunks)
 
         if PRINTING:
-            print(
-                "################################################################################"
-            )
+            print("\n\n\n")
             print(
                 "################################################################################"
             )
@@ -181,6 +187,13 @@ def main():
                 f"pairs are being separated to {number_of_chunks} chunks, each chunk containing {[len(c) for c in pair_chunks]} pairs."
             )
             print("These will be ran as separate and they will be concatenated.")
+            print(
+                "################################################################################"
+            )
+            print(
+                "################################################################################"
+            )
+            print("\n\n\n")
 
         # run chunks
         for i, chunk in enumerate(pair_chunks):
@@ -201,6 +214,13 @@ def main():
         simulation.solve()
 
     if PRINTING:
+        print("\n\n\n")
+        print(
+            "################################################################################"
+        )
+        print(
+            "################################################################################"
+        )
         print("solved:", (timer() - start) / 60, "min")
         print(simulation.times.times)
         print(
@@ -208,6 +228,13 @@ def main():
                 precision=params.magnopy_precision, comments=params.magnopy_comments
             )
         )
+        print(
+            "################################################################################"
+        )
+        print(
+            "################################################################################"
+        )
+        print("\n\n\n")
 
         if params.save_magnopy:
             save_magnopy(
@@ -236,6 +263,7 @@ def main():
             for i in range(len(pair_chunks)):
                 os.remove("./grogupy_temp_" + str(i) + ".pkl")
 
+        print("\n\n\n")
         print(__definitely_not_grogu__)
         print("Simulation ended at:", datetime.datetime.now())
         print("GROGUPY_NORMAL_EXIT")
