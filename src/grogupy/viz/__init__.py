@@ -35,10 +35,10 @@ Functions
    :toctree: _generated/
 
     plot_contour              Plots the contour for the integration.
-    plot_kspace               Plots the k-space for the Brillouin-zone sampling.
-    plot_magnetic_entities    Plots the magnetic entities.
-    plot_pairs                Plots the pairs.
-    plot_DMI                   Plots the DMI vectors.
+    plot_kspace               Plots the Brillouin-zone sampling.
+    plot_magnetic_entities    Plots the magnetic entities in the lattice.
+    plot_pairs                Plots the pairs, with or without connections.
+    plot_DMI                  Plots the DMI vectors.
 
 
 Background information
@@ -57,7 +57,13 @@ For examples, see the various functions.
 
 from ..config import CONFIG
 from ..physics import Builder, Contour, Kspace
-from .viz import plot_contour, plot_DMI, plot_kspace, plot_magnetic_entities, plot_pairs
+from .plotters import (
+    plot_contour,
+    plot_DMI,
+    plot_kspace,
+    plot_magnetic_entities,
+    plot_pairs,
+)
 
 CONFIG._Config__viz_loaded = True
 
