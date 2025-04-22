@@ -17,23 +17,6 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-"""
-Visualization functions
-=======================
-
-.. currentmodule:: grogupy.viz.viz
-
-.. autosummary::
-   :toctree: _generated/
-
-   plot_contour
-   plot_kspace
-   plot_magnetic_entities
-   plot_pairs
-   plot_DMI
-
-"""
-
 from typing import TYPE_CHECKING, Union
 
 from ..physics import Builder
@@ -152,7 +135,7 @@ def plot_magnetic_entities(
 
     Parameters
     ----------
-    magnetic_entities : Union[Builder, list["MagneticEntity"]]
+    magnetic_entities : Union[Builder, list[MagneticEntity]]
         The magnetic entities that contain the tags and coordinates
 
     Returns

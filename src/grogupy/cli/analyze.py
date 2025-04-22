@@ -21,7 +21,7 @@ import argparse
 
 from .. import __citation__, __definitely_not_grogu__
 from ..io.io import load, save_magnopy
-from ..viz.viz import (
+from ..viz.plotters import (
     plot_contour,
     plot_DMI,
     plot_kspace,
