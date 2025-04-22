@@ -19,25 +19,34 @@
 # SOFTWARE.
 from .config import CONFIG
 
-# tqdm might not work, but this should not be a problem
-try:
-    from tqdm.autonotebook import tqdm
+# if tqdm is requested
+if CONFIG.tqdm_requested:
+    # tqdm might not work, but this should not be a problem
+    try:
+        from tqdm.autonotebook import tqdm
 
-    def _tqdm(something, **kwargs):
-        if CONFIG.is_CPU:
-            from mpi4py import MPI
+        def _tqdm(something, **kwargs):
+            if CONFIG.is_CPU:
+                from mpi4py import MPI
 
-            if MPI.COMM_WORLD.rank == 0:
+                if MPI.COMM_WORLD.rank == 0:
+                    return tqdm(something, **kwargs)
+                else:
+                    return something
+            elif CONFIG.is_GPU:
                 return tqdm(something, **kwargs)
             else:
-                return something
-        elif CONFIG.is_GPU:
-            return tqdm(something, **kwargs)
-        else:
-            raise Exception("Unknown architecture, use CPU or GPU!")
+                raise Exception("Unknown architecture, use CPU or GPU!")
 
-except:
-    print("Please install tqdm for nice progress bar.")
+    except:
+        print("Please install tqdm for nice progress bar.")
+
+        def _tqdm(something, **kwargs):
+            return something
+
+
+# if tqdm is not requested it will be a dummy wrapper function
+else:
 
     def _tqdm(something, **kwargs):
         return something
