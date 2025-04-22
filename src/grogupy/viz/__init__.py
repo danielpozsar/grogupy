@@ -51,19 +51,13 @@ environment and supports interactive and 3D plots.
 Examples
 --------
 
-For examples, see the various functions.
+For examples, see the :ref:`tutorials <tutorials>`.
 
 """
 
 from ..config import CONFIG
 from ..physics import Builder, Contour, Kspace
-from .plotters import (
-    plot_contour,
-    plot_DMI,
-    plot_kspace,
-    plot_magnetic_entities,
-    plot_pairs,
-)
+from .plotters import *
 
 CONFIG._Config__viz_loaded = True
 

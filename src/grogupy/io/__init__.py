@@ -29,8 +29,8 @@ and to process the information. The main goal is to convert the information
 from the input files to a format that can be used by the ``Builder`` class
 from the ``grogupy`` package.
 
-Functions
----------
+Input/Output Functions
+----------------------
 
 .. autosummary::
    :toctree: _generated/
@@ -47,6 +47,13 @@ Functions
    read_magnopy
    save_magnopy             Saves instances in magnopy input format.
    read_fdf
+
+Utility functions
+-----------------
+
+.. autosummary::
+   :toctree: _generated/
+
    decipher
    decipher_all_by_pos
    decipher_all_by_tag
@@ -66,4 +73,5 @@ For examples, see the various functions.
 
 """
 
-from .io import load, read_magnopy, save, save_magnopy, save_UppASD
+from .io import *
+from .utilities import *
