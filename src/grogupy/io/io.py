@@ -542,14 +542,21 @@ def save_UppASD(builder: Builder, folder: str, magnetic_moment: str = "total"):
         momfile += f"{i+1} 1 {S_abs:.5f} {S[0]:.5f} {S[1]:.5f} {S[2]:.5f}\n"
 
     jfile = ""
+    # adding anisotropy to jfile
+    for i, mag_ent in enumerate(builder.magnetic_entities):
+        # -2 for convention, from Marci
+        K = np.around(mag_ent.K_mRy.flatten(), decimals=5)
+        # adding line to jfile
+        jfile += f"{i+1} {i+1} 0 0 0 " + " ".join(map(lambda x: f"{x:.5f}", K)) + "\n"
+
     # iterating over pairs
     for pair in builder.pairs:
         # iterating over magnetic entities and comparing them to the ones stored in the pairs
         for i, mag_ent in enumerate(builder.magnetic_entities):
             if mag_ent == pair.M1:
-                ai = i
+                ai = i + 1
             if mag_ent == pair.M2:
-                aj = i
+                aj = i + 1
         # this is the unit cell shift
         shift = pair.supercell_shift
         # -2 for convention, from Marci
