@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "grogupy"
-version = "0.0.7"
+version = "0.0.9"
 authors = [
   { name="Laszlo Oroszlany", email="laszlo.oroszlany@ttk.elte.hu" },
   { name="Daniel Tibor Pozsar", email="danielpozsar@student.elte.hu" },
