@@ -26,7 +26,7 @@
 """
 
 __all__ = []
-__version__ = "0.0.7"
+__version__ = "0.0.9"
 
 
 # pre-import stuff
