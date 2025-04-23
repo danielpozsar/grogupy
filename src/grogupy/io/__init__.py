@@ -23,11 +23,10 @@ Input/Output
 
 .. currentmodule:: grogupy.io
 
-
 This subpackage contains various routines to read in different input files
 and to process the information. The main goal is to convert the information
-from the input files to a format that can be used by the ``Builder`` class
-from the ``grogupy`` package.
+from the input files to a format that can be used by the ``Builder`` class 
+and to save the data in other input formats.
 
 Input/Output Functions
 ----------------------
@@ -35,18 +34,13 @@ Input/Output Functions
 .. autosummary::
    :toctree: _generated/
 
-   load_DefaultTimer
-   load_Contour
-   load_Kspace
-   load_MagneticEntity
-   load_Pair
-   load_Hamiltonian
-   load_Builder
-   load                     General loader for any grogupy instance.
-   save                     Saves instances in a pickled dictionary.
-   read_magnopy
-   save_magnopy             Saves instances in magnopy input format.
-   read_fdf
+   load                         General loader for any grogupy instance from the pickled dictionary.
+   save                         General saver  for any grogupy instance, it stores the data in a pickled dictionary.
+   read_magnopy                 Reads data from a magnopy input file and creates a dictionary.
+   save_magnopy                 Creates a magnopy input file from a calculated Builder.
+   save_UppASD                  Creates the Uppsala Atomistic Spin Dinamics input file from a calculated Builder.
+   read_fdf                     Reads input for command line tools from an fdf file.
+   read_py                      Reads input for command line tools from a python file.
 
 Utility functions
 -----------------
@@ -54,17 +48,10 @@ Utility functions
 .. autosummary::
    :toctree: _generated/
 
-   decipher
-   decipher_all_by_pos
-   decipher_all_by_tag
-   strip_dict_structure
-
-Background information
-----------------------
-
-These functions were written early in the developement and a lot changed since
-then. The functions are not used in the main code and are not tested. They are
-here for reference and for future development, but they should be rewritten.
+   decipher                     Figures out the orbital definition of a magnetic entity from a tag.
+   decipher_all_by_pos          Gets the magnetic entities and pairs from their position.
+   decipher_all_by_tag          Gets the magnetic entities and pairs from their tags.
+   strip_dict_structure         Clears the data structure during saving to reduce size.
 
 Examples
 --------
