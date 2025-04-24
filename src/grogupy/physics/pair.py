@@ -30,7 +30,6 @@ import sisl
 from numpy.typing import NDArray
 
 from .. import __version__
-from .._core.core import onsite_projection
 from .._core.utilities import arrays_lists_equal, arrays_None_equal
 from .magnetic_entity import MagneticEntity
 from .utilities import (
@@ -245,15 +244,18 @@ class Pair:
             # if the IDs are identical, skip comaprison
             if id(self) == id(value):
                 return True
-
-            if not arrays_lists_equal(
-                self._dh.Hk().toarray(), value._dh.Hk().toarray()
-            ):
-                return False
-            if not arrays_lists_equal(
-                self._dh.Sk().toarray(), value._dh.Sk().toarray()
-            ):
-                return False
+            # if there are sisl Hamiltonians, then compare
+            if self._dh is None and value._dh is None:
+                pass
+            else:
+                if not arrays_lists_equal(
+                    self._dh.Hk().toarray(), value._dh.Hk().toarray()
+                ):
+                    return False
+                if not arrays_lists_equal(
+                    self._dh.Sk().toarray(), value._dh.Sk().toarray()
+                ):
+                    return False
             if not self.M1 == value.M1:
                 return False
             if not self.M2 == value.M2:

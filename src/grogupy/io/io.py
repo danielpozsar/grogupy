@@ -426,8 +426,7 @@ def save(
        on the sisl version
 
     2. This contains compression 1, but sets the keys "Gii",
-       "Gij", "Gji",
-       "Vu1" and "Vu2" to [], to save space
+       "Gij", "Gji", "Vu1" and "Vu2" to [], to save space
 
     3. This contains compression 1 and 2, but sets the keys
        "hTRS", "hTRB", "XCF" and "H_XCF" to None, to save space
@@ -522,7 +521,9 @@ def save_UppASD(builder: Builder, folder: str, magnetic_moment: str = "total"):
     # iterating over magnetic entities
     for i, mag_ent in enumerate(builder.magnetic_entities):
         # calculating positions in basis vector coordinates
-        basis_vector_coords = mag_ent.xyz_center @ np.linalg.inv(mag_ent._dh.cell)
+        basis_vector_coords = mag_ent.xyz_center @ np.linalg.inv(
+            builder.hamiltonian.cell
+        )
         bvc = np.around(basis_vector_coords, decimals=5)
         # adding line to posfile
         posfile += f"{i+1} {i+1} {bvc[0]:.5f} {bvc[1]:.5f} {bvc[2]:.5f}\n"
@@ -557,6 +558,7 @@ def save_UppASD(builder: Builder, folder: str, magnetic_moment: str = "total"):
                 ai = i + 1
             if mag_ent == pair.M2:
                 aj = i + 1
+
         # this is the unit cell shift
         shift = pair.supercell_shift
         # -2 for convention, from Marci
@@ -569,7 +571,7 @@ def save_UppASD(builder: Builder, folder: str, magnetic_moment: str = "total"):
         )
 
     # cell as easily copy pastable string
-    c = np.around(mag_ent._dh.cell, 5)
+    c = np.around(builder.hamiltonian.cell, 5)
     string = f"{c[0,0]} {c[0,1]} {c[0,2]}\n{c[1,0]} {c[1,1]} {c[1,2]}\n{c[2,0]} {c[2,1]} {c[2,2]}"
 
     # writing them to the given folder

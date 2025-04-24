@@ -295,23 +295,26 @@ class MagneticEntity:
             # if the IDs are identical, skip comaprison
             if id(self) == id(value):
                 return True
-
-            if not arrays_lists_equal(
-                self._dh.Hk().toarray(), value._dh.Hk().toarray()
-            ):
-                return False
-            if not arrays_lists_equal(
-                self._dh.Sk().toarray(), value._dh.Sk().toarray()
-            ):
-                return False
-            if not arrays_lists_equal(
-                self._ds.Dk().toarray(), value._ds.Dk().toarray()
-            ):
-                return False
-            if not arrays_lists_equal(
-                self._ds.Sk().toarray(), value._ds.Sk().toarray()
-            ):
-                return False
+            # if there are sisl Hamiltonians, then compare
+            if self._dh is None and value._dh is None:
+                pass
+            else:
+                if not arrays_lists_equal(
+                    self._dh.Hk().toarray(), value._dh.Hk().toarray()
+                ):
+                    return False
+                if not arrays_lists_equal(
+                    self._dh.Sk().toarray(), value._dh.Sk().toarray()
+                ):
+                    return False
+                if not arrays_lists_equal(
+                    self._ds.Dk().toarray(), value._ds.Dk().toarray()
+                ):
+                    return False
+                if not arrays_lists_equal(
+                    self._ds.Sk().toarray(), value._ds.Sk().toarray()
+                ):
+                    return False
             if not self.infile == value.infile:
                 return False
             if not arrays_lists_equal(self._atom, value._atom):

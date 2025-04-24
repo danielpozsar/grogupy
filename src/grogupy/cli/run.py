@@ -204,11 +204,23 @@ def main():
                 path=join(params.outfolder, "grogupy_temp_" + str(i)),
                 compress=params.pickle_compress_level,
             )
+        # add pairs to Builder
         new_pairs = []
         for i in range(len(pair_chunks)):
-            new_pairs += load("./grogupy_temp_" + str(i) + ".pkl").pairs
+            new_pairs += load(
+                join(params.outfolder, "grogupy_temp_" + str(i) + ".pkl")
+            ).pairs
         simulation.pairs = new_pairs
-
+        # remove hamiltonian from magnetic entities so the comparison does not fail
+        if params.pickle_compress_level != 0:
+            for mag_ent in simulation.magnetic_entities:
+                mag_ent._dh = None
+                mag_ent._ds = None
+        if params.pickle_compress_level >= 2:
+            for mag_ent in simulation.magnetic_entities:
+                mag_ent._Gii = []
+                mag_ent._Vu1 = []
+                mag_ent._Vu2 = []
     else:
         # Solve
         simulation.solve()
@@ -247,9 +259,14 @@ def main():
             print("Saved magnopy")
 
         if params.save_UppASD:
+            # create folder if it does not exist
+            UppASD_folder = outfile + "_UppASD_output"
+            if not os.path.isdir(UppASD_folder):
+                os.mkdir(UppASD_folder)
+            # save
             save_UppASD(
                 simulation,
-                folder=params.outfolder,
+                folder=UppASD_folder,
                 magnetic_moment=params.out_magentic_moment,
             )
             print("Saved UppASD")
@@ -261,12 +278,11 @@ def main():
     if PRINTING:
         if params.max_pairs_per_loop < len(simulation.pairs):
             for i in range(len(pair_chunks)):
-                os.remove("./grogupy_temp_" + str(i) + ".pkl")
+                os.remove(join(params.outfolder, "grogupy_temp_" + str(i) + ".pkl"))
 
         print("\n\n\n")
         print(__definitely_not_grogu__)
         print("Simulation ended at:", datetime.datetime.now())
-        print("GROGUPY_NORMAL_EXIT")
 
 
 if __name__ == "__main__":
