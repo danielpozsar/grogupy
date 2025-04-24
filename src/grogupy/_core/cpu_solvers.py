@@ -48,7 +48,7 @@ def solve_parallel_over_k(
     the fastest solution method for a smaller number of nodes.
     """
 
-    # Initialize MPI
+    # initialize MPI
     from mpi4py import MPI
 
     comm = MPI.COMM_WORLD
@@ -59,10 +59,7 @@ def solve_parallel_over_k(
     # split k points to parallelize
     parallel_k = np.array_split(builder.kspace.kpoints, parallel_size)
     parallel_w = np.array_split(builder.kspace.weights, parallel_size)
-    if rank == root_node:
-        parallel_k[root_node] = _tqdm(
-            parallel_k[root_node], desc=f"Parallel over k on CPU{rank}:"
-        )
+    parallel_k[rank] = _tqdm(parallel_k[rank], desc=f"Parallel over k on CPU{rank}:")
 
     # reset hamiltonians, magnetic entities and pairs
     builder._rotated_hamiltonians = []
