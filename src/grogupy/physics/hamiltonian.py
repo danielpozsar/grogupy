@@ -51,8 +51,8 @@ class Hamiltonian:
 
     Parameters
     ----------
-    infile: Union[str, tuple[sisl.physics.Hamiltonian, sisl.physics.DensityMatrix]]
-        Path to the .fdf file or the sisl Hamiltonian and Density matrix
+    infile: Union[str, tuple[sisl.physics.Hamiltonian, Union[sisl.physics.DensityMatrix, None]]]
+        Path to the .fdf file or the sisl Hamiltonian and Density matrix, DM is optional
     scf_xcf_orientation: Union[list, NDArray]. optional
         The reference orientation, by default [0,0,1]
 
@@ -79,8 +79,8 @@ class Hamiltonian:
     ----------
     _dh: sisl.physics.Hamiltonian
         The sisl Hamiltonian
-    _ds: sisl.physics.DensityMatrix
-        The sisl density matrix
+    _ds: Union[sisl.physics.DensityMatrix, None]
+        The sisl density matrix or None if it is not given
     infile: str
         The path to the .fdf file
     H: NDArray
@@ -121,7 +121,10 @@ class Hamiltonian:
 
     def __init__(
         self,
-        infile: Union[str, tuple[sisl.physics.Hamiltonian, sisl.physics.DensityMatrix]],
+        infile: Union[
+            str,
+            tuple[sisl.physics.Hamiltonian, Union[sisl.physics.DensityMatrix, None]],
+        ],
         scf_xcf_orientation: Union[list, NDArray] = np.array([0, 0, 1]),
     ) -> None:
         """Initialize hamiltonian"""
@@ -132,7 +135,10 @@ class Hamiltonian:
             sile = sisl.io.get_sile(infile)
             # load hamiltonian
             self._dh: sisl.physics.Hamiltonian = sile.read_hamiltonian()
-            self._ds: sisl.physics.DensityMatrix = sile.read_density_matrix()
+            try:
+                self._ds: sisl.physics.DensityMatrix = sile.read_density_matrix()
+            except:
+                self._ds = None
             self.infile: str = infile
         elif isinstance(infile, tuple):
             if isinstance(infile[0], sisl.physics.Hamiltonian) and isinstance(
@@ -273,8 +279,6 @@ class Hamiltonian:
             if (
                 np.allclose(self._dh.Hk().toarray(), value._dh.Hk().toarray())
                 and np.allclose(self._dh.Sk().toarray(), value._dh.Sk().toarray())
-                and np.allclose(self._ds.Dk().toarray(), value._ds.Dk().toarray())
-                and np.allclose(self._ds.Sk().toarray(), value._ds.Sk().toarray())
                 and self.infile == value.infile
                 and self._spin_state == value._spin_state
                 and np.allclose(self.H, value.H)
@@ -286,7 +290,19 @@ class Hamiltonian:
                 and np.allclose(self.XCF, value.XCF)
                 and np.allclose(self.H_XCF, value.H_XCF)
             ):
-                return True
+                # if DM is None return True
+                if self._ds is None and value._ds is None:
+                    return True
+                # if DM is not None, then compare
+                else:
+                    if np.allclose(
+                        self._ds.Dk().toarray(), value._ds.Dk().toarray()
+                    ) and np.allclose(
+                        self._ds.Sk().toarray(), value._ds.Sk().toarray()
+                    ):
+                        return True
+                    else:
+                        return False
             return False
         return False
 

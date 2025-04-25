@@ -61,7 +61,7 @@ class MagneticEntity:
 
     Parameters
     ----------
-    infile: Union[str, tuple[Union[sisl.physics.Hamiltonian, Hamiltonian], sisl.physics.DensityMatrix]]
+    infile: Union[str, tuple[Union[sisl.physics.Hamiltonian, Hamiltonian], Union[sisl.physics.DensityMatrix, None]]]
         Either the path to the .fdf file or a tuple of sisl or grogupy hamiltonian and a sisl density matrix
     atom: Union[None, int, list[int]], optional
         Defining atom (or atoms) in the unit cell forming the magnetic entity, by default None
@@ -143,6 +143,10 @@ class MagneticEntity:
         The list of l in the magnetic entity, None if it is incomplete
     _spin_box_indices : NDArray
         The SPIN BOX indices
+    _total_mulliken: Union[None, NDArray]
+        Sisl Mulliken charges from the total atom
+    _local_mulliken: Union[None, NDArray]
+        Sisl Mulliken charges from the given orbitals
     SBS : int
         Length of the SPIN BOX indices
     _xyz : NDArray
@@ -173,7 +177,7 @@ class MagneticEntity:
             str,
             tuple[
                 Union[sisl.physics.Hamiltonian, "Hamiltonian"],
-                sisl.physics.DensityMatrix,
+                Union[sisl.physics.DensityMatrix, None],
             ],
         ],
         atom: Union[None, int, list[int]] = None,
@@ -187,7 +191,10 @@ class MagneticEntity:
             sile = sisl.io.get_sile(infile)
             # load density and hamiltonian
             self._dh: sisl.physics.Hamiltonian = sile.read_hamiltonian()
-            self._ds: sisl.physics.DensityMatrix = sile.read_density_matrix()
+            try:
+                self._ds: sisl.physics.DensityMatrix = sile.read_density_matrix()
+            except:
+                self._ds = None
             self.infile: str = infile
         elif isinstance(infile, tuple):
             self._dh: sisl.physics.Hamiltonian = infile[0]
@@ -200,12 +207,18 @@ class MagneticEntity:
         self._l = l
         self._orbital_box_indices: NDArray = np.array(orbital).flatten()
         self._tags = tag
-        self._total_mulliken: NDArray = self._ds.mulliken()[
-            :, self._dh.a2o(self._atom, all=True)
-        ]
-        self._local_mulliken: NDArray = self._ds.mulliken()[
-            :, self._orbital_box_indices
-        ]
+
+        # try to get Mulliken charges
+        if self._ds is not None:
+            self._total_mulliken: NDArray = self._ds.mulliken()[
+                :, self._dh.a2o(self._atom, all=True)
+            ]
+            self._local_mulliken: NDArray = self._ds.mulliken()[
+                :, self._orbital_box_indices
+            ]
+        else:
+            self._total_mulliken: None = None
+            self._local_mulliken: None = None
 
         self._spin_box_indices: NDArray = blow_up_orbindx(self._orbital_box_indices)
         self._xyz: NDArray = np.array([self._dh.xyz[i] for i in self._atom])
@@ -225,29 +238,42 @@ class MagneticEntity:
         self.__tag = "--".join(self._tags)
         self.__SBS = len(self._spin_box_indices)
         self.__xyz_center = self._xyz.mean(axis=0)
-        self.__total_Q = self._total_mulliken[0].sum()
-        if self._total_mulliken.shape[0] == 2:
-            self.__total_Sx = 0
-            self.__total_Sy = 0
-            self.__total_Sz = self._total_mulliken[1].sum()
-        elif self._total_mulliken.shape[0] in {3, 4}:
-            self.__total_Sx = self._total_mulliken[1].sum()
-            self.__total_Sy = self._total_mulliken[2].sum()
-            self.__total_Sz = self._total_mulliken[3].sum()
-        else:
-            raise Exception("Unpolarized DFT calculation cannot be used!")
 
-        self.__local_Q = self._local_mulliken[0].sum()
-        if self._local_mulliken.shape[0] == 2:
-            self.__local_Sx = 0
-            self.__local_Sy = 0
-            self.__local_Sz = self._local_mulliken[1].sum()
-        elif self._local_mulliken.shape[0] in {3, 4}:
-            self.__local_Sx = self._local_mulliken[1].sum()
-            self.__local_Sy = self._local_mulliken[2].sum()
-            self.__local_Sz = self._local_mulliken[3].sum()
+        # setup Mullikens if DM is available
+        if self._ds is not None:
+            self.__total_Q = self._total_mulliken[0].sum()
+            if self._total_mulliken.shape[0] == 2:
+                self.__total_Sx = 0
+                self.__total_Sy = 0
+                self.__total_Sz = self._total_mulliken[1].sum()
+            elif self._total_mulliken.shape[0] in {3, 4}:
+                self.__total_Sx = self._total_mulliken[1].sum()
+                self.__total_Sy = self._total_mulliken[2].sum()
+                self.__total_Sz = self._total_mulliken[3].sum()
+            else:
+                raise Exception("Unpolarized DFT calculation cannot be used!")
+
+            self.__local_Q = self._local_mulliken[0].sum()
+            if self._local_mulliken.shape[0] == 2:
+                self.__local_Sx = 0
+                self.__local_Sy = 0
+                self.__local_Sz = self._local_mulliken[1].sum()
+            elif self._local_mulliken.shape[0] in {3, 4}:
+                self.__local_Sx = self._local_mulliken[1].sum()
+                self.__local_Sy = self._local_mulliken[2].sum()
+                self.__local_Sz = self._local_mulliken[3].sum()
+            else:
+                raise Exception("Unpolarized DFT calculation cannot be used!")
         else:
-            raise Exception("Unpolarized DFT calculation cannot be used!")
+            self.__total_Q = None
+            self.__total_Sx = None
+            self.__total_Sy = None
+            self.__total_Sz = None
+            self.__local_Q = None
+            self.__local_Sx = None
+            self.__local_Sy = None
+            self.__local_Sz = None
+
         self.__energies_meV = None
         self.__energies_mRy = None
         self.__K_meV = None
@@ -390,15 +416,23 @@ class MagneticEntity:
         return self.__xyz_center
 
     @property
-    def total_Q(self) -> NDArray:
+    def total_Q(self) -> Union[NDArray, None]:
         """The total charge of the atom or the atoms of magnetic entity."""
+        # check if DM is available
+        if self._total_mulliken is None:
+            return None
+
         self.__total_Q = self._total_mulliken[0].sum()
 
         return self.__total_Q
 
     @property
-    def total_Sx(self) -> NDArray:
+    def total_Sx(self) -> Union[NDArray, None]:
         """Sx of the atom or the atoms of the magnetic entity."""
+        # check if DM is available
+        if self._total_mulliken is None:
+            return None
+
         if self._total_mulliken.shape[0] == 2:
             self.__total_Sx = 0
         elif self._total_mulliken.shape[0] in {3, 4}:
@@ -408,8 +442,12 @@ class MagneticEntity:
         return self.__total_Sx
 
     @property
-    def total_Sy(self) -> NDArray:
+    def total_Sy(self) -> Union[NDArray, None]:
         """Sy of the atom or the atoms of the magnetic entity."""
+        # check if DM is available
+        if self._total_mulliken is None:
+            return None
+
         if self._total_mulliken.shape[0] == 2:
             self.__total_Sy = 0
         elif self._total_mulliken.shape[0] in {3, 4}:
@@ -420,8 +458,12 @@ class MagneticEntity:
         return self.__total_Sy
 
     @property
-    def total_Sz(self) -> NDArray:
+    def total_Sz(self) -> Union[NDArray, None]:
         """Sz of the atom or the atoms of the magnetic entity."""
+        # check if DM is available
+        if self._total_mulliken is None:
+            return None
+
         if self._total_mulliken.shape[0] == 2:
             self.__total_Sz = self._total_mulliken[1].sum()
         elif self._total_mulliken.shape[0] in {3, 4}:
@@ -432,15 +474,23 @@ class MagneticEntity:
         return self.__total_Sz
 
     @property
-    def local_Q(self) -> NDArray:
+    def local_Q(self) -> Union[NDArray, None]:
         """The charge of the magnetic entity."""
+        # check if DM is available
+        if self._local_mulliken is None:
+            return None
+
         self.__local_Q = self._local_mulliken[0].sum()
 
         return self.__local_Q
 
     @property
-    def local_Sx(self) -> NDArray:
+    def local_Sx(self) -> Union[NDArray, None]:
         """Sx of the magnetic entity."""
+        # check if DM is available
+        if self._local_mulliken is None:
+            return None
+
         if self._local_mulliken.shape[0] == 2:
             self.__local_Sx = 0
         elif self._local_mulliken.shape[0] in {3, 4}:
@@ -451,8 +501,12 @@ class MagneticEntity:
         return self.__local_Sx
 
     @property
-    def local_Sy(self) -> NDArray:
+    def local_Sy(self) -> Union[NDArray, None]:
         """Sy of the magnetic entity."""
+        # check if DM is available
+        if self._local_mulliken is None:
+            return None
+
         if self._local_mulliken.shape[0] == 2:
             self.__local_Sy = 0
         elif self._local_mulliken.shape[0] in {3, 4}:
@@ -463,8 +517,12 @@ class MagneticEntity:
         return self.__local_Sy
 
     @property
-    def local_Sz(self) -> NDArray:
+    def local_Sz(self) -> Union[NDArray, None]:
         """Sz of the magnetic entity."""
+        # check if DM is available
+        if self._local_mulliken is None:
+            return None
+
         if self._local_mulliken.shape[0] == 2:
             self.__local_Sz = self._local_mulliken[1].sum()
         elif self._local_mulliken.shape[0] in {3, 4}:
