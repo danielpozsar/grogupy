@@ -17,7 +17,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-infolder = "../../../../benchmarks/CrI3"
+infolder = "./benchmarks/CrI3"
 infile = "CrI3.fdf"
 ################################################################################
 #                            Convergence parameters
@@ -109,7 +109,7 @@ The compression level can be set to 0,1,2,3. Every other value defaults to 3.
 pickle_compress_level = 3
 
 # output folder, for example the current folder
-outfolder = "./"
+outfolder = "./src/grogupy/cli/tests/"
 # outfile name
 outfile = "test"
 ################################################################################

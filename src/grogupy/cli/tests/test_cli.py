@@ -29,49 +29,49 @@ class TestCommandLineTools:
     @pytest.mark.parametrize(
         "path",
         [
-            "input0.py",
-            "input1.py",
-            "input2.py",
-            "input3.py",
-            "input4.py",
+            "./src/grogupy/cli/tests/input0.py",
+            "./src/grogupy/cli/tests/input1.py",
+            "./src/grogupy/cli/tests/input2.py",
+            "./src/grogupy/cli/tests/input3.py",
+            "./src/grogupy/cli/tests/input4.py",
         ],
     )
     def test_run(self, path):
         subprocess.run(["grogupy_run", path])
 
-        assert os.path.isfile("test.magnopy.txt")
-        os.remove("test.magnopy.txt")
-        assert os.path.isfile("test.pkl")
-        os.remove("test.pkl")
-        assert os.path.isdir("test_UppASD_output")
-        assert os.path.isfile("./test_UppASD_output/jfile")
-        assert os.path.isfile("./test_UppASD_output/momfile")
-        assert os.path.isfile("./test_UppASD_output/posfile")
-        assert os.path.isfile("./test_UppASD_output/cell.tmp.txt")
-        os.remove("./test_UppASD_output/jfile")
-        os.remove("./test_UppASD_output/momfile")
-        os.remove("./test_UppASD_output/posfile")
-        os.remove("./test_UppASD_output/cell.tmp.txt")
-        os.rmdir("./test_UppASD_output")
+        assert os.path.isfile("./src/grogupy/cli/tests/test.magnopy.txt")
+        os.remove("./src/grogupy/cli/tests/test.magnopy.txt")
+        assert os.path.isfile("./src/grogupy/cli/tests/test.pkl")
+        os.remove("./src/grogupy/cli/tests/test.pkl")
+        assert os.path.isdir("./src/grogupy/cli/tests/test_UppASD_output")
+        assert os.path.isfile("./src/grogupy/cli/tests/test_UppASD_output/jfile")
+        assert os.path.isfile("./src/grogupy/cli/tests/test_UppASD_output/momfile")
+        assert os.path.isfile("./src/grogupy/cli/tests/test_UppASD_output/posfile")
+        assert os.path.isfile("./src/grogupy/cli/tests/test_UppASD_output/cell.tmp.txt")
+        os.remove("./src/grogupy/cli/tests/test_UppASD_output/jfile")
+        os.remove("./src/grogupy/cli/tests/test_UppASD_output/momfile")
+        os.remove("./src/grogupy/cli/tests/test_UppASD_output/posfile")
+        os.remove("./src/grogupy/cli/tests/test_UppASD_output/cell.tmp.txt")
+        os.rmdir("./src/grogupy/cli/tests/test_UppASD_output")
 
     def test_analyze(self):
-        subprocess.run(["grogupy_run", "input5.py"])
-        subprocess.run(["grogupy_analyze", "test.pkl"])
+        subprocess.run(["grogupy_run", "./src/grogupy/cli/tests/input5.py"])
+        subprocess.run(["grogupy_analyze", "./src/grogupy/cli/tests/test.pkl"])
 
-        assert os.path.isfile("test.analysis.txt")
-        os.remove("test.analysis.txt")
-        assert os.path.isfile("test.contour.html")
-        os.remove("test.contour.html")
-        assert os.path.isfile("test.DMIs.html")
-        os.remove("test.DMIs.html")
-        assert os.path.isfile("test.kspace.html")
-        os.remove("test.kspace.html")
-        assert os.path.isfile("test.magnetic_entities.html")
-        os.remove("test.magnetic_entities.html")
-        assert os.path.isfile("test.pairs.html")
-        os.remove("test.pairs.html")
+        assert os.path.isfile("./src/grogupy/cli/tests/test.analysis.txt")
+        os.remove("./src/grogupy/cli/tests/test.analysis.txt")
+        assert os.path.isfile("./src/grogupy/cli/tests/test.contour.html")
+        os.remove("./src/grogupy/cli/tests/test.contour.html")
+        assert os.path.isfile("./src/grogupy/cli/tests/test.DMIs.html")
+        os.remove("./src/grogupy/cli/tests/test.DMIs.html")
+        assert os.path.isfile("./src/grogupy/cli/tests/test.kspace.html")
+        os.remove("./src/grogupy/cli/tests/test.kspace.html")
+        assert os.path.isfile("./src/grogupy/cli/tests/test.magnetic_entities.html")
+        os.remove("./src/grogupy/cli/tests/test.magnetic_entities.html")
+        assert os.path.isfile("./src/grogupy/cli/tests/test.pairs.html")
+        os.remove("./src/grogupy/cli/tests/test.pairs.html")
 
-        os.remove("test.pkl")
+        os.remove("./src/grogupy/cli/tests/test.pkl")
 
 
 if __name__ == "__main__":
