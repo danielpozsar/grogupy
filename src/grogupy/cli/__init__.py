@@ -31,3 +31,6 @@ Examples
 For examples, see the `running in HPC <.._running_in_hpc>`_ section in the documentation.
 
 """
+
+from .analyze import *
+from .run import *
