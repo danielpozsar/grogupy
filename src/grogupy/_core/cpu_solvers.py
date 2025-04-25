@@ -140,16 +140,8 @@ def solve_parallel_over_k(
                     onsite_projection(Gk, pair.SBI2, pair.SBI1) / phase * wk
                 )
 
-        comm.Barrier()
-        # parallelize the following part
-        split_magnetic_entities = np.array_split(
-            builder.magnetic_entities, parallel_size
-        )
-        builder.magnetic_entities = []
-        split_pairs = np.array_split(builder.pairs, parallel_size)
-        builder.pairs = []
         # sum reduce partial results of mpi nodes and delete temprorary stuff
-        for mag_ent in split_magnetic_entities[rank]:
+        for mag_ent in builder.magnetic_entities:
             # initialize rotation storage
             mag_ent._Vu1_tmp = []
             mag_ent._Vu2_tmp = []
@@ -161,7 +153,7 @@ def solve_parallel_over_k(
             comm.Reduce(mag_ent._Gii_tmp, mag_ent._Gii_reduce, root=root_node)
             del mag_ent._Gii_tmp
 
-        for pair in split_pairs[rank]:
+        for pair in builder.pairs:
             pair._Gij_reduce = np.zeros(
                 (builder.contour.eset, pair.SBS1, pair.SBS2), dtype="complex128"
             )
@@ -180,7 +172,7 @@ def solve_parallel_over_k(
             Vu1, Vu2 = calc_Vu(rot_H.H_XCF_uc, Tu)
 
             for mag_ent in _tqdm(
-                split_magnetic_entities[rank],
+                builder.magnetic_entities,
                 desc="Setup perturbations for rotated hamiltonian",
             ):
                 # fill up the perturbed potentials (for now) based on the on-site projections
@@ -196,7 +188,7 @@ def solve_parallel_over_k(
                 )
 
         # calculate energies in the current reference hamiltonian direction
-        for mag_ent in split_magnetic_entities[rank]:
+        for mag_ent in builder.magnetic_entities:
             storage: list[float] = []
             # iterate over the first and second order local perturbations
             Gii = mag_ent._Gii_reduce
@@ -222,9 +214,8 @@ def solve_parallel_over_k(
                 )
             mag_ent.energies.append(storage)
 
-        comm.Barrier()
         # calculate energies in the current reference hamiltonian direction
-        for pair in split_pairs[rank]:
+        for pair in builder.pairs:
             Gij, Gji = pair._Gij_reduce, pair._Gji_reduce
             storage: list = []
             # iterate over the first order local perturbations in all possible orientations for the two sites
@@ -241,33 +232,33 @@ def solve_parallel_over_k(
         # if we want to keep all the information for some reason we can do it
         if not builder.low_memory_mode:
             builder._rotated_hamiltonians.append(rot_H)
-            for mag_ent in split_magnetic_entities[rank]:
+            for mag_ent in builder.magnetic_entities:
                 mag_ent._Vu1.append(mag_ent._Vu1_tmp)
                 mag_ent._Vu2.append(mag_ent._Vu2_tmp)
                 mag_ent._Gii.append(mag_ent._Gii_reduce)
-            for pair in split_pairs[rank]:
+            for pair in builder.pairs:
                 pair._Gij.append(pair._Gij_reduce)
                 pair._Gji.append(pair._Gji_reduce)
         # or fill with empty stuff
         else:
-            for mag_ent in split_magnetic_entities[rank]:
+            for mag_ent in builder.magnetic_entities:
                 mag_ent._Vu1.append([])
                 mag_ent._Vu2.append([])
                 mag_ent._Gii.append([])
-            for pair in split_pairs[rank]:
+            for pair in builder.pairs:
                 pair._Gij.append([])
                 pair._Gji.append([])
 
     # finalize energies of the magnetic entities and pairs
-    # calcualte magnetic parameters
-    for mag_ent in split_magnetic_entities[rank]:
+    # calculate magnetic parameters
+    for mag_ent in builder.magnetic_entities:
         # delete temporary stuff
         del mag_ent._Gii_reduce
         del mag_ent._Vu1_tmp
         del mag_ent._Vu2_tmp
 
         # convert to NDArray
-        mag_ent.energies: NDArray = np.array(mag_ent.energies)
+        mag_ent.energies = np.array(mag_ent.energies)
         # call these so they are updated
         mag_ent.energies_meV
         mag_ent.energies_mRy
@@ -276,13 +267,13 @@ def solve_parallel_over_k(
         elif builder.anisotropy_solver.lower()[0] == "g":  # grogupy
             mag_ent.calculate_anisotropy()
 
-    for pair in split_pairs[rank]:
+    for pair in builder.pairs:
         # delete temporary stuff
         del pair._Gij_reduce
         del pair._Gji_reduce
 
         # convert to NDArray
-        pair.energies: NDArray = np.array(pair.energies)
+        pair.energies = np.array(pair.energies)
         # call these so they are updated
         pair.energies_meV
         pair.energies_mRy
@@ -290,11 +281,6 @@ def solve_parallel_over_k(
             pair.fit_exchange_tensor(builder.ref_xcf_orientations)
         elif builder.exchange_solver.lower()[0] == "g":  # grogupy
             pair.calculate_exchange_tensor()
-
-    # get together parallel magnetic entities and pairs
-    comm.Barrier()
-    builder.magnetic_entities = np.hstack(split_magnetic_entities).tolist()
-    builder.pairs = np.hstack(split_pairs).tolist()
 
 
 if __name__ == "__main__":
