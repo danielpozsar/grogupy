@@ -25,14 +25,18 @@ if CONFIG.tqdm_requested:
     try:
         from tqdm.autonotebook import tqdm
 
-        def _tqdm(something, **kwargs):
+        def _tqdm(something, head_node=True, **kwargs):
             if CONFIG.is_CPU:
                 from mpi4py import MPI
 
-                if MPI.COMM_WORLD.rank == 0:
-                    return tqdm(something, **kwargs)
+                if head_node:
+                    if MPI.COMM_WORLD.rank == 0:
+                        return tqdm(something, **kwargs)
+                    else:
+                        return something
                 else:
-                    return something
+                    return tqdm(something, **kwargs)
+
             elif CONFIG.is_GPU:
                 return tqdm(something, **kwargs)
             else:
