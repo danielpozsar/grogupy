@@ -158,7 +158,7 @@ def solve_parallel_over_k(
                 # this generates the list of phases
                 phases = cp.exp(-1j * 2 * cp.pi * k @ local_sc_off.T)
                 # phases applied to the hamiltonian
-                HK = cp.einsum("abc,a->bc", cp.array(rotated_H[j]), phases)
+                HK = cp.einsum("abc,a->bc", cp.array(rotated_H), phases)
                 SK = cp.einsum("abc,a->bc", local_S, phases)
 
                 # solve the Greens function on all energy points separately
@@ -215,13 +215,13 @@ def solve_parallel_over_k(
         pair.reset()
         pair.energies = []
 
-    # empty greens functions holders
-    G_mag_reduce = []
-    G_pair_ij_reduce = []
-    G_pair_ji_reduce = []
-
     # iterate over the reference directions (quantization axes)
     for orient in builder.ref_xcf_orientations:
+        # empty greens functions holders
+        G_mag_reduce = []
+        G_pair_ij_reduce = []
+        G_pair_ji_reduce = []
+
         # obtain rotated exchange field and Hamiltonian
         rot_H = builder.hamiltonian.copy()
         rot_H.rotate(orient["o"])
@@ -251,6 +251,10 @@ def solve_parallel_over_k(
             )
 
         # convert everything so it can be passed to the GPU solvers
+        G_mag_reduce = np.array(G_mag_reduce)
+        G_pair_ij_reduce = np.array(G_pair_ij_reduce)
+        G_pair_ji_reduce = np.array(G_pair_ji_reduce)
+
         SBI = [m._spin_box_indices for m in builder.magnetic_entities]
         SBI1 = [p.SBI1 for p in builder.pairs]
         SBI2 = [p.SBI2 for p in builder.pairs]
@@ -286,7 +290,7 @@ def solve_parallel_over_k(
                     G_mag_reduce,
                     G_pair_ij_reduce,
                     G_pair_ji_reduce,
-                    rot_H,
+                    rot_H.H,
                     S,
                 )
                 for gpu_number in range(parallel_size)
@@ -305,13 +309,10 @@ def solve_parallel_over_k(
             mag_ent._Vu2_tmp = []
 
             mag_ent._Gii_reduce = G_mag_reduce[i]
-            del mag_ent._Gii_tmp
 
         for i, pair in enumerate(builder.pairs):
-            pair._Gij_reduce = G_pair_ij_reduce
-            pair._Gji_reduce = G_pair_ji_reduce
-            del pair._Gij_tmp
-            del pair._Gji_tmp
+            pair._Gij_reduce = G_pair_ij_reduce[i]
+            pair._Gji_reduce = G_pair_ji_reduce[i]
 
         # these are the rotations mostly perpendicular to the quantization axis
         for u in orient["vw"]:

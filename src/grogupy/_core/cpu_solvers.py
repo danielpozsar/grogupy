@@ -59,8 +59,6 @@ def solve_parallel_over_k(
     # split k points to parallelize
     parallel_k = np.array_split(builder.kspace.kpoints, parallel_size)
     parallel_w = np.array_split(builder.kspace.weights, parallel_size)
-    if rank == root_node:
-        parallel_k[rank] = _tqdm(parallel_k[rank], desc=f"Parallel over k on CPU{rank}")
 
     # reset hamiltonians, magnetic entities and pairs
     builder._rotated_hamiltonians = []
@@ -72,7 +70,7 @@ def solve_parallel_over_k(
         pair.energies = []
 
     # iterate over the reference directions (quantization axes)
-    for orient in builder.ref_xcf_orientations:
+    for i, orient in enumerate(builder.ref_xcf_orientations):
         # obtain rotated exchange field and Hamiltonian
         rot_H = builder.hamiltonian.copy()
         rot_H.rotate(orient["o"])
@@ -95,6 +93,10 @@ def solve_parallel_over_k(
                 (builder.contour.eset, pair.SBS2, pair.SBS1), dtype="complex128"
             )
 
+        if rank == root_node:
+            parallel_k[rank] = _tqdm(
+                parallel_k[rank], desc=f"Rotation {i+1}, parallel over k on CPU{rank}"
+            )
         # sampling the integrand on the contour and the BZ
         for j, k in enumerate(parallel_k[rank]):
             # weight of k point in BZ integral

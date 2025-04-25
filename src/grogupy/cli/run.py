@@ -199,28 +199,30 @@ def main():
         for i, chunk in enumerate(pair_chunks):
             simulation.pairs = chunk
             simulation.solve()
-            save(
-                object=simulation,
-                path=join(params.outfolder, "grogupy_temp_" + str(i)),
-                compress=params.pickle_compress_level,
-            )
-        # add pairs to Builder
-        new_pairs = []
-        for i in range(len(pair_chunks)):
-            new_pairs += load(
-                join(params.outfolder, "grogupy_temp_" + str(i) + ".pkl")
-            ).pairs
-        simulation.pairs = new_pairs
-        # remove hamiltonian from magnetic entities so the comparison does not fail
-        if params.pickle_compress_level != 0:
-            for mag_ent in simulation.magnetic_entities:
-                mag_ent._dh = None
-                mag_ent._ds = None
-        if params.pickle_compress_level >= 2:
-            for mag_ent in simulation.magnetic_entities:
-                mag_ent._Gii = []
-                mag_ent._Vu1 = []
-                mag_ent._Vu2 = []
+            if PRINTING:
+                save(
+                    object=simulation,
+                    path=join(params.outfolder, "grogupy_temp_" + str(i)),
+                    compress=params.pickle_compress_level,
+                )
+        if PRINTING:
+            # add pairs to Builder
+            new_pairs = []
+            for i in range(len(pair_chunks)):
+                new_pairs += load(
+                    join(params.outfolder, "grogupy_temp_" + str(i) + ".pkl")
+                ).pairs
+            simulation.pairs = new_pairs
+            # remove hamiltonian from magnetic entities so the comparison does not fail
+            if params.pickle_compress_level != 0:
+                for mag_ent in simulation.magnetic_entities:
+                    mag_ent._dh = None
+                    mag_ent._ds = None
+            if params.pickle_compress_level >= 2:
+                for mag_ent in simulation.magnetic_entities:
+                    mag_ent._Gii = []
+                    mag_ent._Vu1 = []
+                    mag_ent._Vu2 = []
     else:
         # Solve
         simulation.solve()
