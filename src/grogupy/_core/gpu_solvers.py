@@ -32,6 +32,8 @@ from numpy.typing import NDArray
 if TYPE_CHECKING:
     from ..physics.builder import Builder
 
+from concurrent.futures import ThreadPoolExecutor
+
 import numpy as np
 
 from .._tqdm import _tqdm
@@ -40,26 +42,8 @@ from ..physics.utilities import interaction_energy, second_order_energy
 from .core import calc_Vu, onsite_projection
 from .utilities import tau_u
 
-
-def solve_parallel_over_k(
-    builder: "Builder",
-) -> None:
-    """It calculates the energies by the Greens function method.
-
-    It inverts the Hamiltonians of all directions set up in the given
-    k-points at the given energy levels. The solution is parallelized over
-    k-points. It uses the number of GPUs given. And determines the parallelization
-    over energy levels from the ``builder.greens_function_solver`` attribute.
-
-    Parameters
-    ----------
-    builder : Builder
-        The system that we want to solve
-    """
-
+if CONFIG.is_GPU:
     # initialize parallel GPU stuff
-    from concurrent.futures import ThreadPoolExecutor
-
     import cupy as cp
     from cupy.typing import NDArray as CNDArray
 
@@ -200,236 +184,344 @@ def solve_parallel_over_k(
 
         return local_G_mag, local_G_pair_ij, local_G_pair_ji
 
-    parallel_size = CONFIG.parallel_size
+    def solve_parallel_over_k(
+        builder: "Builder",
+    ) -> None:
+        """It calculates the energies by the Greens function method.
 
-    # split k points to parallelize
-    parallel_k = np.array_split(builder.kspace.kpoints, parallel_size)
-    parallel_w = np.array_split(builder.kspace.weights, parallel_size)
+        It inverts the Hamiltonians of all directions set up in the given
+        k-points at the given energy levels. The solution is parallelized over
+        k-points. It uses the number of GPUs given. And determines the parallelization
+        over energy levels from the ``builder.greens_function_solver`` attribute.
 
-    # reset hamiltonians, magnetic entities and pairs
-    builder._rotated_hamiltonians = []
-    for mag_ent in builder.magnetic_entities:
-        mag_ent.reset()
-        mag_ent.energies = []
-    for pair in builder.pairs:
-        pair.reset()
-        pair.energies = []
+        Parameters
+        ----------
+        builder : Builder
+            The system that we want to solve
+        """
 
-    # iterate over the reference directions (quantization axes)
-    for orient in builder.ref_xcf_orientations:
-        # empty greens functions holders
-        G_mag_reduce = []
-        G_pair_ij_reduce = []
-        G_pair_ji_reduce = []
+        parallel_size = CONFIG.parallel_size
 
-        # obtain rotated exchange field and Hamiltonian
-        rot_H = builder.hamiltonian.copy()
-        rot_H.rotate(orient["o"])
+        # split k points to parallelize
+        parallel_k = np.array_split(builder.kspace.kpoints, parallel_size)
+        parallel_w = np.array_split(builder.kspace.weights, parallel_size)
 
-        # setup empty Greens function holders for integration
-        for mag_ent in _tqdm(
-            builder.magnetic_entities,
-            desc="Setup magnetic entities for rotated hamiltonian",
-        ):
-            G_mag_reduce.append(
-                np.zeros(
-                    (builder.contour.eset, mag_ent.SBS, mag_ent.SBS),
-                    dtype="complex128",
-                )
-            )
+        # reset hamiltonians, magnetic entities and pairs
+        builder._rotated_hamiltonians = []
+        for mag_ent in builder.magnetic_entities:
+            mag_ent.reset()
+            mag_ent.energies = []
+        for pair in builder.pairs:
+            pair.reset()
+            pair.energies = []
 
-        for pair in _tqdm(builder.pairs, desc="Setup pairs for rotated hamiltonian"):
-            G_pair_ij_reduce.append(
-                np.zeros(
-                    (builder.contour.eset, pair.SBS1, pair.SBS2), dtype="complex128"
-                )
-            )
-            G_pair_ji_reduce.append(
-                np.zeros(
-                    (builder.contour.eset, pair.SBS2, pair.SBS1), dtype="complex128"
-                )
-            )
+        # iterate over the reference directions (quantization axes)
+        for orient in builder.ref_xcf_orientations:
+            # empty greens functions holders
+            G_mag_reduce = []
+            G_pair_ij_reduce = []
+            G_pair_ji_reduce = []
 
-        # convert everything so it can be passed to the GPU solvers
-        G_mag_reduce = np.array(G_mag_reduce)
-        G_pair_ij_reduce = np.array(G_pair_ij_reduce)
-        G_pair_ji_reduce = np.array(G_pair_ji_reduce)
+            # obtain rotated exchange field and Hamiltonian
+            rot_H = builder.hamiltonian.copy()
+            rot_H.rotate(orient["o"])
 
-        SBI = [m._spin_box_indices for m in builder.magnetic_entities]
-        SBI1 = [p.SBI1 for p in builder.pairs]
-        SBI2 = [p.SBI2 for p in builder.pairs]
-        Ruc = [p.supercell_shift for p in builder.pairs]
-
-        S = builder.hamiltonian.S
-
-        sc_off = builder.hamiltonian.sc_off
-        samples = builder.contour.samples
-
-        # call the solvers
-        if builder.greens_function_solver[0].lower() == "p":  # parallel solver
-            mode = "parallel"
-        elif builder.greens_function_solver[0].lower() == "s":  # sequential solver
-            mode = "sequential"
-        else:
-            raise Exception("Unknown Green's function solver!")
-
-        with ThreadPoolExecutor(max_workers=parallel_size) as executor:
-            futures = [
-                executor.submit(
-                    gpu_solver,
-                    mode,
-                    gpu_number,
-                    parallel_k,
-                    parallel_w,
-                    SBI,
-                    SBI1,
-                    SBI2,
-                    Ruc,
-                    sc_off,
-                    samples,
-                    G_mag_reduce,
-                    G_pair_ij_reduce,
-                    G_pair_ji_reduce,
-                    rot_H.H,
-                    S,
-                )
-                for gpu_number in range(parallel_size)
-            ]
-            results = [future.result() for future in futures]
-
-        # Combine results
-        for G_mag_local, G_pair_ij_local, G_pair_ji_local in results:
-            G_mag_reduce += G_mag_local.get()
-            G_pair_ij_reduce += G_pair_ij_local.get()
-            G_pair_ji_reduce += G_pair_ji_local.get()
-
-        for i, mag_ent in enumerate(builder.magnetic_entities):
-            # initialize rotation storage
-            mag_ent._Vu1_tmp = []
-            mag_ent._Vu2_tmp = []
-
-            mag_ent._Gii_reduce = G_mag_reduce[i]
-
-        for i, pair in enumerate(builder.pairs):
-            pair._Gij_reduce = G_pair_ij_reduce[i]
-            pair._Gji_reduce = G_pair_ji_reduce[i]
-
-        # these are the rotations mostly perpendicular to the quantization axis
-        for u in orient["vw"]:
-            # section 2.H
-            Tu: NDArray = np.kron(np.eye(builder.hamiltonian.NO, dtype=int), tau_u(u))
-            Vu1, Vu2 = calc_Vu(rot_H.H_XCF_uc, Tu)
-
+            # setup empty Greens function holders for integration
             for mag_ent in _tqdm(
                 builder.magnetic_entities,
-                desc="Setup perturbations for rotated hamiltonian",
+                desc="Setup magnetic entities for rotated hamiltonian",
             ):
-                # fill up the perturbed potentials (for now) based on the on-site projections
-                mag_ent._Vu1_tmp.append(
-                    onsite_projection(
-                        Vu1, mag_ent._spin_box_indices, mag_ent._spin_box_indices
-                    )
-                )
-                mag_ent._Vu2_tmp.append(
-                    onsite_projection(
-                        Vu2, mag_ent._spin_box_indices, mag_ent._spin_box_indices
+                G_mag_reduce.append(
+                    np.zeros(
+                        (builder.contour.eset, mag_ent.SBS, mag_ent.SBS),
+                        dtype="complex128",
                     )
                 )
 
-        # calculate energies in the current reference hamiltonian direction
-        for mag_ent in builder.magnetic_entities:
-            storage: list[float] = []
-            # iterate over the first and second order local perturbations
-            Gii = mag_ent._Gii_reduce
-            V1 = mag_ent._Vu1_tmp
-            V2 = mag_ent._Vu2_tmp
+            for pair in _tqdm(
+                builder.pairs, desc="Setup pairs for rotated hamiltonian"
+            ):
+                G_pair_ij_reduce.append(
+                    np.zeros(
+                        (builder.contour.eset, pair.SBS1, pair.SBS2), dtype="complex128"
+                    )
+                )
+                G_pair_ji_reduce.append(
+                    np.zeros(
+                        (builder.contour.eset, pair.SBS2, pair.SBS1), dtype="complex128"
+                    )
+                )
 
-            # fill up the magnetic entities list with the energies
-            storage.append(
-                second_order_energy(V1[0], V2[0], Gii, builder.contour.weights)
-            )
-            storage.append(
-                interaction_energy(V1[0], V1[1], Gii, Gii, builder.contour.weights)
-            )
-            storage.append(
-                interaction_energy(V1[1], V1[0], Gii, Gii, builder.contour.weights)
-            )
-            storage.append(
-                second_order_energy(V1[1], V2[1], Gii, builder.contour.weights)
-            )
-            if builder.anisotropy_solver.lower()[0] == "g":  # grogupy
+            # convert everything so it can be passed to the GPU solvers
+            G_mag_reduce = np.array(G_mag_reduce)
+            G_pair_ij_reduce = np.array(G_pair_ij_reduce)
+            G_pair_ji_reduce = np.array(G_pair_ji_reduce)
+
+            SBI = [m._spin_box_indices for m in builder.magnetic_entities]
+            SBI1 = [p.SBI1 for p in builder.pairs]
+            SBI2 = [p.SBI2 for p in builder.pairs]
+            Ruc = [p.supercell_shift for p in builder.pairs]
+
+            S = builder.hamiltonian.S
+
+            sc_off = builder.hamiltonian.sc_off
+            samples = builder.contour.samples
+
+            # call the solvers
+            if builder.greens_function_solver[0].lower() == "p":  # parallel solver
+                mode = "parallel"
+            elif builder.greens_function_solver[0].lower() == "s":  # sequential solver
+                mode = "sequential"
+            else:
+                raise Exception("Unknown Green's function solver!")
+
+            with ThreadPoolExecutor(max_workers=parallel_size) as executor:
+                futures = [
+                    executor.submit(
+                        gpu_solver,
+                        mode,
+                        gpu_number,
+                        parallel_k,
+                        parallel_w,
+                        SBI,
+                        SBI1,
+                        SBI2,
+                        Ruc,
+                        sc_off,
+                        samples,
+                        G_mag_reduce,
+                        G_pair_ij_reduce,
+                        G_pair_ji_reduce,
+                        rot_H.H,
+                        S,
+                    )
+                    for gpu_number in range(parallel_size)
+                ]
+                results = [future.result() for future in futures]
+
+            # Combine results
+            for G_mag_local, G_pair_ij_local, G_pair_ji_local in results:
+                G_mag_reduce += G_mag_local.get()
+                G_pair_ij_reduce += G_pair_ij_local.get()
+                G_pair_ji_reduce += G_pair_ji_local.get()
+
+            for i, mag_ent in enumerate(builder.magnetic_entities):
+                # initialize rotation storage
+                mag_ent._Vu1_tmp = []
+                mag_ent._Vu2_tmp = []
+
+                mag_ent._Gii_reduce = G_mag_reduce[i]
+
+            for i, pair in enumerate(builder.pairs):
+                pair._Gij_reduce = G_pair_ij_reduce[i]
+                pair._Gji_reduce = G_pair_ji_reduce[i]
+
+            # these are the rotations mostly perpendicular to the quantization axis
+            for u in orient["vw"]:
+                # section 2.H
+                Tu: NDArray = np.kron(
+                    np.eye(builder.hamiltonian.NO, dtype=int), tau_u(u)
+                )
+                Vu1, Vu2 = calc_Vu(rot_H.H_XCF_uc, Tu)
+
+                for mag_ent in _tqdm(
+                    builder.magnetic_entities,
+                    desc="Setup perturbations for rotated hamiltonian",
+                ):
+                    # fill up the perturbed potentials (for now) based on the on-site projections
+                    mag_ent._Vu1_tmp.append(
+                        onsite_projection(
+                            Vu1, mag_ent._spin_box_indices, mag_ent._spin_box_indices
+                        )
+                    )
+                    mag_ent._Vu2_tmp.append(
+                        onsite_projection(
+                            Vu2, mag_ent._spin_box_indices, mag_ent._spin_box_indices
+                        )
+                    )
+
+            # calculate energies in the current reference hamiltonian direction
+            for mag_ent in builder.magnetic_entities:
+                storage: list[float] = []
+                # iterate over the first and second order local perturbations
+                Gii = mag_ent._Gii_reduce
+                V1 = mag_ent._Vu1_tmp
+                V2 = mag_ent._Vu2_tmp
+
+                # fill up the magnetic entities list with the energies
                 storage.append(
-                    second_order_energy(V1[2], V2[2], Gii, builder.contour.weights)
+                    second_order_energy(V1[0], V2[0], Gii, builder.contour.weights)
                 )
-            mag_ent.energies.append(storage)
-
-        # calculate energies in the current reference hamiltonian direction
-        for pair in builder.pairs:
-            Gij, Gji = pair._Gij_reduce, pair._Gji_reduce
-            storage: list = []
-            # iterate over the first order local perturbations in all possible orientations for the two sites
-            # actually all possible orientations without the orientation for the off-diagonal anisotropy
-            # that is why we only take the first two of each Vu1
-            for Vui in pair.M1._Vu1_tmp[:2]:
-                for Vuj in pair.M2._Vu1_tmp[:2]:
+                storage.append(
+                    interaction_energy(V1[0], V1[1], Gii, Gii, builder.contour.weights)
+                )
+                storage.append(
+                    interaction_energy(V1[1], V1[0], Gii, Gii, builder.contour.weights)
+                )
+                storage.append(
+                    second_order_energy(V1[1], V2[1], Gii, builder.contour.weights)
+                )
+                if builder.anisotropy_solver.lower()[0] == "g":  # grogupy
                     storage.append(
-                        interaction_energy(Vui, Vuj, Gij, Gji, builder.contour.weights)
+                        second_order_energy(V1[2], V2[2], Gii, builder.contour.weights)
                     )
-            # fill up the pairs dictionary with the energies
-            pair.energies.append(storage)
+                mag_ent.energies.append(storage)
 
-        # if we want to keep all the information for some reason we can do it
-        if not builder.low_memory_mode:
-            builder._rotated_hamiltonians.append(rot_H)
-            for mag_ent in builder.magnetic_entities:
-                mag_ent._Vu1.append(mag_ent._Vu1_tmp)
-                mag_ent._Vu2.append(mag_ent._Vu2_tmp)
-                mag_ent._Gii.append(mag_ent._Gii_reduce)
+            # calculate energies in the current reference hamiltonian direction
             for pair in builder.pairs:
-                pair._Gij.append(pair._Gij_reduce)
-                pair._Gji.append(pair._Gji_reduce)
-        # or fill with empty stuff
-        else:
-            for mag_ent in builder.magnetic_entities:
-                mag_ent._Vu1.append([])
-                mag_ent._Vu2.append([])
-                mag_ent._Gii.append([])
-            for pair in builder.pairs:
-                pair._Gij.append([])
-                pair._Gji.append([])
+                Gij, Gji = pair._Gij_reduce, pair._Gji_reduce
+                storage: list = []
+                # iterate over the first order local perturbations in all possible orientations for the two sites
+                # actually all possible orientations without the orientation for the off-diagonal anisotropy
+                # that is why we only take the first two of each Vu1
+                for Vui in pair.M1._Vu1_tmp[:2]:
+                    for Vuj in pair.M2._Vu1_tmp[:2]:
+                        storage.append(
+                            interaction_energy(
+                                Vui, Vuj, Gij, Gji, builder.contour.weights
+                            )
+                        )
+                # fill up the pairs dictionary with the energies
+                pair.energies.append(storage)
 
-    # finalize energies of the magnetic entities and pairs
-    # calcualte magnetic parameters
-    for mag_ent in builder.magnetic_entities:
-        # delete temporary stuff
-        del mag_ent._Gii_reduce
-        del mag_ent._Vu1_tmp
-        del mag_ent._Vu2_tmp
+            # if we want to keep all the information for some reason we can do it
+            if not builder.low_memory_mode:
+                builder._rotated_hamiltonians.append(rot_H)
+                for mag_ent in builder.magnetic_entities:
+                    mag_ent._Vu1.append(mag_ent._Vu1_tmp)
+                    mag_ent._Vu2.append(mag_ent._Vu2_tmp)
+                    mag_ent._Gii.append(mag_ent._Gii_reduce)
+                for pair in builder.pairs:
+                    pair._Gij.append(pair._Gij_reduce)
+                    pair._Gji.append(pair._Gji_reduce)
+            # or fill with empty stuff
+            else:
+                for mag_ent in builder.magnetic_entities:
+                    mag_ent._Vu1.append([])
+                    mag_ent._Vu2.append([])
+                    mag_ent._Gii.append([])
+                for pair in builder.pairs:
+                    pair._Gij.append([])
+                    pair._Gji.append([])
 
-        # convert to NDArray
-        mag_ent.energies = np.array(mag_ent.energies)
-        # call these so they are updated
-        mag_ent.energies_meV
-        mag_ent.energies_mRy
-        if builder.anisotropy_solver.lower()[0] == "f":  # fit
-            mag_ent.fit_anisotropy_tensor(builder.ref_xcf_orientations)
-        elif builder.anisotropy_solver.lower()[0] == "g":  # grogupy
-            mag_ent.calculate_anisotropy()
+        # finalize energies of the magnetic entities and pairs
+        # calcualte magnetic parameters
+        for mag_ent in builder.magnetic_entities:
+            # delete temporary stuff
+            del mag_ent._Gii_reduce
+            del mag_ent._Vu1_tmp
+            del mag_ent._Vu2_tmp
 
-    for pair in builder.pairs:
-        # delete temporary stuff
-        del pair._Gij_reduce
-        del pair._Gji_reduce
+            # convert to NDArray
+            mag_ent.energies = np.array(mag_ent.energies)
+            # call these so they are updated
+            mag_ent.energies_meV
+            mag_ent.energies_mRy
+            if builder.anisotropy_solver.lower()[0] == "f":  # fit
+                mag_ent.fit_anisotropy_tensor(builder.ref_xcf_orientations)
+            elif builder.anisotropy_solver.lower()[0] == "g":  # grogupy
+                mag_ent.calculate_anisotropy()
 
-        # convert to NDArray
-        pair.energies = np.array(pair.energies)
-        # call these so they are updated
-        pair.energies_meV
-        pair.energies_mRy
-        if builder.exchange_solver.lower()[0] == "f":  # fit
-            pair.fit_exchange_tensor(builder.ref_xcf_orientations)
-        elif builder.exchange_solver.lower()[0] == "g":  # grogupy
-            pair.calculate_exchange_tensor()
+        for pair in builder.pairs:
+            # delete temporary stuff
+            del pair._Gij_reduce
+            del pair._Gji_reduce
+
+            # convert to NDArray
+            pair.energies = np.array(pair.energies)
+            # call these so they are updated
+            pair.energies_meV
+            pair.energies_mRy
+            if builder.exchange_solver.lower()[0] == "f":  # fit
+                pair.fit_exchange_tensor(builder.ref_xcf_orientations)
+            elif builder.exchange_solver.lower()[0] == "g":  # grogupy
+                pair.calculate_exchange_tensor()
+
+else:
+
+    def gpu_solver(
+        mode: str,
+        gpu_number: int,
+        kpoints: list[NDArray],
+        kweights: list[NDArray],
+        SBI: list[NDArray],
+        SBI1: list[NDArray],
+        SBI2: list[NDArray],
+        Ruc: list[NDArray],
+        sc_off: NDArray,
+        samples: NDArray,
+        G_mag: list[NDArray],
+        G_pair_ij: list[NDArray],
+        G_pair_ji: list[NDArray],
+        rotated_H: list[NDArray],
+        S: NDArray,
+    ) -> tuple[CNDArray, CNDArray, CNDArray]:
+        """Solves the Green's function parallel on GPU.
+
+        Should be used on computation power bound systems.
+
+        Parameters
+        ----------
+        mode : str
+            The Greens function solver, which can be parallel or sequential
+        gpu_number : int
+            The ID of the GPU which we want to run on
+        kpoints : list[NDArray]
+            The kpoints already split for the GPUs
+        kweights : list[NDArray]
+            The kpoint weights already split for the GPUs
+        SBI : list[NDArray]
+            Spin box indices for the magnetic entities
+        SBI1 : list[NDArray]
+            Spin box indices for the pairs
+        SBI2 : list[NDArray]
+            Spin box indices for the pairs
+        Ruc : list[NDArray]
+            Unit cell shift of the pairs
+        sc_off : NDArray
+            List of unit cell shifts for unit cell indexes
+        samples : NDArray
+            Energy samples
+        G_mag : list[NDArray]
+            Empty container for the final Green's function on each magnetic entity
+        G_pair_ij : list[NDArray]
+            Empty container for the final Green's function on each pair
+        G_pair_ji : list[NDArray]
+            Empty container for the final Green's function on each pair
+        rotated_H : list[NDArray]
+            Hamiltonian with rotated exchange field
+        S : NDArray
+            Overlap matrix, should be the same for all Hamiltonians
+
+        Returns
+        -------
+        local_G_mag : CNDArray
+            The Greens function of the mangetic entities
+        local_G_pair_ij : CNDArray
+            The Greens function from mangetic entity i to j on the given GPU
+        local_G_pair_ji : CNDArray
+            The Greens function from mangetic entity j to i on the given GPU
+        """
+
+        raise Exception("GPU is not available!")
+
+    def solve_parallel_over_k(
+        builder: "Builder",
+    ) -> None:
+        """It calculates the energies by the Greens function method.
+
+        It inverts the Hamiltonians of all directions set up in the given
+        k-points at the given energy levels. The solution is parallelized over
+        k-points. It uses the number of GPUs given. And determines the parallelization
+        over energy levels from the ``builder.greens_function_solver`` attribute.
+
+        Parameters
+        ----------
+        builder : Builder
+            The system that we want to solve
+        """
+
+        raise Exception("GPU is not available!")
 
 
 if __name__ == "__main__":
