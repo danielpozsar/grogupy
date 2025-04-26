@@ -1,7 +1,7 @@
 Contributing to grogupy
 =======================
 
-Currently there is no way to contribute to the development for outsiders.
+Currently there is no way to contribute to the development.
 However here is a summary for the 'approved' developers.
 
 Create environment
