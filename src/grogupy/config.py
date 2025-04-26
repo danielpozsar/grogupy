@@ -21,7 +21,35 @@ from os import environ
 
 
 class Config:
+    """Configuration class of grogupy.
+
+    Contains the environment variables.
+
+    Parameters
+    ----------
+    architecture: str
+        The architecture read from os.environ
+    tqdm: str
+        tqdm request read from os.environ
+
+    Attributes
+    ----------
+    viz_loaded: bool
+        Returns wether visualization packages are loaded or not
+    architecture: str
+        Returns the architecture
+    parallel_size: int
+        Returns the parallel size over CPU or GPU
+    is_CPU: bool
+        Returns wether CPU is the architecture or not
+    is_GPU: bool
+        Returns wether GPU is the architecture or not
+    tqdm_requested: bool
+        Returns wether tqdm was requested or not
+    """
+
     def __init__(self, architecture: str, tqdm: str):
+        """Initializing configuration class."""
         self.__viz_loaded = False
 
         # get architecture
@@ -49,27 +77,33 @@ class Config:
             self.__tqdm_requested = False
 
     @property
-    def viz_loaded(self):
+    def viz_loaded(self) -> bool:
+        """Returns wether visualization packages are loaded or not"""
         return self.__viz_loaded
 
     @property
-    def architecture(self):
+    def architecture(self) -> str:
+        """Returns the architecture"""
         return self.__architecture
 
     @property
-    def parallel_size(self):
+    def parallel_size(self) -> int:
+        """Returns the parallel size over CPU or GPU"""
         return self.__parallel_size
 
     @property
-    def is_CPU(self):
+    def is_CPU(self) -> bool:
+        """Returns wether CPU is the architecture or not"""
         return self.__architecture == "CPU"
 
     @property
-    def is_GPU(self):
+    def is_GPU(self) -> bool:
+        """Returns wether GPU is the architecture or not"""
         return self.__architecture == "GPU"
 
     @property
-    def tqdm_requested(self):
+    def tqdm_requested(self) -> bool:
+        """Returns wether tqdm was requested or not"""
         return self.__tqdm_requested
 
 
