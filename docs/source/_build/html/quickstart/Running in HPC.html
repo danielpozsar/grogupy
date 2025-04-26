@@ -17,7 +17,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=bbaf98b3"></script>
+      <script src="../_static/documentation_options.js?v=53b53b71"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -189,9 +189,15 @@ your HPC system’s configuration and your specific requirements.</p>
 which contains the parameters for the grogupy simulation. These variables
 are passed to the appropriate functions in the grogupy package very similarly
 as we did in the jupyter notebook examples.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># input folder and file</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">################################################################################</span>
+<span class="c1">#                                 Input files</span>
+<span class="c1">################################################################################</span>
+<span class="c1"># input folder and file</span>
 <span class="n">infolder</span> <span class="o">=</span> <span class="s2">&quot;./&quot;</span>
 <span class="n">infile</span> <span class="o">=</span> <span class="s2">&quot;CrIWSe.fdf&quot;</span>
+<span class="c1">################################################################################</span>
+<span class="c1">#                            Convergence parameters</span>
+<span class="c1">################################################################################</span>
 <span class="c1"># kset should be at leas 100x100 for 2D diatomic systems</span>
 <span class="n">kset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
 <span class="c1"># eset should be 100 for insulators and 1000 for metals</span>
@@ -204,31 +210,46 @@ as we did in the jupyter notebook examples.</p>
 <span class="n">emax</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="c1"># the bottom of the energy contour should be shifted by -5 eV</span>
 <span class="n">emin_shift</span> <span class="o">=</span> <span class="o">-</span><span class="mi">5</span>
-<span class="c1"># the top of the energy contour can be shifted to the middle of the gap for insulators</span>
+<span class="c1"># the top of the energy contour can be shifted to the middle of the gap for</span>
+<span class="c1"># insulators</span>
 <span class="n">emax_shift</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.22</span>
+<span class="c1">################################################################################</span>
+<span class="c1">#                                 Orientations</span>
+<span class="c1">################################################################################</span>
 <span class="c1"># usually the DFT calculation axis is [0, 0, 1]</span>
 <span class="n">scf_xcf_orientation</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
 <span class="c1"># the reference directions for the energy derivations</span>
 <span class="n">ref_xcf_orientations</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span>
 <span class="c1"># matlabmode is only for testing purposes</span>
 <span class="n">matlabmode</span> <span class="o">=</span> <span class="kc">False</span>
-
-<span class="c1"># magnetic entities and pairs can be defined automatically from the cutoff radius and magnetic atoms</span>
+<span class="c1">################################################################################</span>
+<span class="c1">#                      Magnetic entity and pair definitions</span>
+<span class="c1">################################################################################</span>
+<span class="c1"># magnetic entities and pairs can be defined automatically from the cutoff</span>
+<span class="c1"># radius and magnetic atoms</span>
 <span class="n">setup_from_range</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="n">radius</span> <span class="o">=</span> <span class="mi">4</span>
 <span class="n">atomic_subset</span> <span class="o">=</span> <span class="s2">&quot;Cr&quot;</span>
 <span class="n">kwargs_for_mag_ent</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">l</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-
+<span class="c1">################################################################################</span>
+<span class="c1">#                                Memory management</span>
+<span class="c1">################################################################################</span>
 <span class="c1"># maximum number of pairs per loop, reduce it to avoid memory overflow</span>
 <span class="n">max_pairs_per_loop</span> <span class="o">=</span> <span class="mi">10000</span>
-<span class="c1"># in low memory mode we discard</span>
+<span class="c1"># in low memory mode we discard some temporary data that could be useful for</span>
+<span class="c1"># interactive work</span>
 <span class="n">low_memory_mode</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="c1">################################################################################</span>
+<span class="c1">#                                 Solution methods</span>
+<span class="c1">################################################################################</span>
 <span class="c1"># sequential solver is better for large systems</span>
 <span class="n">greens_function_solver</span> <span class="o">=</span> <span class="s2">&quot;Parallel&quot;</span>
 <span class="c1"># the calculation of J and K from the energy derivations, either Fit or grogupy</span>
 <span class="n">exchange_solver</span> <span class="o">=</span> <span class="s2">&quot;Fit&quot;</span>
 <span class="n">anisotropy_solver</span> <span class="o">=</span> <span class="s2">&quot;Fit&quot;</span>
-
+<span class="c1">################################################################################</span>
+<span class="c1">#                                   Output files</span>
+<span class="c1">################################################################################</span>
 <span class="c1"># either total or local, which controls if only the magnetic</span>
 <span class="c1"># entity&#39;s magnetic monent or the whole atom&#39;s magnetic moment is printed</span>
 <span class="c1"># used by all output modes</span>
@@ -268,6 +289,8 @@ as we did in the jupyter notebook examples.</p>
 <span class="n">outfolder</span> <span class="o">=</span> <span class="n">infolder</span>
 <span class="c1"># outfile name</span>
 <span class="n">outfile</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">infile</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">_kset_</span><span class="si">{</span><span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="w"> </span><span class="n">kset</span><span class="p">))</span><span class="si">}</span><span class="s2">_eset_</span><span class="si">{</span><span class="n">eset</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="c1">################################################################################</span>
+<span class="c1">################################################################################</span>
 </pre></div>
 </div>
 </section>

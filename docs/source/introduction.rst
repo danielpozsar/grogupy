@@ -34,7 +34,7 @@ grogupy is a Python package that can calculate and visualize magnetic
 interaction parameters. It can be run in a juptyer notebook or in a
 command line interface with the ability of GPU acceleration.
 
-Go to the :ref:`installation <quickstart>` page to install grogupy.
+Go to the :ref:`installation <quickstart-guide>` page to install grogupy.
 
 Command line usage
 ------------------

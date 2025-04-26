@@ -7,4 +7,5 @@ All methods and submodules are listed  :ref:`here <genindex>` and
 .. toctree::
    :maxdepth: 2
 
-   viz/index
+   viz
+   io
