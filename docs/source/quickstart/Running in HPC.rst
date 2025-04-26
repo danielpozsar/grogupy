@@ -13,7 +13,7 @@ Example SLURM Batch Script
 
 The following is an example SLURM batch script (`sbatch`)
 for running grogupy on an HPC system, in this case on
-`Komondor <https://hpc.kifu.hu/hu/komondor>`_.:
+`Komondor <https://hpc.kifu.hu/hu/komondor.html>`_:
 
 .. code-block:: bash
 
@@ -55,7 +55,7 @@ Explanation of the Script
 - `#SBATCH --ntasks=1`: Requests one task.
 - `#SBATCH --ntasks-per-node=1`: Specifies one task per node.
 - `#SBATCH --cpus-per-task=128`: Allocates 128 CPUs per task.
-- `#SBATCH --time=06:00:00`: Sets a time limit of 1 hours for the job.
+- `#SBATCH --time=01:00:00`: Sets a time limit of 1 hours for the job.
 - `#SBATCH --gres=gpu:8`: Requests 8 GPUs.
 - `#SBATCH --partition=ai`: Specifies the partition to submit the job to.
 - `#SBATCH --exclusive`: Ensures exclusive access to the node.

@@ -115,7 +115,7 @@ def decipher_all_by_pos(
         information and the Hamiltonian, by default 1e-4
     mode: {"normal", "full"}, optional
         Whether to return all the information or just the one needed by
-        ``grogupy``, by default "normal"
+        grogupy, by default "normal"
 
     Returns
     -------

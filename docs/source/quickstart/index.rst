@@ -18,7 +18,7 @@ Installation
 
         .. code-block:: bash
 
-            python3 -m pip install --index-url https://test.pypi.org/simple/ grogupy
+            pip install grogupy
 
     .. grid-item-card:: Using source code
         :columns: 12 12 12 12
@@ -30,9 +30,9 @@ Installation
 
         .. code-block:: bash
 
-            git clone https://github.com/danielpozsar/grogu.git
+            git clone https://github.com/danielpozsar/grogupy.git
             python -m build
-            pip install dist/grogupy-0.0.6-py3-none-any
+            pip install dist/grogupy-VERSION_NUMBER-py3-none-any
 
 
 
@@ -42,7 +42,7 @@ Quickstart tutorials
 .. toctree::
    :maxdepth: 1
 
-   ../notebooks/quickstart/Calculate magnetic parameters.ipynb
-   ../notebooks/quickstart/Visualize the exchange.ipynb
-   ../notebooks/quickstart/Convergence with high throughput.ipynb
+   Calculate magnetic parameters.ipynb
+   Visualize the exchange.ipynb
+   Convergence with high throughput.ipynb
    Running in HPC.rst

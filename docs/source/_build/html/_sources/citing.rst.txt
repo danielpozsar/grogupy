@@ -61,7 +61,7 @@ format.
 
 .. code-block:: console
 
-    grogupy --cite
+    grogupy_run --cite
     @article{martinez2023relativistic,
         title={Relativistic magnetic interactions from nonorthogonal basis sets},
         author={Mart{\'\i}nez-Carracedo, Gabriel and Oroszl{\'a}ny, L{\'a}szl{\'o} and Garc{\'\i}a-Fuente, Amador and Ny{\'a}ri, Bendeg{\'u}z and Udvardi, L{\'a}szl{\'o} and Szunyogh, L{\'a}szl{\'o} and Ferrer, Jaime},

@@ -17,7 +17,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=53b53b71"></script>
+      <script src="../_static/documentation_options.js?v=f7cdbf68"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -28,7 +28,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Citing grogupy" href="../citing.html" />
-    <link rel="prev" title="Convergence with high throughput" href="../notebooks/quickstart/Convergence%20with%20high%20throughput.html" /> 
+    <link rel="prev" title="Convergence with high throughput" href="Convergence%20with%20high%20throughput.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -56,9 +56,9 @@
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Quickstart</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="index.html#installation">Installation</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html#quickstart-tutorials">Quickstart tutorials</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/quickstart/Calculate%20magnetic%20parameters.html">Calculate magnetic parameters</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/quickstart/Visualize%20the%20exchange.html">Visualize the exchange</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../notebooks/quickstart/Convergence%20with%20high%20throughput.html">Convergence with high throughput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Calculate%20magnetic%20parameters.html">Calculate magnetic parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Visualize%20the%20exchange.html">Visualize the exchange</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Convergence%20with%20high%20throughput.html">Convergence with high throughput</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Running grogupy in HPC</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#example-slurm-batch-script">Example SLURM Batch Script</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#explanation-of-the-script">Explanation of the Script</a></li>
@@ -189,17 +189,38 @@ your HPC system’s configuration and your specific requirements.</p>
 which contains the parameters for the grogupy simulation. These variables
 are passed to the appropriate functions in the grogupy package very similarly
 as we did in the jupyter notebook examples.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">################################################################################</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Copyright (c) [2024-2025] [Laszlo Oroszlany, Daniel Pozsar]</span>
+<span class="c1">#</span>
+<span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
+<span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
+<span class="c1"># in the Software without restriction, including without limitation the rights</span>
+<span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
+<span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
+<span class="c1"># furnished to do so, subject to the following conditions:</span>
+<span class="c1">#</span>
+<span class="c1"># The above copyright notice and this permission notice shall be included in all</span>
+<span class="c1"># copies or substantial portions of the Software.</span>
+<span class="c1">#</span>
+<span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
+<span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
+<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
+<span class="c1"># AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
+<span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
+<span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
+<span class="c1"># SOFTWARE.</span>
+
+
+<span class="c1">################################################################################</span>
 <span class="c1">#                                 Input files</span>
 <span class="c1">################################################################################</span>
 <span class="c1"># input folder and file</span>
 <span class="n">infolder</span> <span class="o">=</span> <span class="s2">&quot;./&quot;</span>
-<span class="n">infile</span> <span class="o">=</span> <span class="s2">&quot;CrIWSe.fdf&quot;</span>
+<span class="n">infile</span> <span class="o">=</span> <span class="s2">&quot;CrBr3.fdf&quot;</span>
 <span class="c1">################################################################################</span>
 <span class="c1">#                            Convergence parameters</span>
 <span class="c1">################################################################################</span>
 <span class="c1"># kset should be at leas 100x100 for 2D diatomic systems</span>
-<span class="n">kset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">kset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
 <span class="c1"># eset should be 100 for insulators and 1000 for metals</span>
 <span class="n">eset</span> <span class="o">=</span> <span class="mi">100</span>
 <span class="c1"># esetp should be 600 for insulators and 10000 for metals</span>
@@ -212,7 +233,7 @@ as we did in the jupyter notebook examples.</p>
 <span class="n">emin_shift</span> <span class="o">=</span> <span class="o">-</span><span class="mi">5</span>
 <span class="c1"># the top of the energy contour can be shifted to the middle of the gap for</span>
 <span class="c1"># insulators</span>
-<span class="n">emax_shift</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.22</span>
+<span class="n">emax_shift</span> <span class="o">=</span> <span class="mf">0.5</span>
 <span class="c1">################################################################################</span>
 <span class="c1">#                                 Orientations</span>
 <span class="c1">################################################################################</span>
@@ -228,14 +249,14 @@ as we did in the jupyter notebook examples.</p>
 <span class="c1"># magnetic entities and pairs can be defined automatically from the cutoff</span>
 <span class="c1"># radius and magnetic atoms</span>
 <span class="n">setup_from_range</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="n">radius</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">radius</span> <span class="o">=</span> <span class="mi">20</span>
 <span class="n">atomic_subset</span> <span class="o">=</span> <span class="s2">&quot;Cr&quot;</span>
 <span class="n">kwargs_for_mag_ent</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">l</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="c1">################################################################################</span>
 <span class="c1">#                                Memory management</span>
 <span class="c1">################################################################################</span>
 <span class="c1"># maximum number of pairs per loop, reduce it to avoid memory overflow</span>
-<span class="n">max_pairs_per_loop</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="n">max_pairs_per_loop</span> <span class="o">=</span> <span class="mi">100</span>
 <span class="c1"># in low memory mode we discard some temporary data that could be useful for</span>
 <span class="c1"># interactive work</span>
 <span class="n">low_memory_mode</span> <span class="o">=</span> <span class="kc">True</span>
@@ -244,7 +265,7 @@ as we did in the jupyter notebook examples.</p>
 <span class="c1">################################################################################</span>
 <span class="c1"># sequential solver is better for large systems</span>
 <span class="n">greens_function_solver</span> <span class="o">=</span> <span class="s2">&quot;Parallel&quot;</span>
-<span class="c1"># the calculation of J and K from the energy derivations, either Fit or grogupy</span>
+<span class="c1"># the calculation of J and K from the energy derivations, either Fit or Grogupy</span>
 <span class="n">exchange_solver</span> <span class="o">=</span> <span class="s2">&quot;Fit&quot;</span>
 <span class="n">anisotropy_solver</span> <span class="o">=</span> <span class="s2">&quot;Fit&quot;</span>
 <span class="c1">################################################################################</span>
@@ -273,22 +294,21 @@ as we did in the jupyter notebook examples.</p>
 <span class="sd">0. This means that there is no compression at all.</span>
 
 <span class="sd">1. This means, that the keys &quot;_dh&quot; and &quot;_ds&quot; are set</span>
-<span class="sd">   to None, because othervise the loading would be dependent</span>
-<span class="sd">   on the sisl version</span>
+<span class="sd">to None, because othervise the loading would be dependent</span>
+<span class="sd">on the sisl version</span>
 
 <span class="sd">2. This contains compression 1, but sets the keys &quot;Gii&quot;,</span>
-<span class="sd">   &quot;_Gii_tmp&quot;, &quot;Gij&quot;, &quot;_Gij_tmp&quot;, &quot;Gji&quot;, &quot;_Gji_tmp&quot;,</span>
-<span class="sd">   &quot;Vu1&quot; and &quot;Vu2&quot; to [], to save space</span>
+<span class="sd">   &quot;Gij&quot;, &quot;Gji&quot;, &quot;Vu1&quot; and &quot;Vu2&quot; to [], to save space</span>
 
 <span class="sd">3. This contains compression 1 and 2, but sets the keys</span>
-<span class="sd">   &quot;hTRS&quot;, &quot;hTRB&quot;, &quot;XCF&quot; and &quot;H_XCF&quot; to None, to save space</span>
+<span class="sd">&quot;hTRS&quot;, &quot;hTRB&quot;, &quot;XCF&quot; and &quot;H_XCF&quot; to None, to save space</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="n">pickle_compress_level</span> <span class="o">=</span> <span class="mi">3</span>
 
 <span class="c1"># output folder, for example the current folder</span>
 <span class="n">outfolder</span> <span class="o">=</span> <span class="n">infolder</span>
 <span class="c1"># outfile name</span>
-<span class="n">outfile</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">infile</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">_kset_</span><span class="si">{</span><span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="w"> </span><span class="n">kset</span><span class="p">))</span><span class="si">}</span><span class="s2">_eset_</span><span class="si">{</span><span class="n">eset</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="n">outfile</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">infile</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">_kset_</span><span class="si">{</span><span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="w"> </span><span class="n">kset</span><span class="p">))</span><span class="si">}</span><span class="s2">_eset_</span><span class="si">{</span><span class="n">eset</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">anisotropy_solver</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="c1">################################################################################</span>
 <span class="c1">################################################################################</span>
 </pre></div>
@@ -300,7 +320,7 @@ as we did in the jupyter notebook examples.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../notebooks/quickstart/Convergence%20with%20high%20throughput.html" class="btn btn-neutral float-left" title="Convergence with high throughput" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Convergence%20with%20high%20throughput.html" class="btn btn-neutral float-left" title="Convergence with high throughput" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../citing.html" class="btn btn-neutral float-right" title="Citing grogupy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

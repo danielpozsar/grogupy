@@ -50,14 +50,14 @@ grogupy was created by the `TRILMAX Consortium <https://trilmax.elte.hu>`_.
         :link: quickstart/index
         :link-type: doc
 
-        Simple tutorial to introduce the ``grogupy`` package.
+        Simple tutorial to introduce the grogupy package.
 
     .. grid-item-card:: -- Tutorials
         :link: tutorials/index
         :link-type: doc
 
         In depth tutorials to explore all the possibilities
-        with ``grogupy``.
+        with grogupy.
 
     .. grid-item-card::  -- API reference
         :link: API/modules
