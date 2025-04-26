@@ -24,7 +24,7 @@ Visualization
 .. currentmodule:: grogupy.viz
 
 
-This submodule contains various routines to plot the system of magnetic entities
+This subpackage contains various routines to plot the system of magnetic entities
 and pairs. Furthermore it will be able to plot the calculated magnetic exchange
 parameters.
 

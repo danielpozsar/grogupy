@@ -66,7 +66,7 @@ grogupy was created by the `TRILMAX Consortium <https://trilmax.elte.hu>`_.
         Detailed description of the implementation for advanced users.
 
 
-    .. grid-item-card::  -- Implementation
+    .. grid-item-card::  -- Contributing to grogupy
         :link: development/index
         :link-type: doc
 

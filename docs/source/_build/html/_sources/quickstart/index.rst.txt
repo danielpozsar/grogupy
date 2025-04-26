@@ -42,7 +42,7 @@ Quickstart tutorials
 .. toctree::
    :maxdepth: 1
 
-   Calculate magnetic parameters.ipynb
-   Visualize the exchange.ipynb
-   Convergence with high throughput.ipynb
-   Running in HPC.rst
+   test_calculate_magnetic_parameters.ipynb
+   test_visualize_the_exchange.ipynb
+   convergence_with_high_throughput
+   running_in_hpc

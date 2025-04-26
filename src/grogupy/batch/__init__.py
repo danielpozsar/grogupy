@@ -17,9 +17,40 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-"""batch.__init__
+"""
+Batch calculations
+==================
 
-_extended_summary_
+.. currentmodule:: grogupy.batch
+
+This subpackage contains routines to automatically set up and run convergence
+ tests and time the calculations.
+
+Timers
+------
+
+One class to rule them all, one class to time them...
+
+.. autosummary::
+   :toctree: _generated/
+
+   DefaultTimer                 This class measures and stores the runtime of each object.
+
+Convergence
+-----------
+
+These are functions that can set up and execute different convergence tests or 
+that can otherwise help with running in an HPC environment.
+
+.. autosummary::
+   :toctree: _generated/
+
+Examples
+--------
+
+For examples, see the :ref:`tutorials <tutorials>`.
+
 """
 
-from .timing import DefaultTimer
+from .converge import *
+from .timing import *

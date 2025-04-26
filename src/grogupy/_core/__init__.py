@@ -17,7 +17,62 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-"""core.__init__
+"""
+Core
+====
 
-_extended_summary_
+.. currentmodule:: grogupy.batch
+
+This subpackage contains routines to automatically set up and run convergence
+ tests and time the calculations.
+
+Core functions
+--------------
+
+It contains the core functions of the calculation. There are mathematical functions, 
+``Contour``, ``Kspace`` and ``Hamiltonian`` methods, magnetic entity and pair generation.
+
+
+.. autosummary::
+   :toctree: _generated/
+
+   DefaultTimer                 This class measures and stores the runtime of each object.
+
+
+Constants
+---------
+
+Here are the physical constants and default values for the input.
+
+Cpu solvers
+-----------
+
+Functions used in the solution method of the ``Builder`` class.
+
+.. autosummary::
+   :toctree: _generated/
+
+   solve_parallel_over_k        It calculates the energies by the Greens function method.
+
+
+Gpu solvers
+-----------
+
+Functions used in the solution method of the ``Builder`` class.
+
+.. autosummary::
+   :toctree: _generated/
+
+   solve_parallel_over_k        It calculates the energies by the Greens function method.
+   gpu_solver                   Parallelizes the Green's function solution on GPU.
+
+Utilities
+---------
+
+Miscellaneous functions used around the code...
+
+.. autosummary::
+   :toctree: _generated/
+
+
 """

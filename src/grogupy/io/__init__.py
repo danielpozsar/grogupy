@@ -31,6 +31,8 @@ and to save the data in other input formats.
 Input/Output Functions
 ----------------------
 
+These are the main input output functions for the user.
+
 .. autosummary::
    :toctree: _generated/
 
@@ -44,6 +46,9 @@ Input/Output Functions
 
 Utility functions
 -----------------
+
+These are utility functions that are mostly used in the background, but 
+could be useful in some special applications.
 
 .. autosummary::
    :toctree: _generated/
