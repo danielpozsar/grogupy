@@ -27,8 +27,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Environment Variables" href="../environment/index.html" />
-    <link rel="prev" title="grogupy.viz.plot_DMI" href="_generated/grogupy.viz.plot_DMI.html" /> 
+    <link rel="next" title="grogupy.Config" href="_generated/grogupy.Config.html" />
+    <link rel="prev" title="API reference" href="modules.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -63,11 +63,20 @@
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">API reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">grogupy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tqdm-in-grogupy">tqdm in grogupy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configuration">Configuration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="_generated/grogupy.Config.html">grogupy.Config</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="physics.html">Physics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="core.html">Core</a></li>
-<li class="toctree-l2"><a class="reference internal" href="batch.html">Batch calculations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="io.html">Input/Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="batch.html">Batch calculations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html">Command line interface for grogupy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="viz.html">Visualization</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">grogupy</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../environment/index.html">Environment Variables</a></li>
@@ -114,14 +123,34 @@
 model including the exchange between the pairs and the anisotropy of the
 magnetic entities. This is done by reading in the Hamiltonian to a single
 non-collinear DFT calculation, where the DFT software can be non-orthogonal.</p>
+<section id="tqdm-in-grogupy">
+<h2>tqdm in grogupy<a class="headerlink" href="#tqdm-in-grogupy" title="Link to this heading"></a></h2>
+<p>tqdm is optional in grogupy, but when it is in use grogupy uses its own wrapper
+to handle edge cases and print only on the root node, when there is MPI
+parallelization.</p>
+</section>
+<section id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading"></a></h2>
+<p>This module contains the configuration from the environment, which helps to
+load or avoid the optional dependencies that can be part of grogupy. These
+optional dependencies are tqd, cupy for gpu acceleration and plotly for
+visualization.</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="_generated/grogupy.Config.html#grogupy.Config" title="grogupy.Config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Config</span></code></a>(architecture, tqdm)</p></td>
+<td><p>Configuration class of grogupy.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="_generated/grogupy.viz.plot_DMI.html" class="btn btn-neutral float-left" title="grogupy.viz.plot_DMI" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../environment/index.html" class="btn btn-neutral float-right" title="Environment Variables" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="modules.html" class="btn btn-neutral float-left" title="API reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="_generated/grogupy.Config.html" class="btn btn-neutral float-right" title="grogupy.Config" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
