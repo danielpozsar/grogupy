@@ -17,14 +17,6 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-"""gpu_solvers.py
-
-Because GPUs run asyncronusly, we can unlock the GIL in python
-and run in a parallel manner over multiple GPUs. The only constrain
-is the input/output writing between hardwares.
-"""
-
-
 from typing import TYPE_CHECKING
 
 from numpy.typing import NDArray
@@ -62,7 +54,7 @@ if CONFIG.is_GPU:
         G_pair_ji: list[NDArray],
         rotated_H: list[NDArray],
         S: NDArray,
-    ) -> tuple[CNDArray, CNDArray, CNDArray]:
+    ) -> tuple["CNDArray", "CNDArray", "CNDArray"]:
         """Parallelizes the Green's function solution on GPU.
 
         Should be used on computation power bound systems.
@@ -454,7 +446,7 @@ else:
         G_pair_ji: list[NDArray],
         rotated_H: list[NDArray],
         S: NDArray,
-    ) -> tuple[CNDArray, CNDArray, CNDArray]:
+    ) -> tuple["CNDArray", "CNDArray", "CNDArray"]:
         """Solves the Green's function parallel on GPU.
 
         Should be used on computation power bound systems.

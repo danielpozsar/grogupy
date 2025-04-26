@@ -3,9 +3,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Overview: module code &mdash; grogupy</title>
+  <title>Batch calculations &mdash; grogupy</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -25,7 +26,9 @@
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="grogupy.batch.DefaultTimer" href="_generated/grogupy.batch.DefaultTimer.html" />
+    <link rel="prev" title="grogupy._core.hsk" href="_generated/grogupy._core.hsk.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -58,8 +61,22 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../API/modules.html">API reference</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">API reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="core.html">Core</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Batch calculations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#timers">Timers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="_generated/grogupy.batch.DefaultTimer.html">grogupy.batch.DefaultTimer</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#convergence">Convergence</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="io.html">Input/Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="viz.html">Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grogupy.html">grogupy</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../environment/index.html">Environment Variables</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
@@ -86,8 +103,10 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Overview: module code</li>
+          <li class="breadcrumb-item"><a href="modules.html">API reference</a></li>
+      <li class="breadcrumb-item active">Batch calculations</li>
       <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/API/batch.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -95,18 +114,43 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>All modules for which code is available</h1>
-<ul><li><a href="grogupy/_core/gpu_solvers.html">grogupy._core.gpu_solvers</a></li>
-<li><a href="grogupy/_core/utilities.html">grogupy._core.utilities</a></li>
-<li><a href="grogupy/batch/timing.html">grogupy.batch.timing</a></li>
-<li><a href="grogupy/io/io.html">grogupy.io.io</a></li>
-<li><a href="grogupy/io/utilities.html">grogupy.io.utilities</a></li>
-<li><a href="grogupy/viz/plotters.html">grogupy.viz.plotters</a></li>
-</ul>
+  <section id="batch-calculations">
+<h1>Batch calculations<a class="headerlink" href="#batch-calculations" title="Link to this heading"></a></h1>
+<dl class="simple">
+<dt>This subpackage contains routines to automatically set up and run convergence</dt><dd><p>tests and time the calculations.</p>
+</dd>
+</dl>
+<section id="timers">
+<h2>Timers<a class="headerlink" href="#timers" title="Link to this heading"></a></h2>
+<p>One class to rule them all, one class to time them…</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="_generated/grogupy.batch.DefaultTimer.html#grogupy.batch.DefaultTimer" title="grogupy.batch.DefaultTimer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DefaultTimer</span></code></a>()</p></td>
+<td><p>This class measures and stores the runtime of each object.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="convergence">
+<h2>Convergence<a class="headerlink" href="#convergence" title="Link to this heading"></a></h2>
+<p>These are functions that can set up and execute different convergence tests or
+that can otherwise help with running in an HPC environment.</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<p>For examples, see the <a class="reference internal" href="../tutorials/index.html#tutorials"><span class="std std-ref">tutorials</span></a>.</p>
+</section>
+</section>
+
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="_generated/grogupy._core.hsk.html" class="btn btn-neutral float-left" title="grogupy._core.hsk" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="_generated/grogupy.batch.DefaultTimer.html" class="btn btn-neutral float-right" title="grogupy.batch.DefaultTimer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

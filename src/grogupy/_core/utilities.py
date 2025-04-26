@@ -17,11 +17,6 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-"""These are some basic support functions.
-
-    This module mostly contains functions for rotations.
-"""
-
 from typing import Any, Union
 
 import numpy as np
@@ -38,7 +33,7 @@ if CONFIG.is_GPU:
 
 
 def commutator(a: NDArray, b: NDArray) -> NDArray:
-    """Shorthand for commutator
+    """Shorthand for commutator.
 
     Commutator of two matrices in the mathematical sense.
 
@@ -59,7 +54,7 @@ def commutator(a: NDArray, b: NDArray) -> NDArray:
 
 
 def tau_u(u: Union[list, NDArray]) -> NDArray:
-    """Pauli matrix in direction u
+    """Pauli matrix in direction u.
 
     Returns the vector u in the basis of the Pauli matrices.
 
@@ -81,7 +76,7 @@ def tau_u(u: Union[list, NDArray]) -> NDArray:
 
 
 def crossM(u: Union[list, NDArray]) -> NDArray:
-    """Definition for the cross-product matrix
+    """Definition for the cross-product matrix.
 
     It acts as a cross product with vector u.
 
@@ -100,7 +95,7 @@ def crossM(u: Union[list, NDArray]) -> NDArray:
 
 
 def RotM(theta: float, u: NDArray, eps: float = 1e-10) -> NDArray:
-    """Definition of rotation matrix with angle theta around direction u
+    """Definition of rotation matrix with angle theta around direction u.
 
     Parameters
     ----------
@@ -131,7 +126,7 @@ def RotM(theta: float, u: NDArray, eps: float = 1e-10) -> NDArray:
 
 
 def RotMa2b(a: NDArray, b: NDArray, eps: float = 1e-10) -> NDArray:
-    """Definition of rotation matrix rotating unit vector a to unit vector b
+    """Definition of rotation matrix rotating unit vector a to unit vector b.
 
     Function returns array R such that R @ a = b holds.
 
@@ -296,7 +291,7 @@ def setup_from_range(
 
 
 def arrays_lists_equal(array1: Any, array2: Any) -> bool:
-    """Compares two objects.
+    """Compares two objects with specific rules.
 
     if the objects are not arrays or nested lists ending in
     arrays, then it returns False. Otherwise it goes
@@ -352,7 +347,7 @@ def arrays_lists_equal(array1: Any, array2: Any) -> bool:
 
 
 def arrays_None_equal(array1: Any, array2: Any) -> bool:
-    """Compares two objects.
+    """Compares two objects with specific rules.
 
     if the objects are not arrays or None, then it returns
     False. Otherwise it compares the arrays.
@@ -392,7 +387,7 @@ def arrays_None_equal(array1: Any, array2: Any) -> bool:
 
 
 def parallel_Gk(HK: NDArray, SK: NDArray, samples: NDArray, eset: int) -> NDArray:
-    """Calculates the Greens function by inversion
+    """Calculates the Greens function by inversion.
 
     It calculates the Greens function on all the energy levels at the same time.
 
@@ -418,7 +413,7 @@ def parallel_Gk(HK: NDArray, SK: NDArray, samples: NDArray, eset: int) -> NDArra
 
 
 def sequential_Gk(HK: NDArray, SK: NDArray, samples: NDArray, eset: int) -> NDArray:
-    """Calculates the Greens function by inversion
+    """Calculates the Greens function by inversion.
 
     It calculates sequentially over the energy levels.
 
@@ -449,7 +444,7 @@ def sequential_Gk(HK: NDArray, SK: NDArray, samples: NDArray, eset: int) -> NDAr
 
 
 def onsite_projection(matrix: NDArray, idx1: NDArray, idx2: NDArray) -> NDArray:
-    """It produces the slices of a matrix for the on site projection
+    """It produces the slices of a matrix for the on site projection.
 
     The slicing is along the last two axes as these contains the orbital indexing.
 
@@ -470,7 +465,7 @@ def onsite_projection(matrix: NDArray, idx1: NDArray, idx2: NDArray) -> NDArray:
 
 
 def calc_Vu(H: NDArray, Tu: NDArray) -> NDArray:
-    """Calculates the local perturbation in case of a spin rotation
+    """Calculates the local perturbation in case of a spin rotation.
 
     Parameters
     ----------
@@ -494,7 +489,7 @@ def calc_Vu(H: NDArray, Tu: NDArray) -> NDArray:
 
 
 def build_hh_ss(dh: sisl.physics.Hamiltonian) -> tuple[NDArray, NDArray]:
-    """It builds the Hamiltonian and Overlap matrix from the sisl.dh class
+    """It builds the Hamiltonian and Overlap matrix from the sisl.dh class.
 
     It restructures the data in the SPIN BOX representation, where NS is
     the number of supercells and NO is the number of orbitals.
@@ -649,7 +644,7 @@ def build_hh_ss(dh: sisl.physics.Hamiltonian) -> tuple[NDArray, NDArray]:
 def make_contour(
     emin: float = -20, emax: float = 0.0, enum: int = 42, p: float = 150
 ) -> tuple[NDArray, NDArray]:
-    """A more sophisticated contour generator
+    """A more sophisticated contour generator.
 
     Calculates the parameters for the complex contour integral. It uses the
     Legendre-Gauss quadrature method. It returns a class that contains
@@ -689,7 +684,7 @@ def make_contour(
 
 
 def make_kset(kset: Union[list, NDArray] = np.array([1, 1, 1])) -> NDArray:
-    """Simple k-grid generator to sample the Brillouin zone
+    """Simple k-grid generator to sample the Brillouin zone.
 
     Parameters
     ----------
@@ -717,7 +712,7 @@ def make_kset(kset: Union[list, NDArray] = np.array([1, 1, 1])) -> NDArray:
 def hsk(
     H: NDArray, S: NDArray, sc_off: list, k: tuple = (0, 0, 0)
 ) -> tuple[NDArray, NDArray]:
-    """Speed up Hk and Sk generation
+    """Speed up Hk and Sk generation.
 
     Calculates the Hamiltonian and the Overlap matrix at a given k point. It is faster that the sisl version.
 

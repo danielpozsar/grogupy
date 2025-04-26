@@ -17,12 +17,26 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-"""grogupy is a package capable of calculating magnetic interactions.
+"""
+grogupy
+=======
 
-    The main focus is on calculating the parameters of the generalized Heisenberg
-    model including the exchange between the pairs and the anisotropy of the
-    magnetic entities. This is done by reading in the Hamiltonian to a single
-    non-collinear DFT calculation, where the DFT software can be non-orthogonal.
+.. currentmodule:: grogupy
+
+grogupy is a package capable of calculating magnetic interactions.
+
+The main focus is on calculating the parameters of the generalized Heisenberg
+model including the exchange between the pairs and the anisotropy of the
+magnetic entities. This is done by reading in the Hamiltonian to a single
+non-collinear DFT calculation, where the DFT software can be non-orthogonal.
+
+TQDM in grogupy
+---------------
+
+Configuration
+-------------
+
+
 """
 
 __all__ = []

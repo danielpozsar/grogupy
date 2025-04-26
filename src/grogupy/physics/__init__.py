@@ -23,33 +23,49 @@ Physics
 
 .. currentmodule:: grogupy.physics
 
+This subpackage contains the physical classes and functions closely related 
+to energy and magnetic parameter calculation.
 
 
-Functions
+Physical classes
+----------------
+
+.. autosummary::
+   :toctree: _generated/
+
+   builder                      The main class that holds together the whole simulation.
+   contour                      Energy contour integral.
+   hamiltonian                  The Hamiltonian describing the DFT part and useful methods.
+   kspace                       Brillouin zone integral.
+   magnetic_entity              Magnetic entity containing useful methods and information.
+   pair                         Pair built from two magnetic entities and a supercell shift.
+
+
+Utilities
 ---------
 
 .. autosummary::
    :toctree: _generated/
 
-    builder
-    contour
-    kspace
-    utilities
+   get_number_of_electrons      Determines the number of electrons in the system from the density matrix.
+   automatic_emin               It reads the lowest energy level from siesta.
+   blow_up_orbindx              Function to blow up orbital indices to make SPIN BOX indices
+   spin_tracer                  Spin tracer utility
+   parse_magnetic_entity        Function to get the orbital indices of a given magnetic entity.
+   interaction_energy           The interaction energy variation upon rotations.
+   second_order_energy          The second order energy variation upon rotations.
+   calculate_anisotropy_tensor  Calculates the renormalized anisotropy tensor from the energies.
+   fit_anisotropy_tensor        Fits the anisotropy tensor to the energies
+   calculate_exchange_tensor    Calculates the exchange tensor from the energies
+   fit_exchange_tensor          Fits the exchange tensor to the energies
 
-
-Background information
-----------------------
-
-Examples
---------
-
-For examples, see the various functions.
 
 """
 
-from .builder import Builder
-from .contour import Contour
-from .hamiltonian import Hamiltonian
-from .kspace import Kspace
-from .magnetic_entity import MagneticEntity
-from .pair import Pair
+from .builder import *
+from .contour import *
+from .hamiltonian import *
+from .kspace import *
+from .magnetic_entity import *
+from .pair import *
+from .utilities import *

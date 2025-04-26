@@ -3,7 +3,8 @@ Introduction
 
 grogupy is a package that contains a variety of modules to calculate
 and visualize magnetic interaction parameters. One of the main
-features is the ability to calculate the magnetic anisotropy as well.
+features is the ability to calculate the magnetic anisotropy as well 
+from relativistic calculations.
 
 .. math::
 
@@ -18,7 +19,7 @@ parameters of a large number of atoms or magnetic entites. The most
 resource consuming part of the simulation is the Green's function
 calculation, but the number of matrix inversions does not depend on
 the number of pairs in the system, so the increase in the number of
-pairs comes very cheap computationally.
+pairs is very cheap computationally.
 
 2. It is capable to visualize the examined system including the
 calculated magnetic parameters, like the isotropic, symmetric and

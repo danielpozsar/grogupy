@@ -57,6 +57,38 @@ class TestCore:
     def test_arrays_None_equal(self):
         raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
+    def test_parallel_Gk(self):
+        raise NotImplementedError
+
+    @pytest.mark.xfail(raises=NotImplementedError)
+    def test_sequential_Gk(self):
+        raise NotImplementedError
+
+    @pytest.mark.xfail(raises=NotImplementedError)
+    def test_onsite_projection(self):
+        raise NotImplementedError
+
+    @pytest.mark.xfail(raises=NotImplementedError)
+    def test_calc_Vu(self):
+        raise NotImplementedError
+
+    @pytest.mark.xfail(raises=NotImplementedError)
+    def test_build_hh_ss(self):
+        raise NotImplementedError
+
+    @pytest.mark.xfail(raises=NotImplementedError)
+    def test_make_contour(self):
+        raise NotImplementedError
+
+    @pytest.mark.xfail(raises=NotImplementedError)
+    def test_make_kset(self):
+        raise NotImplementedError
+
+    @pytest.mark.xfail(raises=NotImplementedError)
+    def test_hsk(self):
+        raise NotImplementedError
+
 
 if __name__ == "__main__":
     pass

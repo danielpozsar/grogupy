@@ -17,12 +17,6 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-"""The magnetism module contains the functions closely related to magnetic parameter calculation.
-
-    It can be be used to manipulate the SPIN BOX indices, parse the magnetic
-    entities and calculate the magnetic exchange from the energies.
-"""
-
 import warnings
 from typing import Union
 
@@ -117,7 +111,7 @@ def automatic_emin(infile: str) -> float:
 
 
 def blow_up_orbindx(orb_indices: NDArray) -> NDArray:
-    """Function to blow up orbital indices to make SPIN BOX indices
+    """Function to blow up orbital indices to make SPIN BOX indices.
 
     Parameters
     ----------
@@ -136,7 +130,7 @@ def blow_up_orbindx(orb_indices: NDArray) -> NDArray:
 
 
 def spin_tracer(M: NDArray) -> dict:
-    """Spin tracer utility
+    """Spin tracer utility.
 
     This takes an operator with the orbital-spin sequence:
     orbital 1 up,
@@ -513,7 +507,7 @@ def calculate_anisotropy_tensor(energies: NDArray) -> tuple[NDArray, float]:
 def fit_anisotropy_tensor(
     energies: NDArray, ref_xcf: list[dict]
 ) -> tuple[NDArray, float]:
-    """Fits the anisotropy tensor to the energies
+    """Fits the anisotropy tensor to the energies.
 
     It uses a fitting method to calculate the anisotropy tensor from the
     reference directions and its different representations.
@@ -580,7 +574,7 @@ def fit_anisotropy_tensor(
 def calculate_exchange_tensor(
     energies: NDArray,
 ) -> tuple[float, NDArray, NDArray, NDArray]:
-    """Calculates the exchange tensor from the energies
+    """Calculates the exchange tensor from the energies.
 
     It produces the isotropic exchange, the relevant elements
     from the Dzyaloshinskii-Morilla (Dm) tensor, the symmetric-anisotropy
@@ -649,7 +643,7 @@ def calculate_exchange_tensor(
 def fit_exchange_tensor(
     energies: NDArray, ref_xcf: list[dict]
 ) -> tuple[float, NDArray, NDArray, NDArray]:
-    """Fits the exchange tensor to the energies
+    """Fits the exchange tensor to the energies.
 
     It uses a fitting method to calculate the exchange tensor from the
     reference directions and its different representations.

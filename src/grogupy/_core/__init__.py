@@ -21,23 +21,10 @@
 Core
 ====
 
-.. currentmodule:: grogupy.batch
+.. currentmodule:: grogupy._core
 
 This subpackage contains routines to automatically set up and run convergence
  tests and time the calculations.
-
-Core functions
---------------
-
-It contains the core functions of the calculation. There are mathematical functions, 
-``Contour``, ``Kspace`` and ``Hamiltonian`` methods, magnetic entity and pair generation.
-
-
-.. autosummary::
-   :toctree: _generated/
-
-   DefaultTimer                 This class measures and stores the runtime of each object.
-
 
 Constants
 ---------
@@ -48,6 +35,7 @@ Cpu solvers
 -----------
 
 Functions used in the solution method of the ``Builder`` class.
+Parallelization is done using MPI.
 
 .. autosummary::
    :toctree: _generated/
@@ -59,6 +47,9 @@ Gpu solvers
 -----------
 
 Functions used in the solution method of the ``Builder`` class.
+Because GPUs run asyncronusly, we can unlock the GIL in python
+and run in a parallel manner over multiple GPUs. The only constrain
+is the input/output writing between hardwares.
 
 .. autosummary::
    :toctree: _generated/
@@ -69,10 +60,31 @@ Functions used in the solution method of the ``Builder`` class.
 Utilities
 ---------
 
-Miscellaneous functions used around the code...
+Miscellaneous suport functions used around the code. There are mathematical functions, 
+``Contour``, ``Kspace`` and ``Hamiltonian`` methods, magnetic entity and pair generation.
 
 .. autosummary::
    :toctree: _generated/
 
-
+   commutator                   Shorthand for commutator.
+   tau_u                        Pauli matrix in direction u.
+   crossM                       Definition for the cross-product matrix.
+   RotM                         Definition of rotation matrix with angle theta around direction u.
+   RotMa2b                      Definition of rotation matrix rotating unit vector a to unit vector b.
+   setup_from_range             Generates all the pairs and magnetic entities from atoms in a given radius.
+   arrays_lists_equal           Compares two objects with specific rules.
+   arrays_None_equal            Compares two objects with specific rules.
+   parallel_Gk                  Calculates the Greens function by inversion.
+   sequential_Gk                Calculates the Greens function by inversion.
+   onsite_projection            It produces the slices of a matrix for the on site projection.
+   calc_Vu                      Calculates the local perturbation in case of a spin rotation.
+   build_hh_ss                  It builds the Hamiltonian and Overlap matrix from the sisl.dh class.
+   make_contour                 A more sophisticated contour generator.
+   make_kset                    Simple k-grid generator to sample the Brillouin zone.
+   hsk                          Speed up Hk and Sk generation.
 """
+
+from .constants import *
+from .cpu_solvers import *
+from .gpu_solvers import *
+from .utilities import *
