@@ -28,7 +28,7 @@ from typing import Union
 import numpy as np
 from numpy.typing import NDArray
 
-from .._core.core import make_contour
+from .._core.utilities import make_contour
 from ..batch.timing import DefaultTimer
 from .utilities import automatic_emin
 

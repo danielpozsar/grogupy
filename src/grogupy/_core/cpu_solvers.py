@@ -32,14 +32,13 @@ import numpy as np
 from .._tqdm import _tqdm
 from ..config import CONFIG
 from ..physics.utilities import interaction_energy, second_order_energy
-from .core import calc_Vu, onsite_projection, parallel_Gk, sequential_Gk
-from .utilities import tau_u
+from .utilities import calc_Vu, onsite_projection, parallel_Gk, sequential_Gk, tau_u
 
 
 def solve_parallel_over_k(
     builder: "Builder",
 ) -> None:
-    """It calculates the energies by the Greens function method
+    """It calculates the energies by the Greens function method.
 
     It inverts the Hamiltonians of all directions set up in the given
     k-points at the given energy levels. The solution is parallelized over

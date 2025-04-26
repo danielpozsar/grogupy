@@ -39,8 +39,7 @@ import numpy as np
 from .._tqdm import _tqdm
 from ..config import CONFIG
 from ..physics.utilities import interaction_energy, second_order_energy
-from .core import calc_Vu, onsite_projection
-from .utilities import tau_u
+from .utilities import calc_Vu, onsite_projection, tau_u
 
 if CONFIG.is_GPU:
     # initialize parallel GPU stuff
@@ -64,7 +63,7 @@ if CONFIG.is_GPU:
         rotated_H: list[NDArray],
         S: NDArray,
     ) -> tuple[CNDArray, CNDArray, CNDArray]:
-        """Solves the Green's function parallel on GPU.
+        """Parallelizes the Green's function solution on GPU.
 
         Should be used on computation power bound systems.
 

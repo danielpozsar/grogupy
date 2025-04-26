@@ -28,7 +28,7 @@ from typing import Union
 import numpy as np
 from numpy.typing import NDArray
 
-from .._core.core import make_kset
+from .._core.utilities import make_kset
 from ..batch.timing import DefaultTimer
 
 
