@@ -53,7 +53,7 @@ visualization.
 """
 
 __all__ = []
-__version__ = "0.0.9"
+__version__ = "0.0.10"
 
 
 from .config import *
