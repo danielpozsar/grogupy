@@ -129,7 +129,7 @@ def plot_kspace(kspace: "Kspace") -> go.Figure:
 
 
 def plot_magnetic_entities(
-    magnetic_entities: Union[Builder, list["MagneticEntity"]],
+    magnetic_entities: Union[Builder, list["MagneticEntity"]]
 ) -> go.Figure:
     """Creates a plot from a list of magnetic entities.
 
@@ -186,7 +186,9 @@ def plot_magnetic_entities(
     return fig
 
 
-def plot_pairs(pairs: Union[Builder, list["Pair"]], connect: bool = False) -> go.Figure:
+def plot_pairs(
+    pairs: Union[Builder, list["Pair"]], connect: bool = False, cell: bool = True
+) -> go.Figure:
     """Creates a plot from a list of pairs.
 
     Parameters
@@ -195,6 +197,8 @@ def plot_pairs(pairs: Union[Builder, list["Pair"]], connect: bool = False) -> go
         The pairs that contain the tags and coordinates
     connect : bool, optional
         Wether to connect the pairs or not, by default False
+    cell: bool, optional
+        Wether to show the unit cell, by default True
 
     Returns
     -------
@@ -286,6 +290,43 @@ def plot_pairs(pairs: Union[Builder, list["Pair"]], connect: bool = False) -> go
                         line=dict(color=color),
                     )
                 )
+
+    # add unit cell to the plot
+    if cell:
+        cell = pairs[0].cell
+        x = cell[0, :]
+        y = cell[1, :]
+        z = cell[2, :]
+        vecs0 = np.array(
+            [
+                np.zeros(3),
+                np.zeros(3),
+                np.zeros(3),
+                x,
+                x,
+                y,
+                y,
+                z,
+                z,
+                x + y + z,
+                x + y + z,
+                x + y + z,
+            ]
+        )
+        vecs1 = np.array(
+            [x, y, z, x + y, x + z, y + x, y + z, z + x, z + y, x + y, x + z, y + z]
+        )
+        for v1, v2 in zip(vecs0, vecs1):
+            fig.add_trace(
+                go.Scatter3d(
+                    x=[v1[0], v2[0]],
+                    y=[v1[1], v2[1]],
+                    z=[v1[2], v2[2]],
+                    mode="lines",
+                    showlegend=False,
+                    line=dict(color="black", width=1),
+                )
+            )
 
     # Create layout
     fig.update_layout(
