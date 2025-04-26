@@ -23,8 +23,8 @@ Batch calculations
 
 .. currentmodule:: grogupy.batch
 
-This subpackage contains routines to automatically set up and run convergence
- tests and time the calculations.
+This subpackage contains routines to automatically set up and run convergence 
+tests and time the calculations.
 
 Timers
 ------

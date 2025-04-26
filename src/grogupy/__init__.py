@@ -30,18 +30,33 @@ model including the exchange between the pairs and the anisotropy of the
 magnetic entities. This is done by reading in the Hamiltonian to a single
 non-collinear DFT calculation, where the DFT software can be non-orthogonal.
 
-TQDM in grogupy
+tqdm in grogupy
 ---------------
+
+tqdm is optional in grogupy, but when it is in use grogupy uses its own wrapper 
+to handle edge cases and print only on the root node, when there is MPI 
+parallelization.
 
 Configuration
 -------------
 
+This module contains the configuration from the environment, which helps to 
+load or avoid the optional dependencies that can be part of grogupy. These 
+optional dependencies are tqd, cupy for gpu acceleration and plotly for 
+visualization.
+
+.. autosummary::
+   :toctree: _generated/
+
+   Config   Class holding the configuration from the environment.
 
 """
 
 __all__ = []
 __version__ = "0.0.9"
 
+
+from .config import *
 
 # pre-import stuff
 from .io import load, save, save_magnopy, save_UppASD

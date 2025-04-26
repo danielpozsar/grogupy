@@ -23,8 +23,8 @@ Core
 
 .. currentmodule:: grogupy._core
 
-This subpackage contains routines to automatically set up and run convergence
- tests and time the calculations.
+This subpackage contains the core functionalities including mathematical 
+function, and important class methods from all over the main package.
 
 Constants
 ---------

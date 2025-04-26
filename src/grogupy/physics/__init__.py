@@ -33,13 +33,12 @@ Physical classes
 .. autosummary::
    :toctree: _generated/
 
-   builder                      The main class that holds together the whole simulation.
-   contour                      Energy contour integral.
-   hamiltonian                  The Hamiltonian describing the DFT part and useful methods.
-   kspace                       Brillouin zone integral.
-   magnetic_entity              Magnetic entity containing useful methods and information.
-   pair                         Pair built from two magnetic entities and a supercell shift.
-
+   Builder           The main class that holds together the whole simulation.
+   Contour           Energy contour integral.
+   Hamiltonian       The Hamiltonian describing the DFT part and useful methods.
+   Kspace            Brillouin zone integral.
+   MagneticEntity   Magnetic entity containing useful methods and information.
+   Pair              Pair built from two magnetic entities and a supercell shift.
 
 Utilities
 ---------
@@ -58,7 +57,6 @@ Utilities
    fit_anisotropy_tensor        Fits the anisotropy tensor to the energies
    calculate_exchange_tensor    Calculates the exchange tensor from the energies
    fit_exchange_tensor          Fits the exchange tensor to the energies
-
 
 """
 
