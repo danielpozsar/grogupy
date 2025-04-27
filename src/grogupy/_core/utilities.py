@@ -632,8 +632,8 @@ def build_hh_ss(dh: sisl.physics.Hamiltonian) -> tuple[NDArray, NDArray]:
             s1, s1d = ss[i], ss[j]
             ss[i], ss[j] = (s1 + s1d.T.conj()) / 2, (s1d + s1.T.conj()) / 2
 
-        hh = cp.array(hh).get()
-        ss = cp.array(ss).get()
+        hh = np.array([h.get() for h in hh])
+        ss = np.array([s.get() for s in ss])
 
     else:
         raise ValueError(f"Unknown architecture: {CONFIG.architecture}")
