@@ -207,11 +207,12 @@ class Hamiltonian:
 
             hTR: CNDArray = []
             for i in _tqdm(range(self.nsc.prod()), desc="Transpose Hamiltonian"):
-                hTR.append(TAUY @ cp.array(self.H[i]).conj() @ TAUY)
-            hTR = cp.array(hTR)
+                hTR.append((TAUY @ cp.array(self.H[i]).conj() @ TAUY).get())
+            hTR = np.array(hTR)
+            del TAUY
 
-            hTRS: NDArray = (self.H + hTR.get()) / 2
-            hTRB: NDArray = (self.H - hTR.get()) / 2
+            hTRS: NDArray = (self.H + hTR) / 2
+            hTRB: NDArray = (self.H - hTR) / 2
 
             # extracting the exchange field equation 77
             traced: list = []
