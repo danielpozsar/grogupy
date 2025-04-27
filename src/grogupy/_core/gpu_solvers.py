@@ -121,6 +121,7 @@ if CONFIG.is_GPU:
             local_G_pair_ji = cp.zeros_like(G_pair_ji)
 
             local_S = cp.array(S)
+            local_H = cp.array(rotated_H)
 
             for i in _tqdm(
                 range(len(local_kpoints)), desc=f"Parallel over k on GPU{gpu_number}:"
@@ -133,7 +134,7 @@ if CONFIG.is_GPU:
                 # this generates the list of phases
                 phases = cp.exp(-1j * 2 * cp.pi * k @ local_sc_off.T)
                 # phases applied to the hamiltonian
-                HK = cp.einsum("abc,a->bc", cp.array(rotated_H), phases)
+                HK = cp.einsum("abc,a->bc", local_H, phases)
                 SK = cp.einsum("abc,a->bc", local_S, phases)
 
                 # solve the Greens function on all energy points separately
@@ -254,6 +255,7 @@ if CONFIG.is_GPU:
             Ruc = [p.supercell_shift for p in builder.pairs]
 
             S = builder.hamiltonian.S
+            H = builder.hamiltonian.H
 
             sc_off = builder.hamiltonian.sc_off
             samples = builder.contour.samples
@@ -283,7 +285,7 @@ if CONFIG.is_GPU:
                         G_mag_reduce,
                         G_pair_ij_reduce,
                         G_pair_ji_reduce,
-                        rot_H.H,
+                        H,
                         S,
                     )
                     for gpu_number in range(parallel_size)
