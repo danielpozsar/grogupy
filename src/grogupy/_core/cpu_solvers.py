@@ -24,6 +24,8 @@ from numpy.typing import NDArray
 if TYPE_CHECKING:
     from ..physics.builder import Builder
 
+import sys
+
 import numpy as np
 
 from .._tqdm import _tqdm
@@ -70,7 +72,18 @@ def solve_parallel_over_k(
         # obtain rotated exchange field and Hamiltonian
         rot_H = builder.hamiltonian.copy()
         rot_H.rotate(orient["o"])
+        rot_H_mem = np.sum(
+            [
+                sys.getsizeof(rot_H.H),
+                sys.getsizeof(rot_H.S),
+                sys.getsizeof(rot_H.hTRS),
+                sys.getsizeof(rot_H.hTRB),
+                sys.getsizeof(rot_H.XCF),
+                sys.getsizeof(rot_H.H_XCF),
+            ]
+        )
 
+        mag_ent_mem = 0
         # setup empty Greens function holders for integration
         for mag_ent in _tqdm(
             builder.magnetic_entities,
@@ -80,7 +93,9 @@ def solve_parallel_over_k(
                 (builder.contour.eset, mag_ent.SBS, mag_ent.SBS),
                 dtype="complex128",
             )
+            mag_ent_mem += sys.getsizeof(mag_ent._Gii_tmp)
 
+        pair_mem = 0
         for pair in _tqdm(builder.pairs, desc="Setup pairs for rotated hamiltonian"):
             pair._Gij_tmp = np.zeros(
                 (builder.contour.eset, pair.SBS1, pair.SBS2), dtype="complex128"
@@ -88,8 +103,29 @@ def solve_parallel_over_k(
             pair._Gji_tmp = np.zeros(
                 (builder.contour.eset, pair.SBS2, pair.SBS1), dtype="complex128"
             )
+            pair_mem += sys.getsizeof(pair._Gij_tmp) + sys.getsizeof(pair._Gji_tmp)
 
         if rank == root_node:
+            print("\n\n\n")
+            print(
+                "################################################################################"
+            )
+            print(
+                "################################################################################"
+            )
+            print(f"Memory allocated by rotated Hamilonian: {rot_H_mem/1e6} MB")
+            print(f"Memory allocated by magnetic entities: {mag_ent_mem/1e6} MB")
+            print(f"Memory allocated by pairs: {pair_mem/1e6} MB")
+            print(
+                f"Total memory allocated in RAM: {(rot_H_mem+mag_ent_mem+pair_mem)/1e6} MB"
+            )
+            print(
+                "################################################################################"
+            )
+            print(
+                "################################################################################"
+            )
+            print("\n\n\n")
             parallel_k[rank] = _tqdm(
                 parallel_k[rank], desc=f"Rotation {i+1}, parallel over k on CPU{rank}"
             )
