@@ -123,11 +123,39 @@ def solve_parallel_over_k(builder: "Builder", print_memory: bool = False) -> Non
                 print(
                     "################################################################################"
                 )
+                print("Memory allocated on each MPI rank:")
                 print(f"Memory allocated by rotated Hamilonian: {rot_H_mem/1e6} MB")
                 print(f"Memory allocated by magnetic entities: {mag_ent_mem/1e6} MB")
                 print(f"Memory allocated by pairs: {pair_mem/1e6} MB")
                 print(
                     f"Total memory allocated in RAM: {(rot_H_mem+mag_ent_mem+pair_mem)/1e6} MB"
+                )
+                print(
+                    "--------------------------------------------------------------------------------"
+                )
+                if builder.greens_function_solver[0].lower() == "p":  # parallel solver
+                    # 16 is the size of complex numbers in byte, when using np.float64
+                    G_mem = (
+                        builder.contour.eset
+                        * builder.hamiltonian.NO
+                        * builder.hamiltonian.NO
+                        * 16
+                    )
+                elif (
+                    builder.greens_function_solver[0].lower() == "s"
+                ):  # sequentia solver
+                    G_mem = (
+                        builder.max_g_per_loop
+                        * builder.hamiltonian.NO
+                        * builder.hamiltonian.NO
+                        * 16
+                    )
+                else:
+                    raise Exception("Unknown Greens function solver!")
+
+                print(f"Memory allocated for Greens function samples: {G_mem/1e6} MB")
+                print(
+                    f"Total peak memory during solution: {(rot_H_mem+mag_ent_mem+pair_mem+G_mem)/1e6} MB"
                 )
                 print(
                     "################################################################################"
@@ -144,14 +172,14 @@ def solve_parallel_over_k(builder: "Builder", print_memory: bool = False) -> Non
             # calculate Hamiltonian and Overlap matrix in a given k point
             Hk, Sk = rot_H.HkSk(k)
 
-            if builder.greens_function_solver.lower()[0] == "p":  # parallel solver
+            if builder.greens_function_solver[0].lower() == "p":  # parallel solver
                 Gk = parallel_Gk(
                     Hk,
                     Sk,
                     builder.contour.samples,
                     builder.contour.eset,
                 )
-            elif builder.greens_function_solver.lower()[0] == "s":  # sequential solver
+            elif builder.greens_function_solver[0].lower() == "s":  # sequential solver
                 # solve Greens function sequentially for the energies, because of memory bound
                 Gk = sequential_Gk(
                     Hk,
