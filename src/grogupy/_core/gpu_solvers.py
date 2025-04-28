@@ -104,6 +104,10 @@ if CONFIG.is_GPU:
 
         # use the specified GPU
         with cp.cuda.Device(gpu_number):
+            # free up unused memory
+            mempool = cp.get_default_memory_pool()
+            mempool.free_all_blocks()
+
             # copy everything to GPU
             local_kpoints = cp.array(kpoints[gpu_number])
             local_kweights = cp.array(kweights[gpu_number])
