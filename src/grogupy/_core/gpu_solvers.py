@@ -40,6 +40,7 @@ if CONFIG.is_GPU:
     from cupy.typing import NDArray as CNDArray
 
     def gpu_solver(
+        max_g_per_loop: int,
         mode: str,
         gpu_number: int,
         kpoints: list[NDArray],
@@ -58,10 +59,12 @@ if CONFIG.is_GPU:
     ) -> tuple["CNDArray", "CNDArray", "CNDArray"]:
         """Parallelizes the Green's function solution on GPU.
 
-        Should be used on computation power bound systems.
+        Should be used on large systems.
 
         Parameters
         ----------
+        max_g_per_loop: int
+            Maximum number of greens function samples per loop
         mode : str
             The Greens function solver, which can be parallel or sequential
         gpu_number : int
@@ -144,22 +147,31 @@ if CONFIG.is_GPU:
 
                 # solve the Greens function on all energy points separately
                 if mode == "sequential":
-                    for e in range(eset):
-                        Gk = cp.linalg.inv(SK * local_samples[e] - HK)
+                    # constrain to sensible size
+                    if max_g_per_loop > eset:
+                        max_g_per_loop = eset
+
+                    # create batches using slices on every instance
+                    slices = np.array_split(range(eset), max_g_per_loop)
+
+                    # fills the holders sequentially by the Greens function slices on
+                    # a given energy
+                    for slice in slices:
+                        Gk = cp.linalg.inv(SK * local_samples[slice] - HK)
 
                         # store the Greens function slice of the magnetic entities
                         for l, sbi in enumerate(local_SBI):
-                            local_G_mag[l][e] += Gk[..., sbi, :][..., sbi] * wk
+                            local_G_mag[l][slice] += Gk[..., sbi, :][..., sbi] * wk
 
                         # store the Greens function slice of the pairs
                         for l, dat in enumerate(zip(local_SBI1, local_SBI2, local_Ruc)):
                             sbi1, sbi2, ruc = dat
                             phase = cp.exp(1j * 2 * cp.pi * k @ ruc.T)
 
-                            local_G_pair_ij[l][e] += (
+                            local_G_pair_ij[l][slice] += (
                                 Gk[..., sbi1, :][..., sbi2] * wk * phase
                             )
-                            local_G_pair_ji[l][e] += (
+                            local_G_pair_ji[l][slice] += (
                                 Gk[..., sbi2, :][..., sbi1] * wk / phase
                             )
 
@@ -339,6 +351,7 @@ if CONFIG.is_GPU:
                 futures = [
                     executor.submit(
                         gpu_solver,
+                        builder.max_g_per_loop,
                         mode,
                         gpu_number,
                         parallel_k,
