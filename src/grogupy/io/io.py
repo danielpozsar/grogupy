@@ -285,6 +285,7 @@ def load(
         "pairs",
         "_Builder__low_memory_mode",
         "_Builder__greens_function_solver",
+        "_Builder__max_g_per_loop",
         "_Builder__parallel_mode",
         "_Builder__architecture",
         "_Builder__matlabmode",

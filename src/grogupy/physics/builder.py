@@ -168,6 +168,7 @@ class Builder:
         # fix the architecture
         self.__low_memory_mode = True
         self.__greens_function_solver: str = "Sequential"
+        self.__max_g_per_loop: int = 10000
         self.__parallel_mode: str = "K"
         self.__architecture = CONFIG.architecture
 
@@ -313,6 +314,7 @@ class Builder:
                 and self.hamiltonian == value.hamiltonian
                 and self.__low_memory_mode == value.__low_memory_mode
                 and self.__greens_function_solver == value.__greens_function_solver
+                and self.__max_g_per_loop == value.__max_g_per_loop
                 and self.__parallel_mode == value.__parallel_mode
                 and self.__architecture == value.__architecture
                 and self.__matlabmode == value.__matlabmode
@@ -386,6 +388,12 @@ class Builder:
             f"Solver used for Greens function calculation: {self.greens_function_solver}"
             + newline
         )
+        if self.greens_function_solver[0].lower() == "s":
+            out += (
+                f"Maximum number of Greens function samples per batch: {self.__max_g_per_loop}"
+                + newline
+            )
+
         out += f"Solver used for Exchange tensor: {self.exchange_solver}" + newline
         out += f"Solver used for Anisotropy tensor: {self.anisotropy_solver}" + newline
         out += section + newline
@@ -531,6 +539,19 @@ class Builder:
             raise Exception(
                 f"{value} is not a permitted Green's function solver, when the architecture is {self.__architecture}."
             )
+
+    @property
+    def max_g_per_loop(self) -> int:
+        """Maximum number of greens function samples per loop."""
+        return self.__max_g_per_loop
+
+    @max_g_per_loop.setter
+    def max_g_per_loop(self, value) -> None:
+        if (value - int(value)) < 1e-5 and value >= 0:
+            value = int(value)
+            self.__max_g_per_loop = value
+        else:
+            raise Exception("It should be a positive integer.")
 
     @property
     def parallel_mode(self) -> str:

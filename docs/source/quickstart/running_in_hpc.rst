@@ -150,11 +150,17 @@ as we did in the jupyter notebook examples.
    ################################################################################
    #                                Memory management
    ################################################################################
-   # maximum number of pairs per loop, reduce it to avoid memory overflow
-   max_pairs_per_loop = 100
    # in low memory mode we discard some temporary data that could be useful for
    # interactive work
    low_memory_mode = True
+   # maximum number of pairs per loop, reduce it to avoid memory overflow in RAM
+   max_pairs_per_loop = 100
+   # sequential solver is better for large systems, parallel is faster
+   greens_function_solver = "Parallel"
+   # maximum number of greens function samples per loop, when greens_function_solver 
+   # is set to "Sequential", reduce it to avoid memory overflow on GPU for large 
+   # systems
+   max_g_per_loop = 100
    ################################################################################
    #                                 Solution methods
    ################################################################################
