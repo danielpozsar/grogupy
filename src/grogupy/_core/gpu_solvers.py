@@ -24,6 +24,7 @@ from numpy.typing import NDArray
 if TYPE_CHECKING:
     from ..physics.builder import Builder
 
+import sys
 from concurrent.futures import ThreadPoolExecutor
 
 import numpy as np
@@ -180,9 +181,7 @@ if CONFIG.is_GPU:
 
         return local_G_mag, local_G_pair_ij, local_G_pair_ji
 
-    def solve_parallel_over_k(
-        builder: "Builder",
-    ) -> None:
+    def solve_parallel_over_k(builder: "Builder", print_memory: bool = False) -> None:
         """It calculates the energies by the Greens function method.
 
         It inverts the Hamiltonians of all directions set up in the given
@@ -194,6 +193,8 @@ if CONFIG.is_GPU:
         ----------
         builder : Builder
             The system that we want to solve
+        print_memory: bool, optional
+            It can be turned on to print extra memory info, by default False
         """
 
         parallel_size = CONFIG.parallel_size
@@ -221,6 +222,16 @@ if CONFIG.is_GPU:
             # obtain rotated exchange field and Hamiltonian
             rot_H = builder.hamiltonian.copy()
             rot_H.rotate(orient["o"])
+            rot_H_mem = np.sum(
+                [
+                    sys.getsizeof(rot_H.H),
+                    sys.getsizeof(rot_H.S),
+                    sys.getsizeof(rot_H.hTRS),
+                    sys.getsizeof(rot_H.hTRB),
+                    sys.getsizeof(rot_H.XCF),
+                    sys.getsizeof(rot_H.H_XCF),
+                ]
+            )
 
             # setup empty Greens function holders for integration
             for mag_ent in _tqdm(
@@ -250,8 +261,10 @@ if CONFIG.is_GPU:
 
             # convert everything so it can be passed to the GPU solvers
             G_mag_reduce = np.array(G_mag_reduce)
+            mag_ent_mem = sys.getsizeof(G_mag_reduce)
             G_pair_ij_reduce = np.array(G_pair_ij_reduce)
             G_pair_ji_reduce = np.array(G_pair_ji_reduce)
+            pair_mem = sys.getsizeof(G_pair_ij_reduce) + sys.getsizeof(G_pair_ji_reduce)
 
             SBI = [m._spin_box_indices for m in builder.magnetic_entities]
             SBI1 = [p.SBI1 for p in builder.pairs]
@@ -263,6 +276,56 @@ if CONFIG.is_GPU:
 
             sc_off = builder.hamiltonian.sc_off
             samples = builder.contour.samples
+
+            if print_memory:
+                print("\n\n\n")
+                print(
+                    "################################################################################"
+                )
+                print(
+                    "################################################################################"
+                )
+                print(f"Memory allocated by rotated Hamilonian: {rot_H_mem/1e6} MB")
+                print(f"Memory allocated by magnetic entities: {mag_ent_mem/1e6} MB")
+                print(f"Memory allocated by pairs: {pair_mem/1e6} MB")
+                print(
+                    f"Total memory allocated in RAM: {(rot_H_mem+mag_ent_mem+pair_mem)/1e6} MB"
+                )
+                print(
+                    "--------------------------------------------------------------------------------"
+                )
+                if builder.greens_function_solver[0].lower() == "p":  # parallel solver
+                    # 16 is the size of complex numbers in byte, when using np.float64
+                    G_mem = (
+                        builder.contour.eset
+                        * builder.hamiltonian.NO
+                        * builder.hamiltonian.NO
+                        * 16
+                    )
+                elif (
+                    builder.greens_function_solver[0].lower() == "s"
+                ):  # sequentia solver
+                    G_mem = (
+                        builder.max_g_per_loop
+                        * builder.hamiltonian.NO
+                        * builder.hamiltonian.NO
+                        * 16
+                    )
+                else:
+                    raise Exception("Unknown Greens function solver!")
+
+                print("Memory allocated on GPU:")
+                print(f"Memory allocated for Greens function samples: {G_mem/1e6} MB")
+                print(
+                    f"Total peak memory on GPU during solution: {(sys.getsizeof(rot_H.H)+sys.getsizeof(rot_H.S)+mag_ent_mem+pair_mem+G_mem)/1e6} MB"
+                )
+                print(
+                    "################################################################################"
+                )
+                print(
+                    "################################################################################"
+                )
+                print("\n\n\n")
 
             # call the solvers
             if builder.greens_function_solver[0].lower() == "p":  # parallel solver
