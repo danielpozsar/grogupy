@@ -92,6 +92,7 @@ def main():
 
     # Add solvers and parallellizations
     simulation.greens_function_solver = params.greens_function_solver
+    simulation.max_g_per_loop = params.max_g_per_loop
     simulation.exchange_solver = params.exchange_solver
     simulation.anisotropy_solver = params.anisotropy_solver
     simulation.low_memory_mode = params.low_memory_mode
