@@ -144,12 +144,7 @@ def solve_parallel_over_k(builder: "Builder", print_memory: bool = False) -> Non
                 elif (
                     builder.greens_function_solver[0].lower() == "s"
                 ):  # sequentia solver
-                    G_mem = (
-                        builder.max_g_per_loop
-                        * builder.hamiltonian.NO
-                        * builder.hamiltonian.NO
-                        * 16
-                    )
+                    G_mem = builder.hamiltonian.NO * builder.hamiltonian.NO * 16
                 else:
                     raise Exception("Unknown Greens function solver!")
 
