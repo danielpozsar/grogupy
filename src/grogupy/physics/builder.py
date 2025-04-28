@@ -939,11 +939,16 @@ class Builder:
             # add pairs
             self.pairs.append(pair)
 
-    def solve(self) -> None:
+    def solve(self, print_memory: bool = False) -> None:
         """Wrapper for Greens function solver.
 
         It uses the parallelization over k-points, energy and directions if ``solver``
         is `all` and it uses the parallel over k solver if ``solver`` is `k`.
+
+        Parameters
+        ----------
+        print_memory: bool, optional
+            It can be turned on to print extra memory info, by default False
         """
 
         # reset times
@@ -974,7 +979,7 @@ class Builder:
         else:
             raise Exception(f"Unknown architecture: {self.__architecture}")
 
-        solve_parallel_over_k(self)
+        solve_parallel_over_k(self, print_memory)
 
         self.times.measure("solution", restart=True)
 

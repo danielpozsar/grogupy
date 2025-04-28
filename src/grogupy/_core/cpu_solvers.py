@@ -34,9 +34,7 @@ from ..physics.utilities import interaction_energy, second_order_energy
 from .utilities import calc_Vu, onsite_projection, parallel_Gk, sequential_Gk, tau_u
 
 
-def solve_parallel_over_k(
-    builder: "Builder",
-) -> None:
+def solve_parallel_over_k(builder: "Builder", print_memory: bool = False) -> None:
     """It calculates the energies by the Greens function method.
 
     It inverts the Hamiltonians of all directions set up in the given
@@ -44,6 +42,13 @@ def solve_parallel_over_k(
     k-points. It uses the `greens_function_solver` instance variable which
     controls the solution method over the energy samples. Generally this is
     the fastest solution method for a smaller number of nodes.
+
+    Parameters
+    ----------
+    builder: Builder
+        The main grogupy object
+    print_memory: bool, optional
+        It can be turned on to print extra memory info, by default False
     """
 
     # initialize MPI
@@ -106,29 +111,31 @@ def solve_parallel_over_k(
             pair_mem += sys.getsizeof(pair._Gij_tmp) + sys.getsizeof(pair._Gji_tmp)
 
         if rank == root_node:
-            print("\n\n\n")
-            print(
-                "################################################################################"
-            )
-            print(
-                "################################################################################"
-            )
-            print(f"Memory allocated by rotated Hamilonian: {rot_H_mem/1e6} MB")
-            print(f"Memory allocated by magnetic entities: {mag_ent_mem/1e6} MB")
-            print(f"Memory allocated by pairs: {pair_mem/1e6} MB")
-            print(
-                f"Total memory allocated in RAM: {(rot_H_mem+mag_ent_mem+pair_mem)/1e6} MB"
-            )
-            print(
-                "################################################################################"
-            )
-            print(
-                "################################################################################"
-            )
-            print("\n\n\n")
             parallel_k[rank] = _tqdm(
                 parallel_k[rank], desc=f"Rotation {i+1}, parallel over k on CPU{rank}"
             )
+
+            if print_memory:
+                print("\n\n\n")
+                print(
+                    "################################################################################"
+                )
+                print(
+                    "################################################################################"
+                )
+                print(f"Memory allocated by rotated Hamilonian: {rot_H_mem/1e6} MB")
+                print(f"Memory allocated by magnetic entities: {mag_ent_mem/1e6} MB")
+                print(f"Memory allocated by pairs: {pair_mem/1e6} MB")
+                print(
+                    f"Total memory allocated in RAM: {(rot_H_mem+mag_ent_mem+pair_mem)/1e6} MB"
+                )
+                print(
+                    "################################################################################"
+                )
+                print(
+                    "################################################################################"
+                )
+                print("\n\n\n")
         # sampling the integrand on the contour and the BZ
         for j, k in enumerate(parallel_k[rank]):
             # weight of k point in BZ integral

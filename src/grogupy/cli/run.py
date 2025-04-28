@@ -198,7 +198,7 @@ def main():
         # run chunks
         for i, chunk in enumerate(pair_chunks):
             simulation.pairs = chunk
-            simulation.solve()
+            simulation.solve(print_memory=True)
             if PRINTING:
                 save(
                     object=simulation,
@@ -225,7 +225,7 @@ def main():
                     mag_ent._Vu2 = []
     else:
         # Solve
-        simulation.solve()
+        simulation.solve(print_memory=True)
 
     if PRINTING:
         print("\n\n\n")
