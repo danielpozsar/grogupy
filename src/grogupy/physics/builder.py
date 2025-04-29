@@ -893,7 +893,7 @@ class Builder:
             magnetic_entities = [magnetic_entities]
 
         # iterate over magnetic entities
-        for mag_ent in _tqdm(magnetic_entities, desc="Add magnetic entities:"):
+        for mag_ent in _tqdm(magnetic_entities, desc="Add magnetic entities"):
             # if it is a MagneticEntity there is nothing to do
             if isinstance(mag_ent, MagneticEntity):
                 pass
@@ -925,7 +925,7 @@ class Builder:
             pairs = [pairs]
 
         # iterate over pairs
-        for pair in _tqdm(pairs, desc="Add pairs:"):
+        for pair in _tqdm(pairs, desc="Add pairs"):
             # if it is a Pair there is nothing to do
             if isinstance(pair, Pair):
                 pass
