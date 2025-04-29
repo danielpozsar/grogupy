@@ -202,14 +202,20 @@ class Hamiltonian:
                 H_XCF += np.kron(XCF[i], tau)
 
         elif CONFIG.is_GPU:
+            # free up unused memory
+            mempool = cp.get_default_memory_pool()
+            mempool.free_all_blocks()
+
             # identifying TRS and TRB parts of the Hamiltonian
             TAUY: CNDArray = cp.kron(cp.eye(self.NO), cp.array(TAU_Y))
 
-            hTR: CNDArray = []
+            hTR: NDArray = []
             for i in _tqdm(range(self.nsc.prod()), desc="Transpose Hamiltonian"):
                 hTR.append((TAUY @ cp.array(self.H[i]).conj() @ TAUY).get())
             hTR = np.array(hTR)
-            del TAUY
+
+            # release this from memory
+            TAUY = None
 
             hTRS: NDArray = (self.H + hTR) / 2
             hTRB: NDArray = (self.H - hTR) / 2
@@ -219,7 +225,7 @@ class Hamiltonian:
             for i in _tqdm(range(self.nsc.prod()), desc="Calculate V_XCF"):
                 traced.append(spin_tracer(hTRB[i]))
 
-            XCF: NDArray = cp.array(
+            XCF: CNDArray = cp.array(
                 [
                     cp.array([f["x"] / 2 for f in traced]),
                     cp.array([f["y"] / 2 for f in traced]),
@@ -227,15 +233,15 @@ class Hamiltonian:
                 ]
             )
 
-            H_XCF: NDArray = cp.zeros(
+            H_XCF: NDArray = np.zeros(
                 (self.nsc.prod(), self.NO * 2, self.NO * 2), dtype="complex128"
             )
             for i, tau in _tqdm(
                 enumerate([TAU_X, TAU_Y, TAU_Z]), total=3, desc="Calculate H_XC"
             ):
-                H_XCF += np.kron(XCF[i], cp.array(tau))
+                H_XCF += cp.kron(XCF[i], cp.array(tau)).get()
 
-            XCF, H_XCF = XCF.get(), H_XCF.get()
+            XCF, H_XCF = XCF.get(), H_XCF
         else:
             raise ValueError(f"Unknown architecture: {CONFIG.architecture}")
 
@@ -386,6 +392,10 @@ class Hamiltonian:
             ):
                 self.H_XCF += np.kron(self.XCF[i], tau)
         elif CONFIG.is_GPU:
+            # free up unused memory
+            mempool = cp.get_default_memory_pool()
+            mempool.free_all_blocks()
+
             self.H_XCF: CNDArray = cp.zeros(
                 (self.nsc.prod(), self.NO * 2, self.NO * 2), dtype=np.complex128
             )
