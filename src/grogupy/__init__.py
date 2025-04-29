@@ -54,7 +54,7 @@ visualization.
 
 __all__ = []
 __version__ = "0.0.11"
-
+version = __version__
 
 from .config import *
 
