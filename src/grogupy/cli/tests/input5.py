@@ -84,7 +84,7 @@ anisotropy_solver = "Fit"
 out_magentic_moment = "total"
 
 # save the magnopy file
-save_magnopy = False
+save_magnopy = True
 # precision of numerical values in the magnopy file
 magnopy_precision = None
 # add the simulation parameters to the magnopy file as comments
@@ -92,7 +92,7 @@ magnopy_comments = True
 
 # save the Uppsala Atomistic Spin Dynamics software input files
 # uses the outfolder and out_magentic_moment
-save_UppASD = False
+save_UppASD = True
 
 # save the pickle file
 save_pickle = True

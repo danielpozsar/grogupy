@@ -89,6 +89,10 @@ class TestUtilities:
     def test_strip_dict_structure(self):
         raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
+    def test_standardize_input(self):
+        raise NotImplementedError
+
 
 if __name__ == "__main__":
     pass
