@@ -399,13 +399,13 @@ class Hamiltonian:
             self.H_XCF: CNDArray = cp.zeros(
                 (self.nsc.prod(), self.NO * 2, self.NO * 2), dtype=np.complex128
             )
-            self.XCF = cp.array(self.XCF)
+            XCF = cp.array(self.XCF)
             for i, tau in _tqdm(
                 enumerate([TAU_X, TAU_Y, TAU_Z]),
                 total=3,
                 desc="Rotating Exchange field",
             ):
-                self.H_XCF += cp.kron(self.XCF[i], cp.array(tau))
+                self.H_XCF += cp.kron(XCF[i], cp.array(tau))
             self.H_XCF = self.H_XCF.get()
         else:
             raise Exception(f"Unknown architecture: {CONFIG.architecture}")
