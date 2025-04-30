@@ -390,10 +390,10 @@ class Builder:
             + newline
         )
         if self.greens_function_solver[0].lower() == "s":
-            out += (
-                f"Maximum number of Greens function samples per batch: {self.__max_g_per_loop}"
-                + newline
-            )
+            max_g = self.__max_g_per_loop
+        else:
+            max_g = self.contour.eset
+        out += f"Maximum number of Greens function samples per batch: {max_g}" + newline
 
         out += f"Solver used for Exchange tensor: {self.exchange_solver}" + newline
         out += f"Solver used for Anisotropy tensor: {self.anisotropy_solver}" + newline
