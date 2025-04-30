@@ -861,7 +861,7 @@ def read_magnopy(file: str):
     return out
 
 
-def read_fdf(path: str) -> tuple[dict, list, list]:
+def read_fdf(path: str) -> dict:
     """It reads the simulation parameters, magnetic entities and pairs from the fdf
 
     Parameters
@@ -993,10 +993,13 @@ def read_fdf(path: str) -> tuple[dict, list, list]:
             else:
                 raise Exception("Unrecognizable magnetic entity in .fdf!")
 
-    return fdf_arguments, magnetic_entities, pairs
+    fdf_arguments["magnetic_entities"] = magnetic_entities
+    fdf_arguments["pairs"] = pairs
+
+    return fdf_arguments
 
 
-def read_py(path: str) -> ModuleType:
+def read_py(path: str) -> dict:
     """Reading input parameters from a .py file.
 
     Parameters
@@ -1006,7 +1009,7 @@ def read_py(path: str) -> ModuleType:
 
     Returns
     -------
-    params : ModuleType
+    out : dict
         The input parameters
     """
 
@@ -1017,7 +1020,13 @@ def read_py(path: str) -> ModuleType:
     params = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(params)
 
-    return params
+    # convert to dictionary
+    out = dict()
+    for name in params.__dir__():
+        if not name.startswith("__"):
+            out[name] = params.__dict__[name]
+
+    return out
 
 
 if __name__ == "__main__":

@@ -27,7 +27,8 @@ import numpy as np
 
 from .. import __citation__, __definitely_not_grogu__
 from ..config import CONFIG
-from ..io.io import load, read_py, save, save_magnopy, save_UppASD
+from ..io.io import load, read_fdf, read_py, save, save_magnopy, save_UppASD
+from ..io.utilities import DEFAULT_INPUT, standardize_input
 from ..physics import Builder, Contour, Hamiltonian, Kspace
 
 PRINTING = False
@@ -73,49 +74,50 @@ def main():
             return
 
     # Reading input
-    params = read_py(args.file)
-
-    # only citation
-    if params is None:
-        return
+    try:
+        params = read_py(args.file)
+    except:
+        params = read_fdf(args.file)
+    params = standardize_input(params, defaults=DEFAULT_INPUT)
 
     # construct the input and output file paths
-    infile = join(params.infolder, params.infile)
+    infile = join(params["infolder"], params["infile"])
     if not infile.endswith(".fdf"):
         infile += ".fdf"
-    outfile = join(params.outfolder, params.outfile)
+    outfile = join(params["outfolder"], params["outfile"])
 
     # Define simulation
     simulation = Builder(
-        ref_xcf_orientations=params.ref_xcf_orientations, matlabmode=params.matlabmode
+        ref_xcf_orientations=params["refxcforientations"],
+        matlabmode=params["matlabmode"],
     )
 
     # Add solvers and parallellizations
-    simulation.greens_function_solver = params.greens_function_solver
-    simulation.max_g_per_loop = params.max_g_per_loop
-    simulation.exchange_solver = params.exchange_solver
-    simulation.anisotropy_solver = params.anisotropy_solver
-    simulation.low_memory_mode = params.low_memory_mode
+    simulation.greens_function_solver = params["greensfunctionsolver"]
+    simulation.max_g_per_loop = params["maxgperloop"]
+    simulation.exchange_solver = params["exchangesolver"]
+    simulation.anisotropy_solver = params["anisotropysolver"]
+    simulation.low_memory_mode = params["lowmemorymode"]
     # Define Kspace
     kspace = Kspace(
-        kset=params.kset,
+        kset=params["kset"],
     )
 
     # Define Contour
     contour = Contour(
-        eset=params.eset,
-        esetp=params.esetp,
-        emin=params.emin,
-        emax=params.emax,
-        emin_shift=params.emin_shift,
-        emax_shift=params.emax_shift,
+        eset=params["eset"],
+        esetp=params["esetp"],
+        emin=params["emin"],
+        emax=params["emax"],
+        emin_shift=params["eminshift"],
+        emax_shift=params["emaxshift"],
         eigfile=infile,
     )
 
     # Define Hamiltonian from sisl
     hamiltonian = Hamiltonian(
         infile=infile,
-        scf_xcf_orientation=params.scf_xcf_orientation,
+        scf_xcf_orientation=params["scfxcforientation"],
     )
 
     # Add instances to the simulation
@@ -125,14 +127,14 @@ def main():
 
     # Set up magnetic entities and pairs
     # If it is not set up from range:
-    if not params.setup_from_range:
-        simulation.add_magnetic_entities(params.magnetic_entities)
-        simulation.add_pairs(params.pairs)
+    if not params["setupfromrange"]:
+        simulation.add_magnetic_entities(params["magneticentities"])
+        simulation.add_pairs(params["pairs"])
 
     # If it is automatically set up from range
-    if params.setup_from_range:
-        if not isinstance(params.atomic_subset, list):
-            params.atomic_subset = [params.atomic_subset]
+    if params["setupfromrange"]:
+        if not isinstance(params["atomicsubset"], list):
+            params["atomicsubset"] = [params["atomicsubset"]]
 
         tags = []
         for at in hamiltonian._dh.atoms:
@@ -141,11 +143,11 @@ def main():
 
         atoms = []
         for i, tag in enumerate(tags):
-            if tag in params.atomic_subset:
+            if tag in params["atomicsubset"]:
                 atoms.append(i)
 
         simulation.setup_from_range(
-            params.radius, [atoms, atoms], **params.kwargs_for_mag_ent
+            params["radius"], [atoms, atoms], **params["kwargsformagent"]
         )
 
     if PRINTING:
@@ -166,9 +168,9 @@ def main():
         )
         print("\n\n\n")
 
-    if params.max_pairs_per_loop < len(simulation.pairs):
+    if params["maxpairsperloop"] < len(simulation.pairs):
         number_of_chunks = (
-            np.floor(len(simulation.pairs) / params.max_pairs_per_loop) + 1
+            np.floor(len(simulation.pairs) / params["maxpairsperloop"]) + 1
         )
         pair_chunks = np.array_split(simulation.pairs, number_of_chunks)
 
@@ -183,7 +185,7 @@ def main():
             print(
                 "Maximum number of pairs per loop exceeded! To avoid memory overflow pairs are being separated."
             )
-            print(f"Maximum number of pairs per loop {params.max_pairs_per_loop}")
+            print(f"Maximum number of pairs per loop {params['maxpairsperloop']}")
             print(
                 f"pairs are being separated to {number_of_chunks} chunks, each chunk containing {[len(c) for c in pair_chunks]} pairs."
             )
@@ -203,23 +205,23 @@ def main():
             if PRINTING:
                 save(
                     object=simulation,
-                    path=join(params.outfolder, "grogupy_temp_" + str(i)),
-                    compress=params.pickle_compress_level,
+                    path=join(params["outfolder"], "grogupy_temp_" + str(i)),
+                    compress=params["picklecompresslevel"],
                 )
         if PRINTING:
             # add pairs to Builder
             new_pairs = []
             for i in range(len(pair_chunks)):
                 new_pairs += load(
-                    join(params.outfolder, "grogupy_temp_" + str(i) + ".pkl")
+                    join(params["outfolder"], "grogupy_temp_" + str(i) + ".pkl")
                 ).pairs
             simulation.pairs = new_pairs
             # remove hamiltonian from magnetic entities so the comparison does not fail
-            if params.pickle_compress_level != 0:
+            if params["picklecompresslevel"] != 0:
                 for mag_ent in simulation.magnetic_entities:
                     mag_ent._dh = None
                     mag_ent._ds = None
-            if params.pickle_compress_level >= 2:
+            if params["picklecompresslevel"] >= 2:
                 for mag_ent in simulation.magnetic_entities:
                     mag_ent._Gii = []
                     mag_ent._Vu1 = []
@@ -240,7 +242,7 @@ def main():
         print(simulation.times.times)
         print(
             simulation.to_magnopy(
-                precision=params.magnopy_precision, comments=params.magnopy_comments
+                precision=params["magnopyprecision"], comments=params["magnopycomments"]
             )
         )
         print(
@@ -251,17 +253,17 @@ def main():
         )
         print("\n\n\n")
 
-        if params.save_magnopy:
+        if params["savemagnopy"]:
             save_magnopy(
                 simulation,
                 path=outfile,
-                magnetic_moment=params.out_magentic_moment,
-                precision=params.magnopy_precision,
-                comments=params.magnopy_comments,
+                magnetic_moment=params["outmagenticmoment"],
+                precision=params["magnopyprecision"],
+                comments=params["magnopycomments"],
             )
             print("Saved magnopy")
 
-        if params.save_UppASD:
+        if params["saveuppasd"]:
             # create folder if it does not exist
             UppASD_folder = outfile + "_UppASD_output"
             if not os.path.isdir(UppASD_folder):
@@ -270,18 +272,20 @@ def main():
             save_UppASD(
                 simulation,
                 folder=UppASD_folder,
-                magnetic_moment=params.out_magentic_moment,
+                magnetic_moment=params["outmagenticmoment"],
             )
             print("Saved UppASD")
 
-        if params.save_pickle:
-            save(object=simulation, path=outfile, compress=params.pickle_compress_level)
+        if params["savepickle"]:
+            save(
+                object=simulation, path=outfile, compress=params["picklecompresslevel"]
+            )
             print("Saved pickle")
 
     if PRINTING:
-        if params.max_pairs_per_loop < len(simulation.pairs):
+        if params["maxpairsperloop"] < len(simulation.pairs):
             for i in range(len(pair_chunks)):
-                os.remove(join(params.outfolder, "grogupy_temp_" + str(i) + ".pkl"))
+                os.remove(join(params["outfolder"], "grogupy_temp_" + str(i) + ".pkl"))
 
         print("\n\n\n")
         print(__definitely_not_grogu__)

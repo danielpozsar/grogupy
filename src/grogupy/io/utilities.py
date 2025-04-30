@@ -18,6 +18,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import re
+import warnings
 from typing import Any, Union
 
 import numpy as np
@@ -305,5 +306,68 @@ def strip_dict_structure(
     return out
 
 
+def standardize_input(input: dict, defaults: dict) -> dict:
+    """Standardizes the input from .py and .fdf using the default values
+
+
+    Parameters
+    ----------
+    input : dict
+        The input dictionary, which may be incomplete
+    defaults : dict
+        The default input parameters
+
+    Returns
+    -------
+    dict
+        Complete and standardized input dictionary
+    """
+
+    for key in input.keys():
+        key2 = key.replace("_", "").replace(".", "").lower()
+        if key2 in defaults.keys():
+            defaults[key2] = input[key]
+        else:
+            warnings.warn(f"Unrecognized input parameter: {key}")
+
+    return defaults
+
+
+# default input dictionary
+DEFAULT_INPUT = dict(
+    infolder="./",
+    infile=None,
+    kset=None,
+    eset=1000,
+    esetp=10000,
+    emin=None,
+    emax=0,
+    eminshift=-5,
+    emaxshift=0,
+    scfxcforientation=[0, 0, 1],
+    refxcforientations=[[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+    matlabmode=False,
+    pairs=None,
+    magnetic_entities=None,
+    setupfromrange=None,
+    radius=20,
+    atomicsubset=None,
+    kwargsformagent=dict(l=None),
+    maxpairsperloop=1000,
+    maxgperloop=1000,
+    lowmemorymode=True,
+    greensfunctionsolver="Parallel",
+    exchangesolver="Fit",
+    anisotropysolver="Fit",
+    outmagenticmoment="total",
+    savemagnopy=True,
+    magnopyprecision=None,
+    magnopycomments=True,
+    saveuppasd=True,
+    savepickle=True,
+    picklecompresslevel=3,
+    outfolder="./",
+    outfile="grogupy_out",
+)
 if __name__ == "__main__":
     pass
