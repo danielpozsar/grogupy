@@ -56,6 +56,7 @@ if CONFIG.is_GPU:
         G_pair_ji: list[NDArray],
         rotated_H: list[NDArray],
         S: NDArray,
+        rot_num: str = "Unknown",
     ) -> tuple["CNDArray", "CNDArray", "CNDArray"]:
         """Parallelizes the Green's function solution on GPU.
 
@@ -95,6 +96,8 @@ if CONFIG.is_GPU:
             Hamiltonian with rotated exchange field
         S : NDArray
             Overlap matrix, should be the same for all Hamiltonians
+        rot_num: str, optional
+            Rotation number for tqdm print, by default "Unknown"
 
         Returns
         -------
@@ -132,7 +135,8 @@ if CONFIG.is_GPU:
             local_H = cp.array(rotated_H)
 
             for i in _tqdm(
-                range(len(local_kpoints)), desc=f"Parallel over k on GPU{gpu_number}:"
+                range(len(local_kpoints)),
+                desc=f"Rotation {rot_num}, parallel over k on GPU{gpu_number}",
             ):
                 # weight of k point in BZ integral
                 wk = local_kweights[i]
@@ -147,12 +151,15 @@ if CONFIG.is_GPU:
 
                 # solve the Greens function on all energy points separately
                 if mode == "sequential":
+                    # make chunks for reduced parallelization over energy sample points
+                    number_of_chunks = np.floor(eset / max_g_per_loop) + 1
+
                     # constrain to sensible size
-                    if max_g_per_loop > eset:
-                        max_g_per_loop = eset
+                    if number_of_chunks > eset:
+                        number_of_chunks = eset
 
                     # create batches using slices on every instance
-                    slices = np.array_split(range(eset), max_g_per_loop)
+                    slices = np.array_split(range(eset), number_of_chunks)
 
                     # fills the holders sequentially by the Greens function slices on
                     # a given energy
@@ -191,6 +198,23 @@ if CONFIG.is_GPU:
                         local_G_pair_ij[l] += Gk[..., sbi1, :][..., sbi2] * wk * phase
                         local_G_pair_ji[l] += Gk[..., sbi2, :][..., sbi1] * wk / phase
 
+            # release them from memory
+            local_kpoints = None
+            local_kweights = None
+            local_SBI = None
+            local_SBI1 = None
+            local_SBI2 = None
+            local_Ruc = None
+            local_sc_off = None
+            eset = None
+            local_samples = None
+            local_S = None
+            local_H = None
+            Gk = None
+            HK = None
+            SK = None
+            phase = None
+            phases = None
         return local_G_mag, local_G_pair_ij, local_G_pair_ji
 
     def solve_parallel_over_k(builder: "Builder", print_memory: bool = False) -> None:
@@ -225,7 +249,7 @@ if CONFIG.is_GPU:
             pair.energies = []
 
         # iterate over the reference directions (quantization axes)
-        for orient in builder.ref_xcf_orientations:
+        for rot_num, orient in enumerate(builder.ref_xcf_orientations):
             # empty greens functions holders
             G_mag_reduce = []
             G_pair_ij_reduce = []
@@ -367,6 +391,7 @@ if CONFIG.is_GPU:
                         G_pair_ji_reduce,
                         H,
                         S,
+                        rot_num + 1,
                     )
                     for gpu_number in range(parallel_size)
                 ]
@@ -377,6 +402,9 @@ if CONFIG.is_GPU:
                 G_mag_reduce += G_mag_local.get()
                 G_pair_ij_reduce += G_pair_ij_local.get()
                 G_pair_ji_reduce += G_pair_ji_local.get()
+
+            # release them from memory
+            results = None
 
             for i, mag_ent in enumerate(builder.magnetic_entities):
                 # initialize rotation storage
