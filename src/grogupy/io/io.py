@@ -1024,7 +1024,8 @@ def read_py(path: str) -> dict:
     out = dict()
     for name in params.__dir__():
         if not name.startswith("__"):
-            out[name] = params.__dict__[name]
+            n = name.replace("_", "").replace(".", "").lower()
+            out[n] = params.__dict__[name]
 
     return out
 
