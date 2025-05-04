@@ -44,7 +44,7 @@ ScfXcfOrientation   0   0   1                   # usually the DFT calculation ax
 SetupFromRange          True
 Radius                  10                      # radius and magnetic atoms
 AtomicSubset            Fe
-KwargsForMagEnt         (l=2)
+KwargsForMagEnt         l   2
 
 
 ################################################################################
