@@ -256,7 +256,10 @@ if CONFIG.is_GPU:
             G_pair_ji_reduce = []
 
             # obtain rotated exchange field and Hamiltonian
-            rot_H = builder.hamiltonian.copy()
+            if builder.low_memory_mode:
+                rot_H = builder.hamiltonian
+            else:
+                rot_H = builder.hamiltonian.copy()
             rot_H.rotate(orient["o"])
             rot_H_mem = np.sum(
                 [
