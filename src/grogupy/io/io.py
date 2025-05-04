@@ -862,7 +862,7 @@ def read_magnopy(file: str):
 
 
 def read_fdf(path: str) -> dict:
-    """It reads the simulation parameters, magnetic entities and pairs from the fdf
+    """It reads the simulation parameters, magnetic entities and pairs from an fdf file.
 
     Parameters
     ----------
@@ -871,132 +871,133 @@ def read_fdf(path: str) -> dict:
 
     Returns
     -------
-        fdf_arguments: dict
-            The read input arguments from the fdf file
-        magnetic_entities: list
-            It contains the dictionaries associated with the magnetic entities
-        pairs: list
-            It contains the dictionaries associated with the pair information
+        out: dict
+            The input parameters
     """
 
-    # read fdf file
-    fdf = sisl.io.fdfSileSiesta(path)
-    fdf_arguments = dict()
+    out = dict()
+    with open(path) as f:
+        while True:
+            # preprocess
+            line = f.readline()
+            if not line:
+                break
+            line = line[: line.find("#")]
+            if len(line.strip()) != 0:
+                line = line.split()
+                line[0] = line[0].replace("_", "").replace(".", "").lower()
 
-    InputFile = fdf.get("InputFile")
-    if InputFile is not None:
-        fdf_arguments["infile"] = InputFile
+                # this is special, because we have to set up a dict from a single line
+                if line[0].lower() == "kwargsformagent":
+                    if line[1][0].lower() == "l":
+                        out[line[0]] = dict(l=list(map(int, line[2:])))
+                    elif line[1][0].lower() == "o":
+                        out[line[0]] = dict(orb=list(map(int, line[2:])))
+                    else:
+                        raise Exception("Unknown kwarg for magnetic entities!")
+                # these are blocks
+                elif line[0].lower() == r"%block":
+                    # name so we can choose process function
+                    name = line[1].replace("_", "").replace(".", "").lower()
 
-    OutputFile = fdf.get("OutputFile")
-    if OutputFile is not None:
-        fdf_arguments["outfile"] = OutputFile
+                    # iterate over lines and get preprocessed data
+                    lines = []
+                    while True:
+                        # preprocess
+                        line = f.readline()
+                        # if endblock break loop
+                        if line.split()[0].lower() == r"%endblock":
+                            break
+                        if not line:
+                            raise Exception(f"End of file in block: {name}")
+                        line = line[: line.find("#")]
+                        if len(line.strip()) != 0:
+                            lines.append(line)
+                    if name == "refxcforientations":
+                        out_lines = []
+                        for l in lines:
+                            out_lines.append([])
+                            l = l.split()
+                            just_int = True
+                            for v in l:
+                                if not v.isdigit():
+                                    just_int = False
+                            if just_int:
+                                out_lines[-1] = list(map(int, l))
+                            else:
+                                out_lines[-1] = list(map(float, l))
 
-    ScfXcfOrientation = fdf.get("ScfXcfOrientation")
-    if ScfXcfOrientation is not None:
-        fdf_arguments["scf_xcf_orientation"] = np.array(
-            ScfXcfOrientation.split()[:3], dtype=float
-        )
+                    elif name == "magneticentities":
+                        out_lines = []
+                        for l in lines:
+                            l = l.split()
+                            if l[0].lower() == "orbitals":
+                                out_lines.append(dict(orb=list(map(int, l[1:]))))
+                            elif l[0].lower() == "cluster":
+                                out_lines.append(dict(atom=list(map(int, l[1:]))))
+                            elif l[0].lower() == "atom":
+                                if len(l) != 2:
+                                    raise Exception("Atom should be a single atom!")
+                                else:
+                                    out_lines.append(dict(atom=int(l[1])))
+                            elif l[0].lower() == "atomshell":
+                                out_lines.append(
+                                    dict(atom=int(l[1]), l=list(map(int, l[2:])))
+                                )
+                            elif l[0].lower() == "atomorbital":
+                                out_lines.append(
+                                    dict(atom=int(l[1]), orb=list(map(int, l[2:])))
+                                )
+                            else:
+                                raise Exception("Unknown magnetic entity!")
+                    elif name == "pairs":
+                        out_lines = []
+                        for l in lines:
+                            l = l.split()
+                            out_lines.append(
+                                dict(
+                                    ai=int(l[0]),
+                                    aj=int(l[1]),
+                                    Ruc=list(map(int, l[2:5])),
+                                )
+                            )
+                    else:
+                        pass
+                    out[name] = out_lines
 
-    XCF_Rotation = fdf.get("XCF_Rotation")
-    if XCF_Rotation is not None:
-        rotations = []
-        # iterate over rows
-        for rot in XCF_Rotation:
-            # convert row to dictionary
-            dat = np.array(rot.split()[:9], dtype=float)
-            o = dat[:3]
-            vw = dat[3:].reshape(2, 3)
-            rotations.append(dict(o=o, vw=vw))
-        fdf_arguments["ref_xcf_orientations"] = rotations
+                # these are single line lists
+                elif len(line) > 2:
+                    just_int = True
+                    for l in line[1:]:
+                        if not l.isdigit():
+                            just_int = False
+                    if just_int:
+                        out[line[0]] = list(map(int, line[1:]))
+                    else:
+                        out[line[0]] = list(map(float, line[1:]))
 
-    Kset = fdf.get("INTEGRAL.Kset")
-    if Kset is not None:
-        fdf_arguments["kset"] = int(Kset)
-
-    Kdirs = fdf.get("INTEGRAL.Kdirs")
-    if Kdirs is not None:
-        fdf_arguments["kdirs"] = Kdirs
-
-    # This is permitted because it means automatic Ebot definition
-    ebot = fdf.get("INTEGRAL.Ebot")
-    try:
-        fdf_arguments["ebot"] = float(ebot)
-    except:
-        fdf_arguments["ebot"] = None
-
-    Eset = fdf.get("INTEGRAL.Eset")
-    if Eset is not None:
-        fdf_arguments["eset"] = int(Eset)
-
-    Esetp = fdf.get("INTEGRAL.Esetp")
-    if Esetp is not None:
-        fdf_arguments["esetp"] = float(Esetp)
-
-    ParallelSolver = fdf.get("GREEN.ParallelSolver")
-    if ParallelSolver is not None:
-        fdf_arguments["parallel_solver_for_Gk"] = bool(ParallelSolver)
-
-    PadawanMode = fdf.get("PadawanMode")
-    if PadawanMode is not None:
-        fdf_arguments["padawan_mode"] = bool(PadawanMode)
-
-    Pairs = fdf.get("Pairs")
-    if Pairs is not None:
-        pairs = []
-        # iterate over rows
-        for fdf_pair in Pairs:
-            # convert data
-            dat = np.array(fdf_pair.split()[:5], dtype=int)
-            # create pair dictionary
-            my_pair = dict(ai=dat[0], aj=dat[1], Ruc=np.array(dat[2:]))
-            pairs.append(my_pair)
-
-    MagneticEntities = fdf.get("MagneticEntities")
-    if MagneticEntities is not None:
-        magnetic_entities = []
-        # iterate over magnetic entities
-        for mag_ent in MagneticEntities:
-            # drop comments from data
-            row = mag_ent.split()
-            dat = []
-            for string in row:
-                if string.find("#") != -1:
-                    break
-                dat.append(string)
-            # cluster input
-            if dat[0] in {"Cluster", "cluster"}:
-                magnetic_entities.append(dict(atom=[int(_) for _ in dat[1:]]))
-                continue
-            # atom input, same as cluster, but raises
-            # error when multiple atoms are given
-            if dat[0] in {"Atom", "atom"}:
-                if len(dat) > 2:
-                    raise Exception("Atom input must be a single integer")
-                magnetic_entities.append(dict(atom=int(dat[1])))
-                continue
-            # atom and shell information
-            elif dat[0] in {"AtomShell", "Atomshell", "atomShell", "atomshell"}:
-                magnetic_entities.append(
-                    dict(atom=int(dat[1]), l=[int(_) for _ in dat[2:]])
-                )
-                continue
-            # atom and orbital information
-            elif dat[0] in {"AtomOrbital", "Atomorbital", "tomOrbital", "atomorbital"}:
-                magnetic_entities.append(
-                    dict(atom=int(dat[1]), orb=[int(_) for _ in dat[2:]])
-                )
-                continue
-            # orbital information
-            elif dat[0] in {"Orbitals", "orbitals"}:
-                magnetic_entities.append(dict(orb=[int(_) for _ in dat[1:]]))
-                continue
-            else:
-                raise Exception("Unrecognizable magnetic entity in .fdf!")
-
-    fdf_arguments["magnetic_entities"] = magnetic_entities
-    fdf_arguments["pairs"] = pairs
-
-    return fdf_arguments
+                # one keyword stuff
+                elif len(line) == 2:
+                    # check for integers
+                    if line[1].isdigit():
+                        out[line[0]] = int(line[1])
+                    else:
+                        # else try floats and continue if it works
+                        try:
+                            out[line[0]] = float(line[1])
+                            continue
+                        except:
+                            pass
+                        # the rest are strings, none or bool
+                        if line[1].lower() == "none":
+                            out[line[0]] = None
+                        elif line[1].lower() == "true":
+                            out[line[0]] = True
+                        elif line[1].lower() == "false":
+                            out[line[0]] = False
+                        else:
+                            out[line[0]] = line[1]
+    return out
 
 
 def read_py(path: str) -> dict:
