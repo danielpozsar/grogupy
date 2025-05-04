@@ -27,7 +27,7 @@ kset = [1, 1, 1]
 # eset should be 100 for insulators and 1000 for metals
 eset = 100
 # esetp should be 600 for insulators and 10000 for metals
-esetp = 600
+esetp = 10000
 # emin None sets the minimum energy to the minimum energy in the eigfile
 emin = None
 # emax is at the Fermi level at 0
@@ -44,14 +44,12 @@ emax_shift = 0
 scf_xcf_orientation = [0, 0, 1]
 # the reference directions for the energy derivations
 ref_xcf_orientations = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
-# matlabmode is only for testing purposes
-matlabmode = False
 ################################################################################
 #                      Magnetic entity and pair definitions
 ################################################################################
 # magnetic entities and pairs can be defined automatically from the cutoff
-# radius and magnetic atoms
 setup_from_range = True
+# radius and magnetic atoms
 radius = 10
 atomic_subset = "Fe"
 kwargs_for_mag_ent = dict(l=2)
@@ -112,7 +110,7 @@ The compression level can be set to 0,1,2,3. Every other value defaults to 3.
 """
 pickle_compress_level = 3
 
-# output folder, for example the current folder
+# output folder, for example the input folder
 outfolder = infolder
 # outfile name
 outfile = f"{infile.split('.')[0]}_kset_{'_'.join(map(str, kset))}_eset_{eset}_{anisotropy_solver}"
