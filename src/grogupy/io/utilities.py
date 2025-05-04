@@ -330,6 +330,13 @@ def standardize_input(input: dict, defaults: dict) -> dict:
         else:
             warnings.warn(f"Unrecognized input parameter: {key}")
 
+    if defaults["outfolder"] is None:
+        defaults["outfolder"] = defaults["infolder"]
+    if defaults["outfile"] is None:
+        defaults["outfile"] = (
+            f"{defaults['infile'].split('.')[0]}_kset_{'_'.join(map(str, defaults['kset']))}_eset_{defaults['eset']}_{defaults['anisotropysolver']}"
+        )
+
     return defaults
 
 
@@ -360,14 +367,14 @@ DEFAULT_INPUT = dict(
     exchangesolver="Fit",
     anisotropysolver="Fit",
     outmagenticmoment="total",
-    savemagnopy=True,
+    savemagnopy=False,
     magnopyprecision=None,
     magnopycomments=True,
-    saveuppasd=True,
-    savepickle=True,
+    saveuppasd=False,
+    savepickle=False,
     picklecompresslevel=3,
-    outfolder="./",
-    outfile="grogupy_out",
+    outfolder=None,
+    outfile=None,
 )
 if __name__ == "__main__":
     pass
