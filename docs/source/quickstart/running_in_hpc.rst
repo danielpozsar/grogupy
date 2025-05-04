@@ -136,8 +136,6 @@ as we did in the jupyter notebook examples.
    scf_xcf_orientation = [0, 0, 1]
    # the reference directions for the energy derivations
    ref_xcf_orientations = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
-   # matlabmode is only for testing purposes
-   matlabmode = False
    ################################################################################
    #                      Magnetic entity and pair definitions
    ################################################################################
@@ -206,7 +204,7 @@ as we did in the jupyter notebook examples.
    """
    pickle_compress_level = 3
 
-   # output folder, for example the current folder
+   # output folder, for example the input folder
    outfolder = infolder
    # outfile name
    outfile = f"{infile.split('.')[0]}_kset_{'_'.join(map(str, kset))}_eset_{eset}_{anisotropy_solver}"
