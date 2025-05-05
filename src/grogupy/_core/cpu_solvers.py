@@ -307,6 +307,7 @@ def solve_parallel_over_k(builder: "Builder", print_memory: bool = False) -> Non
                 pair._Gji.append(pair._Gji_reduce)
         # or fill with empty stuff
         else:
+            rot_H.rotate(rot_H.scf_xcf_orientation)
             for mag_ent in builder.magnetic_entities:
                 mag_ent._Vu1.append([])
                 mag_ent._Vu2.append([])
