@@ -62,6 +62,8 @@ class Hamiltonian:
 
     Methods
     -------
+    extract_exchange_field() :
+        Extracts the exchange field and time reversal symmetric and breaking parts
     rotate(orientation) :
         It rotates the exchange field of the Hamiltonian.
     HkSk(k) :
@@ -85,14 +87,6 @@ class Hamiltonian:
         Orientation of the DFT exchange field
     orientation: NDArray
         Current orientation of the XCF filed
-    hTRS: NDArray
-        Time reversal symmetric part of the Hamiltonian
-    hTRB: NDArray
-        Time reversal broken symmetric part of the Hamiltonian
-    H_XCF: NDArray
-        Exchange Hamiltonian
-    XCF: NDArray
-        Exchange field
     NO: int
         Number of orbitals in the Hamiltonian
     cell: NDArray
@@ -105,8 +99,6 @@ class Hamiltonian:
         Unit cell index
     H_uc: NDArray
         Unit cell Hamiltonian
-    H_XCF_uc: NDArray
-        Unit cell exchange part of the Hamiltonian
     times: grogupy.batch.timing.DefaultTimer
         It contains and measures runtime
     """
@@ -167,92 +159,6 @@ class Hamiltonian:
 
         self.orientation: NDArray = scf_xcf_orientation
 
-        if CONFIG.is_CPU:
-            # identifying TRS and TRB parts of the Hamiltonian
-            TAUY: NDArray = np.kron(np.eye(self.NO), TAU_Y)
-
-            hTR: NDArray = []
-            for i in _tqdm(range(self.nsc.prod()), desc="Transpose Hamiltonian"):
-                hTR.append(TAUY @ self.H[i].conj() @ TAUY)
-            hTR = np.array(hTR)
-
-            hTRS: NDArray = (self.H + hTR) / 2
-            hTRB: NDArray = (self.H - hTR) / 2
-
-            # extracting the exchange field
-            traced: NDArray = []
-            for i in _tqdm(range(self.nsc.prod()), desc="Calculate V_XCF"):
-                traced.append(spin_tracer(hTRB[i]))
-            traced = np.array(traced)  # equation 77
-
-            XCF: NDArray = np.array(
-                [
-                    np.array([f["x"] / 2 for f in traced]),
-                    np.array([f["y"] / 2 for f in traced]),
-                    np.array([f["z"] / 2 for f in traced]),
-                ]
-            )
-
-            H_XCF: NDArray = np.zeros(
-                (self.nsc.prod(), self.NO * 2, self.NO * 2), dtype="complex128"
-            )
-            for i, tau in _tqdm(
-                enumerate([TAU_X, TAU_Y, TAU_Z]), total=3, desc="Calculate H_XC"
-            ):
-                H_XCF += np.kron(XCF[i], tau)
-
-        elif CONFIG.is_GPU:
-            # free up unused memory
-            mempool = cp.get_default_memory_pool()
-            mempool.free_all_blocks()
-
-            # identifying TRS and TRB parts of the Hamiltonian
-            TAUY: CNDArray = cp.kron(cp.eye(self.NO), cp.array(TAU_Y))
-
-            hTR: NDArray = []
-            for i in _tqdm(range(self.nsc.prod()), desc="Transpose Hamiltonian"):
-                hTR.append((TAUY @ cp.array(self.H[i]).conj() @ TAUY).get())
-            hTR = np.array(hTR)
-
-            # release this from memory
-            TAUY = None
-
-            hTRS: NDArray = (self.H + hTR) / 2
-            hTRB: NDArray = (self.H - hTR) / 2
-
-            # extracting the exchange field equation 77
-            traced: list = []
-            for i in _tqdm(range(self.nsc.prod()), desc="Calculate V_XCF"):
-                traced.append(spin_tracer(hTRB[i]))
-
-            XCF: CNDArray = cp.array(
-                [
-                    cp.array([f["x"] / 2 for f in traced]),
-                    cp.array([f["y"] / 2 for f in traced]),
-                    cp.array([f["z"] / 2 for f in traced]),
-                ]
-            )
-
-            H_XCF: NDArray = np.zeros(
-                (self.nsc.prod(), self.NO * 2, self.NO * 2), dtype="complex128"
-            )
-            for i, tau in _tqdm(
-                enumerate([TAU_X, TAU_Y, TAU_Z]), total=3, desc="Calculate H_XC"
-            ):
-                H_XCF += cp.kron(XCF[i], cp.array(tau)).get()
-
-            XCF, H_XCF = XCF.get(), H_XCF
-        else:
-            raise ValueError(f"Unknown architecture: {CONFIG.architecture}")
-
-        # check if exchange field has scalar part
-        max_xcfs: float = abs(np.array([f["c"] / 2 for f in traced])).max()
-        if max_xcfs > 1e-12:
-            warnings.warn(
-                f"Exchange field has non negligible scalar part. Largest value is {max_xcfs}"
-            )
-        self.hTRS, self.hTRB, self.XCF, self.H_XCF = hTRS, hTRB, XCF, H_XCF
-
         # pre calculate hidden unuseed properties
         # they are here so they are dumped to the self.__dict__ upon saving
         self.__no = self._dh.no
@@ -286,10 +192,6 @@ class Hamiltonian:
                 and np.allclose(self.S, value.S)
                 and np.allclose(self.scf_xcf_orientation, value.scf_xcf_orientation)
                 and np.allclose(self.orientation, value.orientation)
-                and np.allclose(self.hTRS, value.hTRS)
-                and np.allclose(self.hTRB, value.hTRB)
-                and np.allclose(self.XCF, value.XCF)
-                and np.allclose(self.H_XCF, value.H_XCF)
             ):
                 # if DM is None return True
                 if self._ds is None and value._ds is None:
@@ -321,7 +223,7 @@ class Hamiltonian:
     @property
     def NO(self) -> int:
         try:
-            self.__no = self._dh.no
+            self.__no = self._dh.no * 2
         except:
             warnings.warn(
                 "Property could not be calculated. This is only acceptable for loaded Hamiltonian!"
@@ -361,15 +263,117 @@ class Hamiltonian:
     def H_uc(self) -> NDArray:
         return self.H[self.uc_in_sc_index]
 
-    @property
-    def H_XCF_uc(self) -> NDArray:
-        return self.H_XCF[self.uc_in_sc_index]
+    def extract_exchange_field(self) -> list[NDArray, NDArray, NDArray, NDArray]:
+        """Extract the exchange field and other useful quantities.
+
+        Returns
+        -------
+        hTRS: NDArray
+            Time reversal symmetric part of the Hamiltonian
+        hTRB: NDArray
+            Time reversal broken symmetric part of the Hamiltonian
+        XCF: NDArray
+            Exchange field
+        H_XCF: NDArray
+            Exchange Hamiltonian
+
+        Raises
+        ------
+        ValueError
+            Exchange field has non negligible scalar part.
+        """
+
+        if CONFIG.is_CPU:
+            # identifying TRS and TRB parts of the Hamiltonian
+            TAUY: NDArray = np.kron(np.eye(int(self.NO / 2)), TAU_Y)
+
+            hTR: NDArray = []
+            for i in _tqdm(range(self.nsc.prod()), desc="Transpose Hamiltonian"):
+                hTR.append(TAUY @ self.H[i].conj() @ TAUY)
+            hTR = np.array(hTR)
+
+            hTRS: NDArray = (self.H + hTR) / 2
+            hTRB: NDArray = (self.H - hTR) / 2
+
+            # extracting the exchange field
+            traced: NDArray = []
+            for i in _tqdm(range(self.nsc.prod()), desc="Calculate V_XCF"):
+                traced.append(spin_tracer(hTRB[i]))
+            traced = np.array(traced)  # equation 77
+
+            XCF: NDArray = np.array(
+                [
+                    np.array([f["x"] / 2 for f in traced]),
+                    np.array([f["y"] / 2 for f in traced]),
+                    np.array([f["z"] / 2 for f in traced]),
+                ]
+            )
+
+            H_XCF: NDArray = np.zeros(
+                (self.nsc.prod(), self.NO, self.NO), dtype="complex128"
+            )
+            for i, tau in _tqdm(
+                enumerate([TAU_X, TAU_Y, TAU_Z]), total=3, desc="Calculate H_XC"
+            ):
+                H_XCF += np.kron(XCF[i], tau)
+
+        elif CONFIG.is_GPU:
+            # free up unused memory
+            mempool = cp.get_default_memory_pool()
+            mempool.free_all_blocks()
+
+            # identifying TRS and TRB parts of the Hamiltonian
+            TAUY: CNDArray = cp.kron(cp.eye(self.NO), cp.array(TAU_Y))
+
+            hTR: NDArray = []
+            for i in _tqdm(range(self.nsc.prod()), desc="Transpose Hamiltonian"):
+                hTR.append((TAUY @ cp.array(self.H[i]).conj() @ TAUY).get())
+            hTR = np.array(hTR)
+
+            # release this from memory
+            TAUY = None
+
+            hTRS: NDArray = (self.H + hTR) / 2
+            hTRB: NDArray = (self.H - hTR) / 2
+
+            # extracting the exchange field equation 77
+            traced: list = []
+            for i in _tqdm(range(self.nsc.prod()), desc="Calculate V_XCF"):
+                traced.append(spin_tracer(hTRB[i]))
+
+            XCF: CNDArray = cp.array(
+                [
+                    cp.array([f["x"] / 2 for f in traced]),
+                    cp.array([f["y"] / 2 for f in traced]),
+                    cp.array([f["z"] / 2 for f in traced]),
+                ]
+            )
+
+            H_XCF: NDArray = np.zeros(
+                (self.nsc.prod(), self.NO, self.NO), dtype="complex128"
+            )
+            for i, tau in _tqdm(
+                enumerate([TAU_X, TAU_Y, TAU_Z]), total=3, desc="Calculate H_XC"
+            ):
+                H_XCF += cp.kron(XCF[i], cp.array(tau)).get()
+
+            XCF, H_XCF = XCF.get(), H_XCF
+        else:
+            raise ValueError(f"Unknown architecture: {CONFIG.architecture}")
+
+        # check if exchange field has scalar part
+        max_xcfs: float = abs(np.array([f["c"] / 2 for f in traced])).max()
+        if max_xcfs > 1e-12:
+            warnings.warn(
+                f"Exchange field has non negligible scalar part. Largest value is {max_xcfs}"
+            )
+        return hTRS, hTRB, XCF, H_XCF
 
     def rotate(self, orientation: NDArray) -> None:
         """It rotates the exchange field of the Hamiltonian.
 
-        It dumps the solutions to the `XCF`, `H_XCF`, `H` and
-        `orientation` properties.
+        It dumps the solutions to the `H` and `orientation`
+        properties.
 
         Parameters
         ----------
@@ -377,41 +381,42 @@ class Hamiltonian:
             The rotation where it rotates
         """
 
+        hTRS, hTRB, XCF, H_XCF = self.extract_exchange_field()
         # obtain rotated exchange field and Hamiltonian
         R: NDArray = RotMa2b(self.scf_xcf_orientation, orientation)
-        self.XCF: NDArray = np.einsum("ij,jklm->iklm", R, self.XCF)
+        XCF: NDArray = np.einsum("ij,jklm->iklm", R, XCF)
 
         if CONFIG.is_CPU:
-            self.H_XCF: NDArray = np.zeros(
-                (self.nsc.prod(), self.NO * 2, self.NO * 2), dtype=np.complex128
+            H_XCF: NDArray = np.zeros(
+                (self.nsc.prod(), self.NO, self.NO), dtype=np.complex128
             )
             for i, tau in _tqdm(
                 enumerate([TAU_X, TAU_Y, TAU_Z]),
                 total=3,
                 desc="Rotating Exchange field",
             ):
-                self.H_XCF += np.kron(self.XCF[i], tau)
+                H_XCF += np.kron(XCF[i], tau)
         elif CONFIG.is_GPU:
             # free up unused memory
             mempool = cp.get_default_memory_pool()
             mempool.free_all_blocks()
 
-            self.H_XCF: CNDArray = cp.zeros(
-                (self.nsc.prod(), self.NO * 2, self.NO * 2), dtype=np.complex128
+            H_XCF: CNDArray = cp.zeros(
+                (self.nsc.prod(), self.NO, self.NO), dtype=np.complex128
             )
-            XCF = cp.array(self.XCF)
+            XCF = cp.array(XCF)
             for i, tau in _tqdm(
                 enumerate([TAU_X, TAU_Y, TAU_Z]),
                 total=3,
                 desc="Rotating Exchange field",
             ):
-                self.H_XCF += cp.kron(XCF[i], cp.array(tau))
-            self.H_XCF = self.H_XCF.get()
+                H_XCF += cp.kron(XCF[i], cp.array(tau))
+            H_XCF = H_XCF.get()
         else:
             raise Exception(f"Unknown architecture: {CONFIG.architecture}")
 
         # obtain total Hamiltonian with the rotated exchange field
-        self.H: NDArray = self.hTRS + self.H_XCF  # equation 76
+        self.H: NDArray = hTRS + H_XCF  # equation 76
         self.orientation = orientation
 
     def HkSk(self, k: tuple = (0, 0, 0)) -> tuple[NDArray, NDArray]:
