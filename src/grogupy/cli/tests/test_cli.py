@@ -36,6 +36,8 @@ class TestCommandLineTools:
             "./src/grogupy/cli/tests/input4.py",
             "./src/grogupy/cli/tests/input5.py",
             "./src/grogupy/cli/tests/input6.py",
+            "./src/grogupy/cli/tests/input0.fdf",
+            "./src/grogupy/cli/tests/input1.fdf",
         ],
     )
     def test_run(self, path):

@@ -44,8 +44,6 @@ emax_shift = 0
 scf_xcf_orientation = [0, 0, 1]
 # the reference directions for the energy derivations
 ref_xcf_orientations = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
-# matlabmode is only for testing purposes
-matlabmode = False
 ################################################################################
 #                      Magnetic entity and pair definitions
 ################################################################################

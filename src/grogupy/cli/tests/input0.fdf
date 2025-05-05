@@ -3,8 +3,8 @@
 ################################################################################
 
 
-InFolder        ../benchmarks/Fe3GeTe2
-Infile          Fe3GeTe2.fdf
+InFolder        ./benchmarks/CrI3
+Infile          CrI3.fdf
 
 
 ################################################################################
@@ -12,12 +12,12 @@ Infile          Fe3GeTe2.fdf
 ################################################################################
 
 
-Kset        1 1 1                               # kset should be at leas 100x100 for 2D diatomic systems
+Kset        2 2 1                               # kset should be at leas 100x100 for 2D diatomic systems
 Eset        100                                 # eset should be 100 for insulators and 1000 for metals
-Esetp       10000                               # esetp should be 600 for insulators and 10000 for metals
+Esetp       600                                 # esetp should be 600 for insulators and 10000 for metals
 Emin        None                                # emin None sets the minimum energy to the minimum energy in the eigfile
 Emax        0                                   # emax is at the Fermi level at 0
-EminShift   -5.1                                # the bottom of the energy contour should be shifted by -5 eV
+EminShift   -5                                  # the bottom of the energy contour should be shifted by -5 eV
 EmaxShift   0                                   # the top of the energy contour can be shifted to the middle of the gap for insulators
 
 
@@ -42,8 +42,8 @@ ScfXcfOrientation   0   0   1                   # usually the DFT calculation ax
 
 # magnetic entities and pairs can be defined automatically from the cutoff
 SetupFromRange          True
-Radius                  10                      # radius and magnetic atoms
-AtomicSubset            Fe
+Radius                  20                      # radius and magnetic atoms
+AtomicSubset            Cr
 KwargsForMagEnt         l   2
 
 
@@ -85,7 +85,7 @@ MagnopyPrecision            None            # precision of numerical values in t
 MagnopyComments             True            # add the simulation parameters to the magnopy file as comments
 SaveUppASD                  True            # save the Uppsala Atomistic Spin Dynamics software input files
 SavePickle                  True            # save the pickle file
-PickleCompressLevel         3
+PickleCompressLevel         2
 
 # The compression level can be set to 0,1,2,3. Every other value defaults to 3.
 # 0. This means that there is no compression at all.
@@ -96,12 +96,9 @@ PickleCompressLevel         3
 # 
 # 2. This contains compression 1, but sets the keys "Gii",
 #    "Gij", "Gji", "Vu1" and "Vu2" to [], to save space
-# 
-# 3. This contains compression 1 and 2, but sets the keys
-#    "hTRS", "hTRB", "XCF" and "H_XCF" to None, to save space
 
-OutFolder                   None            # output folder, for example the input folder
-OutputFile                  None            # outfile name, default name
+OutFolder                   ./src/grogupy/cli/tests/            # output folder, for example the input folder
+OutFile                  test                                # outfile name, default name
 
 
 ################################################################################
