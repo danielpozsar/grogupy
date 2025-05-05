@@ -232,7 +232,7 @@ def setup_from_range(
 
     pairs = []
     # the center from which we measure the distance
-    for i in _tqdm(uc_atoms, desc="Pair finding"):
+    for i in uc_atoms:
         center = dh.xyz[i]
 
         # update number of supercells based on the range from
@@ -282,7 +282,7 @@ def setup_from_range(
 
     # create output pair information
     out = []
-    for pair in _tqdm(pairs, desc="Pair creation"):
+    for pair in pairs:
         ai = np.where(atoms == pair[0])[0][0]
         aj = np.where(atoms == pair[1])[0][0]
         out.append(dict(ai=ai, aj=aj, Ruc=[pair[2], pair[3], pair[4]]))
