@@ -23,7 +23,9 @@ import pytest
 import grogupy
 from grogupy.viz import (
     plot_contour,
+    plot_DM_distance,
     plot_DMI,
+    plot_Jiso_distance,
     plot_kspace,
     plot_magnetic_entities,
     plot_pairs,
@@ -59,6 +61,14 @@ class TestPlots:
     @pytest.mark.parametrize("rescale", [-1, 0, 0.1, 1])
     def test_DMI(self, setup, rescale):
         fig = plot_DMI(setup.pairs, rescale)
+        assert isinstance(fig, go.Figure)
+
+    def test__DM_distance(self, setup):
+        fig = plot_DM_distance(setup.pairs)
+        assert isinstance(fig, go.Figure)
+
+    def test__Jiso_distance(self, setup):
+        fig = plot_Jiso_distance(setup.pairs)
         assert isinstance(fig, go.Figure)
 
 
