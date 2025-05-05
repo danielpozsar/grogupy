@@ -106,11 +106,8 @@ The compression level can be set to 0,1,2,3. Every other value defaults to 3.
 
 2. This contains compression 1, but sets the keys "Gii",
    "Gij", "Gji", "Vu1" and "Vu2" to [], to save space
-
-3. This contains compression 1 and 2, but sets the keys
-   "hTRS", "hTRB", "XCF" and "H_XCF" to None, to save space
 """
-pickle_compress_level = 3
+pickle_compress_level = 2
 
 # output folder, for example the current folder
 outfolder = "./src/grogupy/cli/tests/"
