@@ -74,11 +74,34 @@ def main():
             return
 
     # Reading input
-    try:
+    if args.file.endswith(".py"):
         params = read_py(args.file)
-    except:
+    elif args.file.endswith(".fdf"):
         params = read_fdf(args.file)
+    else:
+        raise Exception(f"Unknown input format: {args.file}!")
+
     params = standardize_input(params, defaults=DEFAULT_INPUT)
+
+    # print input
+    if PRINTING:
+        print("\n\n\n")
+        print(
+            "################################################################################"
+        )
+        print("#                                   Inputs")
+        print(
+            "################################################################################"
+        )
+        for key, value in params.items():
+            print(key, "\t\t\t", value)
+        print(
+            "################################################################################"
+        )
+        print(
+            "################################################################################"
+        )
+        print("\n\n\n")
 
     # construct the input and output file paths
     infile = join(params["infolder"], params["infile"])
