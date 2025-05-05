@@ -72,7 +72,6 @@ class TestCommandLineTools:
         os.remove("./src/grogupy/cli/tests/test.magnetic_entities.html")
         assert os.path.isfile("./src/grogupy/cli/tests/test.pairs.html")
         os.remove("./src/grogupy/cli/tests/test.pairs.html")
-
         os.remove("./src/grogupy/cli/tests/test.pkl")
 
 
