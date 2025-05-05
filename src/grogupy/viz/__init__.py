@@ -39,6 +39,8 @@ Functions
     plot_magnetic_entities    Plots the magnetic entities in the lattice.
     plot_pairs                Plots the pairs, with or without connections.
     plot_DMI                  Plots the DMI vectors.
+    plot_DM_distance          Plots the magnitude of DM vectors as a function of distance.
+    plot_Jiso_distance        Plots the isotropic exchange as a function of distance.
 
 
 Background information
@@ -66,3 +68,5 @@ setattr(Kspace, "plot", plot_kspace)
 setattr(Builder, "plot_DMI", plot_DMI)
 setattr(Builder, "plot_magnetic_entities", plot_magnetic_entities)
 setattr(Builder, "plot_pairs", plot_pairs)
+setattr(Builder, "plot_DM_distance", plot_DM_distance)
+setattr(Builder, "plot_Jiso_distance", plot_Jiso_distance)

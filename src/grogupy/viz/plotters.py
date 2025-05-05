@@ -68,11 +68,6 @@ def plot_contour(contour: "Contour") -> go.Figure:
         ),
     )
 
-    fig.update_yaxes(
-        scaleanchor="x",
-        scaleratio=1,
-    )
-
     return fig
 
 
@@ -443,6 +438,102 @@ def plot_DMI(pairs: Union[Builder, list["Pair"]], rescale: float = 1) -> go.Figu
             xaxis=dict(title="X Axis", showgrid=True, gridwidth=1),
             yaxis=dict(title="Y Axis", showgrid=True, gridwidth=1),
             zaxis=dict(title="Z Axis", showgrid=True, gridwidth=1),
+        ),
+    )
+
+    return fig
+
+
+def plot_Jiso_distance(pairs: Union[Builder, list["Pair"]]) -> go.Figure:
+    """Plots the isotropic exchange as a function of distance.
+
+    Parameters
+    ----------
+    pairs : Union[Builder, list[Pair]]
+        The pairs that contain the exchange and positions
+
+    Returns
+    -------
+    plotly.graph_objs.go.Figure
+        The created figure
+    """
+
+    # conversion line for the case when it is set as the plot function of a builder
+    if isinstance(pairs, Builder):
+        pairs = pairs.pairs
+
+    # Create figure
+    fig = go.Figure(
+        data=go.Scatter(
+            x=[p.distance for p in pairs],
+            y=[p.J_iso_meV for p in pairs],
+            mode="markers+lines",
+        )
+    )
+
+    # Update the layout
+    fig.update_layout(
+        autosize=False,
+        width=800,
+        height=500,
+        title=f"Isotropic exchange",
+        xaxis_title="Pair distance [Ang]",
+        yaxis_title="Isotropic exchange [meV]",
+        xaxis=dict(
+            showgrid=True,
+            gridwidth=1,
+        ),
+        yaxis=dict(
+            showgrid=True,
+            gridwidth=1,
+        ),
+    )
+
+    return fig
+
+
+def plot_DM_distance(pairs: Union[Builder, list["Pair"]]) -> go.Figure:
+    """Plots the magnitude of DM vectors as a function of distance.
+
+    Parameters
+    ----------
+    pairs : Union[Builder, list[Pair]]
+        The pairs that contain the DM vectors and positions
+
+    Returns
+    -------
+    plotly.graph_objs.go.Figure
+        The created figure
+    """
+
+    # conversion line for the case when it is set as the plot function of a builder
+    if isinstance(pairs, Builder):
+        pairs = pairs.pairs
+
+    # Create figure
+    fig = go.Figure(
+        data=go.Scatter(
+            x=[p.distance for p in pairs],
+            y=np.linalg.norm([p.D_meV for p in pairs], axis=1),
+            mode="markers+lines",
+        )
+    )
+
+    # Update the layout
+    fig.update_layout(
+        autosize=False,
+        width=800,
+        height=500,
+        title=f"Isotropic exchange",
+        xaxis_title="Pair distance [Ang]",
+        yaxis_title="Isotropic exchange [meV]",
+        xaxis=dict(
+            showgrid=True,
+            gridwidth=1,
+        ),
+        yaxis=dict(
+            showgrid=True,
+            gridwidth=1,
         ),
     )
 
