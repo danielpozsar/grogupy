@@ -171,16 +171,23 @@ class TestIO:
         print(data)
         raise NotImplementedError
 
-    @pytest.mark.xfail(raises=NotImplementedError)
     def test_save_UppASD(self):
-        raise NotImplementedError
+        builder = load_Builder("./tests/test_builder.pkl")
+        os.mkdir("./src/grogupy/io/tests/test_UppASD")
+        save_UppASD(builder, "./src/grogupy/io/tests/test_UppASD")
+        assert os.path.isdir("./src/grogupy/io/tests/test_UppASD")
+        os.remove("./src/grogupy/io/tests/test_UppASD/jfile")
+        os.remove("./src/grogupy/io/tests/test_UppASD/momfile")
+        os.remove("./src/grogupy/io/tests/test_UppASD/posfile")
+        os.remove("./src/grogupy/io/tests/test_UppASD/cell.tmp.txt")
+        os.rmdir("./src/grogupy/io/tests/test_UppASD")
 
     @pytest.mark.xfail(raises=NotImplementedError)
     def test_read_fdf(self):
         raise NotImplementedError
 
     @pytest.mark.xfail(raises=NotImplementedError)
-    def test_read_command_line(self):
+    def test_py(self):
         raise NotImplementedError
 
     def test_save_compression(self):
