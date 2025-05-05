@@ -100,7 +100,7 @@ MagnopyPrecision            None            # precision of numerical values in t
 MagnopyComments             True            # add the simulation parameters to the magnopy file as comments
 SaveUppASD                  True            # save the Uppsala Atomistic Spin Dynamics software input files
 SavePickle                  True            # save the pickle file
-PickleCompressLevel         3
+PickleCompressLevel         2
 
 # The compression level can be set to 0,1,2,3. Every other value defaults to 3.
 # 0. This means that there is no compression at all.
