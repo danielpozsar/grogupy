@@ -23,7 +23,9 @@ from .. import __citation__, __definitely_not_grogu__
 from ..io.io import load, save_magnopy
 from ..viz.plotters import (
     plot_contour,
+    plot_DM_distance,
     plot_DMI,
+    plot_Jiso_distance,
     plot_kspace,
     plot_magnetic_entities,
     plot_pairs,
@@ -64,23 +66,32 @@ def main():
     print(f"The output files are under the name: {name}")
     print(__definitely_not_grogu__)
 
-    with open(name + ".analysis.txt", "w") as f:
-        f.writelines(system.to_magnopy())
+    with open(name + ".analysis.html", "w") as file:
+        file.write(
+            system.to_magnopy()
+            .replace("\n", "<br>\n")
+            .replace(" ", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
+        )
+        fig = plot_contour(system.contour)
+        file.write(fig.to_html(full_html=False, include_plotlyjs="cdn"))
 
-    fig = plot_contour(system.contour)
-    fig.write_html(name + ".contour.html")
+        fig = plot_kspace(system.kspace)
+        file.write(fig.to_html(full_html=False, include_plotlyjs="cdn"))
 
-    fig = plot_kspace(system.kspace)
-    fig.write_html(name + ".kspace.html")
+        fig = plot_magnetic_entities(system)
+        file.write(fig.to_html(full_html=False, include_plotlyjs="cdn"))
 
-    fig = plot_magnetic_entities(system)
-    fig.write_html(name + ".magnetic_entities.html")
+        fig = plot_pairs(system)
+        file.write(fig.to_html(full_html=False, include_plotlyjs="cdn"))
 
-    fig = plot_pairs(system)
-    fig.write_html(name + ".pairs.html")
+        fig = plot_DMI(system).add_traces(system.plot_pairs(connect=True).data)
+        file.write(fig.to_html(full_html=False, include_plotlyjs="cdn"))
 
-    fig = plot_DMI(system).add_traces(system.plot_pairs(connect=True).data)
-    fig.write_html(name + ".DMIs.html")
+        fig = plot_Jiso_distance(system)
+        file.write(fig.to_html(full_html=False, include_plotlyjs="cdn"))
+
+        fig = plot_DM_distance(system)
+        file.write(fig.to_html(full_html=False, include_plotlyjs="cdn"))
 
 
 if __name__ == "__main__":

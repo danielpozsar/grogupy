@@ -60,18 +60,8 @@ class TestCommandLineTools:
         subprocess.run(["grogupy_run", "./src/grogupy/cli/tests/input5.py"])
         subprocess.run(["grogupy_analyze", "./src/grogupy/cli/tests/test.pkl"])
 
-        assert os.path.isfile("./src/grogupy/cli/tests/test.analysis.txt")
-        os.remove("./src/grogupy/cli/tests/test.analysis.txt")
-        assert os.path.isfile("./src/grogupy/cli/tests/test.contour.html")
-        os.remove("./src/grogupy/cli/tests/test.contour.html")
-        assert os.path.isfile("./src/grogupy/cli/tests/test.DMIs.html")
-        os.remove("./src/grogupy/cli/tests/test.DMIs.html")
-        assert os.path.isfile("./src/grogupy/cli/tests/test.kspace.html")
-        os.remove("./src/grogupy/cli/tests/test.kspace.html")
-        assert os.path.isfile("./src/grogupy/cli/tests/test.magnetic_entities.html")
-        os.remove("./src/grogupy/cli/tests/test.magnetic_entities.html")
-        assert os.path.isfile("./src/grogupy/cli/tests/test.pairs.html")
-        os.remove("./src/grogupy/cli/tests/test.pairs.html")
+        assert os.path.isfile("./src/grogupy/cli/tests/test.analysis.html")
+        os.remove("./src/grogupy/cli/tests/test.analysis.html")
         os.remove("./src/grogupy/cli/tests/test.pkl")
 
 
