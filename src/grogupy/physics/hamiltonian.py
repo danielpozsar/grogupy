@@ -369,7 +369,7 @@ class Hamiltonian:
             )
         return hTRS, hTRB, XCF, H_XCF
 
-    def rotate(self, orientation: NDArray) -> None:
+    def rotate(self, orientation: Union[NDArray, list]) -> None:
         """It rotates the exchange field of the Hamiltonian.
 
         It dumps the solutions to the `H` and `orientation`
@@ -377,13 +377,15 @@ class Hamiltonian:
 
         Parameters
         ----------
-        orientation: NDArray
+        orientation: Union[NDArray, list]
             The rotation where it rotates
         """
 
+        orientation = np.array(orientation)
+
         hTRS, hTRB, XCF, H_XCF = self.extract_exchange_field()
         # obtain rotated exchange field and Hamiltonian
-        R: NDArray = RotMa2b(self.scf_xcf_orientation, orientation)
+        R: NDArray = RotMa2b(self.orientation, orientation)
         XCF: NDArray = np.einsum("ij,jklm->iklm", R, XCF)
 
         if CONFIG.is_CPU:
