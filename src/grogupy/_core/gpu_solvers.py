@@ -131,12 +131,9 @@ if CONFIG.is_GPU:
             local_G_pair_ij = cp.zeros_like(G_pair_ij)
             local_G_pair_ji = cp.zeros_like(G_pair_ji)
 
-            local_S = cp.array(S)
-            local_H = cp.array(rotated_H)
-
             for i in _tqdm(
                 range(len(local_kpoints)),
-                desc=f"Rotation {rot_num}, parallel over k on GPU{gpu_number}",
+                desc=f"Rotation {rot_num}, parallel over k on GPU{gpu_number+1}",
             ):
                 # weight of k point in BZ integral
                 wk = local_kweights[i]
@@ -146,8 +143,9 @@ if CONFIG.is_GPU:
                 # this generates the list of phases
                 phases = cp.exp(-1j * 2 * cp.pi * k @ local_sc_off.T)
                 # phases applied to the hamiltonian
-                HK = cp.einsum("abc,a->bc", local_H, phases)
-                SK = cp.einsum("abc,a->bc", local_S, phases)
+                HK = cp.einsum("abc,a->bc", cp.array(rotated_H), phases)
+                SK = cp.einsum("abc,a->bc", cp.array(S), phases)
+                mempool.free_all_blocks()
 
                 # solve the Greens function on all energy points separately
                 if mode == "sequential":
@@ -165,6 +163,7 @@ if CONFIG.is_GPU:
                     # a given energy
                     for slice in slices:
                         Gk = cp.linalg.inv(SK * local_samples[slice] - HK)
+                        mempool.free_all_blocks()
 
                         # store the Greens function slice of the magnetic entities
                         for l, sbi in enumerate(local_SBI):
@@ -185,6 +184,7 @@ if CONFIG.is_GPU:
                 # solve the Greens function on all energy points in one step
                 elif mode == "parallel":
                     Gk = cp.linalg.inv(SK * local_samples - HK)
+                    mempool.free_all_blocks()
 
                     # store the Greens function slice of the magnetic entities
                     for l, sbi in enumerate(local_SBI):
@@ -208,13 +208,12 @@ if CONFIG.is_GPU:
             local_sc_off = None
             eset = None
             local_samples = None
-            local_S = None
-            local_H = None
             Gk = None
             HK = None
             SK = None
             phase = None
             phases = None
+            mempool.free_all_blocks()
         return local_G_mag, local_G_pair_ij, local_G_pair_ji
 
     def solve_parallel_over_k(builder: "Builder", print_memory: bool = False) -> None:
@@ -265,10 +264,6 @@ if CONFIG.is_GPU:
                 [
                     sys.getsizeof(rot_H.H),
                     sys.getsizeof(rot_H.S),
-                    sys.getsizeof(rot_H.hTRS),
-                    sys.getsizeof(rot_H.hTRB),
-                    sys.getsizeof(rot_H.XCF),
-                    sys.getsizeof(rot_H.H_XCF),
                 ]
             )
 
@@ -356,7 +351,7 @@ if CONFIG.is_GPU:
                 print("Memory allocated on GPU:")
                 print(f"Memory allocated for Greens function samples: {G_mem/1e6} MB")
                 print(
-                    f"Total peak memory on GPU during solution: {(sys.getsizeof(rot_H.H)+sys.getsizeof(rot_H.S)+mag_ent_mem+pair_mem+G_mem)/1e6} MB"
+                    f"Total peak memory on GPU during solution: {(np.max(sys.getsizeof(rot_H.H)+sys.getsizeof(rot_H.S), mag_ent_mem+pair_mem+G_mem))/1e6} MB"
                 )
                 print(
                     "################################################################################"
@@ -423,10 +418,11 @@ if CONFIG.is_GPU:
             # these are the rotations mostly perpendicular to the quantization axis
             for u in orient["vw"]:
                 # section 2.H
+                _, _, _, H_XCF = rot_H.extract_exchange_field()
                 Tu: NDArray = np.kron(
-                    np.eye(builder.hamiltonian.NO, dtype=int), tau_u(u)
+                    np.eye(int(builder.hamiltonian.NO / 2), dtype=int), tau_u(u)
                 )
-                Vu1, Vu2 = calc_Vu(rot_H.H_XCF_uc, Tu)
+                Vu1, Vu2 = calc_Vu(H_XCF[rot_H.uc_in_sc_index], Tu)
 
                 for mag_ent in _tqdm(
                     builder.magnetic_entities,

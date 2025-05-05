@@ -75,16 +75,15 @@ def solve_parallel_over_k(builder: "Builder", print_memory: bool = False) -> Non
     # iterate over the reference directions (quantization axes)
     for i, orient in enumerate(builder.ref_xcf_orientations):
         # obtain rotated exchange field and Hamiltonian
-        rot_H = builder.hamiltonian.copy()
+        if builder.low_memory_mode:
+            rot_H = builder.hamiltonian
+        else:
+            rot_H = builder.hamiltonian.copy()
         rot_H.rotate(orient["o"])
         rot_H_mem = np.sum(
             [
                 sys.getsizeof(rot_H.H),
                 sys.getsizeof(rot_H.S),
-                sys.getsizeof(rot_H.hTRS),
-                sys.getsizeof(rot_H.hTRB),
-                sys.getsizeof(rot_H.XCF),
-                sys.getsizeof(rot_H.H_XCF),
             ]
         )
 
@@ -232,8 +231,11 @@ def solve_parallel_over_k(builder: "Builder", print_memory: bool = False) -> Non
         # these are the rotations mostly perpendicular to the quantization axis
         for u in orient["vw"]:
             # section 2.H
-            Tu: NDArray = np.kron(np.eye(builder.hamiltonian.NO, dtype=int), tau_u(u))
-            Vu1, Vu2 = calc_Vu(rot_H.H_XCF_uc, Tu)
+            _, _, _, H_XCF = rot_H.extract_exchange_field()
+            Tu: NDArray = np.kron(
+                np.eye(int(builder.hamiltonian.NO / 2), dtype=int), tau_u(u)
+            )
+            Vu1, Vu2 = calc_Vu(H_XCF[rot_H.uc_in_sc_index], Tu)
 
             for mag_ent in _tqdm(
                 builder.magnetic_entities,
