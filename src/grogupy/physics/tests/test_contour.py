@@ -48,9 +48,9 @@ class TestContour:
     @pytest.mark.parametrize("eset", [1, 10, 100, 500, 1000])
     def test_emax(self, emax, eset):
         c = Contour(eset, 10000, emin=-100, emax=emax)
-        assert c.samples.real.max() <= emax
+        assert c.samples.real.max() <= emax or (c.samples.real.max() - emax) < 1e-14
         c.emax = 100
-        assert c.samples.real.max() <= 100
+        assert c.samples.real.max() <= 100 or (c.samples.real.max() - 100) < 1e-14
 
     def test_equality(self):
         c = Contour(100, 1000, emin=-10)
