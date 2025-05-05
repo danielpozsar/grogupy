@@ -309,10 +309,6 @@ def load(
         "scf_xcf_orientation",
         "orientation",
         "_Hamiltonian__no",
-        "hTRS",
-        "hTRB",
-        "XCF",
-        "H_XCF",
         "_Hamiltonian__cell",
         "_Hamiltonian__sc_off",
         "_Hamiltonian__uc_in_sc_index",
@@ -414,7 +410,7 @@ def save(
         DefaultTimer, Contour, Kspace, MagneticEntity, Pair, Hamiltonian, Builder
     ],
     path: str,
-    compress: int = 3,
+    compress: int = 2,
 ) -> None:
     """Saves the instance from a pickled state.
 
@@ -428,9 +424,6 @@ def save(
 
     2. This contains compression 1, but sets the keys "Gii",
        "Gij", "Gji", "Vu1" and "Vu2" to [], to save space
-
-    3. This contains compression 1 and 2, but sets the keys
-       "hTRS", "hTRB", "XCF" and "H_XCF" to None, to save space
 
     Parameters
     ----------
@@ -456,20 +449,7 @@ def save(
             pass
         elif compress == 1:
             out_dict = strip_dict_structure(out_dict, pops=["_dh", "_ds"], setto=None)
-        elif compress == 2:
-            out_dict = strip_dict_structure(out_dict, pops=["_dh", "_ds"], setto=None)
-            out_dict = strip_dict_structure(
-                out_dict,
-                pops=[
-                    "_Gii",
-                    "_Gij",
-                    "_Gji",
-                    "_Vu1",
-                    "_Vu2",
-                ],
-                setto=[],
-            )
-        # compress 3 is the default
+        # compress 2 is the default
         else:
             out_dict = strip_dict_structure(out_dict, pops=["_dh", "_ds"], setto=None)
             out_dict = strip_dict_structure(
@@ -482,9 +462,6 @@ def save(
                     "_Vu2",
                 ],
                 setto=[],
-            )
-            out_dict = strip_dict_structure(
-                out_dict, pops=["hTRS", "hTRB", "XCF", "H_XCF"], setto=None
             )
 
         # write to file
