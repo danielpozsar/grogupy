@@ -467,7 +467,7 @@ def plot_Jiso_distance(pairs: Union[Builder, list["Pair"]]) -> go.Figure:
         data=go.Scatter(
             x=[p.distance for p in pairs],
             y=[p.J_iso_meV for p in pairs],
-            mode="markers+lines",
+            mode="markers",
         )
     )
 
@@ -515,7 +515,7 @@ def plot_DM_distance(pairs: Union[Builder, list["Pair"]]) -> go.Figure:
         data=go.Scatter(
             x=[p.distance for p in pairs],
             y=np.linalg.norm([p.D_meV for p in pairs], axis=1),
-            mode="markers+lines",
+            mode="markers",
         )
     )
 
