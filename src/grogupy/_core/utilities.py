@@ -578,30 +578,36 @@ def build_hh_ss(dh: sisl.physics.Hamiltonian) -> tuple[NDArray, NDArray]:
     # the inverse transformation is U.T u12d12 to ud1ud2
     # That is FROM ORBITAL BOX to SPIN BOX => U.T
 
+    # progress bar
+    bar = _tqdm(None, total=3 * dh.n_s, desc="Setting up Hamiltonian")
+
     # From now on everything is in SPIN BOX!!
     if CONFIG.is_CPU:
         hh = []
-        for i in _tqdm(range(dh.n_s), desc="Spin box Hamiltonian"):
+        for i in range(dh.n_s):
             row1 = np.hstack([h11[:, :, i], h12[:, :, i]])
             row2 = np.hstack([h21[:, :, i], h22[:, :, i]])
             block = np.vstack([row1, row2])
             hh.append(U.T @ block @ U)
+            bar.update()
         hh = np.array(hh)
 
         ss = []
-        for i in _tqdm(range(dh.n_s), desc="Spin box Overlap matrix"):
+        for i in range(dh.n_s):
             row1 = np.hstack([sov[:, :, i], sov[:, :, i] * 0])
             row2 = np.hstack([sov[:, :, i] * 0, sov[:, :, i]])
             block = np.vstack([row1, row2])
             ss.append(U.T @ block @ U)
+            bar.update()
         ss = np.array(ss)
 
-        for i in _tqdm(range(dh.sc_off.shape[0]), desc="Symmetrize Hamiltonian"):
+        for i in range(dh.n_s):
             j = dh.lattice.sc_index(-dh.sc_off[i])
             h1, h1d = hh[i], hh[j]
             hh[i], hh[j] = (h1 + h1d.T.conj()) / 2, (h1d + h1.T.conj()) / 2
             s1, s1d = ss[i], ss[j]
             ss[i], ss[j] = (s1 + s1d.T.conj()) / 2, (s1d + s1.T.conj()) / 2
+            bar.update()
 
     elif CONFIG.is_GPU:
         h11 = cp.array(h11)
@@ -612,25 +618,28 @@ def build_hh_ss(dh: sisl.physics.Hamiltonian) -> tuple[NDArray, NDArray]:
         U = cp.array(U)
 
         hh = []
-        for i in _tqdm(range(dh.n_s), desc="Spin box Hamiltonian"):
+        for i in range(dh.n_s):
             row1 = cp.hstack([h11[:, :, i], h12[:, :, i]])
             row2 = cp.hstack([h21[:, :, i], h22[:, :, i]])
             block = cp.vstack([row1, row2])
             hh.append(U.T @ block @ U)
+            bar.update()
 
         ss = []
-        for i in _tqdm(range(dh.n_s), desc="Spin box Overlap matrix"):
+        for i in range(dh.n_s):
             row1 = cp.hstack([sov[:, :, i], sov[:, :, i] * 0])
             row2 = cp.hstack([sov[:, :, i] * 0, sov[:, :, i]])
             block = cp.vstack([row1, row2])
             ss.append(U.T @ block @ U)
+            bar.update()
 
-        for i in _tqdm(range(dh.sc_off.shape[0]), desc="Symmetrize Hamiltonian"):
+        for i in range(dh.n_s):
             j = dh.lattice.sc_index(-dh.sc_off[i])
             h1, h1d = hh[i], hh[j]
             hh[i], hh[j] = (h1 + h1d.T.conj()) / 2, (h1d + h1.T.conj()) / 2
             s1, s1d = ss[i], ss[j]
             ss[i], ss[j] = (s1 + s1d.T.conj()) / 2, (s1d + s1.T.conj()) / 2
+            bar.update()
 
         hh = np.array([h.get() for h in hh])
         ss = np.array([s.get() for s in ss])

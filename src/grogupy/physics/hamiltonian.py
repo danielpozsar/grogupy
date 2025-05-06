@@ -283,13 +283,19 @@ class Hamiltonian:
             Exchange field has non negligible scalar part.
         """
 
+        # progress bar
+        bar = _tqdm(
+            None, total=3 + 2 * self.nsc.prod(), desc="Extracting exchange field"
+        )
+
         if CONFIG.is_CPU:
             # identifying TRS and TRB parts of the Hamiltonian
             TAUY: NDArray = np.kron(np.eye(int(self.NO / 2)), TAU_Y)
 
             hTR: NDArray = []
-            for i in _tqdm(range(self.nsc.prod()), desc="Transpose Hamiltonian"):
+            for i in range(self.nsc.prod()):
                 hTR.append(TAUY @ self.H[i].conj() @ TAUY)
+                bar.update()
             hTR = np.array(hTR)
 
             hTRS: NDArray = (self.H + hTR) / 2
@@ -297,8 +303,9 @@ class Hamiltonian:
 
             # extracting the exchange field
             traced: NDArray = []
-            for i in _tqdm(range(self.nsc.prod()), desc="Calculate V_XCF"):
+            for i in range(self.nsc.prod()):
                 traced.append(spin_tracer(hTRB[i]))
+                bar.update()
             traced = np.array(traced)  # equation 77
 
             XCF: NDArray = np.array(
@@ -312,10 +319,9 @@ class Hamiltonian:
             H_XCF: NDArray = np.zeros(
                 (self.nsc.prod(), self.NO, self.NO), dtype="complex128"
             )
-            for i, tau in _tqdm(
-                enumerate([TAU_X, TAU_Y, TAU_Z]), total=3, desc="Calculate H_XC"
-            ):
+            for i, tau in enumerate([TAU_X, TAU_Y, TAU_Z]):
                 H_XCF += np.kron(XCF[i], tau)
+                bar.update()
 
         elif CONFIG.is_GPU:
             # free up unused memory
@@ -323,11 +329,12 @@ class Hamiltonian:
             mempool.free_all_blocks()
 
             # identifying TRS and TRB parts of the Hamiltonian
-            TAUY: CNDArray = cp.kron(cp.eye(self.NO), cp.array(TAU_Y))
+            TAUY: CNDArray = cp.kron(cp.eye(int(self.NO / 2)), cp.array(TAU_Y))
 
             hTR: NDArray = []
-            for i in _tqdm(range(self.nsc.prod()), desc="Transpose Hamiltonian"):
+            for i in range(self.nsc.prod()):
                 hTR.append((TAUY @ cp.array(self.H[i]).conj() @ TAUY).get())
+                bar.update()
             hTR = np.array(hTR)
 
             # release this from memory
@@ -338,8 +345,9 @@ class Hamiltonian:
 
             # extracting the exchange field equation 77
             traced: list = []
-            for i in _tqdm(range(self.nsc.prod()), desc="Calculate V_XCF"):
+            for i in range(self.nsc.prod()):
                 traced.append(spin_tracer(hTRB[i]))
+                bar.update()
 
             XCF: CNDArray = cp.array(
                 [
@@ -352,10 +360,9 @@ class Hamiltonian:
             H_XCF: NDArray = np.zeros(
                 (self.nsc.prod(), self.NO, self.NO), dtype="complex128"
             )
-            for i, tau in _tqdm(
-                enumerate([TAU_X, TAU_Y, TAU_Z]), total=3, desc="Calculate H_XC"
-            ):
+            for i, tau in enumerate([TAU_X, TAU_Y, TAU_Z]):
                 H_XCF += cp.kron(XCF[i], cp.array(tau)).get()
+                bar.update()
 
             XCF, H_XCF = XCF.get(), H_XCF
         else:

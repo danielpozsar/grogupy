@@ -25,35 +25,82 @@ if CONFIG.tqdm_requested:
     try:
         from tqdm.autonotebook import tqdm
 
-        def _tqdm(something, head_node=True, **kwargs):
-            if CONFIG.is_CPU:
-                from mpi4py import MPI
+        class _tqdm:
+            def __init__(self, iterable, head_node=True, **kwargs):
+                self.head_node = head_node
 
-                if head_node:
-                    if MPI.COMM_WORLD.rank == 0:
-                        return tqdm(something, **kwargs)
+                self.iterable = iterable
+                self.tqdm = tqdm(iterable, **kwargs)
+
+            def __iter__(self):
+                if CONFIG.is_CPU:
+                    from mpi4py import MPI
+
+                    if self.head_node:
+                        if MPI.COMM_WORLD.rank == 0:
+                            return iter(self.tqdm)
+                        else:
+                            return iter(self.iterable)
                     else:
-                        return something
-                else:
-                    return tqdm(something, **kwargs)
+                        return iter(self.tqdm)
 
-            elif CONFIG.is_GPU:
-                return tqdm(something, **kwargs)
-            else:
-                raise Exception("Unknown architecture, use CPU or GPU!")
+                elif CONFIG.is_GPU:
+                    return iter(self.tqdm)
+                else:
+                    raise Exception("Unknown architecture, use CPU or GPU!")
+
+            def __call__(self):
+                if CONFIG.is_CPU:
+                    from mpi4py import MPI
+
+                    if self.head_node:
+                        if MPI.COMM_WORLD.rank == 0:
+                            return self.tqdm
+                        else:
+                            return self.iterable
+                    else:
+                        return self.tqdm
+
+                elif CONFIG.is_GPU:
+                    return self.tqdm
+                else:
+                    raise Exception("Unknown architecture, use CPU or GPU!")
+
+            def update(self, **kwargs):
+                self.tqdm.update(**kwargs)
 
     except:
         print("Please install tqdm for nice progress bar.")
 
-        def _tqdm(something, **kwargs):
-            return something
+        class _tqdm:
+            def __init__(self, iterable, head_node=True, **kwargs):
+                self.iterable = iterable
+
+            def __iter__(self):
+                return iter(self.iterable)
+
+            def __call__(self):
+                return self.iterable
+
+            def update(self, **kwargs):
+                pass
 
 
 # if tqdm is not requested it will be a dummy wrapper function
 else:
 
-    def _tqdm(something, **kwargs):
-        return something
+    class _tqdm:
+        def __init__(self, iterable, head_node=True, **kwargs):
+            self.iterable = iterable
+
+        def __iter__(self):
+            return iter(self.iterable)
+
+        def __call__(self):
+            return self.iterable
+
+        def update(self, **kwargs):
+            pass
 
 
 if __name__ == "__main__":
