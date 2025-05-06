@@ -357,7 +357,7 @@ DEFAULT_INPUT = dict(
     atomicsubset=None,
     kwargsformagent=dict(l=None),
     maxpairsperloop=1000,
-    maxgperloop=1000,
+    maxgperloop=1,
     lowmemorymode=True,
     greensfunctionsolver="Parallel",
     exchangesolver="Fit",
