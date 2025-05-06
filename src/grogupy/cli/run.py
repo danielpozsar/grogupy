@@ -228,14 +228,14 @@ def main():
             if PRINTING:
                 save(
                     object=simulation,
-                    path=join(outfile, "_temp_" + str(i)),
+                    path=outfile + "_temp_" + str(i) + ".pkl",
                     compress=params["picklecompresslevel"],
                 )
         if PRINTING:
             # add pairs to Builder
             new_pairs = []
             for i in range(len(pair_chunks)):
-                new_pairs += load(join(outfile, "_temp_" + str(i) + ".pkl")).pairs
+                new_pairs += load(outfile + "_temp_" + str(i) + ".pkl").pairs
             simulation.pairs = new_pairs
             # remove hamiltonian from magnetic entities so the comparison does not fail
             if params["picklecompresslevel"] != 0:
@@ -306,7 +306,7 @@ def main():
     if PRINTING:
         if params["maxpairsperloop"] < len(simulation.pairs):
             for i in range(len(pair_chunks)):
-                os.remove(join(outfile, "_temp_" + str(i) + ".pkl"))
+                os.remove(outfile + "_temp_" + str(i) + ".pkl")
 
         print("\n\n\n")
         print(__definitely_not_grogu__)
