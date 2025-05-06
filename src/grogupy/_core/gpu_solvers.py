@@ -39,6 +39,11 @@ if CONFIG.is_GPU:
     import cupy as cp
     from cupy.typing import NDArray as CNDArray
 
+    # Disable memory pool for device memory (GPU)
+    cp.cuda.set_allocator(None)
+    # Disable memory pool for pinned memory (CPU).
+    cp.cuda.set_pinned_memory_allocator(None)
+
     def gpu_solver(
         max_g_per_loop: int,
         mode: str,
@@ -323,7 +328,7 @@ if CONFIG.is_GPU:
                 print(f"Memory allocated by magnetic entities: {mag_ent_mem/1e6} MB")
                 print(f"Memory allocated by pairs: {pair_mem/1e6} MB")
                 print(
-                    f"Total memory allocated in RAM: {(rot_H_mem+mag_ent_mem+pair_mem)/1e6} MB"
+                    f"Total memory allocated in RAM: {(rot_H_mem+mag_ent_mem+pair_mem) / 1e6} MB"
                 )
                 print(
                     "--------------------------------------------------------------------------------"
@@ -349,10 +354,13 @@ if CONFIG.is_GPU:
                     raise Exception("Unknown Greens function solver!")
 
                 print("Memory allocated on GPU:")
+                print(f"Memory allocated by rotated Hamilonian: {rot_H_mem/1e6} MB")
                 print(f"Memory allocated for Greens function samples: {G_mem/1e6} MB")
-                print(
-                    f"Total peak memory on GPU during solution: {(np.max(sys.getsizeof(rot_H.H)+sys.getsizeof(rot_H.S), mag_ent_mem+pair_mem+G_mem))/1e6} MB"
+                # 25 is the maximum amount of memory used for matrix inversion
+                gpu_max_mem = (
+                    np.max([mag_ent_mem + pair_mem + rot_H_mem, G_mem * 25]) / 1e6
                 )
+                print(f"Total peak memory on GPU during solution: {gpu_max_mem} MB")
                 print(
                     "################################################################################"
                 )
