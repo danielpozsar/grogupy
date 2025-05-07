@@ -29,10 +29,14 @@ if TYPE_CHECKING:
 
 import numpy as np
 import plotly.graph_objs as go
+import sisl
 
 
 def plot_contour(contour: "Contour") -> go.Figure:
     """Creates a plot from the contour sample points.
+
+    If there are too many eigenvalues, then they are subsamled
+    them for the plot.
 
     Parameters
     ----------
@@ -46,9 +50,57 @@ def plot_contour(contour: "Contour") -> go.Figure:
     """
 
     # Create the scatter plot
-    fig = go.Figure(
-        data=go.Scatter(x=contour.samples.real, y=contour.samples.imag, mode="markers")
-    )
+    trace = go.Scatter(x=contour.samples.real, y=contour.samples.imag, mode="markers")
+
+    # if the eigenvalues are available
+    if contour.automatic_emin:
+        # convert the path to the EIG file
+        eigfile = contour._eigfile
+        if eigfile.endswith("fdf"):
+            eigfile = eigfile[:-3] + "EIG"
+
+        # try to use the path to the EIG file...
+        try:
+            # read eigenvals
+            eigs = sisl.io.siesta.eigSileSiesta(eigfile).read_data().flatten()
+            eigs.sort()
+            # if there are too many eigenvalues subsample them for plot
+            if len(eigs) > 10000:
+                eigs = eigs[:: int(len(eigs) / 10000)]
+                # traces to eigenvals
+                eig_trace1 = go.Scatter(
+                    x=eigs[eigs < 0],
+                    y=np.zeros_like(eigs[eigs < 0]),
+                    mode="markers",
+                    name="Subsampled occupied DFT eigs",
+                )
+                eig_trace2 = go.Scatter(
+                    x=eigs[0 < eigs],
+                    y=np.zeros_like(eigs[0 < eigs]),
+                    mode="markers",
+                    name="Subsampled unoccupied DFT eigs",
+                )
+            else:
+                eig_trace1 = go.Scatter(
+                    x=eigs[eigs < 0],
+                    y=np.zeros_like(eigs[eigs < 0]),
+                    mode="markers",
+                    name="Occupied DFT eigs",
+                )
+                eig_trace2 = go.Scatter(
+                    x=eigs[0 < eigs],
+                    y=np.zeros_like(eigs[0 < eigs]),
+                    mode="markers",
+                    name="Unoccupied DFT eigs",
+                )
+            fig = go.Figure(data=[trace, eig_trace1, eig_trace2])
+        # but something might have been moved, in which case just do the regular plot
+        except:
+            fig = go.Figure(data=trace)
+
+    # else just plot the contour
+    else:
+        fig = go.Figure(data=trace)
 
     # Update the layout
     fig.update_layout(
