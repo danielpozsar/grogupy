@@ -111,17 +111,17 @@ def automatic_emin(infile: str) -> float:
 
 
 def blow_up_orbindx(orb_indices: NDArray) -> NDArray:
-    """Function to blow up orbital indices to make SPIN BOX indices.
+    """Expand orbital indices to make SPIN BOX indices.
 
     Parameters
     ----------
         orb_indices: NDArray
-            These are the indices in ORBITAL BOX
+            These are the indices in ORBITAL BOX representation
 
     Returns
     -------
         orb_indices: NDArray
-            These are the indices in SPIN BOX
+            These are the indices in SPIN BOX representation
     """
 
     orb_indices = np.array([[2 * o, 2 * o + 1] for o in orb_indices]).flatten()
@@ -130,7 +130,7 @@ def blow_up_orbindx(orb_indices: NDArray) -> NDArray:
 
 
 def spin_tracer(M: NDArray) -> dict:
-    """Spin tracer utility.
+    """Extracts orbital dependent Pauli traces.
 
     This takes an operator with the orbital-spin sequence:
     orbital 1 up,
@@ -143,12 +143,12 @@ def spin_tracer(M: NDArray) -> dict:
     Parameters
     ----------
         M: NDArray
-            Traceable matrix
+            Traceable matrix in SPIN BOX represenation
 
     Returns
     -------
         dict
-            It contains the traced matrix with "x", "y", "z" and "c"
+            It contains the traced matrix with "x", "y", "z" and "c", where "c" is the constant part
     """
 
     M11 = M[0::2, 0::2]
