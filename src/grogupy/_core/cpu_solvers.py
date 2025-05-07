@@ -59,10 +59,6 @@ def solve_parallel_over_k(builder: "Builder", print_memory: bool = False) -> Non
     root_node = 0
     rank = comm.Get_rank()
 
-    # split k points to parallelize
-    parallel_k = np.array_split(builder.kspace.kpoints, parallel_size)
-    parallel_w = np.array_split(builder.kspace.weights, parallel_size)
-
     # reset hamiltonians, magnetic entities and pairs
     builder._rotated_hamiltonians = []
     for mag_ent in builder.magnetic_entities:
@@ -74,6 +70,12 @@ def solve_parallel_over_k(builder: "Builder", print_memory: bool = False) -> Non
 
     # iterate over the reference directions (quantization axes)
     for i, orient in enumerate(builder.ref_xcf_orientations):
+        # split k points to parallelize
+        # (this could be outside loop, but it was an easy fix for the
+        # reset of tqdm in each reference direction)
+        parallel_k = np.array_split(builder.kspace.kpoints, parallel_size)
+        parallel_w = np.array_split(builder.kspace.weights, parallel_size)
+
         # obtain rotated exchange field and Hamiltonian
         if builder.low_memory_mode:
             rot_H = builder.hamiltonian
