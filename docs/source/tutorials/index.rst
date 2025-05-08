@@ -11,4 +11,5 @@ guides designed to help you get started with grogupy and explore its advanced fe
 
    io_formats
    magnetic_entity
+   memory_management
 
