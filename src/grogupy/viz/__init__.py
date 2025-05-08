@@ -53,7 +53,7 @@ environment and supports interactive and 3D plots.
 Examples
 --------
 
-For examples, see the :ref:`tutorials <tutorials>`.
+For examples, see the *Visualize the exchange* in  :ref:`tutorials <quickstart-guide>`.
 
 """
 

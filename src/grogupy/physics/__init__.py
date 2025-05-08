@@ -58,6 +58,12 @@ Utilities
    calculate_exchange_tensor    Calculates the exchange tensor from the energies
    fit_exchange_tensor          Fits the exchange tensor to the energies
 
+Background information
+----------------------
+
+This module contains the high level API of the package. It was purposefully 
+written to be highly modular, which is ideal for complicated systems that are 
+easier to set up in a jupyter notebook environment. 
 """
 
 from .builder import *

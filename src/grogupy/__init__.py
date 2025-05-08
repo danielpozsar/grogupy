@@ -50,6 +50,7 @@ visualization.
 
    Config   Class holding the configuration from the environment.
 
+The ``CONFIG`` instance contains the configuration of grogupy.
 """
 
 __all__ = []

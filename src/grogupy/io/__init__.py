@@ -58,10 +58,6 @@ could be useful in some special applications.
    decipher_all_by_tag          Gets the magnetic entities and pairs from their tags.
    strip_dict_structure         Clears the data structure during saving to reduce size.
    standardize_input            Standardizes the input from .py and .fdf using the default values.
-Examples
---------
-
-For examples, see the various functions.
 
 """
 

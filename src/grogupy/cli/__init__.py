@@ -25,10 +25,19 @@ This module does not contain functions, but provides a command line
 interface for grogupy. It loads the input parameters from a Python
 file and runs the simulation or makes analysis.
 
+Scripts
+-------
+
+.. autosummary::
+   :toctree: _generated/
+
+    run             Takes an input file and runs a simulation from it.
+    analyze         Takes a .pkl output file and creates an .html file from it with useful plots.
+
 Examples
 --------
 
-For examples, see the `running in HPC <.._running_in_hpc>`_ section in the documentation.
+For examples, see the `running in HPC <running_in_hpc>`_ section in the documentation.
 
 """
 
