@@ -157,8 +157,7 @@ class Contour:
     def __eq__(self, value):
         if isinstance(value, Contour):
             if (
-                self.times == value.times
-                and self.__automatic_emin == value.__automatic_emin
+                self.__automatic_emin == value.__automatic_emin
                 and self._eigfile == value._eigfile
                 and self._emin == value._emin
                 and self._emax == value._emax
@@ -168,8 +167,10 @@ class Contour:
                 and np.allclose(self.weights, value.weights)
             ):
                 return True
+            else:
+                return False
+        else:
             return False
-        return False
 
     @property
     def automatic_emin(self) -> bool:

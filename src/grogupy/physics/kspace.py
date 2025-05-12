@@ -94,8 +94,7 @@ class Kspace:
     def __eq__(self, value):
         if isinstance(value, Kspace):
             if (
-                self.times == value.times
-                and np.allclose(self.__kset, value.__kset)
+                np.allclose(self.__kset, value.__kset)
                 and np.allclose(self.kpoints, value.kpoints)
                 and np.allclose(self.weights, value.weights)
             ):
