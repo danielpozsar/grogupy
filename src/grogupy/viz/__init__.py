@@ -41,7 +41,7 @@ Functions
     plot_DMI                  Plots the DMI vectors.
     plot_DM_distance          Plots the magnitude of DM vectors as a function of distance.
     plot_Jiso_distance        Plots the isotropic exchange as a function of distance.
-
+    plot_1D_convergence       Reads output files and create a plot for the convergence test.
 
 Background information
 ----------------------

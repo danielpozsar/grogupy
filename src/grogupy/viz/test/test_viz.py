@@ -22,6 +22,7 @@ import pytest
 
 import grogupy
 from grogupy.viz import (
+    plot_1D_convergence,
     plot_contour,
     plot_DM_distance,
     plot_DMI,
@@ -63,12 +64,16 @@ class TestPlots:
         fig = plot_DMI(setup.pairs, rescale)
         assert isinstance(fig, go.Figure)
 
-    def test__DM_distance(self, setup):
+    def test_DM_distance(self, setup):
         fig = plot_DM_distance(setup.pairs)
         assert isinstance(fig, go.Figure)
 
-    def test__Jiso_distance(self, setup):
+    def test_Jiso_distance(self, setup):
         fig = plot_Jiso_distance(setup.pairs)
+        assert isinstance(fig, go.Figure)
+
+    def test_1D_convergence(self, setup):
+        fig = plot_1D_convergence(setup.pairs)
         assert isinstance(fig, go.Figure)
 
 

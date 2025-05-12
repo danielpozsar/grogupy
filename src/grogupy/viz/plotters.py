@@ -19,6 +19,7 @@
 # SOFTWARE.
 from typing import TYPE_CHECKING, Union
 
+from ..io import load_Builder
 from ..physics import Builder
 
 if TYPE_CHECKING:
@@ -117,6 +118,11 @@ def plot_contour(contour: "Contour") -> go.Figure:
         yaxis=dict(
             showgrid=True,
             gridwidth=1,
+        ),
+        legend=dict(
+            x=1,
+            y=1,
+            xanchor="right",
         ),
     )
 
@@ -586,6 +592,140 @@ def plot_DM_distance(pairs: Union[Builder, list["Pair"]]) -> go.Figure:
         yaxis=dict(
             showgrid=True,
             gridwidth=1,
+        ),
+    )
+
+    return fig
+
+
+def plot_1D_convergence(
+    files: Union[str, list[str]], parameter: str, maxdiff: float = 1e-4
+) -> go.Figure:
+    """Reads output files and create a plot for the convergence test.
+
+    Parameters
+    ----------
+    files : Union[str, list[str]]
+        The path to the output files .pkl
+    parameter : {"eset", "esetp", "kset"}
+        The parameter for the test
+
+    maxdiff : float, optional
+        The criteria for the convergence by maximum difference from the last step, by default 1e-4
+
+    Returns
+    -------
+    go.Figure
+        Plotly figure
+
+    Raises
+    ------
+    Exception
+        Multiple parameters changed in different runs!
+    Exception
+        Unknown convergence parameter!
+    """
+    # standardize input
+    parameter = parameter.lower()
+
+    # load
+    if not isinstance(files, list):
+        files = [files]
+    builders = []
+    for f in files:
+        builders.append(load_Builder(f))
+    builders = np.array(builders, dtype=object)
+
+    # sort
+    conv_params = []
+    for b in builders:
+        if parameter == "eset":
+            if not (
+                b.kspace == builders[0].kspace
+                and b.contour.esetp == builders[0].contour.esetp
+            ):
+                raise Exception("Multiple parameters changed in different runs!")
+            conv_params.append(b.contour.eset)
+        elif parameter == "esetp":
+            if not (
+                b.kspace == builders[0].kspace
+                and b.contour.eset == builders[0].contour.eset
+            ):
+                raise Exception("Multiple parameters changed in different runs!")
+            conv_params.append(b.contour.esetp)
+        elif parameter == "kset":
+            if not (b.contour == builders[0].contour):
+                raise Exception("Multiple parameters changed in different runs!")
+            conv_params.append(b.kspace.NK)
+        else:
+            raise Exception(
+                f"Unknown convergence parameter: {parameter}! Use: eset, esetp or kset"
+            )
+    conv_params = np.array(conv_params)
+    idx = np.argsort(conv_params)
+    conv_params = conv_params[idx]
+    builders = builders[idx]
+
+    # get all data
+    compare = []
+    for b in builders:
+        dat = []
+        for m in b.magnetic_entities:
+            dat.append(m.K_meV)
+        for p in b.pairs:
+            dat.append(p.J_meV)
+        compare.append(np.array(dat).flatten())
+    compare = np.array(compare).T
+
+    # add lines
+    fig = go.Figure()
+    for i in range(len(compare)):
+        fig.add_trace(
+            go.Scatter(
+                x=conv_params, y=compare[i], mode="markers+lines", showlegend=False
+            )
+        )
+
+    # find maxdiff point
+    idx = np.argwhere(abs(np.diff(compare, axis=1)).max(axis=0) < maxdiff)
+    if len(idx) != 0:
+        idx = idx.min()
+        fig.add_vline(
+            x=(conv_params[idx] + conv_params[idx + 1]) / 2,
+            line_width=1,
+            line_color="red",
+            name="Reached convergence criteria: %0.3e" % maxdiff,
+            showlegend=True,
+        )
+
+    # a little renaming for kset
+    if parameter == "kset":
+        parameter = "total number of k points"
+
+    # Update the layout
+    fig.update_layout(
+        autosize=False,
+        width=800,
+        height=500,
+        title=f"Convergence on {parameter}",
+        xaxis_title=f"{parameter.capitalize()} [ ]",
+        yaxis_title="System vector [meV]",
+        xaxis=dict(
+            tickmode="array",
+            tickvals=conv_params,
+            ticktext=[str(i) for i in conv_params],
+            showgrid=True,
+            gridwidth=1,
+        ),
+        yaxis=dict(
+            type="log",
+            showgrid=True,
+            gridwidth=1,
+        ),
+        legend=dict(
+            x=1,
+            y=1,
+            xanchor="right",
         ),
     )
 
