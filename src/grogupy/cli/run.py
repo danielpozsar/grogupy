@@ -274,6 +274,12 @@ def main():
         )
         print("\n\n\n")
 
+        if params["savepickle"]:
+            save(
+                object=simulation, path=outfile, compress=params["picklecompresslevel"]
+            )
+            print("Saved pickle")
+
         if params["savemagnopy"]:
             save_magnopy(
                 simulation,
@@ -296,12 +302,6 @@ def main():
                 magnetic_moment=params["outmagenticmoment"],
             )
             print("Saved UppASD")
-
-        if params["savepickle"]:
-            save(
-                object=simulation, path=outfile, compress=params["picklecompresslevel"]
-            )
-            print("Saved pickle")
 
     if PRINTING:
         if params["maxpairsperloop"] < len(simulation.pairs):
