@@ -5,18 +5,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>grogupy.io.utilities &mdash; grogupy</title>
+  <title>grogupy.io.utilities &mdash; grogupy 0.0.12</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css" />
-      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=f7cdbf68"></script>
+      <script src="../../../_static/documentation_options.js?v=3bbcec59"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -37,7 +35,7 @@
           
           
           <a href="../../../index.html" class="icon icon-home">
-            grogupy documentation
+            grogupy
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -59,7 +57,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../API/modules.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">grogupy API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environment/index.html">Environment Variables</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
@@ -78,7 +76,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">grogupy documentation</a>
+          <a href="../../../index.html">grogupy</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -97,7 +95,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for grogupy.io.utilities</h1><div class="highlight"><pre>
-<span></span><span class="c1"># Copyright (c) [2024-2025] [Laszlo Oroszlany, Daniel Pozsar]</span>
+<span></span><span class="c1"># Copyright (c) [2024-2025] [Grogupy Team]</span>
 <span class="c1">#</span>
 <span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
 <span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
@@ -117,6 +115,7 @@
 <span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
 <span class="c1"># SOFTWARE.</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -360,10 +359,6 @@
         <span class="s2">&quot;_Gji_tmp&quot;</span><span class="p">,</span>
         <span class="s2">&quot;Vu1&quot;</span><span class="p">,</span>
         <span class="s2">&quot;Vu2&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;hTRS&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;hTRB&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;XCF&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;H_XCF&quot;</span><span class="p">,</span>
     <span class="p">],</span>
     <span class="n">setto</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="p">[],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
@@ -379,9 +374,10 @@
 <span class="sd">        The dictionary structure that we want to strip down</span>
 <span class="sd">    pops : list[str], optional</span>
 <span class="sd">        These are the keys that should be set to None in the structure,</span>
-<span class="sd">        by defualt [&quot;_dh&quot;, &quot;_ds&quot;, &quot;Gii&quot;, &quot;_Gii_tmp&quot;, &quot;Gij&quot;, &quot;_Gij_tmp&quot;, &quot;Gji&quot;, &quot;_Gji_tmp&quot;, &quot;Vu1&quot;, &quot;Vu2&quot;, &quot;hTRS&quot;, &quot;hTRB&quot;, &quot;XCF&quot;, &quot;H_XCF&quot;]</span>
+<span class="sd">        by defualt [&quot;_dh&quot;, &quot;_ds&quot;, &quot;Gii&quot;, &quot;_Gii_tmp&quot;, &quot;Gij&quot;, &quot;_Gij_tmp&quot;, &quot;Gji&quot;, &quot;_Gji_tmp&quot;, &quot;Vu1&quot;, &quot;Vu2&quot;]</span>
 <span class="sd">    setto : Any, optional</span>
 <span class="sd">        The value will be set to this, by defualt []</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    dict</span>
@@ -416,6 +412,79 @@
 
 
 
+<div class="viewcode-block" id="standardize_input">
+<a class="viewcode-back" href="../../../API/_generated/grogupy.io.standardize_input.html#grogupy.io.standardize_input">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">standardize_input</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">defaults</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Standardizes the input from .py and .fdf using the default values</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    input : dict</span>
+<span class="sd">        The input dictionary, which may be incomplete</span>
+<span class="sd">    defaults : dict</span>
+<span class="sd">        The default input parameters</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        Complete and standardized input dictionary</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">input</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">key2</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">key2</span> <span class="ow">in</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">defaults</span><span class="p">[</span><span class="n">key2</span><span class="p">]</span> <span class="o">=</span> <span class="nb">input</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognized input parameter: </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">defaults</span><span class="p">[</span><span class="s2">&quot;outfolder&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">defaults</span><span class="p">[</span><span class="s2">&quot;outfolder&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">defaults</span><span class="p">[</span><span class="s2">&quot;infolder&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">defaults</span><span class="p">[</span><span class="s2">&quot;outfile&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">defaults</span><span class="p">[</span><span class="s2">&quot;outfile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">defaults</span><span class="p">[</span><span class="s1">&#39;infile&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">_kset_</span><span class="si">{</span><span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="w"> </span><span class="n">defaults</span><span class="p">[</span><span class="s1">&#39;kset&#39;</span><span class="p">]))</span><span class="si">}</span><span class="s2">_eset_</span><span class="si">{</span><span class="n">defaults</span><span class="p">[</span><span class="s1">&#39;eset&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">defaults</span><span class="p">[</span><span class="s1">&#39;anisotropysolver&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">defaults</span></div>
+
+
+
+<span class="c1"># default input dictionary</span>
+<span class="n">DEFAULT_INPUT</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">infolder</span><span class="o">=</span><span class="s2">&quot;./&quot;</span><span class="p">,</span>
+    <span class="n">infile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">kset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">eset</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+    <span class="n">esetp</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span>
+    <span class="n">emin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">emax</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">eminshift</span><span class="o">=-</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">emaxshift</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">scfxcforientation</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="n">refxcforientations</span><span class="o">=</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span>
+    <span class="n">matlabmode</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">pairs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">magneticentities</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">setupfromrange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">radius</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">atomicsubset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">kwargsformagent</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">l</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+    <span class="n">maxpairsperloop</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+    <span class="n">maxgperloop</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">lowmemorymode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">greensfunctionsolver</span><span class="o">=</span><span class="s2">&quot;Parallel&quot;</span><span class="p">,</span>
+    <span class="n">exchangesolver</span><span class="o">=</span><span class="s2">&quot;Fit&quot;</span><span class="p">,</span>
+    <span class="n">anisotropysolver</span><span class="o">=</span><span class="s2">&quot;Fit&quot;</span><span class="p">,</span>
+    <span class="n">outmagenticmoment</span><span class="o">=</span><span class="s2">&quot;total&quot;</span><span class="p">,</span>
+    <span class="n">savemagnopy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">magnopyprecision</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">magnopycomments</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">saveuppasd</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">savepickle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">picklecompresslevel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">outfolder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">outfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="k">pass</span>
 </pre></div>
@@ -427,7 +496,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, grogupy.</p>
+    <p>&#169; Copyright 2024-2025, Grogupy Team.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

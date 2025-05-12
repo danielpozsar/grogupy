@@ -5,18 +5,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>grogupy._core.gpu_solvers &mdash; grogupy</title>
+  <title>grogupy._core.gpu_solvers &mdash; grogupy 0.0.12</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css" />
-      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=f7cdbf68"></script>
+      <script src="../../../_static/documentation_options.js?v=3bbcec59"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -37,7 +35,7 @@
           
           
           <a href="../../../index.html" class="icon icon-home">
-            grogupy documentation
+            grogupy
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -59,7 +57,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../API/modules.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">grogupy API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environment/index.html">Environment Variables</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
@@ -78,7 +76,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">grogupy documentation</a>
+          <a href="../../../index.html">grogupy</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -97,7 +95,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for grogupy._core.gpu_solvers</h1><div class="highlight"><pre>
-<span></span><span class="c1"># Copyright (c) [2024-2025] [Laszlo Oroszlany, Daniel Pozsar]</span>
+<span></span><span class="c1"># Copyright (c) [2024-2025] [Grogupy Team]</span>
 <span class="c1">#</span>
 <span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
 <span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
@@ -123,6 +121,7 @@
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">..physics.builder</span><span class="w"> </span><span class="kn">import</span> <span class="n">Builder</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">concurrent.futures</span><span class="w"> </span><span class="kn">import</span> <span class="n">ThreadPoolExecutor</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -137,7 +136,13 @@
     <span class="kn">import</span><span class="w"> </span><span class="nn">cupy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cp</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">cupy.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">NDArray</span> <span class="k">as</span> <span class="n">CNDArray</span>
 
+    <span class="c1"># Disable memory pool for device memory (GPU)</span>
+    <span class="n">cp</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">set_allocator</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="c1"># Disable memory pool for pinned memory (CPU).</span>
+    <span class="n">cp</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">set_pinned_memory_allocator</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
     <span class="k">def</span><span class="w"> </span><span class="nf">gpu_solver</span><span class="p">(</span>
+        <span class="n">max_g_per_loop</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">gpu_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">kpoints</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">NDArray</span><span class="p">],</span>
@@ -153,13 +158,16 @@
         <span class="n">G_pair_ji</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">NDArray</span><span class="p">],</span>
         <span class="n">rotated_H</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">NDArray</span><span class="p">],</span>
         <span class="n">S</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span>
+        <span class="n">rot_num</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Unknown&quot;</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="s2">&quot;CNDArray&quot;</span><span class="p">,</span> <span class="s2">&quot;CNDArray&quot;</span><span class="p">,</span> <span class="s2">&quot;CNDArray&quot;</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parallelizes the Green&#39;s function solution on GPU.</span>
 
-<span class="sd">        Should be used on computation power bound systems.</span>
+<span class="sd">        Should be used on large systems.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
+<span class="sd">        max_g_per_loop: int</span>
+<span class="sd">            Maximum number of greens function samples per loop</span>
 <span class="sd">        mode : str</span>
 <span class="sd">            The Greens function solver, which can be parallel or sequential</span>
 <span class="sd">        gpu_number : int</span>
@@ -190,6 +198,8 @@
 <span class="sd">            Hamiltonian with rotated exchange field</span>
 <span class="sd">        S : NDArray</span>
 <span class="sd">            Overlap matrix, should be the same for all Hamiltonians</span>
+<span class="sd">        rot_num: str, optional</span>
+<span class="sd">            Rotation number for tqdm print, by default &quot;Unknown&quot;</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -203,6 +213,10 @@
 
         <span class="c1"># use the specified GPU</span>
         <span class="k">with</span> <span class="n">cp</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">Device</span><span class="p">(</span><span class="n">gpu_number</span><span class="p">):</span>
+            <span class="c1"># free up unused memory</span>
+            <span class="n">mempool</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">get_default_memory_pool</span><span class="p">()</span>
+            <span class="n">mempool</span><span class="o">.</span><span class="n">free_all_blocks</span><span class="p">()</span>
+
             <span class="c1"># copy everything to GPU</span>
             <span class="n">local_kpoints</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">kpoints</span><span class="p">[</span><span class="n">gpu_number</span><span class="p">])</span>
             <span class="n">local_kweights</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">kweights</span><span class="p">[</span><span class="n">gpu_number</span><span class="p">])</span>
@@ -219,10 +233,9 @@
             <span class="n">local_G_pair_ij</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">G_pair_ij</span><span class="p">)</span>
             <span class="n">local_G_pair_ji</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">G_pair_ji</span><span class="p">)</span>
 
-            <span class="n">local_S</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
-
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">_tqdm</span><span class="p">(</span>
-                <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">local_kpoints</span><span class="p">)),</span> <span class="n">desc</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Parallel over k on GPU</span><span class="si">{</span><span class="n">gpu_number</span><span class="si">}</span><span class="s2">:&quot;</span>
+                <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">local_kpoints</span><span class="p">)),</span>
+                <span class="n">desc</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Rotation </span><span class="si">{</span><span class="n">rot_num</span><span class="si">}</span><span class="s2">, parallel over k on GPU</span><span class="si">{</span><span class="n">gpu_number</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="p">):</span>
                 <span class="c1"># weight of k point in BZ integral</span>
                 <span class="n">wk</span> <span class="o">=</span> <span class="n">local_kweights</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
@@ -233,32 +246,47 @@
                 <span class="n">phases</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">cp</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">k</span> <span class="o">@</span> <span class="n">local_sc_off</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
                 <span class="c1"># phases applied to the hamiltonian</span>
                 <span class="n">HK</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;abc,a-&gt;bc&quot;</span><span class="p">,</span> <span class="n">cp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rotated_H</span><span class="p">),</span> <span class="n">phases</span><span class="p">)</span>
-                <span class="n">SK</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;abc,a-&gt;bc&quot;</span><span class="p">,</span> <span class="n">local_S</span><span class="p">,</span> <span class="n">phases</span><span class="p">)</span>
+                <span class="n">SK</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;abc,a-&gt;bc&quot;</span><span class="p">,</span> <span class="n">cp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">S</span><span class="p">),</span> <span class="n">phases</span><span class="p">)</span>
+                <span class="n">mempool</span><span class="o">.</span><span class="n">free_all_blocks</span><span class="p">()</span>
 
                 <span class="c1"># solve the Greens function on all energy points separately</span>
                 <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;sequential&quot;</span><span class="p">:</span>
-                    <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">eset</span><span class="p">):</span>
-                        <span class="n">Gk</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">SK</span> <span class="o">*</span> <span class="n">local_samples</span><span class="p">[</span><span class="n">e</span><span class="p">]</span> <span class="o">-</span> <span class="n">HK</span><span class="p">)</span>
+                    <span class="c1"># make chunks for reduced parallelization over energy sample points</span>
+                    <span class="n">number_of_chunks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">eset</span> <span class="o">/</span> <span class="n">max_g_per_loop</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+
+                    <span class="c1"># constrain to sensible size</span>
+                    <span class="k">if</span> <span class="n">number_of_chunks</span> <span class="o">&gt;</span> <span class="n">eset</span><span class="p">:</span>
+                        <span class="n">number_of_chunks</span> <span class="o">=</span> <span class="n">eset</span>
+
+                    <span class="c1"># create batches using slices on every instance</span>
+                    <span class="n">slices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">eset</span><span class="p">),</span> <span class="n">number_of_chunks</span><span class="p">)</span>
+
+                    <span class="c1"># fills the holders sequentially by the Greens function slices on</span>
+                    <span class="c1"># a given energy</span>
+                    <span class="k">for</span> <span class="nb">slice</span> <span class="ow">in</span> <span class="n">slices</span><span class="p">:</span>
+                        <span class="n">Gk</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">SK</span> <span class="o">*</span> <span class="n">local_samples</span><span class="p">[</span><span class="nb">slice</span><span class="p">]</span> <span class="o">-</span> <span class="n">HK</span><span class="p">)</span>
+                        <span class="n">mempool</span><span class="o">.</span><span class="n">free_all_blocks</span><span class="p">()</span>
 
                         <span class="c1"># store the Greens function slice of the magnetic entities</span>
                         <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">sbi</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">local_SBI</span><span class="p">):</span>
-                            <span class="n">local_G_mag</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">e</span><span class="p">]</span> <span class="o">+=</span> <span class="n">Gk</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">sbi</span><span class="p">,</span> <span class="p">:][</span><span class="o">...</span><span class="p">,</span> <span class="n">sbi</span><span class="p">]</span> <span class="o">*</span> <span class="n">wk</span>
+                            <span class="n">local_G_mag</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="nb">slice</span><span class="p">]</span> <span class="o">+=</span> <span class="n">Gk</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">sbi</span><span class="p">,</span> <span class="p">:][</span><span class="o">...</span><span class="p">,</span> <span class="n">sbi</span><span class="p">]</span> <span class="o">*</span> <span class="n">wk</span>
 
                         <span class="c1"># store the Greens function slice of the pairs</span>
                         <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">dat</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">local_SBI1</span><span class="p">,</span> <span class="n">local_SBI2</span><span class="p">,</span> <span class="n">local_Ruc</span><span class="p">)):</span>
                             <span class="n">sbi1</span><span class="p">,</span> <span class="n">sbi2</span><span class="p">,</span> <span class="n">ruc</span> <span class="o">=</span> <span class="n">dat</span>
                             <span class="n">phase</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">cp</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">k</span> <span class="o">@</span> <span class="n">ruc</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
 
-                            <span class="n">local_G_pair_ij</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">e</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span>
+                            <span class="n">local_G_pair_ij</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="nb">slice</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span>
                                 <span class="n">Gk</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">sbi1</span><span class="p">,</span> <span class="p">:][</span><span class="o">...</span><span class="p">,</span> <span class="n">sbi2</span><span class="p">]</span> <span class="o">*</span> <span class="n">wk</span> <span class="o">*</span> <span class="n">phase</span>
                             <span class="p">)</span>
-                            <span class="n">local_G_pair_ji</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">e</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span>
+                            <span class="n">local_G_pair_ji</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="nb">slice</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span>
                                 <span class="n">Gk</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">sbi2</span><span class="p">,</span> <span class="p">:][</span><span class="o">...</span><span class="p">,</span> <span class="n">sbi1</span><span class="p">]</span> <span class="o">*</span> <span class="n">wk</span> <span class="o">/</span> <span class="n">phase</span>
                             <span class="p">)</span>
 
                 <span class="c1"># solve the Greens function on all energy points in one step</span>
                 <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;parallel&quot;</span><span class="p">:</span>
                     <span class="n">Gk</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">SK</span> <span class="o">*</span> <span class="n">local_samples</span> <span class="o">-</span> <span class="n">HK</span><span class="p">)</span>
+                    <span class="n">mempool</span><span class="o">.</span><span class="n">free_all_blocks</span><span class="p">()</span>
 
                     <span class="c1"># store the Greens function slice of the magnetic entities</span>
                     <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">sbi</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">local_SBI</span><span class="p">):</span>
@@ -272,11 +300,25 @@
                         <span class="n">local_G_pair_ij</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">+=</span> <span class="n">Gk</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">sbi1</span><span class="p">,</span> <span class="p">:][</span><span class="o">...</span><span class="p">,</span> <span class="n">sbi2</span><span class="p">]</span> <span class="o">*</span> <span class="n">wk</span> <span class="o">*</span> <span class="n">phase</span>
                         <span class="n">local_G_pair_ji</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">+=</span> <span class="n">Gk</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">sbi2</span><span class="p">,</span> <span class="p">:][</span><span class="o">...</span><span class="p">,</span> <span class="n">sbi1</span><span class="p">]</span> <span class="o">*</span> <span class="n">wk</span> <span class="o">/</span> <span class="n">phase</span>
 
+            <span class="c1"># release them from memory</span>
+            <span class="n">local_kpoints</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">local_kweights</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">local_SBI</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">local_SBI1</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">local_SBI2</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">local_Ruc</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">local_sc_off</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">eset</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">local_samples</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">Gk</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">HK</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">SK</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">phase</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">phases</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">mempool</span><span class="o">.</span><span class="n">free_all_blocks</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">local_G_mag</span><span class="p">,</span> <span class="n">local_G_pair_ij</span><span class="p">,</span> <span class="n">local_G_pair_ji</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">solve_parallel_over_k</span><span class="p">(</span>
-        <span class="n">builder</span><span class="p">:</span> <span class="s2">&quot;Builder&quot;</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">solve_parallel_over_k</span><span class="p">(</span><span class="n">builder</span><span class="p">:</span> <span class="s2">&quot;Builder&quot;</span><span class="p">,</span> <span class="n">print_memory</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;It calculates the energies by the Greens function method.</span>
 
 <span class="sd">        It inverts the Hamiltonians of all directions set up in the given</span>
@@ -288,6 +330,8 @@
 <span class="sd">        ----------</span>
 <span class="sd">        builder : Builder</span>
 <span class="sd">            The system that we want to solve</span>
+<span class="sd">        print_memory: bool, optional</span>
+<span class="sd">            It can be turned on to print extra memory info, by default False</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">parallel_size</span> <span class="o">=</span> <span class="n">CONFIG</span><span class="o">.</span><span class="n">parallel_size</span>
@@ -306,15 +350,24 @@
             <span class="n">pair</span><span class="o">.</span><span class="n">energies</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="c1"># iterate over the reference directions (quantization axes)</span>
-        <span class="k">for</span> <span class="n">orient</span> <span class="ow">in</span> <span class="n">builder</span><span class="o">.</span><span class="n">ref_xcf_orientations</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">rot_num</span><span class="p">,</span> <span class="n">orient</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">builder</span><span class="o">.</span><span class="n">ref_xcf_orientations</span><span class="p">):</span>
             <span class="c1"># empty greens functions holders</span>
             <span class="n">G_mag_reduce</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">G_pair_ij_reduce</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">G_pair_ji_reduce</span> <span class="o">=</span> <span class="p">[]</span>
 
             <span class="c1"># obtain rotated exchange field and Hamiltonian</span>
-            <span class="n">rot_H</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">hamiltonian</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">builder</span><span class="o">.</span><span class="n">low_memory_mode</span><span class="p">:</span>
+                <span class="n">rot_H</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">hamiltonian</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">rot_H</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">hamiltonian</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
             <span class="n">rot_H</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">orient</span><span class="p">[</span><span class="s2">&quot;o&quot;</span><span class="p">])</span>
+            <span class="n">rot_H_mem</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">rot_H</span><span class="o">.</span><span class="n">H</span><span class="p">),</span>
+                    <span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">rot_H</span><span class="o">.</span><span class="n">S</span><span class="p">),</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
 
             <span class="c1"># setup empty Greens function holders for integration</span>
             <span class="k">for</span> <span class="n">mag_ent</span> <span class="ow">in</span> <span class="n">_tqdm</span><span class="p">(</span>
@@ -344,8 +397,10 @@
 
             <span class="c1"># convert everything so it can be passed to the GPU solvers</span>
             <span class="n">G_mag_reduce</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">G_mag_reduce</span><span class="p">)</span>
+            <span class="n">mag_ent_mem</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">G_mag_reduce</span><span class="p">)</span>
             <span class="n">G_pair_ij_reduce</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">G_pair_ij_reduce</span><span class="p">)</span>
             <span class="n">G_pair_ji_reduce</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">G_pair_ji_reduce</span><span class="p">)</span>
+            <span class="n">pair_mem</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">G_pair_ij_reduce</span><span class="p">)</span> <span class="o">+</span> <span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">G_pair_ji_reduce</span><span class="p">)</span>
 
             <span class="n">SBI</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">_spin_box_indices</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">builder</span><span class="o">.</span><span class="n">magnetic_entities</span><span class="p">]</span>
             <span class="n">SBI1</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">SBI1</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">builder</span><span class="o">.</span><span class="n">pairs</span><span class="p">]</span>
@@ -353,9 +408,63 @@
             <span class="n">Ruc</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">supercell_shift</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">builder</span><span class="o">.</span><span class="n">pairs</span><span class="p">]</span>
 
             <span class="n">S</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">hamiltonian</span><span class="o">.</span><span class="n">S</span>
+            <span class="n">H</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">hamiltonian</span><span class="o">.</span><span class="n">H</span>
 
             <span class="n">sc_off</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">hamiltonian</span><span class="o">.</span><span class="n">sc_off</span>
             <span class="n">samples</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">contour</span><span class="o">.</span><span class="n">samples</span>
+
+            <span class="k">if</span> <span class="n">print_memory</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="s2">&quot;################################################################################&quot;</span>
+                <span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="s2">&quot;################################################################################&quot;</span>
+                <span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Memory allocated by rotated Hamilonian: </span><span class="si">{</span><span class="n">rot_H_mem</span><span class="o">/</span><span class="mf">1e6</span><span class="si">}</span><span class="s2"> MB&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Memory allocated by magnetic entities: </span><span class="si">{</span><span class="n">mag_ent_mem</span><span class="o">/</span><span class="mf">1e6</span><span class="si">}</span><span class="s2"> MB&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Memory allocated by pairs: </span><span class="si">{</span><span class="n">pair_mem</span><span class="o">/</span><span class="mf">1e6</span><span class="si">}</span><span class="s2"> MB&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Total memory allocated in RAM: </span><span class="si">{</span><span class="p">(</span><span class="n">rot_H_mem</span><span class="o">+</span><span class="n">mag_ent_mem</span><span class="o">+</span><span class="n">pair_mem</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">1e6</span><span class="si">}</span><span class="s2"> MB&quot;</span>
+                <span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="s2">&quot;--------------------------------------------------------------------------------&quot;</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">builder</span><span class="o">.</span><span class="n">greens_function_solver</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;p&quot;</span><span class="p">:</span>  <span class="c1"># parallel solver</span>
+                    <span class="c1"># 16 is the size of complex numbers in byte, when using np.float64</span>
+                    <span class="n">G_mem</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">builder</span><span class="o">.</span><span class="n">contour</span><span class="o">.</span><span class="n">eset</span>
+                        <span class="o">*</span> <span class="n">builder</span><span class="o">.</span><span class="n">hamiltonian</span><span class="o">.</span><span class="n">NO</span>
+                        <span class="o">*</span> <span class="n">builder</span><span class="o">.</span><span class="n">hamiltonian</span><span class="o">.</span><span class="n">NO</span>
+                        <span class="o">*</span> <span class="mi">16</span>
+                    <span class="p">)</span>
+                <span class="k">elif</span> <span class="p">(</span>
+                    <span class="n">builder</span><span class="o">.</span><span class="n">greens_function_solver</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;s&quot;</span>
+                <span class="p">):</span>  <span class="c1"># sequentia solver</span>
+                    <span class="n">G_mem</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">builder</span><span class="o">.</span><span class="n">max_g_per_loop</span>
+                        <span class="o">*</span> <span class="n">builder</span><span class="o">.</span><span class="n">hamiltonian</span><span class="o">.</span><span class="n">NO</span>
+                        <span class="o">*</span> <span class="n">builder</span><span class="o">.</span><span class="n">hamiltonian</span><span class="o">.</span><span class="n">NO</span>
+                        <span class="o">*</span> <span class="mi">16</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Unknown Greens function solver!&quot;</span><span class="p">)</span>
+
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Memory allocated on GPU:&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Memory allocated by rotated Hamilonian: </span><span class="si">{</span><span class="n">rot_H_mem</span><span class="o">/</span><span class="mf">1e6</span><span class="si">}</span><span class="s2"> MB&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Memory allocated for Greens function samples: </span><span class="si">{</span><span class="n">G_mem</span><span class="o">/</span><span class="mf">1e6</span><span class="si">}</span><span class="s2"> MB&quot;</span><span class="p">)</span>
+                <span class="c1"># 25 is the maximum amount of memory used for matrix inversion</span>
+                <span class="n">gpu_max_mem</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">([</span><span class="n">mag_ent_mem</span> <span class="o">+</span> <span class="n">pair_mem</span> <span class="o">+</span> <span class="n">rot_H_mem</span><span class="p">,</span> <span class="n">G_mem</span> <span class="o">*</span> <span class="mi">25</span><span class="p">])</span> <span class="o">/</span> <span class="mf">1e6</span>
+                <span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total peak memory on GPU during solution: </span><span class="si">{</span><span class="n">gpu_max_mem</span><span class="si">}</span><span class="s2"> MB&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="s2">&quot;################################################################################&quot;</span>
+                <span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="s2">&quot;################################################################################&quot;</span>
+                <span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
             <span class="c1"># call the solvers</span>
             <span class="k">if</span> <span class="n">builder</span><span class="o">.</span><span class="n">greens_function_solver</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;p&quot;</span><span class="p">:</span>  <span class="c1"># parallel solver</span>
@@ -369,6 +478,7 @@
                 <span class="n">futures</span> <span class="o">=</span> <span class="p">[</span>
                     <span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span>
                         <span class="n">gpu_solver</span><span class="p">,</span>
+                        <span class="n">builder</span><span class="o">.</span><span class="n">max_g_per_loop</span><span class="p">,</span>
                         <span class="n">mode</span><span class="p">,</span>
                         <span class="n">gpu_number</span><span class="p">,</span>
                         <span class="n">parallel_k</span><span class="p">,</span>
@@ -382,8 +492,9 @@
                         <span class="n">G_mag_reduce</span><span class="p">,</span>
                         <span class="n">G_pair_ij_reduce</span><span class="p">,</span>
                         <span class="n">G_pair_ji_reduce</span><span class="p">,</span>
-                        <span class="n">rot_H</span><span class="o">.</span><span class="n">H</span><span class="p">,</span>
+                        <span class="n">H</span><span class="p">,</span>
                         <span class="n">S</span><span class="p">,</span>
+                        <span class="n">rot_num</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
                     <span class="p">)</span>
                     <span class="k">for</span> <span class="n">gpu_number</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">parallel_size</span><span class="p">)</span>
                 <span class="p">]</span>
@@ -394,6 +505,9 @@
                 <span class="n">G_mag_reduce</span> <span class="o">+=</span> <span class="n">G_mag_local</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
                 <span class="n">G_pair_ij_reduce</span> <span class="o">+=</span> <span class="n">G_pair_ij_local</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
                 <span class="n">G_pair_ji_reduce</span> <span class="o">+=</span> <span class="n">G_pair_ji_local</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+            <span class="c1"># release them from memory</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="kc">None</span>
 
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">mag_ent</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">builder</span><span class="o">.</span><span class="n">magnetic_entities</span><span class="p">):</span>
                 <span class="c1"># initialize rotation storage</span>
@@ -409,10 +523,11 @@
             <span class="c1"># these are the rotations mostly perpendicular to the quantization axis</span>
             <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">orient</span><span class="p">[</span><span class="s2">&quot;vw&quot;</span><span class="p">]:</span>
                 <span class="c1"># section 2.H</span>
+                <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">H_XCF</span> <span class="o">=</span> <span class="n">rot_H</span><span class="o">.</span><span class="n">extract_exchange_field</span><span class="p">()</span>
                 <span class="n">Tu</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">builder</span><span class="o">.</span><span class="n">hamiltonian</span><span class="o">.</span><span class="n">NO</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">),</span> <span class="n">tau_u</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">builder</span><span class="o">.</span><span class="n">hamiltonian</span><span class="o">.</span><span class="n">NO</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">),</span> <span class="n">tau_u</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
                 <span class="p">)</span>
-                <span class="n">Vu1</span><span class="p">,</span> <span class="n">Vu2</span> <span class="o">=</span> <span class="n">calc_Vu</span><span class="p">(</span><span class="n">rot_H</span><span class="o">.</span><span class="n">H_XCF_uc</span><span class="p">,</span> <span class="n">Tu</span><span class="p">)</span>
+                <span class="n">Vu1</span><span class="p">,</span> <span class="n">Vu2</span> <span class="o">=</span> <span class="n">calc_Vu</span><span class="p">(</span><span class="n">H_XCF</span><span class="p">[</span><span class="n">rot_H</span><span class="o">.</span><span class="n">uc_in_sc_index</span><span class="p">],</span> <span class="n">Tu</span><span class="p">)</span>
 
                 <span class="k">for</span> <span class="n">mag_ent</span> <span class="ow">in</span> <span class="n">_tqdm</span><span class="p">(</span>
                     <span class="n">builder</span><span class="o">.</span><span class="n">magnetic_entities</span><span class="p">,</span>
@@ -631,7 +746,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, grogupy.</p>
+    <p>&#169; Copyright 2024-2025, Grogupy Team.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

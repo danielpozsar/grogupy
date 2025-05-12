@@ -60,7 +60,7 @@ grogupy was created by the `TRILMAX Consortium <https://trilmax.elte.hu>`_.
         with grogupy.
 
     .. grid-item-card::  -- API reference
-        :link: API/modules
+        :link: API/index
         :link-type: doc
 
         Detailed description of the implementation for advanced users.
@@ -93,7 +93,7 @@ grogupy was created by the `TRILMAX Consortium <https://trilmax.elte.hu>`_.
    :maxdepth: 2
    :caption: Advanced usage
 
-   API/modules
+   API/index
    environment/index
 
 .. toctree::

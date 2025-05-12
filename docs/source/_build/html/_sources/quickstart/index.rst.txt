@@ -20,6 +20,14 @@ Installation
 
             pip install grogupy
 
+        The plotting and GPU aceleration part of the package are optional, but they 
+        can also be download via pip
+
+        .. code-block:: bash
+
+            pip install grogupy[viz,gpu]
+
+
     .. grid-item-card:: Using source code
         :columns: 12 12 12 12
 
@@ -42,7 +50,6 @@ Quickstart tutorials
 .. toctree::
    :maxdepth: 1
 
-   test_calculate_magnetic_parameters.ipynb
-   test_visualize_the_exchange.ipynb
-   convergence_with_high_throughput
+   calculate_magnetic_parameters.ipynb
+   visualize_the_exchange.ipynb
    running_in_hpc

@@ -5,18 +5,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>grogupy.batch.timing &mdash; grogupy</title>
+  <title>grogupy.batch.timing &mdash; grogupy 0.0.12</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css" />
-      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=f7cdbf68"></script>
+      <script src="../../../_static/documentation_options.js?v=3bbcec59"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -37,7 +35,7 @@
           
           
           <a href="../../../index.html" class="icon icon-home">
-            grogupy documentation
+            grogupy
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -59,7 +57,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../API/modules.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">grogupy API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environment/index.html">Environment Variables</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
@@ -78,7 +76,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">grogupy documentation</a>
+          <a href="../../../index.html">grogupy</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -97,7 +95,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for grogupy.batch.timing</h1><div class="highlight"><pre>
-<span></span><span class="c1"># Copyright (c) [2024-2025] [Laszlo Oroszlany, Daniel Pozsar]</span>
+<span></span><span class="c1"># Copyright (c) [2024-2025] [Grogupy Team]</span>
 <span class="c1">#</span>
 <span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
 <span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
@@ -127,11 +125,12 @@
 <span class="sd">    Upon initialization the clock is started.</span>
 
 <span class="sd">    Methods</span>
-<span class="sd">    ------</span>
+<span class="sd">    -------</span>
 <span class="sd">    restart() :</span>
 <span class="sd">        It restarts the timer</span>
 <span class="sd">    measure(function) :</span>
 <span class="sd">        It measures the runtime and writes to times[function]</span>
+
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 <span class="sd">    times: dict</span>
@@ -168,16 +167,11 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">times</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_times</span>
 
-<div class="viewcode-block" id="DefaultTimer.restart">
-<a class="viewcode-back" href="../../../API/_generated/grogupy.batch.DefaultTimer.html#grogupy.batch.DefaultTimer.restart">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">restart</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Resets the measurement time.&quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">__start_measure</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__start_measure</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
 
-
-<div class="viewcode-block" id="DefaultTimer.measure">
-<a class="viewcode-back" href="../../../API/_generated/grogupy.batch.DefaultTimer.html#grogupy.batch.DefaultTimer.measure">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">measure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">restart</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Saves the measurement time.</span>
 
@@ -198,7 +192,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_times</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">current</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">__start_measure</span>
         <span class="k">if</span> <span class="n">restart</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__start_measure</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span></div>
-</div>
 
 
 
@@ -213,7 +206,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, grogupy.</p>
+    <p>&#169; Copyright 2024-2025, Grogupy Team.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

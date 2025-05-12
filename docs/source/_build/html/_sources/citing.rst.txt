@@ -20,7 +20,7 @@ Currently there is no way to explicitly cite grogupy, but you can cite the under
         publisher={APS}
     }
 
-grogupy builds on the sisl package, which should also be cited.
+grogupy builds on the sisl package as well, which should also be cited.
 
 .. code-block:: bibtex
 
@@ -32,7 +32,7 @@ grogupy builds on the sisl package, which should also be cited.
     url          = {https://doi.org/10.5281/zenodo.597181}
     }
 
-Furthermore all the command line scripts and the ``grgupy`` package can print out the citation in **bibtex**
+All the command line scripts and the ``grogupy`` package can print out the citation in **bibtex**
 format.
 
 .. code-block:: python3

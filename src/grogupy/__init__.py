@@ -18,6 +18,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """
+API reference
+=============
+
+.. toctree::
+   :maxdepth: 2
+   
+   physics
+   core
+   io
+   batch
+   cli
+   viz
+
 grogupy
 =======
 
@@ -51,6 +64,7 @@ visualization.
    Config   Class holding the configuration from the environment.
 
 The ``CONFIG`` instance contains the configuration of grogupy.
+
 """
 
 __all__ = []

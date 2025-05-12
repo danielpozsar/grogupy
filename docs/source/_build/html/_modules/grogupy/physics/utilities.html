@@ -5,18 +5,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>grogupy.physics.utilities &mdash; grogupy</title>
+  <title>grogupy.physics.utilities &mdash; grogupy 0.0.12</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css" />
-      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=f7cdbf68"></script>
+      <script src="../../../_static/documentation_options.js?v=3bbcec59"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -37,7 +35,7 @@
           
           
           <a href="../../../index.html" class="icon icon-home">
-            grogupy documentation
+            grogupy
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -59,7 +57,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../API/modules.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">grogupy API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environment/index.html">Environment Variables</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
@@ -78,7 +76,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">grogupy documentation</a>
+          <a href="../../../index.html">grogupy</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -97,7 +95,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for grogupy.physics.utilities</h1><div class="highlight"><pre>
-<span></span><span class="c1"># Copyright (c) [2024-2025] [Laszlo Oroszlany, Daniel Pozsar]</span>
+<span></span><span class="c1"># Copyright (c) [2024-2025] [Grogupy Team]</span>
 <span class="c1">#</span>
 <span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
 <span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
@@ -218,17 +216,17 @@
 <div class="viewcode-block" id="blow_up_orbindx">
 <a class="viewcode-back" href="../../../API/_generated/grogupy.physics.blow_up_orbindx.html#grogupy.physics.blow_up_orbindx">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">blow_up_orbindx</span><span class="p">(</span><span class="n">orb_indices</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to blow up orbital indices to make SPIN BOX indices.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Expand orbital indices to make SPIN BOX indices.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">        orb_indices: NDArray</span>
-<span class="sd">            These are the indices in ORBITAL BOX</span>
+<span class="sd">            These are the indices in ORBITAL BOX representation</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">        orb_indices: NDArray</span>
-<span class="sd">            These are the indices in SPIN BOX</span>
+<span class="sd">            These are the indices in SPIN BOX representation</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">orb_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">o</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">o</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">orb_indices</span><span class="p">])</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
@@ -240,7 +238,7 @@
 <div class="viewcode-block" id="spin_tracer">
 <a class="viewcode-back" href="../../../API/_generated/grogupy.physics.spin_tracer.html#grogupy.physics.spin_tracer">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">spin_tracer</span><span class="p">(</span><span class="n">M</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Spin tracer utility.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extracts orbital dependent Pauli traces.</span>
 
 <span class="sd">    This takes an operator with the orbital-spin sequence:</span>
 <span class="sd">    orbital 1 up,</span>
@@ -253,12 +251,12 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">        M: NDArray</span>
-<span class="sd">            Traceable matrix</span>
+<span class="sd">            Traceable matrix in SPIN BOX represenation</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">        dict</span>
-<span class="sd">            It contains the traced matrix with &quot;x&quot;, &quot;y&quot;, &quot;z&quot; and &quot;c&quot;</span>
+<span class="sd">            It contains the traced matrix with &quot;x&quot;, &quot;y&quot;, &quot;z&quot; and &quot;c&quot;, where &quot;c&quot; is the constant part</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">M11</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span>
@@ -847,7 +845,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, grogupy.</p>
+    <p>&#169; Copyright 2024-2025, Grogupy Team.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

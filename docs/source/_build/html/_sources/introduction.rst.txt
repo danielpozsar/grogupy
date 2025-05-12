@@ -40,5 +40,8 @@ Go to the :ref:`installation <quickstart-guide>` page to install grogupy.
 Command line usage
 ------------------
 
-grogupy contains  :ref:`command line scripts <tutorials>` to run simulations
-and to create automatic summaries based on high throughput data.
+grogupy contains  :ref:`command line scripts <command_line_usage>` to run simulations 
+and to create automatic summaries of the output files. Currently there is no way 
+to run automatic convergence tests, because the total runtime and required resources 
+are hardware dependent and hard to estimate. Instead there are functions in the ``viz`` 
+module that helps the user determine the convergence from multiple runs.

@@ -5,18 +5,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>grogupy.physics.magnetic_entity &mdash; grogupy</title>
+  <title>grogupy.physics.magnetic_entity &mdash; grogupy 0.0.12</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css" />
-      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=f7cdbf68"></script>
+      <script src="../../../_static/documentation_options.js?v=3bbcec59"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -37,7 +35,7 @@
           
           
           <a href="../../../index.html" class="icon icon-home">
-            grogupy documentation
+            grogupy
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -59,7 +57,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../API/modules.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">grogupy API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environment/index.html">Environment Variables</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
@@ -78,7 +76,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">grogupy documentation</a>
+          <a href="../../../index.html">grogupy</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -97,7 +95,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for grogupy.physics.magnetic_entity</h1><div class="highlight"><pre>
-<span></span><span class="c1"># Copyright (c) [2024-2025] [Laszlo Oroszlany, Daniel Pozsar]</span>
+<span></span><span class="c1"># Copyright (c) [2024-2025] [Grogupy Team]</span>
 <span class="c1">#</span>
 <span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
 <span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
@@ -689,8 +687,6 @@
             <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__K_consistency_mRy</span>
 
-<div class="viewcode-block" id="MagneticEntity.reset">
-<a class="viewcode-back" href="../../../API/_generated/grogupy.physics.MagneticEntity.html#grogupy.physics.MagneticEntity.reset">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Resets the simulation results.&quot;&quot;&quot;</span>
 
@@ -700,11 +696,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_Gii_tmp</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">energies</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">K_consistency</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">K_consistency</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
-
-<div class="viewcode-block" id="MagneticEntity.calculate_energies">
-<a class="viewcode-back" href="../../../API/_generated/grogupy.physics.MagneticEntity.html#grogupy.physics.MagneticEntity.calculate_energies">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">calculate_energies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">matlabmode</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates the energies of the infinitesimal rotations.</span>
 
@@ -740,11 +733,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">energies</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">energies</span><span class="p">)</span>
         <span class="c1"># call these so they are updated</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">energies_meV</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">energies_mRy</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">energies_mRy</span>
 
-
-<div class="viewcode-block" id="MagneticEntity.calculate_anisotropy">
-<a class="viewcode-back" href="../../../API/_generated/grogupy.physics.MagneticEntity.html#grogupy.physics.MagneticEntity.calculate_anisotropy">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">calculate_anisotropy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates the anisotropy matrix and the consistency from the energies.</span>
 
@@ -760,11 +750,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">K_meV</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">K_mRy</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">K_consistency_meV</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">K_consistency_mRy</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">K_consistency_mRy</span>
 
-
-<div class="viewcode-block" id="MagneticEntity.fit_anisotropy_tensor">
-<a class="viewcode-back" href="../../../API/_generated/grogupy.physics.MagneticEntity.html#grogupy.physics.MagneticEntity.fit_anisotropy_tensor">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fit_anisotropy_tensor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ref_xcf</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Fits the anisotropy tensor to the energies.</span>
 
@@ -787,11 +774,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">K_meV</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">K_mRy</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">K_consistency_meV</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">K_consistency_mRy</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">K_consistency_mRy</span>
 
-
-<div class="viewcode-block" id="MagneticEntity.copy">
-<a class="viewcode-back" href="../../../API/_generated/grogupy.physics.MagneticEntity.html#grogupy.physics.MagneticEntity.copy">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the deepcopy of the instance.</span>
 
@@ -802,7 +786,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
-</div>
 
 
 
@@ -817,7 +800,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, grogupy.</p>
+    <p>&#169; Copyright 2024-2025, Grogupy Team.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

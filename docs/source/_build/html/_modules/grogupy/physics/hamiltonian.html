@@ -5,18 +5,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>grogupy.physics.hamiltonian &mdash; grogupy</title>
+  <title>grogupy.physics.hamiltonian &mdash; grogupy 0.0.12</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css" />
-      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=f7cdbf68"></script>
+      <script src="../../../_static/documentation_options.js?v=3bbcec59"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -37,7 +35,7 @@
           
           
           <a href="../../../index.html" class="icon icon-home">
-            grogupy documentation
+            grogupy
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -59,7 +57,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../API/modules.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../API/index.html">grogupy API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environment/index.html">Environment Variables</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
@@ -78,7 +76,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">grogupy documentation</a>
+          <a href="../../../index.html">grogupy</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -97,7 +95,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for grogupy.physics.hamiltonian</h1><div class="highlight"><pre>
-<span></span><span class="c1"># Copyright (c) [2024-2025] [Laszlo Oroszlany, Daniel Pozsar]</span>
+<span></span><span class="c1"># Copyright (c) [2024-2025] [Grogupy Team]</span>
 <span class="c1">#</span>
 <span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
 <span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
@@ -163,6 +161,8 @@
 
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
+<span class="sd">    extract_exchange_field() :</span>
+<span class="sd">        Extracts the exchange field and time reversal symmetric and breaking parts</span>
 <span class="sd">    rotate(orientation) :</span>
 <span class="sd">        It rotates the exchange field of the Hamiltonian.</span>
 <span class="sd">    HkSk(k) :</span>
@@ -186,14 +186,6 @@
 <span class="sd">        Orientation of the DFT exchange field</span>
 <span class="sd">    orientation: NDArray</span>
 <span class="sd">        Current orientation of the XCF filed</span>
-<span class="sd">    hTRS: NDArray</span>
-<span class="sd">        Time reversal symmetric part of the Hamiltonian</span>
-<span class="sd">    hTRB: NDArray</span>
-<span class="sd">        Time reversal broken symmetric part of the Hamiltonian</span>
-<span class="sd">    H_XCF: NDArray</span>
-<span class="sd">        Exchange Hamiltonian</span>
-<span class="sd">    XCF: NDArray</span>
-<span class="sd">        Exchange field</span>
 <span class="sd">    NO: int</span>
 <span class="sd">        Number of orbitals in the Hamiltonian</span>
 <span class="sd">    cell: NDArray</span>
@@ -206,8 +198,6 @@
 <span class="sd">        Unit cell index</span>
 <span class="sd">    H_uc: NDArray</span>
 <span class="sd">        Unit cell Hamiltonian</span>
-<span class="sd">    H_XCF_uc: NDArray</span>
-<span class="sd">        Unit cell exchange part of the Hamiltonian</span>
 <span class="sd">    times: grogupy.batch.timing.DefaultTimer</span>
 <span class="sd">        It contains and measures runtime</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -270,85 +260,6 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="n">scf_xcf_orientation</span>
 
-        <span class="k">if</span> <span class="n">CONFIG</span><span class="o">.</span><span class="n">is_CPU</span><span class="p">:</span>
-            <span class="c1"># identifying TRS and TRB parts of the Hamiltonian</span>
-            <span class="n">TAUY</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NO</span><span class="p">),</span> <span class="n">TAU_Y</span><span class="p">)</span>
-
-            <span class="n">hTR</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">_tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="o">.</span><span class="n">prod</span><span class="p">()),</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Transpose Hamiltonian&quot;</span><span class="p">):</span>
-                <span class="n">hTR</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TAUY</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span> <span class="o">@</span> <span class="n">TAUY</span><span class="p">)</span>
-            <span class="n">hTR</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">hTR</span><span class="p">)</span>
-
-            <span class="n">hTRS</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H</span> <span class="o">+</span> <span class="n">hTR</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
-            <span class="n">hTRB</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H</span> <span class="o">-</span> <span class="n">hTR</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
-
-            <span class="c1"># extracting the exchange field</span>
-            <span class="n">traced</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">_tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="o">.</span><span class="n">prod</span><span class="p">()),</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Calculate V_XCF&quot;</span><span class="p">):</span>
-                <span class="n">traced</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spin_tracer</span><span class="p">(</span><span class="n">hTRB</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
-            <span class="n">traced</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">traced</span><span class="p">)</span>  <span class="c1"># equation 77</span>
-
-            <span class="n">XCF</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-                <span class="p">[</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">f</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">traced</span><span class="p">]),</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">f</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">traced</span><span class="p">]),</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">f</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">traced</span><span class="p">]),</span>
-                <span class="p">]</span>
-            <span class="p">)</span>
-
-            <span class="n">H_XCF</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="o">.</span><span class="n">prod</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">NO</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NO</span> <span class="o">*</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;complex128&quot;</span>
-            <span class="p">)</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">tau</span> <span class="ow">in</span> <span class="n">_tqdm</span><span class="p">(</span>
-                <span class="nb">enumerate</span><span class="p">([</span><span class="n">TAU_X</span><span class="p">,</span> <span class="n">TAU_Y</span><span class="p">,</span> <span class="n">TAU_Z</span><span class="p">]),</span> <span class="n">total</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Calculate H_XC&quot;</span>
-            <span class="p">):</span>
-                <span class="n">H_XCF</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">XCF</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">tau</span><span class="p">)</span>
-
-        <span class="k">elif</span> <span class="n">CONFIG</span><span class="o">.</span><span class="n">is_GPU</span><span class="p">:</span>
-            <span class="c1"># identifying TRS and TRB parts of the Hamiltonian</span>
-            <span class="n">TAUY</span><span class="p">:</span> <span class="n">CNDArray</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NO</span><span class="p">),</span> <span class="n">cp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">TAU_Y</span><span class="p">))</span>
-
-            <span class="n">hTR</span><span class="p">:</span> <span class="n">CNDArray</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">_tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="o">.</span><span class="n">prod</span><span class="p">()),</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Transpose Hamiltonian&quot;</span><span class="p">):</span>
-                <span class="n">hTR</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TAUY</span> <span class="o">@</span> <span class="n">cp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span> <span class="o">@</span> <span class="n">TAUY</span><span class="p">)</span>
-            <span class="n">hTR</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">hTR</span><span class="p">)</span>
-
-            <span class="n">hTRS</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H</span> <span class="o">+</span> <span class="n">hTR</span><span class="o">.</span><span class="n">get</span><span class="p">())</span> <span class="o">/</span> <span class="mi">2</span>
-            <span class="n">hTRB</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H</span> <span class="o">-</span> <span class="n">hTR</span><span class="o">.</span><span class="n">get</span><span class="p">())</span> <span class="o">/</span> <span class="mi">2</span>
-
-            <span class="c1"># extracting the exchange field equation 77</span>
-            <span class="n">traced</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">_tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="o">.</span><span class="n">prod</span><span class="p">()),</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Calculate V_XCF&quot;</span><span class="p">):</span>
-                <span class="n">traced</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spin_tracer</span><span class="p">(</span><span class="n">hTRB</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
-
-            <span class="n">XCF</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-                <span class="p">[</span>
-                    <span class="n">cp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">f</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">traced</span><span class="p">]),</span>
-                    <span class="n">cp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">f</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">traced</span><span class="p">]),</span>
-                    <span class="n">cp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">f</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">traced</span><span class="p">]),</span>
-                <span class="p">]</span>
-            <span class="p">)</span>
-
-            <span class="n">H_XCF</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="o">.</span><span class="n">prod</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">NO</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NO</span> <span class="o">*</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;complex128&quot;</span>
-            <span class="p">)</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">tau</span> <span class="ow">in</span> <span class="n">_tqdm</span><span class="p">(</span>
-                <span class="nb">enumerate</span><span class="p">([</span><span class="n">TAU_X</span><span class="p">,</span> <span class="n">TAU_Y</span><span class="p">,</span> <span class="n">TAU_Z</span><span class="p">]),</span> <span class="n">total</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Calculate H_XC&quot;</span>
-            <span class="p">):</span>
-                <span class="n">H_XCF</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">XCF</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">cp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">tau</span><span class="p">))</span>
-
-            <span class="n">XCF</span><span class="p">,</span> <span class="n">H_XCF</span> <span class="o">=</span> <span class="n">XCF</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">H_XCF</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown architecture: </span><span class="si">{</span><span class="n">CONFIG</span><span class="o">.</span><span class="n">architecture</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="c1"># check if exchange field has scalar part</span>
-        <span class="n">max_xcfs</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">f</span><span class="p">[</span><span class="s2">&quot;c&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">traced</span><span class="p">]))</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">max_xcfs</span> <span class="o">&gt;</span> <span class="mf">1e-12</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Exchange field has non negligible scalar part. Largest value is </span><span class="si">{</span><span class="n">max_xcfs</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hTRS</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hTRB</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">XCF</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">H_XCF</span> <span class="o">=</span> <span class="n">hTRS</span><span class="p">,</span> <span class="n">hTRB</span><span class="p">,</span> <span class="n">XCF</span><span class="p">,</span> <span class="n">H_XCF</span>
-
         <span class="c1"># pre calculate hidden unuseed properties</span>
         <span class="c1"># they are here so they are dumped to the self.__dict__ upon saving</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__no</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dh</span><span class="o">.</span><span class="n">no</span>
@@ -383,10 +294,6 @@
                 <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">S</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">S</span><span class="p">)</span>
                 <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scf_xcf_orientation</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">scf_xcf_orientation</span><span class="p">)</span>
                 <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">orientation</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">orientation</span><span class="p">)</span>
-                <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hTRS</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">hTRS</span><span class="p">)</span>
-                <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hTRB</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">hTRB</span><span class="p">)</span>
-                <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">XCF</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">XCF</span><span class="p">)</span>
-                <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H_XCF</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">H_XCF</span><span class="p">)</span>
             <span class="p">):</span>
                 <span class="c1"># if DM is None return True</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">value</span><span class="o">.</span><span class="n">_ds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -418,7 +325,7 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">NO</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__no</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dh</span><span class="o">.</span><span class="n">no</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__no</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dh</span><span class="o">.</span><span class="n">no</span> <span class="o">*</span> <span class="mi">2</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                 <span class="s2">&quot;Property could not be calculated. This is only acceptable for loaded Hamiltonian!&quot;</span>
@@ -458,60 +365,171 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">H_uc</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">H</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">uc_in_sc_index</span><span class="p">]</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">H_XCF_uc</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">H_XCF</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">uc_in_sc_index</span><span class="p">]</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extract_exchange_field</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract the exchange field and other useful quantities.</span>
 
-<div class="viewcode-block" id="Hamiltonian.rotate">
-<a class="viewcode-back" href="../../../API/_generated/grogupy.physics.Hamiltonian.html#grogupy.physics.Hamiltonian.rotate">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">rotate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        hTRS: NDArray</span>
+<span class="sd">            Time reversal symmetric part of the Hamiltonian</span>
+<span class="sd">        hTRB: NDArray</span>
+<span class="sd">            Time reversal broken symmetric part of the Hamiltonian</span>
+<span class="sd">        XCF: NDArray</span>
+<span class="sd">            Exchange field</span>
+<span class="sd">        H_XCF: NDArray</span>
+<span class="sd">            Exchange Hamiltonian</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            Exchange field has non negligible scalar part.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># progress bar</span>
+        <span class="n">bar</span> <span class="o">=</span> <span class="n">_tqdm</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="mi">3</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="o">.</span><span class="n">prod</span><span class="p">(),</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Extracting exchange field&quot;</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">CONFIG</span><span class="o">.</span><span class="n">is_CPU</span><span class="p">:</span>
+            <span class="c1"># identifying TRS and TRB parts of the Hamiltonian</span>
+            <span class="n">TAUY</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NO</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">TAU_Y</span><span class="p">)</span>
+
+            <span class="n">hTR</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="o">.</span><span class="n">prod</span><span class="p">()):</span>
+                <span class="n">hTR</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TAUY</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span> <span class="o">@</span> <span class="n">TAUY</span><span class="p">)</span>
+                <span class="n">bar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+            <span class="n">hTR</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">hTR</span><span class="p">)</span>
+
+            <span class="n">hTRS</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H</span> <span class="o">+</span> <span class="n">hTR</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="n">hTRB</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H</span> <span class="o">-</span> <span class="n">hTR</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+
+            <span class="c1"># extracting the exchange field</span>
+            <span class="n">traced</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="o">.</span><span class="n">prod</span><span class="p">()):</span>
+                <span class="n">traced</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spin_tracer</span><span class="p">(</span><span class="n">hTRB</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+                <span class="n">bar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+            <span class="n">traced</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">traced</span><span class="p">)</span>  <span class="c1"># equation 77</span>
+
+            <span class="n">XCF</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">f</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">traced</span><span class="p">]),</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">f</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">traced</span><span class="p">]),</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">f</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">traced</span><span class="p">]),</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+
+            <span class="n">H_XCF</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="o">.</span><span class="n">prod</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">NO</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NO</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;complex128&quot;</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">tau</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="n">TAU_X</span><span class="p">,</span> <span class="n">TAU_Y</span><span class="p">,</span> <span class="n">TAU_Z</span><span class="p">]):</span>
+                <span class="n">H_XCF</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">XCF</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">tau</span><span class="p">)</span>
+                <span class="n">bar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+
+        <span class="k">elif</span> <span class="n">CONFIG</span><span class="o">.</span><span class="n">is_GPU</span><span class="p">:</span>
+            <span class="c1"># free up unused memory</span>
+            <span class="n">mempool</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">get_default_memory_pool</span><span class="p">()</span>
+            <span class="n">mempool</span><span class="o">.</span><span class="n">free_all_blocks</span><span class="p">()</span>
+
+            <span class="c1"># identifying TRS and TRB parts of the Hamiltonian</span>
+            <span class="n">TAUY</span><span class="p">:</span> <span class="n">CNDArray</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NO</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">cp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">TAU_Y</span><span class="p">))</span>
+
+            <span class="n">hTR</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="o">.</span><span class="n">prod</span><span class="p">()):</span>
+                <span class="n">hTR</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">TAUY</span> <span class="o">@</span> <span class="n">cp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span> <span class="o">@</span> <span class="n">TAUY</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+                <span class="n">bar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+            <span class="n">hTR</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">hTR</span><span class="p">)</span>
+
+            <span class="c1"># release this from memory</span>
+            <span class="n">TAUY</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="n">hTRS</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H</span> <span class="o">+</span> <span class="n">hTR</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="n">hTRB</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H</span> <span class="o">-</span> <span class="n">hTR</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+
+            <span class="c1"># extracting the exchange field equation 77</span>
+            <span class="n">traced</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="o">.</span><span class="n">prod</span><span class="p">()):</span>
+                <span class="n">traced</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spin_tracer</span><span class="p">(</span><span class="n">hTRB</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+                <span class="n">bar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+
+            <span class="n">XCF</span><span class="p">:</span> <span class="n">CNDArray</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">cp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">f</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">traced</span><span class="p">]),</span>
+                    <span class="n">cp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">f</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">traced</span><span class="p">]),</span>
+                    <span class="n">cp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">f</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">traced</span><span class="p">]),</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+
+            <span class="n">H_XCF</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="o">.</span><span class="n">prod</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">NO</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NO</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;complex128&quot;</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">tau</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="n">TAU_X</span><span class="p">,</span> <span class="n">TAU_Y</span><span class="p">,</span> <span class="n">TAU_Z</span><span class="p">]):</span>
+                <span class="n">H_XCF</span> <span class="o">+=</span> <span class="n">cp</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">XCF</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">cp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">tau</span><span class="p">))</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+                <span class="n">bar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+
+            <span class="n">XCF</span><span class="p">,</span> <span class="n">H_XCF</span> <span class="o">=</span> <span class="n">XCF</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">H_XCF</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown architecture: </span><span class="si">{</span><span class="n">CONFIG</span><span class="o">.</span><span class="n">architecture</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># check if exchange field has scalar part</span>
+        <span class="n">max_xcfs</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">f</span><span class="p">[</span><span class="s2">&quot;c&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">traced</span><span class="p">]))</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">max_xcfs</span> <span class="o">&gt;</span> <span class="mf">1e-12</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Exchange field has non negligible scalar part. Largest value is </span><span class="si">{</span><span class="n">max_xcfs</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">hTRS</span><span class="p">,</span> <span class="n">hTRB</span><span class="p">,</span> <span class="n">XCF</span><span class="p">,</span> <span class="n">H_XCF</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">rotate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">NDArray</span><span class="p">,</span> <span class="nb">list</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;It rotates the exchange field of the Hamiltonian.</span>
 
-<span class="sd">        It dumps the solutions to the `XCF`, `H_XCF`, `H` and</span>
-<span class="sd">        `orientation` properties.</span>
+<span class="sd">        It dumps the solutions to the `H` and `orientation`</span>
+<span class="sd">        properties.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        orientation: NDArray</span>
+<span class="sd">        orientation: Union[NDArray, list]</span>
 <span class="sd">            The rotation where it rotates</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
+        <span class="n">orientation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">orientation</span><span class="p">)</span>
+
+        <span class="n">hTRS</span><span class="p">,</span> <span class="n">hTRB</span><span class="p">,</span> <span class="n">XCF</span><span class="p">,</span> <span class="n">H_XCF</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_exchange_field</span><span class="p">()</span>
         <span class="c1"># obtain rotated exchange field and Hamiltonian</span>
-        <span class="n">R</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="n">RotMa2b</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scf_xcf_orientation</span><span class="p">,</span> <span class="n">orientation</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">XCF</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,jklm-&gt;iklm&quot;</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">XCF</span><span class="p">)</span>
+        <span class="n">R</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="n">RotMa2b</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">orientation</span><span class="p">,</span> <span class="n">orientation</span><span class="p">)</span>
+        <span class="n">XCF</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,jklm-&gt;iklm&quot;</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">XCF</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">CONFIG</span><span class="o">.</span><span class="n">is_CPU</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">H_XCF</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="o">.</span><span class="n">prod</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">NO</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NO</span> <span class="o">*</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span>
+            <span class="n">H_XCF</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="o">.</span><span class="n">prod</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">NO</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NO</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">tau</span> <span class="ow">in</span> <span class="n">_tqdm</span><span class="p">(</span>
                 <span class="nb">enumerate</span><span class="p">([</span><span class="n">TAU_X</span><span class="p">,</span> <span class="n">TAU_Y</span><span class="p">,</span> <span class="n">TAU_Z</span><span class="p">]),</span>
                 <span class="n">total</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
                 <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Rotating Exchange field&quot;</span><span class="p">,</span>
             <span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">H_XCF</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">XCF</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">tau</span><span class="p">)</span>
+                <span class="n">H_XCF</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">XCF</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">tau</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">CONFIG</span><span class="o">.</span><span class="n">is_GPU</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">H_XCF</span><span class="p">:</span> <span class="n">CNDArray</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="o">.</span><span class="n">prod</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">NO</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NO</span> <span class="o">*</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span>
+            <span class="c1"># free up unused memory</span>
+            <span class="n">mempool</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">get_default_memory_pool</span><span class="p">()</span>
+            <span class="n">mempool</span><span class="o">.</span><span class="n">free_all_blocks</span><span class="p">()</span>
+
+            <span class="n">H_XCF</span><span class="p">:</span> <span class="n">CNDArray</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="o">.</span><span class="n">prod</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">NO</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NO</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span>
             <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">XCF</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">XCF</span><span class="p">)</span>
+            <span class="n">XCF</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">XCF</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">tau</span> <span class="ow">in</span> <span class="n">_tqdm</span><span class="p">(</span>
                 <span class="nb">enumerate</span><span class="p">([</span><span class="n">TAU_X</span><span class="p">,</span> <span class="n">TAU_Y</span><span class="p">,</span> <span class="n">TAU_Z</span><span class="p">]),</span>
                 <span class="n">total</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
                 <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Rotating Exchange field&quot;</span><span class="p">,</span>
             <span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">H_XCF</span> <span class="o">+=</span> <span class="n">cp</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">XCF</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">cp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">tau</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">H_XCF</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">H_XCF</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+                <span class="n">H_XCF</span> <span class="o">+=</span> <span class="n">cp</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">XCF</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">cp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">tau</span><span class="p">))</span>
+            <span class="n">H_XCF</span> <span class="o">=</span> <span class="n">H_XCF</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown architecture: </span><span class="si">{</span><span class="n">CONFIG</span><span class="o">.</span><span class="n">architecture</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># obtain total Hamiltonian with the rotated exchange field</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">H</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hTRS</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">H_XCF</span>  <span class="c1"># equation 76</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">H</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">=</span> <span class="n">hTRS</span> <span class="o">+</span> <span class="n">H_XCF</span>  <span class="c1"># equation 76</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span>
 
-
-<div class="viewcode-block" id="Hamiltonian.HkSk">
-<a class="viewcode-back" href="../../../API/_generated/grogupy.physics.Hamiltonian.html#grogupy.physics.Hamiltonian.HkSk">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">HkSk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets up the Hamiltonian and the overlap matrix at a given k-point.</span>
 
@@ -529,11 +547,8 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">return</span> <span class="n">hsk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">S</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc_off</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">hsk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">S</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc_off</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="Hamiltonian.copy">
-<a class="viewcode-back" href="../../../API/_generated/grogupy.physics.Hamiltonian.html#grogupy.physics.Hamiltonian.copy">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the deepcopy of the instance.</span>
 
@@ -544,7 +559,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
-</div>
 
 
 
@@ -559,7 +573,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, grogupy.</p>
+    <p>&#169; Copyright 2024-2025, Grogupy Team.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

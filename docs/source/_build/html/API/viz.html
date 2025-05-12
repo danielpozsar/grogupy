@@ -6,18 +6,16 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Visualization &mdash; grogupy</title>
+  <title>Visualization &mdash; grogupy 0.0.12</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/custom_styles.css" />
-      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=f7cdbf68"></script>
+      <script src="../_static/documentation_options.js?v=3bbcec59"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -28,7 +26,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="grogupy.viz.plot_contour" href="_generated/grogupy.viz.plot_contour.html" />
-    <link rel="prev" title="Command line interface for grogupy" href="cli.html" /> 
+    <link rel="prev" title="analyze" href="_generated/grogupy.cli.analyze.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -40,7 +38,7 @@
           
           
           <a href="../index.html" class="icon icon-home">
-            grogupy documentation
+            grogupy
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -62,8 +60,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">API reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="grogupy.html">grogupy</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">grogupy API reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="physics.html">Physics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="core.html">Core</a></li>
 <li class="toctree-l2"><a class="reference internal" href="io.html">Input/Output</a></li>
@@ -76,11 +73,17 @@
 <li class="toctree-l4"><a class="reference internal" href="_generated/grogupy.viz.plot_magnetic_entities.html">grogupy.viz.plot_magnetic_entities</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_generated/grogupy.viz.plot_pairs.html">grogupy.viz.plot_pairs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_generated/grogupy.viz.plot_DMI.html">grogupy.viz.plot_DMI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_generated/grogupy.viz.plot_DM_distance.html">grogupy.viz.plot_DM_distance</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_generated/grogupy.viz.plot_Jiso_distance.html">grogupy.viz.plot_Jiso_distance</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_generated/grogupy.viz.plot_1D_convergence.html">grogupy.viz.plot_1D_convergence</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#background-information">Background information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#tqdm-in-grogupy">tqdm in grogupy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#configuration">Configuration</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../environment/index.html">Environment Variables</a></li>
@@ -101,7 +104,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">grogupy documentation</a>
+          <a href="../index.html">grogupy</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -109,7 +112,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="modules.html">API reference</a></li>
+          <li class="breadcrumb-item"><a href="index.html">grogupy API reference</a></li>
       <li class="breadcrumb-item active">Visualization</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/API/viz.rst.txt" rel="nofollow"> View page source</a>
@@ -138,11 +141,20 @@ parameters.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="_generated/grogupy.viz.plot_magnetic_entities.html#grogupy.viz.plot_magnetic_entities" title="grogupy.viz.plot_magnetic_entities"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_magnetic_entities</span></code></a>(magnetic_entities)</p></td>
 <td><p>Creates a plot from a list of magnetic entities.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_generated/grogupy.viz.plot_pairs.html#grogupy.viz.plot_pairs" title="grogupy.viz.plot_pairs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pairs</span></code></a>(pairs[, connect])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_generated/grogupy.viz.plot_pairs.html#grogupy.viz.plot_pairs" title="grogupy.viz.plot_pairs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pairs</span></code></a>(pairs[, connect, cell])</p></td>
 <td><p>Creates a plot from a list of pairs.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="_generated/grogupy.viz.plot_DMI.html#grogupy.viz.plot_DMI" title="grogupy.viz.plot_DMI"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_DMI</span></code></a>(pairs[, rescale])</p></td>
 <td><p>Creates a plot of the DM vectors from a list of pairs.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_generated/grogupy.viz.plot_DM_distance.html#grogupy.viz.plot_DM_distance" title="grogupy.viz.plot_DM_distance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_DM_distance</span></code></a>(pairs)</p></td>
+<td><p>Plots the magnitude of DM vectors as a function of distance.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_generated/grogupy.viz.plot_Jiso_distance.html#grogupy.viz.plot_Jiso_distance" title="grogupy.viz.plot_Jiso_distance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_Jiso_distance</span></code></a>(pairs)</p></td>
+<td><p>Plots the isotropic exchange as a function of distance.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_generated/grogupy.viz.plot_1D_convergence.html#grogupy.viz.plot_1D_convergence" title="grogupy.viz.plot_1D_convergence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_1D_convergence</span></code></a>(files, parameter[, maxdiff])</p></td>
+<td><p>Reads output files and create a plot for the convergence test.</p></td>
 </tr>
 </tbody>
 </table>
@@ -152,8 +164,10 @@ parameters.</p>
 <p>Currently all the functions are using the plotly library.
 This decision was made because it can be used in the Jupyter
 environment and supports interactive and 3D plots.</p>
-<p class="rubric">Examples</p>
-<p>For examples, see the <a class="reference internal" href="../tutorials/index.html#tutorials"><span class="std std-ref">tutorials</span></a>.</p>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<p>For examples, see the <em>Visualize the exchange</em> in  <a class="reference internal" href="../quickstart/index.html#quickstart-guide"><span class="std std-ref">tutorials</span></a>.</p>
 </section>
 </section>
 
@@ -161,14 +175,14 @@ environment and supports interactive and 3D plots.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="cli.html" class="btn btn-neutral float-left" title="Command line interface for grogupy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="_generated/grogupy.cli.analyze.html" class="btn btn-neutral float-left" title="analyze" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="_generated/grogupy.viz.plot_contour.html" class="btn btn-neutral float-right" title="grogupy.viz.plot_contour" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, grogupy.</p>
+    <p>&#169; Copyright 2024-2025, Grogupy Team.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

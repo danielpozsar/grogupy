@@ -6,18 +6,16 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Physics &mdash; grogupy</title>
+  <title>Physics &mdash; grogupy 0.0.12</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/custom_styles.css" />
-      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=f7cdbf68"></script>
+      <script src="../_static/documentation_options.js?v=3bbcec59"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -28,7 +26,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="grogupy.physics.Builder" href="_generated/grogupy.physics.Builder.html" />
-    <link rel="prev" title="grogupy.Config" href="_generated/grogupy.Config.html" /> 
+    <link rel="prev" title="grogupy API reference" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -40,7 +38,7 @@
           
           
           <a href="../index.html" class="icon icon-home">
-            grogupy documentation
+            grogupy
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -62,8 +60,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">API reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="grogupy.html">grogupy</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">grogupy API reference</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Physics</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#physical-classes">Physical classes</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="_generated/grogupy.physics.Builder.html">grogupy.physics.Builder</a></li>
@@ -88,6 +85,7 @@
 <li class="toctree-l4"><a class="reference internal" href="_generated/grogupy.physics.fit_exchange_tensor.html">grogupy.physics.fit_exchange_tensor</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#background-information">Background information</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="core.html">Core</a></li>
@@ -95,6 +93,8 @@
 <li class="toctree-l2"><a class="reference internal" href="batch.html">Batch calculations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli.html">Command line interface for grogupy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="viz.html">Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#tqdm-in-grogupy">tqdm in grogupy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#configuration">Configuration</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../environment/index.html">Environment Variables</a></li>
@@ -115,7 +115,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">grogupy documentation</a>
+          <a href="../index.html">grogupy</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -123,7 +123,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="modules.html">API reference</a></li>
+          <li class="breadcrumb-item"><a href="index.html">grogupy API reference</a></li>
       <li class="breadcrumb-item active">Physics</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/API/physics.rst.txt" rel="nofollow"> View page source</a>
@@ -136,7 +136,7 @@
              
   <section id="physics">
 <h1>Physics<a class="headerlink" href="#physics" title="Link to this heading"></a></h1>
-<p>This subpackage contains the physical classes and functions closely related
+<p>This subpackage contains the physical classes and functions closely related 
 to energy and magnetic parameter calculation.</p>
 <section id="physical-classes">
 <h2>Physical classes<a class="headerlink" href="#physical-classes" title="Link to this heading"></a></h2>
@@ -174,10 +174,10 @@ to energy and magnetic parameter calculation.</p>
 <td><p>It reads the lowest energy level from siesta.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="_generated/grogupy.physics.blow_up_orbindx.html#grogupy.physics.blow_up_orbindx" title="grogupy.physics.blow_up_orbindx"><code class="xref py py-obj docutils literal notranslate"><span class="pre">blow_up_orbindx</span></code></a>(orb_indices)</p></td>
-<td><p>Function to blow up orbital indices to make SPIN BOX indices.</p></td>
+<td><p>Expand orbital indices to make SPIN BOX indices.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="_generated/grogupy.physics.spin_tracer.html#grogupy.physics.spin_tracer" title="grogupy.physics.spin_tracer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spin_tracer</span></code></a>(M)</p></td>
-<td><p>Spin tracer utility.</p></td>
+<td><p>Extracts orbital dependent Pauli traces.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="_generated/grogupy.physics.parse_magnetic_entity.html#grogupy.physics.parse_magnetic_entity" title="grogupy.physics.parse_magnetic_entity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_magnetic_entity</span></code></a>(dh[, atom, l, orb])</p></td>
 <td><p>Function to get the orbital indices of a given magnetic entity.</p></td>
@@ -203,20 +203,26 @@ to energy and magnetic parameter calculation.</p>
 </tbody>
 </table>
 </section>
+<section id="background-information">
+<h2>Background information<a class="headerlink" href="#background-information" title="Link to this heading"></a></h2>
+<p>This module contains the high level API of the package. It was purposefully 
+written to be highly modular, which is ideal for complicated systems that are 
+easier to set up in a jupyter notebook environment.</p>
+</section>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="_generated/grogupy.Config.html" class="btn btn-neutral float-left" title="grogupy.Config" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="grogupy API reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="_generated/grogupy.physics.Builder.html" class="btn btn-neutral float-right" title="grogupy.physics.Builder" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, grogupy.</p>
+    <p>&#169; Copyright 2024-2025, Grogupy Team.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
