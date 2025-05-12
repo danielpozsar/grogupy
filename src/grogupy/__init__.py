@@ -1,4 +1,4 @@
-# Copyright (c) [2024-2025] [Laszlo Oroszlany, Daniel Pozsar]
+# Copyright (c) [2024-2025] [Grogupy Team]
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -39,11 +39,11 @@ parallelization.
 
 Configuration
 -------------
-
 This module contains the configuration from the environment, which helps to 
 load or avoid the optional dependencies that can be part of grogupy. These 
 optional dependencies are tqd, cupy for gpu acceleration and plotly for 
 visualization.
+
 
 .. autosummary::
    :toctree: _generated/
@@ -54,7 +54,7 @@ The ``CONFIG`` instance contains the configuration of grogupy.
 """
 
 __all__ = []
-__version__ = "0.0.11"
+__version__ = "0.0.12"
 version = __version__
 
 from .config import *
