@@ -149,7 +149,7 @@ class TestPair:
         p2.J_S = p.J_S
         assert p == p2
 
-        p2.D = np.zeros(3)
+        p2.D = 1000 * np.ones(3)
         assert p != p2
         p2.D = p.D
         assert p == p2
