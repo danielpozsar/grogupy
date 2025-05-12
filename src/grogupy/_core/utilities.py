@@ -1,4 +1,4 @@
-# Copyright (c) [2024-2025] [Laszlo Oroszlany, Daniel Pozsar]
+# Copyright (c) [2024-2025] [Grogupy Team]
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -195,7 +195,7 @@ def setup_from_range(
 
     Other Parameters
     ----------------
-    **kwargs: otpional
+    kwargs: otpional
         These are passed to the magnetic entity dictionary
 
     Returns

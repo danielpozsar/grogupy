@@ -1,4 +1,4 @@
-# Copyright (c) [2024-2025] [Laszlo Oroszlany, Daniel Pozsar]
+# Copyright (c) [2024-2025] [Grogupy Team]
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -26,11 +26,12 @@ class DefaultTimer:
     Upon initialization the clock is started.
 
     Methods
-    ------
+    -------
     restart() :
         It restarts the timer
     measure(function) :
         It measures the runtime and writes to times[function]
+
     Attributes
     ----------
     times: dict
