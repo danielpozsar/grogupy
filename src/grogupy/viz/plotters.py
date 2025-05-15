@@ -582,9 +582,9 @@ def plot_DM_distance(pairs: Union[Builder, list["Pair"]]) -> go.Figure:
         autosize=False,
         width=800,
         height=500,
-        title=f"Isotropic exchange",
+        title=f"Norm of the DM vectors",
         xaxis_title="Pair distance [Ang]",
-        yaxis_title="Isotropic exchange [meV]",
+        yaxis_title="DM norm [meV]",
         xaxis=dict(
             showgrid=True,
             gridwidth=1,
