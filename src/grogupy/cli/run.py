@@ -284,7 +284,7 @@ def main():
             save_magnopy(
                 simulation,
                 path=outfile,
-                magnetic_moment=params["outmagenticmoment"],
+                magnetic_moment=params["outmagneticmoment"],
                 precision=params["magnopyprecision"],
                 comments=params["magnopycomments"],
             )
@@ -299,7 +299,8 @@ def main():
             save_UppASD(
                 simulation,
                 folder=UppASD_folder,
-                magnetic_moment=params["outmagenticmoment"],
+                fast_compare=True,
+                magnetic_moment=params["outmagneticmoment"],
             )
             print("Saved UppASD")
 

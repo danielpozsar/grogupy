@@ -186,7 +186,7 @@ as we did in the jupyter notebook examples.
    # either total or local, which controls if only the magnetic
    # entity's magnetic monent or the whole atom's magnetic moment is printed
    # used by all output modes
-   out_magentic_moment = "total"
+   out_magnetic_moment = "total"
 
    # save the magnopy file
    save_magnopy = True
