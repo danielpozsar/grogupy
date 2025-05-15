@@ -474,7 +474,12 @@ def save(
         )
 
 
-def save_UppASD(builder: Builder, folder: str, magnetic_moment: str = "total"):
+def save_UppASD(
+    builder: Builder,
+    folder: str,
+    fast_compare: bool = False,
+    magnetic_moment: str = "total",
+):
     """Writes the UppASD input files to the given folder.
 
     The created input files are the posfile, momfile and
@@ -487,6 +492,9 @@ def save_UppASD(builder: Builder, folder: str, magnetic_moment: str = "total"):
         Main simulation object containing all the data
     folder : str
         The out put folder where the files are created
+    fast_compare: bool, optional
+        When determining the magnetic entity index a fast comparison can
+        be used where only the tags are checked, by default False
     magnetic_moment: str, optional
         It switches the used spin moment in the output, can be 'total'
         for the whole atom or atoms involved in the magnetic entity or
@@ -523,7 +531,6 @@ def save_UppASD(builder: Builder, folder: str, magnetic_moment: str = "total"):
     jfile = ""
     # adding anisotropy to jfile
     for i, mag_ent in enumerate(builder.magnetic_entities):
-        # -2 for convention, from Marci
         K = np.around(mag_ent.K_mRy.flatten(), decimals=5)
         # adding line to jfile
         jfile += f"{i+1} {i+1} 0 0 0 " + " ".join(map(lambda x: f"{x:.5f}", K)) + "\n"
@@ -532,10 +539,16 @@ def save_UppASD(builder: Builder, folder: str, magnetic_moment: str = "total"):
     for pair in builder.pairs:
         # iterating over magnetic entities and comparing them to the ones stored in the pairs
         for i, mag_ent in enumerate(builder.magnetic_entities):
-            if mag_ent == pair.M1:
-                ai = i + 1
-            if mag_ent == pair.M2:
-                aj = i + 1
+            if fast_compare:
+                if mag_ent.tag == pair.M1.tag:
+                    ai = i + 1
+                if mag_ent.tag == pair.M2.tag:
+                    aj = i + 1
+            else:
+                if mag_ent == pair.M1:
+                    ai = i + 1
+                if mag_ent == pair.M2:
+                    aj = i + 1
 
         # this is the unit cell shift
         shift = pair.supercell_shift
