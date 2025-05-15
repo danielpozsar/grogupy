@@ -58,7 +58,7 @@ class TestPair:
         p.D
 
     def test_reset(self):
-        pair = grogupy.load("./tests/test_pair.pkl")
+        pair = grogupy.load("./benchmarks/test_pair.pkl")
 
         pair._Gij = 1
         pair._Gji = None
@@ -94,7 +94,7 @@ class TestPair:
         raise NotImplementedError
 
     def test_equality(self):
-        p = grogupy.load("./tests/test_pair.pkl")
+        p = grogupy.load("./benchmarks/test_pair.pkl")
 
         p2 = p.copy()
         assert p == p2
@@ -228,7 +228,7 @@ class TestPair:
         assert p2 != p2c
 
     def test_getstate_setstate(self):
-        p = grogupy.load("./tests/test_pair.pkl")
+        p = grogupy.load("./benchmarks/test_pair.pkl")
 
         state = p.__getstate__()
         assert isinstance(state, dict)

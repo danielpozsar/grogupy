@@ -366,7 +366,7 @@ class TestMagneticEntity:
         assert arrays_lists_equal(new._xyz, np.vstack((mag_ent1._xyz, mag_ent2._xyz)))
 
     def test_reset(self):
-        mag_ent = grogupy.load("./tests/test_magnetic_entity.pkl")
+        mag_ent = grogupy.load("./benchmarks/test_magnetic_entity.pkl")
 
         mag_ent._Vu1 = 1
         mag_ent._Vu2 = None
