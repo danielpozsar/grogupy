@@ -719,6 +719,7 @@ def plot_1D_convergence(
         ),
         yaxis=dict(
             type="log",
+            tickformat="0.0e",
             showgrid=True,
             gridwidth=1,
         ),
