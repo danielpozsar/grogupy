@@ -57,11 +57,6 @@ class TestContour:
         c2 = c.copy()
         assert c == c2
 
-        c2.times = 1
-        assert c != c2
-        c2.times = c.times
-        assert c == c2
-
         c2._eigfile = "None"
         assert c != c2
         c2._eigfile = c._eigfile

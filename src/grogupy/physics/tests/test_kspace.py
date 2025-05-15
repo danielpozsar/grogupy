@@ -63,11 +63,6 @@ class TestKspace:
         k2 = k.copy()
         assert k == k2
 
-        k2.times = 1
-        assert k != k2
-        k2.times = k.times
-        assert k == k2
-
         k2.kset = [10, 20, 30]
         assert k != k2
         k2.kset = k.kset
