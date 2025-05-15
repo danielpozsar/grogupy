@@ -116,10 +116,6 @@ if CONFIG.is_GPU:
 
         # use the specified GPU
         with cp.cuda.Device(gpu_number):
-            # free up unused memory
-            mempool = cp.get_default_memory_pool()
-            mempool.free_all_blocks()
-
             # copy everything to GPU
             local_kpoints = cp.array(kpoints[gpu_number])
             local_kweights = cp.array(kweights[gpu_number])
@@ -132,9 +128,9 @@ if CONFIG.is_GPU:
             eset = samples.shape[0]
             local_samples = cp.array(samples.reshape(eset, 1, 1))
 
-            local_G_mag = cp.zeros_like(G_mag)
-            local_G_pair_ij = cp.zeros_like(G_pair_ij)
-            local_G_pair_ji = cp.zeros_like(G_pair_ji)
+            local_G_mag = np.zeros_like(G_mag)
+            local_G_pair_ij = np.zeros_like(G_pair_ij)
+            local_G_pair_ji = np.zeros_like(G_pair_ji)
 
             for i in _tqdm(
                 range(len(local_kpoints)),
@@ -150,7 +146,6 @@ if CONFIG.is_GPU:
                 # phases applied to the hamiltonian
                 HK = cp.einsum("abc,a->bc", cp.array(rotated_H), phases)
                 SK = cp.einsum("abc,a->bc", cp.array(S), phases)
-                mempool.free_all_blocks()
 
                 # solve the Greens function on all energy points separately
                 if mode == "sequential":
@@ -168,11 +163,12 @@ if CONFIG.is_GPU:
                     # a given energy
                     for slice in slices:
                         Gk = cp.linalg.inv(SK * local_samples[slice] - HK)
-                        mempool.free_all_blocks()
 
                         # store the Greens function slice of the magnetic entities
                         for l, sbi in enumerate(local_SBI):
-                            local_G_mag[l][slice] += Gk[..., sbi, :][..., sbi] * wk
+                            local_G_mag[l][slice] += (
+                                Gk[..., sbi, :][..., sbi] * wk
+                            ).get()
 
                         # store the Greens function slice of the pairs
                         for l, dat in enumerate(zip(local_SBI1, local_SBI2, local_Ruc)):
@@ -181,27 +177,30 @@ if CONFIG.is_GPU:
 
                             local_G_pair_ij[l][slice] += (
                                 Gk[..., sbi1, :][..., sbi2] * wk * phase
-                            )
+                            ).get()
                             local_G_pair_ji[l][slice] += (
                                 Gk[..., sbi2, :][..., sbi1] * wk / phase
-                            )
+                            ).get()
 
                 # solve the Greens function on all energy points in one step
                 elif mode == "parallel":
                     Gk = cp.linalg.inv(SK * local_samples - HK)
-                    mempool.free_all_blocks()
 
                     # store the Greens function slice of the magnetic entities
                     for l, sbi in enumerate(local_SBI):
-                        local_G_mag[l] += Gk[..., sbi, :][..., sbi] * wk
+                        local_G_mag[l] += (Gk[..., sbi, :][..., sbi] * wk).get()
 
                     # store the Greens function slice of the pairs
                     for l, dat in enumerate(zip(local_SBI1, local_SBI2, local_Ruc)):
                         sbi1, sbi2, ruc = dat
                         phase = cp.exp(1j * 2 * cp.pi * k @ ruc.T)
 
-                        local_G_pair_ij[l] += Gk[..., sbi1, :][..., sbi2] * wk * phase
-                        local_G_pair_ji[l] += Gk[..., sbi2, :][..., sbi1] * wk / phase
+                        local_G_pair_ij[l] += (
+                            Gk[..., sbi1, :][..., sbi2] * wk * phase
+                        ).get()
+                        local_G_pair_ji[l] += (
+                            Gk[..., sbi2, :][..., sbi1] * wk / phase
+                        ).get()
 
             # release them from memory
             local_kpoints = None
@@ -218,7 +217,6 @@ if CONFIG.is_GPU:
             SK = None
             phase = None
             phases = None
-            mempool.free_all_blocks()
         return local_G_mag, local_G_pair_ij, local_G_pair_ji
 
     def solve_parallel_over_k(builder: "Builder", print_memory: bool = False) -> None:
