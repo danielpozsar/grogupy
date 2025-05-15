@@ -62,11 +62,9 @@ def main():
     name = args.file
     if name.endswith(".pkl"):
         name = name[:-4]
+    name += ".analysis.html"
 
-    print(f"The output files are under the name: {name}")
-    print(__definitely_not_grogu__)
-
-    with open(name + ".analysis.html", "w") as file:
+    with open(name, "w") as file:
         file.write(
             system.to_magnopy()
             .replace("\n", "<br>\n")
@@ -78,6 +76,12 @@ def main():
         fig = plot_kspace(system.kspace)
         file.write(fig.to_html(full_html=False, include_plotlyjs="cdn"))
 
+        fig = plot_Jiso_distance(system)
+        file.write(fig.to_html(full_html=False, include_plotlyjs="cdn"))
+
+        fig = plot_DM_distance(system)
+        file.write(fig.to_html(full_html=False, include_plotlyjs="cdn"))
+
         fig = plot_magnetic_entities(system)
         file.write(fig.to_html(full_html=False, include_plotlyjs="cdn"))
 
@@ -87,11 +91,8 @@ def main():
         fig = plot_DMI(system).add_traces(system.plot_pairs(connect=True).data)
         file.write(fig.to_html(full_html=False, include_plotlyjs="cdn"))
 
-        fig = plot_Jiso_distance(system)
-        file.write(fig.to_html(full_html=False, include_plotlyjs="cdn"))
-
-        fig = plot_DM_distance(system)
-        file.write(fig.to_html(full_html=False, include_plotlyjs="cdn"))
+    print(f"The output file is: {name}")
+    print(__definitely_not_grogu__)
 
 
 if __name__ == "__main__":
