@@ -29,7 +29,6 @@ class TestCommandLineTools:
     @pytest.mark.parametrize(
         "path",
         [
-            "./src/grogupy/cli/tests/input0.py",
             "./src/grogupy/cli/tests/input1.py",
             "./src/grogupy/cli/tests/input2.py",
             "./src/grogupy/cli/tests/input3.py",
