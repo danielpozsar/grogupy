@@ -18,9 +18,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import argparse
+import subprocess
 
 from .. import __citation__, __definitely_not_grogu__
-from ..io.io import load, save_magnopy
+from ..io.io import load
 from ..viz.plotters import (
     plot_contour,
     plot_DM_distance,
@@ -36,11 +37,14 @@ def main():
     """Main entry point of the script."""
 
     # setup parser
-    parser = argparse.ArgumentParser(description="Load results from a .pkl file.")
+    parser = argparse.ArgumentParser(
+        description="Load results from a .pkl file and do a summary on the system."
+    )
     parser.add_argument(
         "file", nargs="?", help="Path to a .pkl file containing the results."
     )
     parser.add_argument(
+        "-c",
         "--cite",
         dest="cite",
         action="store_true",
@@ -58,11 +62,16 @@ def main():
 
     # Reading input
     system = load(args.file)
+
     # get the output name
     name = args.file
     if name.endswith(".pkl"):
         name = name[:-4]
     name += ".analysis.html"
+
+    # try to get slurm jobstat information
+    jobstat = subprocess.run(["jobstat", system.SLURM_ID])
+    print(jobstat.stdout)
 
     with open(name, "w") as file:
         file.write(

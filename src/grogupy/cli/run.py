@@ -46,19 +46,13 @@ else:
 
 def main():
     """Main entry point of the script."""
-    if PRINTING:
-        print("Simulation started at:", datetime.datetime.now())
-    start = timer()
-
     # setup parser
     parser = argparse.ArgumentParser(
-        description="Load Python variables from a .py file."
+        description="This script takes a .py or a .fdf input files and runs grogupy with the given input."
     )
+    parser.add_argument("file", nargs="?", help="Path to a .py or .fdfinput file.")
     parser.add_argument(
-        "file", nargs="?", help="Path to a Python file containing variables to load."
-    )
-    parser.add_argument(
-        "--cite",
+        "-c" "--cite",
         dest="cite",
         action="store_true",
         default=False,
@@ -72,6 +66,10 @@ def main():
         print(__citation__ + __definitely_not_grogu__)
         if args.file is None:
             return
+
+    if PRINTING:
+        print("Simulation started at:", datetime.datetime.now())
+    start = timer()
 
     # Reading input
     if args.file.endswith(".py"):
