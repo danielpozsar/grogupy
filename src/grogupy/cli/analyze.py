@@ -69,10 +69,6 @@ def main():
         name = name[:-4]
     name += ".analysis.html"
 
-    # try to get slurm jobstat information
-    jobstat = subprocess.run(["jobstat", system.SLURM_ID])
-    print(jobstat.stdout)
-
     with open(name, "w") as file:
         file.write(
             system.to_magnopy()
