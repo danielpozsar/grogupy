@@ -781,9 +781,9 @@ def read_magnopy(file: str):
         elif section == "atoms":
             # the name line
             if line.split()[0].lower() == "name":
-                x_pos = np.where([word == "x" for word in line.split()])
-                y_pos = np.where([word == "y" for word in line.split()])
-                z_pos = np.where([word == "z" for word in line.split()])
+                x_pos = np.where([word == "x" for word in line.split()])[0][0]
+                y_pos = np.where([word == "y" for word in line.split()])[0][0]
+                z_pos = np.where([word == "z" for word in line.split()])[0][0]
             # magnetic entity line
             else:
                 tag = line.split()[0]
@@ -1014,7 +1014,7 @@ def read_py(path: str) -> dict:
     # convert to dictionary
     out = dict()
     for name in params.__dir__():
-        if not name.startswith("__"):
+        if not name.startswith("__") or name == "np" or name == "numpy":
             n = name.replace("_", "").replace(".", "").lower()
             out[n] = params.__dict__[name]
 
