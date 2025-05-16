@@ -7,16 +7,17 @@
 
 grogupy is an open-source package created to easily extract magnetic interaction 
 parameters from density functional theory (DFT) calculations. It can also handle 
-very large systems, with hundreds of atoms in the unit cell using GPU acceleration. 
-Because the underlying theory focuses on non-orthogonal, LCAO, basis sets, the 
-most straightforward software, and our recommendation to use for the DFT part is 
-[Siesta](https://siesta-project.org/siesta). In principle any plane wave based 
-DFT software could be used with Wannierization, but the magnetic parameters are 
-very sensitive to the atomic positions and Wannier orbitals might be off centered.
-grogupy can extract magnetic parameters from different levels of theoretical 
-complexity, for example it can use as input collinear, non-collinear and spin-orbit
-Hamiltonians using [sisl](https://sisl.readthedocs.io/en/latest/index.html). More 
-on the theoretical background can be found on [arXiv](https://arxiv.org/abs/2309.02558). 
+very large systems, with hundreds of atoms in the unit cell using GPU 
+acceleration. Because the underlying theory focuses on non-orthogonal, LCAO, 
+basis sets, the most straightforward software, and our recommendation to use for 
+the DFT part is [Siesta](https://siesta-project.org/siesta). In principle any 
+plane wave based DFT software could be used with Wannierization, but the magnetic 
+parameters are very sensitive to the atomic positions and Wannier orbitals might 
+be off centered. grogupy can extract magnetic parameters from different levels 
+of theoretical complexity, for example it can use as input collinear, 
+non-collinear and spin-orbit Hamiltonians using 
+[sisl](https://sisl.readthedocs.io/en/latest/index.html). More on the 
+theoretical background can be found on [arXiv](https://arxiv.org/abs/2309.02558). 
 grogupy was created by the [TRILMAX Consortium](https://trilmax.elte.hu).
 
 ## Features ##
@@ -28,12 +29,17 @@ grogupy was created by the [TRILMAX Consortium](https://trilmax.elte.hu).
 
 ## Tutorials and examples ##
 
-You can start with the [Quick start guides](https://danielpozsar.web.elte.hu/grogupy/quickstart/index.html) or learn more about the best practices in the [Tutorials](https://danielpozsar.web.elte.hu/grogupy/tutorials/index.html) section.
+You can start with the 
+[Quick start guides](https://danielpozsar.web.elte.hu/grogupy/quickstart/index.html) 
+or learn more about the best practices in the 
+[Tutorials](https://danielpozsar.web.elte.hu/grogupy/tutorials/index.html) section.
 
 ## Documentation ##
 
-The documentation can be found [here](https://danielpozsar.web.elte.hu/grogupy/index.html), 
-and the API reference is [here](https://danielpozsar.web.elte.hu/grogupy/API/modules.html).
+The documentation can be found 
+[here](https://danielpozsar.web.elte.hu/grogupy/index.html), 
+and the API reference is 
+[here](https://danielpozsar.web.elte.hu/grogupy/API/modules.html).
 
 ## Installation ##
 
@@ -43,8 +49,8 @@ grogupy can be installed using `pip`:
 pip install grogupy
 ```
 
-Or you can install optional dependecies, like visualization packages or packages for 
-GPU acceleration:
+Or you can install optional dependecies, like visualization packages or packages 
+for GPU acceleration:
 
 ```bash
 pip install grogupy[viz,gpu]

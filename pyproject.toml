@@ -1,3 +1,4 @@
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
@@ -9,7 +10,8 @@ authors = [
   { name="Laszlo Oroszlany", email="laszlo.oroszlany@ttk.elte.hu" },
   { name="Daniel Tibor Pozsar", email="danielpozsar@student.elte.hu" },
 ]
-description = "Python package calculating relativistic magnetic interactions for the generalised Heisenberg model."
+description = """Python package calculating relativistic magnetic interactions 
+for the generalised Heisenberg model."""
 readme = "README.md"
 kewords = [
     "density-function-theory",
