@@ -65,6 +65,24 @@ class TestCommandLineTools:
         os.remove("./src/grogupy/cli/tests/test.analysis.html")
         os.remove("./src/grogupy/cli/tests/test.pkl")
 
+    def test_convergence(self):
+        subprocess.run(["grogupy_run", "./src/grogupy/cli/tests/convergence1.py"])
+        subprocess.run(["grogupy_run", "./src/grogupy/cli/tests/convergence2.py"])
+        subprocess.run(
+            [
+                "grogupy_convergence",
+                "-t",
+                "kset",
+                "-f",
+                "'./src/grogupy/cli/tests/convergence1.pkl ./src/grogupy/cli/tests/convergence2.pkl'",
+            ]
+        )
+
+        assert os.path.isfile("./grogupy_kset_convergence.html")
+        os.remove("./grogupy_kset_convergence.html")
+        os.remove("./src/grogupy/cli/tests/convergence1.pkl")
+        os.remove("./src/grogupy/cli/tests/convergence2.pkl")
+
 
 if __name__ == "__main__":
     pass

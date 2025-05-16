@@ -31,8 +31,9 @@ Scripts
 .. autosummary::
    :toctree: _generated/
 
-    run             Takes an input file and runs a simulation from it.
-    analyze         Takes a .pkl output file and creates an .html file from it with useful plots.
+    run                     Takes an input file and runs a simulation from it.
+    analyze                 Takes a .pkl output file and creates an .html file from it with useful plots.
+    check_convergence       Load results from multiple .pkl files and do convergence analysis with them.
 
 Examples
 --------
