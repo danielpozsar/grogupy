@@ -6,7 +6,7 @@ version: 2
 
 # Set the OS, Python version and other tools you might need
 build:
-  os: macOS-15.0.1
+  os: ubuntu-lts-latest
   tools:
     python: "3.9"
 
@@ -14,15 +14,8 @@ build:
 sphinx:
   builder: html
   configuration: docs/conf.py
-  # You can configure Sphinx to use a different builder, for instance use the dirhtml builder for simpler URLs
-  # builder: "dirhtml"
   # Fail on all warnings to avoid broken references
   fail_on_warning: true
-
-# Optionally build your docs in additional formats such as PDF and ePub
-# formats:
-#   - pdf
-#   - epub
 
 # Optional but recommended, declare the Python requirements required
 # to build your documentation
