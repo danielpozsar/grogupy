@@ -17,6 +17,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 import importlib.util
 import pickle
 from os.path import join
@@ -479,6 +480,7 @@ def save_UppASD(
     folder: str,
     fast_compare: bool = False,
     magnetic_moment: str = "total",
+    comments: bool = True,
 ):
     """Writes the UppASD input files to the given folder.
 
@@ -501,6 +503,9 @@ def save_UppASD(
         'local' if we only use the part of the mulliken projections that
         are exactly on the magnetic entity, which may be just a subshell
         of the atom, by default 'total'
+    comments: bool, optional
+        Wether to add comments in the beginning of the cell.tmp.txt, by default True
+
     """
     posfile = ""
     momfile = ""
@@ -563,11 +568,18 @@ def save_UppASD(
 
     # cell as easily copy pastable string
     c = np.around(builder.hamiltonian.cell, 5)
-    string = f"{c[0,0]} {c[0,1]} {c[0,2]}\n{c[1,0]} {c[1,1]} {c[1,2]}\n{c[2,0]} {c[2,1]} {c[2,2]}"
+    string = f"{c[0,0]} {c[0,1]} {c[0,2]}\n{c[1,0]} {c[1,1]} {c[1,2]}\n{c[2,0]} {c[2,1]} {c[2,2]}\n\n\n"
 
     # writing them to the given folder
     with open(join(folder, "cell.tmp.txt"), "w") as f:
         print(string, file=f)
+
+        # if comments are requested
+        if comments:
+            print(
+                "\n".join(["# " + row for row in builder.__str__().split("\n")]), file=f
+            )
+
     with open(join(folder, "jfile"), "w") as f:
         print(jfile, file=f)
     with open(join(folder, "momfile"), "w") as f:
@@ -603,7 +615,7 @@ def save_magnopy(
     precision: Union[None, int], optional
         The precision of the magnetic parameters in the output, if None
         everything is written, by default None
-    comments: bool
+    comments: bool, optional
         Wether to add comments in the beginning of file, by default True
     """
 

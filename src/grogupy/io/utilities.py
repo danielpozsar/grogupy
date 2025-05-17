@@ -17,6 +17,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 import re
 import warnings
 from typing import Any, Union
@@ -368,6 +369,7 @@ DEFAULT_INPUT = dict(
     magnopyprecision=None,
     magnopycomments=True,
     saveuppasd=False,
+    uppasdcomments=True,
     savepickle=False,
     picklecompresslevel=3,
     outfolder=None,

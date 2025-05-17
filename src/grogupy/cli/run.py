@@ -296,6 +296,7 @@ def main():
                 folder=UppASD_folder,
                 fast_compare=True,
                 magnetic_moment=params["outmagneticmoment"],
+                comments=params["uppasdcomments"],
             )
             print("Saved UppASD")
 
