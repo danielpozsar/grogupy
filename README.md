@@ -1,6 +1,7 @@
 # grogupy: Relativistic magnetic interactions from non-orthogonal basis sets
 
 [![PyPI version](https://badge.fury.io/py/grogupy.svg)](https://badge.fury.io/py/grogupy)
+[![DOI](https://zenodo.org/badge/950552693.svg)](https://doi.org/10.5281/zenodo.15449541)
 ![Static Badge](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12%20%7C%203.13%20%7C-blue)
 ![Static Badge](https://img.shields.io/badge/License-MIT-blue)
 ![Static Badge](https://img.shields.io/badge/Code%20style-Black-black)
