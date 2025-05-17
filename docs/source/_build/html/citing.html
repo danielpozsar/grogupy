@@ -60,7 +60,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="API/index.html">grogupy API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="API/index.html">API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="environment/index.html">Environment Variables</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
@@ -97,11 +97,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="citing-grogupy">
-<span id="citing"></span><h1>Citing grogupy<a class="headerlink" href="#citing-grogupy" title="Link to this heading"></a></h1>
-<p>grogupy is a completely open-source software package. It is released under the MIT license.
-Currently there is no way to explicitly cite grogupy, but you can cite the underlying paper:
-<em>Relativistic magnetic interactions from nonorthogonal basis sets</em>.</p>
+  <a class="reference external image-reference" href="https://doi.org/10.5281/zenodo.15449541" id="citing"><img alt="https://zenodo.org/badge/950552693.svg" src="https://zenodo.org/badge/950552693.svg" />
+</a>
+<section id="citing-grogupy">
+<h1>Citing grogupy<a class="headerlink" href="#citing-grogupy" title="Link to this heading"></a></h1>
+<p>grogupy is a completely open-source software package released under the
+MIT license. You should always cite the underlying paper <em>Relativistic
+magnetic interactions from nonorthogonal basis sets</em>.</p>
+<p></p>
 <div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@article</span><span class="p">{</span><span class="nl">martinez2023relativistic</span><span class="p">,</span>
 <span class="w">    </span><span class="na">title</span><span class="p">=</span><span class="s">{Relativistic magnetic interactions from nonorthogonal basis sets}</span><span class="p">,</span>
 <span class="w">    </span><span class="na">author</span><span class="p">=</span><span class="s">{Mart{\&#39;\i}nez-Carracedo, Gabriel and Oroszl{\&#39;a}ny, L{\&#39;a}szl{\&#39;o} and Garc{\&#39;\i}a-Fuente, Amador and Ny{\&#39;a}ri, Bendeg{\&#39;u}z and Udvardi, L{\&#39;a}szl{\&#39;o} and Szunyogh, L{\&#39;a}szl{\&#39;o} and Ferrer, Jaime}</span><span class="p">,</span>
@@ -114,18 +117,29 @@ Currently there is no way to explicitly cite grogupy, but you can cite the under
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>grogupy builds on the sisl package as well, which should also be cited.</p>
-<div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@software</span><span class="p">{</span><span class="nl">zerothi_sisl</span><span class="p">,</span>
-<span class="na">author</span><span class="w">       </span><span class="p">=</span><span class="w"> </span><span class="s">{Papior, Nick}</span><span class="p">,</span>
-<span class="na">title</span><span class="w">        </span><span class="p">=</span><span class="w"> </span><span class="s">{sisl: v0.14.3.}</span><span class="p">,</span>
-<span class="na">year</span><span class="w">         </span><span class="p">=</span><span class="w"> </span><span class="s">{2024}</span><span class="p">,</span>
-<span class="na">doi</span><span class="w">          </span><span class="p">=</span><span class="w"> </span><span class="s">{10.5281/zenodo.597181}</span><span class="p">,</span>
-<span class="na">url</span><span class="w">          </span><span class="p">=</span><span class="w"> </span><span class="s">{https://doi.org/10.5281/zenodo.597181}</span>
+<p>If you want to make grogupy available for more researchers and support
+the development of grogupy you can cite it through zenodo.</p>
+<div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@software</span><span class="p">{</span><span class="nl">zerothi_grogupy</span><span class="p">,</span>
+<span class="w">    </span><span class="na">author</span><span class="p">=</span><span class="s">{Daniel, Pozsar}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">title</span><span class="p">=</span><span class="s">{grogupy: v0.0.12}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">year</span><span class="p">=</span><span class="s">{2025}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">doi</span><span class="p">=</span><span class="s">{10.5281/zenodo.15449541}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">url</span><span class="p">=</span><span class="s">{https://doi.org/10.5281/zenodo.15449541}</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>All the command line scripts and the <code class="docutils literal notranslate"><span class="pre">grogupy</span></code> package can print out the citation in <strong>bibtex</strong>
-format.</p>
+<p>grogupy builds on the sisl package as well, which should also be cited.</p>
+<div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@software</span><span class="p">{</span><span class="nl">zerothi_sisl</span><span class="p">,</span>
+<span class="w">    </span><span class="na">author</span><span class="p">=</span><span class="s">{Papior, Nick}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">title</span><span class="p">=</span><span class="s">{sisl: v0.16.0}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">year</span><span class="p">=</span><span class="s">{2024}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">doi</span><span class="p">=</span><span class="s">{10.5281/zenodo.597181}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">url</span><span class="p">=</span><span class="s">{https://doi.org/10.5281/zenodo.597181}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>All the command line scripts and the <code class="docutils literal notranslate"><span class="pre">grogupy</span></code> package can print out the
+citation in <strong>bibtex</strong> format.</p>
 <div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">grogupy</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">grogupy</span><span class="o">.</span><span class="n">cite</span><span class="p">)</span>
 <span class="go">    @article{martinez2023relativistic,</span>
@@ -139,16 +153,25 @@ format.</p>
 <span class="go">        publisher={APS}</span>
 <span class="go">    }</span>
 
+<span class="go">    @software{zerothi_grogupy,</span>
+<span class="go">        author={Daniel, Pozsar},</span>
+<span class="go">        title={grogupy: v0.0.12},</span>
+<span class="go">        year={2025},</span>
+<span class="go">        doi={10.5281/zenodo.15449541},</span>
+<span class="go">        url={https://doi.org/10.5281/zenodo.15449541}</span>
+<span class="go">    }</span>
+
 <span class="go">    @software{zerothi_sisl,</span>
-<span class="go">    author       = {Papior, Nick},</span>
-<span class="go">    title        = {sisl: v0.14.3.},</span>
-<span class="go">    year         = {2024},</span>
-<span class="go">    doi          = {10.5281/zenodo.597181},</span>
-<span class="go">    url          = {https://doi.org/10.5281/zenodo.597181}</span>
+<span class="go">        author={Papior, Nick},</span>
+<span class="go">        title={sisl: v0.16.0},</span>
+<span class="go">        year={2024},</span>
+<span class="go">        doi={10.5281/zenodo.597181},</span>
+<span class="go">        url={https://doi.org/10.5281/zenodo.597181}</span>
 <span class="go">    }</span>
 </pre></div>
 </div>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">grogupy_run --cite</span>
+
 <span class="go">@article{martinez2023relativistic,</span>
 <span class="go">    title={Relativistic magnetic interactions from nonorthogonal basis sets},</span>
 <span class="go">    author={Mart{\&#39;\i}nez-Carracedo, Gabriel and Oroszl{\&#39;a}ny, L{\&#39;a}szl{\&#39;o} and Garc{\&#39;\i}a-Fuente, Amador and Ny{\&#39;a}ri, Bendeg{\&#39;u}z and Udvardi, L{\&#39;a}szl{\&#39;o} and Szunyogh, L{\&#39;a}szl{\&#39;o} and Ferrer, Jaime},</span>
@@ -160,12 +183,20 @@ format.</p>
 <span class="go">    publisher={APS}</span>
 <span class="go">}</span>
 
+<span class="go">@software{zerothi_grogupy,</span>
+<span class="go">    author={Daniel, Pozsar},</span>
+<span class="go">    title={grogupy: v0.0.12},</span>
+<span class="go">    year={2025},</span>
+<span class="go">    doi={10.5281/zenodo.15449541},</span>
+<span class="go">    url={https://doi.org/10.5281/zenodo.15449541}</span>
+<span class="go">}</span>
+
 <span class="go">@software{zerothi_sisl,</span>
-<span class="go">author       = {Papior, Nick},</span>
-<span class="go">title        = {sisl: v0.14.3.},</span>
-<span class="go">year         = {2024},</span>
-<span class="go">doi          = {10.5281/zenodo.597181},</span>
-<span class="go">url          = {https://doi.org/10.5281/zenodo.597181}</span>
+<span class="go">    author={Papior, Nick},</span>
+<span class="go">    title={sisl: v0.16.0},</span>
+<span class="go">    year={2024},</span>
+<span class="go">    doi={10.5281/zenodo.597181},</span>
+<span class="go">    url={https://doi.org/10.5281/zenodo.597181}</span>
 <span class="go">}</span>
 </pre></div>
 </div>

@@ -17,11 +17,12 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 import os
 import sys
 
 sys.path.insert(0, os.path.abspath("../../src"))
-from grogupy import __version__
+from grogupy import __sisl__version__, __version__
 
 # Project informations
 project = "grogupy"
@@ -42,7 +43,14 @@ extensions = [
     "sphinx_copybutton",
     "sphinxcontrib.bibtex",
     "nbsphinx",
+    "sphinx_substitution_extensions",
 ]
+
+# code block substitution
+rst_prolog = f"""
+.. |release| replace:: {release}
+.. |sisl_version| replace:: {__sisl__version__}
+"""
 
 # Autosummary and autodoc
 autosummary_generate = True

@@ -1,8 +1,8 @@
 # building
 sphinx
 sphinx_rtd_theme
-rst2pdf
 sphinx-copybutton
+Sphinx-Substitution-Extensions
 
 # documentation
 numpydoc

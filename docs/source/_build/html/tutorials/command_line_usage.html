@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Command Line usage &mdash; grogupy 0.0.12</title>
+  <title>Command line usage &mdash; grogupy 0.0.12</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -25,7 +25,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="grogupy API reference" href="../API/index.html" />
+    <link rel="next" title="API reference" href="../API/index.html" />
     <link rel="prev" title="Convergence with high throughput" href="convergence_with_high_throughput.html" /> 
 </head>
 
@@ -61,13 +61,13 @@
 <li class="toctree-l2"><a class="reference internal" href="magnetic_entity.html">Setting up magnetic entities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="memory_management.html">Memory management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="convergence_with_high_throughput.html">Convergence with high throughput</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Command Line usage</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Command line usage</a></li>
 </ul>
 </li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../API/index.html">grogupy API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API/index.html">API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../environment/index.html">Environment Variables</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
@@ -95,7 +95,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="index.html">Tutorials</a></li>
-      <li class="breadcrumb-item active">Command Line usage</li>
+      <li class="breadcrumb-item active">Command line usage</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/tutorials/command_line_usage.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -106,7 +106,27 @@
            <div itemprop="articleBody">
              
   <section id="command-line-usage">
-<span id="id1"></span><h1>Command Line usage<a class="headerlink" href="#command-line-usage" title="Link to this heading"></a></h1>
+<span id="id1"></span><h1>Command line usage<a class="headerlink" href="#command-line-usage" title="Link to this heading"></a></h1>
+<p>grogupy currently have three command line tools. The first can run simulations
+based on an input file.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">grogupy_run input.py</span>
+<span class="go">grogupy_run input.fdf</span>
+</pre></div>
+</div>
+<p>Furthere information on the input file format is available <a class="reference internal" href="io_formats.html#io-formats"><span class="std std-ref">here</span></a>. The second one can create a summary and figures from the <em>.pkl</em>
+output format, which will be stored in a <em>.html</em> file. All the important
+physical information is aggregated here and you can do interactive system
+exploration with plotly figures.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">grogupy_analyze out.pkl</span>
+</pre></div>
+</div>
+<p>The third and final script can help you determine the result of convergence
+tests. It flattens the exchange and anysotropy tensors over all pairs and
+magnetic entities and compares them with different convergence parameters. The
+output is also a <em>.html</em> file which contains an interactive plotly figure.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">grogupy_convergence --type kset --files &quot;CrI3_kset_50_50_1_eset_100_Fit.pkl CrI3_kset_100_100_1_eset_100_Fit.pkl&quot;</span>
+</pre></div>
+</div>
 </section>
 
 
@@ -114,7 +134,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="convergence_with_high_throughput.html" class="btn btn-neutral float-left" title="Convergence with high throughput" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../API/index.html" class="btn btn-neutral float-right" title="grogupy API reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../API/index.html" class="btn btn-neutral float-right" title="API reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

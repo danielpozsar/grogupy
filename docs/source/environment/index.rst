@@ -6,7 +6,6 @@ affect the way running processes will behave on a computer.
 
 Setting Environment Variables
 ------------------------------
-
 1. **LD_LIBRARY_PATH**: This variable specifies the directories
    where the system should look for dynamic libraries. For example,
    to ensure that CuPy can find the necessary CUDA libraries, you

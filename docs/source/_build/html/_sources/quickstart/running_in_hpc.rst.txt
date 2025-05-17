@@ -2,18 +2,16 @@
 
 Running grogupy in HPC
 ======================
-
-This section provides instructions on how to configure
-and run grogupy on a High-Performance Computing (HPC)
-system using SLURM. Below is an example of a bash script
-for submitting a job to the SLURM scheduler.
+This section provides instructions on how to configure and run grogupy on a 
+High-Performance Computing (HPC) system using SLURM. Below is an example of a 
+bash script for submitting a job to the SLURM scheduler.
 
 Example SLURM batch script
 ---------------------------
 
-The following is an example SLURM batch script (`sbatch`)
-for running grogupy on an HPC system, in this case on
-`Komondor <https://hpc.kifu.hu/hu/komondor.html>`_:
+The following is an example SLURM batch script (`sbatch`) for running grogupy 
+on an HPC system, in this case on `Komondor 
+<https://hpc.kifu.hu/hu/komondor.html>`_:
 
 .. code-block:: bash
 
@@ -45,7 +43,7 @@ for running grogupy on an HPC system, in this case on
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/software/packages/cuda/12.3/targets/x86_64-linux/lib
     export grogupy_ARCHITECTURE=GPU
 
-    time srun grogupy ./grogupy_input.py
+    time srun grogupy_run ./grogupy_input.py
 
 Explanation of the script
 -------------------------
@@ -105,20 +103,22 @@ as we did in the jupyter notebook examples.
    # SOFTWARE.
 
 
-   ################################################################################
+   ###############################################################################
    #                                 Input files
-   ################################################################################
-   
-   # input folder and file
-   infolder = "./"
-   infile = "CrBr3.fdf"
-   
-   ################################################################################
+   ###############################################################################
+
+
+   infolder = "./benchmarks/CrI3"
+   infile = "CrI3.fdf"
+
+
+   ###############################################################################
    #                            Convergence parameters
-   ################################################################################
-   
+   ###############################################################################
+
+
    # kset should be at leas 100x100 for 2D diatomic systems
-   kset = [100, 100, 1]
+   kset = [2, 2, 1]
    # eset should be 100 for insulators and 1000 for metals
    eset = 100
    # esetp should be 600 for insulators and 10000 for metals
@@ -131,62 +131,70 @@ as we did in the jupyter notebook examples.
    emin_shift = -5
    # the top of the energy contour can be shifted to the middle of the gap for
    # insulators
-   emax_shift = 0.5
+   emax_shift = 0
 
-   ################################################################################
+
+   ###############################################################################
    #                                 Orientations
-   ################################################################################
-   
+   ###############################################################################
+
+
    # usually the DFT calculation axis is [0, 0, 1]
    scf_xcf_orientation = [0, 0, 1]
    # the reference directions for the energy derivations
    ref_xcf_orientations = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
-   
-   ################################################################################
+
+
+   ###############################################################################
    #                      Magnetic entity and pair definitions
-   ################################################################################
-   
+   ###############################################################################
+
+
    # magnetic entities and pairs can be defined automatically from the cutoff
    # radius and magnetic atoms
    setup_from_range = True
    radius = 20
    atomic_subset = "Cr"
    kwargs_for_mag_ent = dict(l=2)
-   
-   ################################################################################
+
+
+   ###############################################################################
    #                                Memory management
-   ################################################################################
-   
+   ###############################################################################
+
+
+   # maximum number of pairs per loop, reduce it to avoid memory overflow
+   max_pairs_per_loop = 10000
    # in low memory mode we discard some temporary data that could be useful for
    # interactive work
    low_memory_mode = True
-   # maximum number of pairs per loop, reduce it to avoid memory overflow in RAM
-   max_pairs_per_loop = 100
-   # sequential solver is better for large systems, parallel is faster
-   greens_function_solver = "Parallel"
-   # maximum number of greens function samples per loop, when greens_function_solver 
-   # is set to "Sequential", reduce it to avoid memory overflow on GPU for large 
-   # systems
-   max_g_per_loop = 100
-   
-   ################################################################################
-   #                                 Solution methods
-   ################################################################################
-   
    # sequential solver is better for large systems
    greens_function_solver = "Parallel"
+   # maximum number of greens function samples per loop, when 
+   # greens_function_solver is set to "Sequential", reduce it to avoid memory 
+   # overflow on GPU for large systems
+   max_g_per_loop = 20
+
+
+   ###############################################################################
+   #                                 Solution methods
+   ###############################################################################
+
+
    # the calculation of J and K from the energy derivations, either Fit or Grogupy
    exchange_solver = "Fit"
    anisotropy_solver = "Fit"
-   
-   ################################################################################
+
+
+   ###############################################################################
    #                                   Output files
-   ################################################################################
-   
+   ###############################################################################
+
+
    # either total or local, which controls if only the magnetic
    # entity's magnetic monent or the whole atom's magnetic moment is printed
    # used by all output modes
-   out_magentic_moment = "total"
+   out_magnetic_moment = "Total"
 
    # save the magnopy file
    save_magnopy = True
@@ -198,11 +206,14 @@ as we did in the jupyter notebook examples.
    # save the Uppsala Atomistic Spin Dynamics software input files
    # uses the outfolder and out_magentic_moment
    save_UppASD = True
+   # add the simulation parameters to the cell.tmp.txt file as 
+   # comments
+   uppasd_comments = True
 
    # save the pickle file
    save_pickle = True
    """
-   The compression level can be set to 0,1,2,3. Every other value defaults to 3.
+   The compression level can be set to 0,1,2. Every other value defaults to 2.
    0. This means that there is no compression at all.
 
    1. This means, that the keys "_dh" and "_ds" are set
@@ -210,15 +221,15 @@ as we did in the jupyter notebook examples.
    on the sisl version
 
    2. This contains compression 1, but sets the keys "Gii",
-      "Gij", "Gji", "Vu1" and "Vu2" to [], to save space
+   "Gij", "Gji", "Vu1" and "Vu2" to [], to save space
    """
    pickle_compress_level = 2
 
-   # output folder, for example the input folder
-   outfolder = infolder
-   # outfile name, None is an auto-generated descriptive file name based on the 
-   # input parameters
-   outfile = None
-   
-   ################################################################################
-   ################################################################################
+   # output folder, for example the current folder
+   outfolder = "./src/grogupy/cli/tests/"
+   # outfile name
+   outfile = "test"
+
+
+   ###############################################################################
+   ###############################################################################

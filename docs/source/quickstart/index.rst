@@ -5,14 +5,14 @@ Quickstart
 
 Installation
 ------------
-
 .. grid:: 1 2 2 2
     :gutter: 4
 
     .. grid-item-card:: Using pip
         :columns: 12 12 12 12
 
-        grogupy can be quickly installed via pip from `PyPI <https://pypi.org>`_.
+        grogupy can be quickly installed via pip from 
+        `PyPI <https://pypi.org>`_.
 
         ++++
 
@@ -20,8 +20,8 @@ Installation
 
             pip install grogupy
 
-        The plotting and GPU aceleration part of the package are optional, but they 
-        can also be download via pip
+        The plotting and GPU aceleration part of the package are optional, but 
+        they can also be download via pip.
 
         .. code-block:: bash
 
@@ -31,8 +31,9 @@ Installation
     .. grid-item-card:: Using source code
         :columns: 12 12 12 12
 
-        Or if you want to use the latest development version, first go to an empty
-        directory and clone the git repository. Then you can build the wheel and install with pip.
+        Or if you want to use the latest development version, first go to an 
+        empty directory and clone the git repository. Then you can build the 
+        wheel and install with pip.
 
         ++++
 

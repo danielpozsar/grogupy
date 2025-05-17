@@ -1,3 +1,5 @@
+.. _api_reference:
+
 .. automodule:: grogupy
    :noindex:
    :no-members:

@@ -43,8 +43,9 @@ Build and upload wheel
 You can find a detailed documentation on `PYPI <https://packaging.python.
 org/en/latest/tutorials/packaging-projects/>`_, but you can read here a
 short summary. First you need some API Tokens for PyPi, to be able
-to upload. You can read about this `here <https://test.pypi.org/help/#apitoken>`_. 
-I own the current project, so you have to contact me.
+to upload. You can read about this `here 
+<https://test.pypi.org/help/#apitoken>`_. I own the current project, so you 
+have to contact me.
 
 Use the following commands for a quick setup from the **grogupy_project**
 folder:

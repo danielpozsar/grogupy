@@ -17,6 +17,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 """
 API reference
 =============
@@ -32,7 +33,7 @@ API reference
    viz
 
 grogupy
-=======
+-------
 
 .. currentmodule:: grogupy
 
@@ -71,6 +72,9 @@ __all__ = []
 __version__ = "0.0.12"
 version = __version__
 
+# this is for version numbering
+from sisl import __version__ as __sisl__version__
+
 from .config import *
 
 # pre-import stuff
@@ -106,15 +110,27 @@ __bibtex__ = r"""
     publisher={APS}
 }
 
-@software{zerothi_sisl,
-author       = {Papior, Nick},
-title        = {sisl: v0.14.3.},
-year         = {2024},
-doi          = {10.5281/zenodo.597181},
-url          = {https://doi.org/10.5281/zenodo.597181}
+@software{zerothi_grogupy,
+    author={Daniel, Pozsar},
+    title={grogupy: v%s},
+    year={2025},
+    doi={10.5281/zenodo.15449541},
+    url={https://doi.org/10.5281/zenodo.15449541}
 }
 
-"""
+@software{zerothi_sisl,
+author={Papior, Nick},
+title={sisl: v%s},
+year={2024},
+doi={10.5281/zenodo.597181},
+url={https://doi.org/10.5281/zenodo.597181}
+}
+
+""" % (
+    __version__,
+    __sisl__version__,
+)
+
 
 __citation__ = __bibtex__
 cite = __bibtex__

@@ -74,7 +74,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../API/index.html">grogupy API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API/index.html">API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../environment/index.html">Environment Variables</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
@@ -114,15 +114,13 @@
              
   <section id="running-grogupy-in-hpc">
 <span id="running-in-hpc"></span><h1>Running grogupy in HPC<a class="headerlink" href="#running-grogupy-in-hpc" title="Link to this heading"></a></h1>
-<p>This section provides instructions on how to configure
-and run grogupy on a High-Performance Computing (HPC)
-system using SLURM. Below is an example of a bash script
-for submitting a job to the SLURM scheduler.</p>
+<p>This section provides instructions on how to configure and run grogupy on a
+High-Performance Computing (HPC) system using SLURM. Below is an example of a
+bash script for submitting a job to the SLURM scheduler.</p>
 <section id="example-slurm-batch-script">
 <h2>Example SLURM batch script<a class="headerlink" href="#example-slurm-batch-script" title="Link to this heading"></a></h2>
-<p>The following is an example SLURM batch script (<cite>sbatch</cite>)
-for running grogupy on an HPC system, in this case on
-<a class="reference external" href="https://hpc.kifu.hu/hu/komondor.html">Komondor</a>:</p>
+<p>The following is an example SLURM batch script (<cite>sbatch</cite>) for running grogupy
+on an HPC system, in this case on <a class="reference external" href="https://hpc.kifu.hu/hu/komondor.html">Komondor</a>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
 <span class="c1">#SBATCH --job-name=grogupy</span>
 <span class="c1">#SBATCH --nodes=1</span>
@@ -151,7 +149,7 @@ module<span class="w"> </span>load<span class="w"> </span>PrgEnv-gnu<span class=
 <span class="nb">export</span><span class="w"> </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span><span class="nv">$LD_LIBRARY_PATH</span>:/opt/software/packages/cuda/12.3/targets/x86_64-linux/lib
 <span class="nb">export</span><span class="w"> </span><span class="nv">grogupy_ARCHITECTURE</span><span class="o">=</span>GPU
 
-<span class="nb">time</span><span class="w"> </span>srun<span class="w"> </span>grogupy<span class="w"> </span>./grogupy_input.py
+<span class="nb">time</span><span class="w"> </span>srun<span class="w"> </span>grogupy_run<span class="w"> </span>./grogupy_input.py
 </pre></div>
 </div>
 </section>
@@ -207,20 +205,22 @@ as we did in the jupyter notebook examples.</p>
 <span class="c1"># SOFTWARE.</span>
 
 
-<span class="c1">################################################################################</span>
+<span class="c1">###############################################################################</span>
 <span class="c1">#                                 Input files</span>
-<span class="c1">################################################################################</span>
+<span class="c1">###############################################################################</span>
 
-<span class="c1"># input folder and file</span>
-<span class="n">infolder</span> <span class="o">=</span> <span class="s2">&quot;./&quot;</span>
-<span class="n">infile</span> <span class="o">=</span> <span class="s2">&quot;CrBr3.fdf&quot;</span>
 
-<span class="c1">################################################################################</span>
+<span class="n">infolder</span> <span class="o">=</span> <span class="s2">&quot;./benchmarks/CrI3&quot;</span>
+<span class="n">infile</span> <span class="o">=</span> <span class="s2">&quot;CrI3.fdf&quot;</span>
+
+
+<span class="c1">###############################################################################</span>
 <span class="c1">#                            Convergence parameters</span>
-<span class="c1">################################################################################</span>
+<span class="c1">###############################################################################</span>
+
 
 <span class="c1"># kset should be at leas 100x100 for 2D diatomic systems</span>
-<span class="n">kset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">kset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
 <span class="c1"># eset should be 100 for insulators and 1000 for metals</span>
 <span class="n">eset</span> <span class="o">=</span> <span class="mi">100</span>
 <span class="c1"># esetp should be 600 for insulators and 10000 for metals</span>
@@ -233,20 +233,24 @@ as we did in the jupyter notebook examples.</p>
 <span class="n">emin_shift</span> <span class="o">=</span> <span class="o">-</span><span class="mi">5</span>
 <span class="c1"># the top of the energy contour can be shifted to the middle of the gap for</span>
 <span class="c1"># insulators</span>
-<span class="n">emax_shift</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">emax_shift</span> <span class="o">=</span> <span class="mi">0</span>
 
-<span class="c1">################################################################################</span>
+
+<span class="c1">###############################################################################</span>
 <span class="c1">#                                 Orientations</span>
-<span class="c1">################################################################################</span>
+<span class="c1">###############################################################################</span>
+
 
 <span class="c1"># usually the DFT calculation axis is [0, 0, 1]</span>
 <span class="n">scf_xcf_orientation</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
 <span class="c1"># the reference directions for the energy derivations</span>
 <span class="n">ref_xcf_orientations</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span>
 
-<span class="c1">################################################################################</span>
+
+<span class="c1">###############################################################################</span>
 <span class="c1">#                      Magnetic entity and pair definitions</span>
-<span class="c1">################################################################################</span>
+<span class="c1">###############################################################################</span>
+
 
 <span class="c1"># magnetic entities and pairs can be defined automatically from the cutoff</span>
 <span class="c1"># radius and magnetic atoms</span>
@@ -255,40 +259,44 @@ as we did in the jupyter notebook examples.</p>
 <span class="n">atomic_subset</span> <span class="o">=</span> <span class="s2">&quot;Cr&quot;</span>
 <span class="n">kwargs_for_mag_ent</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">l</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
-<span class="c1">################################################################################</span>
-<span class="c1">#                                Memory management</span>
-<span class="c1">################################################################################</span>
 
+<span class="c1">###############################################################################</span>
+<span class="c1">#                                Memory management</span>
+<span class="c1">###############################################################################</span>
+
+
+<span class="c1"># maximum number of pairs per loop, reduce it to avoid memory overflow</span>
+<span class="n">max_pairs_per_loop</span> <span class="o">=</span> <span class="mi">10000</span>
 <span class="c1"># in low memory mode we discard some temporary data that could be useful for</span>
 <span class="c1"># interactive work</span>
 <span class="n">low_memory_mode</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="c1"># maximum number of pairs per loop, reduce it to avoid memory overflow in RAM</span>
-<span class="n">max_pairs_per_loop</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="c1"># sequential solver is better for large systems, parallel is faster</span>
-<span class="n">greens_function_solver</span> <span class="o">=</span> <span class="s2">&quot;Parallel&quot;</span>
-<span class="c1"># maximum number of greens function samples per loop, when greens_function_solver</span>
-<span class="c1"># is set to &quot;Sequential&quot;, reduce it to avoid memory overflow on GPU for large</span>
-<span class="c1"># systems</span>
-<span class="n">max_g_per_loop</span> <span class="o">=</span> <span class="mi">100</span>
-
-<span class="c1">################################################################################</span>
-<span class="c1">#                                 Solution methods</span>
-<span class="c1">################################################################################</span>
-
 <span class="c1"># sequential solver is better for large systems</span>
 <span class="n">greens_function_solver</span> <span class="o">=</span> <span class="s2">&quot;Parallel&quot;</span>
+<span class="c1"># maximum number of greens function samples per loop, when</span>
+<span class="c1"># greens_function_solver is set to &quot;Sequential&quot;, reduce it to avoid memory</span>
+<span class="c1"># overflow on GPU for large systems</span>
+<span class="n">max_g_per_loop</span> <span class="o">=</span> <span class="mi">20</span>
+
+
+<span class="c1">###############################################################################</span>
+<span class="c1">#                                 Solution methods</span>
+<span class="c1">###############################################################################</span>
+
+
 <span class="c1"># the calculation of J and K from the energy derivations, either Fit or Grogupy</span>
 <span class="n">exchange_solver</span> <span class="o">=</span> <span class="s2">&quot;Fit&quot;</span>
 <span class="n">anisotropy_solver</span> <span class="o">=</span> <span class="s2">&quot;Fit&quot;</span>
 
-<span class="c1">################################################################################</span>
+
+<span class="c1">###############################################################################</span>
 <span class="c1">#                                   Output files</span>
-<span class="c1">################################################################################</span>
+<span class="c1">###############################################################################</span>
+
 
 <span class="c1"># either total or local, which controls if only the magnetic</span>
 <span class="c1"># entity&#39;s magnetic monent or the whole atom&#39;s magnetic moment is printed</span>
 <span class="c1"># used by all output modes</span>
-<span class="n">out_magentic_moment</span> <span class="o">=</span> <span class="s2">&quot;total&quot;</span>
+<span class="n">out_magnetic_moment</span> <span class="o">=</span> <span class="s2">&quot;Total&quot;</span>
 
 <span class="c1"># save the magnopy file</span>
 <span class="n">save_magnopy</span> <span class="o">=</span> <span class="kc">True</span>
@@ -300,11 +308,14 @@ as we did in the jupyter notebook examples.</p>
 <span class="c1"># save the Uppsala Atomistic Spin Dynamics software input files</span>
 <span class="c1"># uses the outfolder and out_magentic_moment</span>
 <span class="n">save_UppASD</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="c1"># add the simulation parameters to the cell.tmp.txt file as</span>
+<span class="c1"># comments</span>
+<span class="n">uppasd_comments</span> <span class="o">=</span> <span class="kc">True</span>
 
 <span class="c1"># save the pickle file</span>
 <span class="n">save_pickle</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">The compression level can be set to 0,1,2,3. Every other value defaults to 3.</span>
+<span class="sd">The compression level can be set to 0,1,2. Every other value defaults to 2.</span>
 <span class="sd">0. This means that there is no compression at all.</span>
 
 <span class="sd">1. This means, that the keys &quot;_dh&quot; and &quot;_ds&quot; are set</span>
@@ -312,18 +323,18 @@ as we did in the jupyter notebook examples.</p>
 <span class="sd">on the sisl version</span>
 
 <span class="sd">2. This contains compression 1, but sets the keys &quot;Gii&quot;,</span>
-<span class="sd">   &quot;Gij&quot;, &quot;Gji&quot;, &quot;Vu1&quot; and &quot;Vu2&quot; to [], to save space</span>
+<span class="sd">&quot;Gij&quot;, &quot;Gji&quot;, &quot;Vu1&quot; and &quot;Vu2&quot; to [], to save space</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="n">pickle_compress_level</span> <span class="o">=</span> <span class="mi">2</span>
 
-<span class="c1"># output folder, for example the input folder</span>
-<span class="n">outfolder</span> <span class="o">=</span> <span class="n">infolder</span>
-<span class="c1"># outfile name, None is an auto-generated descriptive file name based on the</span>
-<span class="c1"># input parameters</span>
-<span class="n">outfile</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="c1"># output folder, for example the current folder</span>
+<span class="n">outfolder</span> <span class="o">=</span> <span class="s2">&quot;./src/grogupy/cli/tests/&quot;</span>
+<span class="c1"># outfile name</span>
+<span class="n">outfile</span> <span class="o">=</span> <span class="s2">&quot;test&quot;</span>
 
-<span class="c1">################################################################################</span>
-<span class="c1">################################################################################</span>
+
+<span class="c1">###############################################################################</span>
+<span class="c1">###############################################################################</span>
 </pre></div>
 </div>
 </section>
