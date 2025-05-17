@@ -1,11 +1,9 @@
-
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
 name = "grogupy"
-version = "0.0.12"
 authors = [
   { name="Laszlo Oroszlany", email="laszlo.oroszlany@ttk.elte.hu" },
   { name="Daniel Tibor Pozsar", email="danielpozsar@student.elte.hu" },
@@ -78,6 +76,10 @@ testpaths = [
   "./src/grogupy/",
   "./tests/",
 ]
+
+[tool.hatch.version]
+path = "src/grogupy/__init__.py"
+
 addopts = [
     "--import-mode=importlib",
     "--cov",
