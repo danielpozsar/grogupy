@@ -94,6 +94,8 @@ format. See and compare the following examples.
             # the calculation of J and K from the energy derivations, either Fit or Grogupy
             exchange_solver = "Fit"
             anisotropy_solver = "Fit"
+            # parallelization should be turned on for efficiency
+            parallel_mode = "K"
 
 
             ###############################################################################
@@ -230,6 +232,8 @@ format. See and compare the following examples.
             # the calculation of J and K from the energy derivations, either Fit or Grogupy
             ExchangeSolver          Fit
             AnisotropySolver        Fit
+            # parallelization should be turned on for efficiency
+            ParallelMode = "K"
 
 
             ###############################################################################
@@ -398,7 +402,6 @@ lowmemorymode, *by default True*
     Discards some temporary data that can be useful in interactive mode or for 
     some post processing. Reduces RAM usage so it is useful for memory bound 
     systems.
-
             
 greensfunctionsolver, *by default Parallel*
     It can be parallel or sequential and determines the parallelization over 
@@ -420,6 +423,9 @@ anisotropysolver, *by default Fit*
     directions. Fit can be used for any number of reference directions, which 
     can follow the symmetry of the system.
 
+parallelmode, *by default None*
+    Parallelization can be turned on over the Brillouin-zone sampling by 
+    setting parallelmode to "K". It should be turned on for efficiency.
 
 outmagneticmoment, *by default total*
     It can be total or local and determines wether to use the total magnetic 

@@ -364,6 +364,7 @@ DEFAULT_INPUT = dict(
     greensfunctionsolver="Parallel",
     exchangesolver="Fit",
     anisotropysolver="Fit",
+    parallelmode=None,
     outmagneticmoment="total",
     savemagnopy=False,
     magnopyprecision=None,

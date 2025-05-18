@@ -113,11 +113,13 @@ def main():
     )
 
     # Add solvers and parallellizations
+    simulation.low_memory_mode = params["lowmemorymode"]
     simulation.greens_function_solver = params["greensfunctionsolver"]
     simulation.max_g_per_loop = params["maxgperloop"]
     simulation.exchange_solver = params["exchangesolver"]
     simulation.anisotropy_solver = params["anisotropysolver"]
-    simulation.low_memory_mode = params["lowmemorymode"]
+    simulation.parallel_mode = params["parallelmode"]
+
     # Define Kspace
     kspace = Kspace(
         kset=params["kset"],
