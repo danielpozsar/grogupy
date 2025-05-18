@@ -25,7 +25,7 @@ import sisl
 import grogupy
 from grogupy._core.utilities import arrays_lists_equal
 from grogupy.io.utilities import decipher
-from grogupy.physics import MagneticEntity
+from grogupy.physics import MagneticEntity, MagneticEntityList
 
 pytestmark = [pytest.mark.physics, pytest.mark.need_benchmark_data]
 
@@ -656,6 +656,33 @@ class TestMagneticEntity:
         m2 = object.__new__(MagneticEntity)
         m2.__setstate__(state)
         assert m == m2
+
+
+class TestMagneticEntityList:
+    def test_properties(self):
+        system = grogupy.load("./benchmarks/test_builder.pkl")
+        mlist = MagneticEntityList(system.magnetic_entities)
+
+        assert len(system.magnetic_entities) == mlist.len
+        for m1, m2 in zip(system.magnetic_entities, mlist):
+            assert m1 == m2
+
+    def test_getitem(self):
+        system = grogupy.load("./benchmarks/test_builder.pkl")
+        mlist = MagneticEntityList(system.magnetic_entities)
+
+        assert system.magnetic_entities[0] == mlist[0]
+        assert system.magnetic_entities[1] == mlist[1]
+
+    def test_getattr(self):
+        system = grogupy.load("./benchmarks/test_builder.pkl")
+        mlist = MagneticEntityList(system.magnetic_entities)
+
+        ani = []
+        for m in system.magnetic_entities:
+            ani.append(m.K)
+
+        assert mlist.K == np.array(ani)
 
 
 if __name__ == "__main__":

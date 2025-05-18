@@ -688,5 +688,47 @@ class MagneticEntity:
         return copy.deepcopy(self)
 
 
+class MagneticEntityList:
+    """List of MagneticEntities.
+
+    It supports easier attribute access across the MagneticEntities in
+    the list.
+    """
+
+    def __init__(self, magnetic_entities: list[MagneticEntity]):
+        self.__magnetic_entities = magnetic_entities
+
+    @property
+    def magnetic_entities(self) -> list[MagneticEntity]:
+        """The magnetic entity list that contains the data."""
+        return self.__magnetic_entities
+
+    @property
+    def len(self) -> int:
+        """The number of magnetic entities in the list."""
+        return len(self.__magnetic_entities)
+
+    def __getattr__(self, name) -> NDArray:
+        try:
+            return np.array(
+                [m.__getattribute__(name) for m in self.__magnetic_entities]
+            )
+        except:
+            return np.array(
+                [m.__getattribute__(name) for m in self.__magnetic_entities],
+                dtype=object,
+            )
+
+    def __getitem__(self, item: int) -> MagneticEntity:
+        return self.__magnetic_entities[item]
+
+    def __repr__(self) -> str:
+        """String representation of the instance."""
+
+        out = f"<grogupy.MagneticEntityList length={self.len}>"
+
+        return out
+
+
 if __name__ == "__main__":
     pass

@@ -565,5 +565,51 @@ class Pair:
         return copy.deepcopy(self)
 
 
+class PairList:
+    """List of Pairs.
+
+    It supports easier attribute access across the Pairs in
+    the list.
+    """
+
+    def __init__(self, pairs: list[Pair]):
+        self.__pairs = pairs
+
+    @property
+    def pairs(self) -> list[Pair]:
+        """The pair list that contains the data."""
+        return self.__pairs
+
+    @property
+    def len(self) -> int:
+        """The number of pairs in the list."""
+        return len(self.__pairs)
+
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__ = state
+
+    def __getattr__(self, name) -> NDArray:
+        try:
+            return np.array([p.__getattribute__(name) for p in self.__pairs])
+        except:
+            return np.array(
+                [p.__getattribute__(name) for p in self.__pairs], dtype=object
+            )
+
+    def __getitem__(self, item: int) -> Pair:
+        return self.__pairs[item]
+
+    def __repr__(self) -> str:
+        """String representation of the instance."""
+
+        out = f"<grogupy.PairList length={self.len}>"
+
+        return out
+
+
 if __name__ == "__main__":
     pass

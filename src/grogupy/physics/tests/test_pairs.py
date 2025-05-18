@@ -23,6 +23,7 @@ import pytest
 import sisl
 
 import grogupy
+from grogupy.physics import Pair, PairList
 
 pytestmark = [pytest.mark.physics, pytest.mark.need_benchmark_data]
 
@@ -33,7 +34,7 @@ class TestPair:
         m1 = grogupy.MagneticEntity(fdf, 1, 2)
         m2 = grogupy.MagneticEntity(fdf, 2, 0)
 
-        p = grogupy.Pair(m1, m2, [1, 2, 3])
+        p = Pair(m1, m2, [1, 2, 3])
 
         assert isinstance(p._dh, sisl.physics.Hamiltonian)
 
@@ -213,8 +214,8 @@ class TestPair:
             l,
             orb,
         )
-        p1 = grogupy.Pair(m1, m2)
-        p2 = grogupy.Pair(m2, m1, shift)
+        p1 = Pair(m1, m2)
+        p2 = Pair(m2, m1, shift)
 
         p1c = p1.copy()
         assert p1 == p1c
@@ -232,9 +233,36 @@ class TestPair:
         state = p.__getstate__()
         assert isinstance(state, dict)
 
-        p2 = object.__new__(grogupy.Pair)
+        p2 = object.__new__(Pair)
         p2.__setstate__(state)
         assert p == p2
+
+
+class TestPairList:
+    def test_properties(self):
+        system = grogupy.load("./benchmarks/test_builder.pkl")
+        plist = PairList(system.pairs)
+
+        assert len(system.pairs) == plist.len
+        for p1, p2 in zip(system.pairs, plist):
+            assert p1 == p2
+
+    def test_getitem(self):
+        system = grogupy.load("./benchmarks/test_builder.pkl")
+        plist = PairList(system.pairs)
+
+        assert system.pairs[0] == plist[0]
+        assert system.pairs[1] == plist[1]
+
+    def test_getattr(self):
+        system = grogupy.load("./benchmarks/test_builder.pkl")
+        plist = PairList(system.pairs)
+
+        iso = []
+        for m in system.pairs:
+            iso.append(m.J_iso)
+
+        assert (plist.J_iso == np.array(iso)).all()
 
 
 if __name__ == "__main__":

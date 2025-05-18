@@ -17,6 +17,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 """
 Physics
 =======
@@ -33,12 +34,14 @@ Physical classes
 .. autosummary::
    :toctree: _generated/
 
-   Builder           The main class that holds together the whole simulation.
-   Contour           Energy contour integral.
-   Hamiltonian       The Hamiltonian describing the DFT part and useful methods.
-   Kspace            Brillouin zone integral.
-   MagneticEntity   Magnetic entity containing useful methods and information.
-   Pair              Pair built from two magnetic entities and a supercell shift.
+   Builder                 The main class that holds together the whole simulation.
+   Contour                 Energy contour integral.
+   Hamiltonian             The Hamiltonian describing the DFT part and useful methods.
+   Kspace                  Brillouin zone integral.
+   MagneticEntity          Magnetic entity containing useful methods and information.
+   Pair                    Pair built from two magnetic entities and a supercell shift.
+   PairList                List of Pairs.
+   MagneticEntityList      List of MagneticEntities.
 
 Utilities
 ---------
