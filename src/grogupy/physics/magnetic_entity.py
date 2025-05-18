@@ -696,9 +696,14 @@ class MagneticEntityList:
     """
 
     def __init__(self, magnetic_entities: list[MagneticEntity] = None):
-        self.__magnetic_entities = (
-            [] if magnetic_entities is None else magnetic_entities
-        )
+        if magnetic_entities is None:
+            self.__magnetic_entities = []
+        elif isinstance(magnetic_entities, MagneticEntityList):
+            self.__magnetic_entities = magnetic_entities.__magnetic_entities
+        elif isinstance(magnetic_entities, list):
+            self.__magnetic_entities = magnetic_entities
+        else:
+            raise Exception(f"Bad input type: {type(pairs)}!")
 
     def __len__(self):
         return len(self.__magnetic_entities)

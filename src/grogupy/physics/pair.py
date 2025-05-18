@@ -573,7 +573,14 @@ class PairList:
     """
 
     def __init__(self, pairs: list[Pair] = None):
-        self.__pairs = [] if pairs is None else pairs
+        if pairs is None:
+            self.__pairs = []
+        elif isinstance(pairs, PairList):
+            self.__pairs = pairs.__pairs
+        elif isinstance(pairs, list):
+            self.__pairs = pairs
+        else:
+            raise Exception(f"Bad input type: {type(pairs)}!")
 
     def __len__(self):
         return len(self.__pairs)
