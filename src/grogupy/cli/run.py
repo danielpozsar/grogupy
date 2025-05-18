@@ -38,7 +38,14 @@ from grogupy.io import (
     save_UppASD,
     standardize_input,
 )
-from grogupy.physics import Builder, Contour, Hamiltonian, Kspace
+from grogupy.physics import (
+    Builder,
+    Contour,
+    Hamiltonian,
+    Kspace,
+    MagneticEntityList,
+    PairList,
+)
 
 # Only print on MPI root node
 PRINTING = True
@@ -230,7 +237,7 @@ def main():
 
         # run chunks
         for i, chunk in enumerate(pair_chunks):
-            simulation.pairs = chunk
+            simulation.pairs = PairList(chunk)
             simulation.solve(print_memory=True)
             if PRINTING:
                 save(
@@ -243,7 +250,7 @@ def main():
             new_pairs = []
             for i in range(len(pair_chunks)):
                 new_pairs += load(outfile + "_temp_" + str(i) + ".pkl").pairs
-            simulation.pairs = new_pairs
+            simulation.pairs = PairList(new_pairs)
             # remove hamiltonian from magnetic entities so the comparison does not fail
             if params["picklecompresslevel"] != 0:
                 for mag_ent in simulation.magnetic_entities:
