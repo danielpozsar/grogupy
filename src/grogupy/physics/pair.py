@@ -28,8 +28,9 @@ from numpy.typing import NDArray
 
 from grogupy import __version__
 from grogupy._core.utilities import arrays_lists_equal, arrays_None_equal
-from grogupy.physics.magnetic_entity import MagneticEntity
-from grogupy.physics.utilities import (
+
+from .magnetic_entity import MagneticEntity
+from .utilities import (
     calculate_exchange_tensor,
     fit_exchange_tensor,
     interaction_energy,

@@ -28,8 +28,16 @@ import numpy as np
 
 from grogupy import __citation__, __definitely_not_grogu__
 from grogupy.config import CONFIG
-from grogupy.io.io import load, read_fdf, read_py, save, save_magnopy, save_UppASD
-from grogupy.io.utilities import DEFAULT_INPUT, standardize_input
+from grogupy.io.io import (
+    DEFAULT_INPUT,
+    load,
+    read_fdf,
+    read_py,
+    save,
+    save_magnopy,
+    save_UppASD,
+    standardize_input,
+)
 from grogupy.physics import Builder, Contour, Hamiltonian, Kspace
 
 # Only print on MPI root node

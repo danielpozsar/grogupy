@@ -26,8 +26,9 @@ from typing import Union
 import numpy as np
 
 from grogupy.batch.timing import DefaultTimer
-from grogupy.io.utilities import strip_dict_structure
 from grogupy.physics import Builder, Contour, Hamiltonian, Kspace, MagneticEntity, Pair
+
+from .utilities import strip_dict_structure
 
 
 def load_DefaultTimer(infile: Union[str, dict]) -> DefaultTimer:

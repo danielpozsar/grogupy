@@ -33,7 +33,12 @@ from grogupy._core.utilities import RotMa2b, setup_from_range
 from grogupy._tqdm import _tqdm
 from grogupy.batch.timing import DefaultTimer
 from grogupy.config import CONFIG
-from grogupy.physics import Contour, Hamiltonian, Kspace, MagneticEntity, Pair
+
+from .contour import Contour
+from .hamiltonian import Hamiltonian
+from .kspace import Kspace
+from .magnetic_entity import MagneticEntity
+from .pair import Pair
 
 try:
     import pytest

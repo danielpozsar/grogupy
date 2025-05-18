@@ -24,14 +24,15 @@ from typing import TYPE_CHECKING, Union
 from numpy.typing import NDArray
 
 if TYPE_CHECKING:
-    from grogupy.physics.hamiltonian import Hamiltonian
+    from grogupy.physics import Hamiltonian
 
 import numpy as np
 import sisl
 
 from grogupy import __version__
 from grogupy._core.utilities import arrays_lists_equal, arrays_None_equal
-from grogupy.physics.utilities import (
+
+from .utilities import (
     blow_up_orbindx,
     calculate_anisotropy_tensor,
     fit_anisotropy_tensor,

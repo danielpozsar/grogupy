@@ -25,9 +25,10 @@ import sisl
 from numpy.typing import NDArray
 from scipy.special import roots_legendre
 
-from grogupy._core.constants import TAU_X, TAU_Y, TAU_Z
 from grogupy._tqdm import _tqdm
 from grogupy.config import CONFIG
+
+from .constants import TAU_X, TAU_Y, TAU_Z
 
 if CONFIG.is_GPU:
     import cupy as cp

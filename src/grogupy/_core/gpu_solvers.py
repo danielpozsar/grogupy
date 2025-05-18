@@ -30,10 +30,11 @@ from concurrent.futures import ThreadPoolExecutor
 
 import numpy as np
 
-from grogupy._core.utilities import calc_Vu, onsite_projection, tau_u
 from grogupy._tqdm import _tqdm
 from grogupy.config import CONFIG
 from grogupy.physics.utilities import interaction_energy, second_order_energy
+
+from .utilities import calc_Vu, onsite_projection, tau_u
 
 if CONFIG.is_GPU:
     # initialize parallel GPU stuff

@@ -17,6 +17,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 """
 Visualization
 =============
@@ -57,8 +58,9 @@ For examples, see the *Visualize the exchange* in  :ref:`tutorials <quickstart-g
 
 """
 
-from ..config import CONFIG
-from ..physics import Builder, Contour, Kspace
+from grogupy.config import CONFIG
+from grogupy.physics import Builder, Contour, Kspace
+
 from .plotters import *
 
 CONFIG._Config__viz_loaded = True

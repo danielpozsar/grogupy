@@ -29,16 +29,11 @@ import sys
 
 import numpy as np
 
-from grogupy._core.utilities import (
-    calc_Vu,
-    onsite_projection,
-    parallel_Gk,
-    sequential_Gk,
-    tau_u,
-)
 from grogupy._tqdm import _tqdm
 from grogupy.config import CONFIG
 from grogupy.physics.utilities import interaction_energy, second_order_energy
+
+from .utilities import calc_Vu, onsite_projection, parallel_Gk, sequential_Gk, tau_u
 
 
 def default_solver(builder: "Builder", print_memory: bool = False) -> None:

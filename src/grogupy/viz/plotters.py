@@ -17,16 +17,17 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 from typing import TYPE_CHECKING, Union
 
-from ..io import load_Builder
-from ..physics import Builder
+from grogupy.io import load_Builder
+from grogupy.physics import Builder
 
 if TYPE_CHECKING:
-    from ..physics.contour import Contour
-    from ..physics.kspace import Kspace
-    from ..physics.magnetic_entity import MagneticEntity
-    from ..physics.pair import Pair
+    from grogupy.physics.contour import Contour
+    from grogupy.physics.kspace import Kspace
+    from grogupy.physics.magnetic_entity import MagneticEntity
+    from grogupy.physics.pair import Pair
 
 import numpy as np
 import plotly.graph_objs as go
