@@ -28,7 +28,7 @@ import numpy as np
 
 from grogupy import __citation__, __definitely_not_grogu__
 from grogupy.config import CONFIG
-from grogupy.io.io import (
+from grogupy.io import (
     DEFAULT_INPUT,
     load,
     read_fdf,

@@ -17,6 +17,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 """
 Command line interface for grogupy
 ==================================
@@ -43,4 +44,5 @@ For examples, see the `running in HPC <running_in_hpc>`_ section in the document
 """
 
 from .analyze import *
+from .check_convergence import *
 from .run import *

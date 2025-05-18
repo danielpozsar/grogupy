@@ -21,8 +21,8 @@
 import argparse
 
 from grogupy import __citation__, __definitely_not_grogu__
-from grogupy.io.io import load
-from grogupy.viz.plotters import (
+from grogupy.io import load
+from grogupy.viz import (
     plot_contour,
     plot_DM_distance,
     plot_DMI,

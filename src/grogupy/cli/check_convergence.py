@@ -21,7 +21,7 @@
 import argparse
 
 from grogupy import __citation__, __definitely_not_grogu__
-from grogupy.viz.plotters import plot_1D_convergence
+from grogupy.viz import plot_1D_convergence
 
 
 def main():
