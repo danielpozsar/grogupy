@@ -20,21 +20,23 @@
 
 from typing import TYPE_CHECKING, Union
 
-from grogupy.io import load_Builder
-from grogupy.physics import Builder
-
-if TYPE_CHECKING:
-    from grogupy.physics.contour import Contour
-    from grogupy.physics.kspace import Kspace
-    from grogupy.physics.magnetic_entity import MagneticEntity
-    from grogupy.physics.pair import Pair
-
 import numpy as np
 import plotly.graph_objs as go
 import sisl
 
+from grogupy.io import load_Builder
+from grogupy.physics import (
+    Builder,
+    Contour,
+    Kspace,
+    MagneticEntity,
+    MagneticEntityList,
+    Pair,
+    PairList,
+)
 
-def plot_contour(contour: "Contour") -> go.Figure:
+
+def plot_contour(contour: Contour) -> go.Figure:
     """Creates a plot from the contour sample points.
 
     If there are too many eigenvalues, then they are subsamled
@@ -130,7 +132,7 @@ def plot_contour(contour: "Contour") -> go.Figure:
     return fig
 
 
-def plot_kspace(kspace: "Kspace") -> go.Figure:
+def plot_kspace(kspace: Kspace) -> go.Figure:
     """Creates a plot from the Brillouin zone sample points.
 
     Parameters
@@ -183,13 +185,13 @@ def plot_kspace(kspace: "Kspace") -> go.Figure:
 
 
 def plot_magnetic_entities(
-    magnetic_entities: Union[Builder, list["MagneticEntity"]]
+    magnetic_entities: Union[Builder, list[MagneticEntity], MagneticEntityList]
 ) -> go.Figure:
     """Creates a plot from a list of magnetic entities.
 
     Parameters
     ----------
-    magnetic_entities : Union[Builder, list[MagneticEntity]]
+    magnetic_entities : Union[Builder, list[MagneticEntity], MagneticEntityList]
         The magnetic entities that contain the tags and coordinates
 
     Returns
@@ -201,7 +203,10 @@ def plot_magnetic_entities(
     # conversion line for the case when it is set as the plot function of a builder
     if isinstance(magnetic_entities, Builder):
         magnetic_entities = magnetic_entities.magnetic_entities
-    elif not isinstance(magnetic_entities, list):
+    elif not (
+        isinstance(magnetic_entities, list)
+        or isinstance(magnetic_entities, MagneticEntityList)
+    ):
         magnetic_entities = [magnetic_entities]
 
     tags = [m.tag for m in magnetic_entities]
@@ -241,13 +246,15 @@ def plot_magnetic_entities(
 
 
 def plot_pairs(
-    pairs: Union[Builder, list["Pair"]], connect: bool = False, cell: bool = True
+    pairs: Union[Builder, list[Pair], PairList],
+    connect: bool = False,
+    cell: bool = True,
 ) -> go.Figure:
     """Creates a plot from a list of pairs.
 
     Parameters
     ----------
-    pairs : Union[Builder, list[Pair]]
+    pairs : Union[Builder, list[Pair], PairList]
         The pairs that contain the tags and coordinates
     connect : bool, optional
         Wether to connect the pairs or not, by default False
@@ -263,7 +270,7 @@ def plot_pairs(
     # conversion line for the case when it is set as the plot function of a builder
     if isinstance(pairs, Builder):
         pairs = pairs.pairs
-    elif not isinstance(pairs, list):
+    elif not (isinstance(pairs, list) or isinstance(pairs, PairList)):
         pairs = [pairs]
 
     # the centers can contain many atoms
@@ -398,7 +405,9 @@ def plot_pairs(
     return fig
 
 
-def plot_DMI(pairs: Union[Builder, list["Pair"]], rescale: float = 1) -> go.Figure:
+def plot_DMI(
+    pairs: Union[Builder, list[Pair], PairList], rescale: float = 1
+) -> go.Figure:
     """Creates a plot of the DM vectors from a list of pairs.
 
     It can only use pairs from a finished simulation. The magnitude of
@@ -406,7 +415,7 @@ def plot_DMI(pairs: Union[Builder, list["Pair"]], rescale: float = 1) -> go.Figu
 
     Parameters
     ----------
-    pairs : Union[Builder, list[Pair]]
+    pairs : Union[Builder, list[Pair], PairList]
         The pairs that contain the tags, coordinates and the DM vectors
     rescale : float, optional
         The length of the vectors are rescaled by this, by default 1
@@ -420,7 +429,7 @@ def plot_DMI(pairs: Union[Builder, list["Pair"]], rescale: float = 1) -> go.Figu
     # conversion line for the case when it is set as the plot function of a builder
     if isinstance(pairs, Builder):
         pairs = pairs.pairs
-    elif not isinstance(pairs, list):
+    elif not (isinstance(pairs, list) or isinstance(pairs, PairList)):
         pairs = [pairs]
 
     # Define some example vectors
@@ -503,12 +512,12 @@ def plot_DMI(pairs: Union[Builder, list["Pair"]], rescale: float = 1) -> go.Figu
     return fig
 
 
-def plot_Jiso_distance(pairs: Union[Builder, list["Pair"]]) -> go.Figure:
+def plot_Jiso_distance(pairs: Union[Builder, list[Pair], PairList]) -> go.Figure:
     """Plots the isotropic exchange as a function of distance.
 
     Parameters
     ----------
-    pairs : Union[Builder, list[Pair]]
+    pairs : Union[Builder, list[Pair], PairList]
         The pairs that contain the exchange and positions
 
     Returns
@@ -520,6 +529,8 @@ def plot_Jiso_distance(pairs: Union[Builder, list["Pair"]]) -> go.Figure:
     # conversion line for the case when it is set as the plot function of a builder
     if isinstance(pairs, Builder):
         pairs = pairs.pairs
+    elif not (isinstance(pairs, list) or isinstance(pairs, PairList)):
+        pairs = [pairs]
 
     # Create figure
     fig = go.Figure(
@@ -551,12 +562,12 @@ def plot_Jiso_distance(pairs: Union[Builder, list["Pair"]]) -> go.Figure:
     return fig
 
 
-def plot_DM_distance(pairs: Union[Builder, list["Pair"]]) -> go.Figure:
+def plot_DM_distance(pairs: Union[Builder, list[Pair], PairList]) -> go.Figure:
     """Plots the magnitude of DM vectors as a function of distance.
 
     Parameters
     ----------
-    pairs : Union[Builder, list[Pair]]
+    pairs : Union[Builder, list[Pair], PairList]
         The pairs that contain the DM vectors and positions
 
     Returns
@@ -568,6 +579,8 @@ def plot_DM_distance(pairs: Union[Builder, list["Pair"]]) -> go.Figure:
     # conversion line for the case when it is set as the plot function of a builder
     if isinstance(pairs, Builder):
         pairs = pairs.pairs
+    elif not (isinstance(pairs, list) or isinstance(pairs, PairList)):
+        pairs = [pairs]
 
     # Create figure
     fig = go.Figure(
