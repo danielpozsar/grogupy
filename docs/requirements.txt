@@ -16,3 +16,7 @@ sphinxcontrib-bibtex
 # including jupyter notebooks
 nbsphinx
 pandoc
+
+# for doctest
+ipython
+plotly
