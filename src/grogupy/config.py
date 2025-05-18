@@ -18,6 +18,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import warnings
 from os import environ
 
 
@@ -71,6 +72,10 @@ class Config:
                 self.__MPI_loaded = True
                 self.__parallel_size = MPI.COMM_WORLD.Get_size()
             except:
+                warnings.warn(
+                    """MPI could not be loaded in CPU architecture! 
+                              Parallelization will not be possible!"""
+                )
                 self.__parallel_size = 1
 
         elif self.__architecture == "GPU":
