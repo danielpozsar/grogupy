@@ -264,6 +264,14 @@ class TestPairList:
 
         assert (plist.J_iso == np.array(iso)).all()
 
+    def test_append(self):
+        system = grogupy.load("./benchmarks/test_builder.pkl")
+        plist = PairList()
+
+        for p in system.pairs:
+            plist.append(p)
+        assert plist.len == len(system.pairs)
+
 
 if __name__ == "__main__":
     pass

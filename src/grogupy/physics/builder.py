@@ -37,8 +37,8 @@ from grogupy.config import CONFIG
 from .contour import Contour
 from .hamiltonian import Hamiltonian
 from .kspace import Kspace
-from .magnetic_entity import MagneticEntity
-from .pair import Pair
+from .magnetic_entity import MagneticEntity, MagneticEntityList
+from .pair import Pair, PairList
 
 try:
     import pytest
@@ -115,9 +115,9 @@ class Builder:
         The energy part of the integral
     hamiltonian: Union[None, Hamiltonian]
         The Hamiltonian of the previous article
-    magnetic_entities: list[MagneticEntity]
+    magnetic_entities: MagneticEntityList
         List of magnetic entities
-    pairs: list[Pair]
+    pairs: PairList
         List of pairs
     greens_function_solver: {"Sequential", "Parallel"}
         The solution method for the Hamiltonian inversion, by default "Sequential"
@@ -165,9 +165,9 @@ class Builder:
         self.hamiltonian: Union[None, Hamiltonian] = None
 
         #: The list of magnetic entities
-        self.magnetic_entities: list[MagneticEntity] = []
+        self.magnetic_entities: MagneticEntityList = MagneticEntityList()
         #: The list of pairs
-        self.pairs: list[Pair] = []
+        self.pairs: PairList = PairList()
 
         # fix the architecture
         self.__low_memory_mode = True
@@ -251,21 +251,13 @@ class Builder:
         state["contour"] = state["contour"].__getstate__()
         state["kspace"] = state["kspace"].__getstate__()
         state["hamiltonian"] = state["hamiltonian"].__getstate__()
+        state["magnetic_entities"] = state["magnetic_entities"].__getstate__()
+        state["pairs"] = state["pairs"].__getstate__()
 
         out = []
         for h in state["_rotated_hamiltonians"]:
             out.append(h.__getstate__())
         state["_rotated_hamiltonians"] = out
-
-        out = []
-        for m in state["magnetic_entities"]:
-            out.append(m.__getstate__())
-        state["magnetic_entities"] = out
-
-        out = []
-        for p in state["pairs"]:
-            out.append(p.__getstate__())
-        state["pairs"] = out
 
         return state
 
@@ -286,26 +278,20 @@ class Builder:
         hamiltonian.__setstate__(state["hamiltonian"])
         state["hamiltonian"] = hamiltonian
 
+        magnetic_entities = object.__new__(MagneticEntityList)
+        magnetic_entities.__setstate__(state["magnetic_entities"])
+        state["magnetic_entities"] = magnetic_entities
+
+        pairs = object.__new__(PairList)
+        pairs.__setstate__(state["pairs"])
+        state["pairs"] = pairs
+
         out = []
         for h in state["_rotated_hamiltonians"]:
             temp = object.__new__(Hamiltonian)
             temp.__setstate__(h)
             out.append(temp)
         state["_rotated_hamiltonians"] = out
-
-        out = []
-        for m in state["magnetic_entities"]:
-            temp = object.__new__(MagneticEntity)
-            temp.__setstate__(m)
-            out.append(temp)
-        state["magnetic_entities"] = out
-
-        out = []
-        for p in state["pairs"]:
-            temp = object.__new__(Pair)
-            temp.__setstate__(p)
-            out.append(temp)
-        state["pairs"] = out
 
         self.__dict__ = state
 
@@ -809,7 +795,7 @@ class Builder:
 
     def create_magnetic_entities(
         self, magnetic_entities: Union[dict, list[dict]]
-    ) -> list[MagneticEntity]:
+    ) -> MagneticEntityList:
         """Creates a list of MagneticEntity from a list of dictionaries.
 
         The dictionaries must contain an acceptable combination of `atom`, `l` and
@@ -823,7 +809,7 @@ class Builder:
 
         Returns
         -------
-        list[MagneticEntity]
+        MagneticEntityList
             List of MagneticEntity instances
 
         Raise
@@ -838,13 +824,13 @@ class Builder:
         if isinstance(magnetic_entities, dict):
             magnetic_entities = [magnetic_entities]
 
-        out = []
+        out = MagneticEntityList()
         for mag_ent in magnetic_entities:
             out.append(MagneticEntity((self._dh, self._ds), **mag_ent))
 
         return out
 
-    def create_pairs(self, pairs: Union[dict, list[dict]]) -> list[Pair]:
+    def create_pairs(self, pairs: Union[dict, list[dict]]) -> PairList:
         """Creates a list of Pair from a list of dictionaries.
 
         The dictionaries must contain `ai`, `aj` and `Ruc`, based on the accepted
@@ -858,7 +844,7 @@ class Builder:
 
         Returns
         -------
-        list[Pair]
+        PairList
             List of Pair instances
 
                     Raise
@@ -878,7 +864,7 @@ class Builder:
         if isinstance(pairs, dict):
             pairs = [pairs]
 
-        out = []
+        out = PairList()
         for pair in pairs:
             ruc = pair.get("Ruc", np.array([0, 0, 0]))
             m1 = self.magnetic_entities[pair["ai"]]
@@ -890,7 +876,7 @@ class Builder:
     def add_magnetic_entities(
         self,
         magnetic_entities: Union[
-            dict, MagneticEntity, list[Union[dict, MagneticEntity]]
+            MagneticEntityList, dict, MagneticEntity, list[Union[dict, MagneticEntity]]
         ],
     ) -> None:
         """Adds a MagneticEntity or a list of MagneticEntity to the instance.
@@ -900,7 +886,7 @@ class Builder:
 
         Parameters
         ----------
-        magnetic_entities : Union[dict, MagneticEntity, list[Union[dict, MagneticEntity]]]
+        magnetic_entities : Union[MagneticEntityList, dict, MagneticEntity, list[Union[dict, MagneticEntity]]]
             Data to add to the instance
         """
 
@@ -924,7 +910,9 @@ class Builder:
             # add magnetic entities
             self.magnetic_entities.append(mag_ent)
 
-    def add_pairs(self, pairs: Union[dict, Pair, list[Union[dict, Pair]]]) -> None:
+    def add_pairs(
+        self, pairs: Union[PairList, dict, Pair, list[Union[dict, Pair]]]
+    ) -> None:
         """Adds a Pair or a list of Pair to the instance.
 
         It dumps the data to the ``pairs`` instance parameter. If a list
@@ -932,7 +920,7 @@ class Builder:
 
         Parameters
         ----------
-        pairs : Union[dict, Pair, list[Union[dict, Pair]]]
+        pairs : Union[PairList, dict, Pair, list[Union[dict, Pair]]]
             Data to add to the instance
         """
 

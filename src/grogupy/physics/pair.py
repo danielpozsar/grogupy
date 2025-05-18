@@ -572,24 +572,29 @@ class PairList:
     the list.
     """
 
-    def __init__(self, pairs: list[Pair]):
-        self.__pairs = pairs
+    def __init__(self, pairs: list[Pair] = None):
+        self.__pairs = [] if pairs is None else pairs
 
-    @property
-    def pairs(self) -> list[Pair]:
-        """The pair list that contains the data."""
-        return self.__pairs
-
-    @property
-    def len(self) -> int:
-        """The number of pairs in the list."""
+    def __len__(self):
         return len(self.__pairs)
 
     def __getstate__(self):
         state = self.__dict__.copy()
+        out = []
+        for p in state["_PairList__pairs"]:
+            out.append(p.__getstate__())
+        state["_PairList__pairs"] = out
+
         return state
 
     def __setstate__(self, state):
+        out = []
+        for p in state["_PairList__pairs"]:
+            temp = object.__new__(Pair)
+            temp.__setstate__(p)
+            out.append(temp)
+        state["_PairList__pairs"] = out
+
         self.__dict__ = state
 
     def __getattr__(self, name) -> NDArray:
@@ -606,9 +611,21 @@ class PairList:
     def __repr__(self) -> str:
         """String representation of the instance."""
 
-        out = f"<grogupy.PairList length={self.len}>"
-
+        out = f"<grogupy.PairList length={len(self.__pairs)}>"
         return out
+
+    def __str__(self) -> str:
+        """String of the instance."""
+
+        out = "[" + "\n".join([p.__repr__() for p in self.__pairs]) + "]"
+        return out
+
+    def append(self, item):
+        """Appends to the pair list."""
+        if isinstance(item, Pair):
+            self.__pairs.append(item)
+        else:
+            raise Exception("This class is reserved for Pair instances only!")
 
 
 if __name__ == "__main__":

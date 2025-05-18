@@ -695,18 +695,32 @@ class MagneticEntityList:
     the list.
     """
 
-    def __init__(self, magnetic_entities: list[MagneticEntity]):
-        self.__magnetic_entities = magnetic_entities
+    def __init__(self, magnetic_entities: list[MagneticEntity] = None):
+        self.__magnetic_entities = (
+            [] if magnetic_entities is None else magnetic_entities
+        )
 
-    @property
-    def magnetic_entities(self) -> list[MagneticEntity]:
-        """The magnetic entity list that contains the data."""
-        return self.__magnetic_entities
-
-    @property
-    def len(self) -> int:
-        """The number of magnetic entities in the list."""
+    def __len__(self):
         return len(self.__magnetic_entities)
+
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        out = []
+        for m in state["_MagneticEntityList__magnetic_entities"]:
+            out.append(m.__getstate__())
+        state["_MagneticEntityList__magnetic_entities"] = out
+
+        return state
+
+    def __setstate__(self, state):
+        out = []
+        for m in state["_MagneticEntityList__magnetic_entities"]:
+            temp = object.__new__(MagneticEntity)
+            temp.__setstate__(m)
+            out.append(temp)
+        state["_MagneticEntityList__magnetic_entities"] = out
+
+        self.__dict__ = state
 
     def __getattr__(self, name) -> NDArray:
         try:
@@ -725,9 +739,21 @@ class MagneticEntityList:
     def __repr__(self) -> str:
         """String representation of the instance."""
 
-        out = f"<grogupy.MagneticEntityList length={self.len}>"
-
+        out = f"<grogupy.MagneticEntityList length={len(self.__magnetic_entities)}>"
         return out
+
+    def __str__(self) -> str:
+        """String of the instance."""
+
+        out = "[" + "\n".join([p.__repr__() for p in self.__magnetic_entities]) + "]"
+        return out
+
+    def append(self, item):
+        """Appends to the magnetic entity list."""
+        if isinstance(item, MagneticEntity):
+            self.__magnetic_entities.append(item)
+        else:
+            raise Exception("This class is reserved for MagneticEntity instances only!")
 
 
 if __name__ == "__main__":

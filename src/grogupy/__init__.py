@@ -69,7 +69,7 @@ The ``CONFIG`` instance contains the configuration of grogupy.
 """
 
 __all__ = []
-__version__ = "0.0.13"
+__version__ = "0.0.14"
 version = __version__
 
 # this is for version numbering
@@ -79,7 +79,16 @@ from .config import *
 
 # pre-import stuff
 from .io import load, save, save_magnopy, save_UppASD
-from .physics import Builder, Contour, Hamiltonian, Kspace, MagneticEntity, Pair
+from .physics import (
+    Builder,
+    Contour,
+    Hamiltonian,
+    Kspace,
+    MagneticEntity,
+    MagneticEntityList,
+    Pair,
+    PairList,
+)
 
 # extend namespace
 __all__.extend(
