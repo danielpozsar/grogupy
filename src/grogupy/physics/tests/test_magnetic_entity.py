@@ -682,7 +682,7 @@ class TestMagneticEntityList:
         for m in system.magnetic_entities:
             ani.append(m.K)
 
-        assert mlist.K == np.array(ani)
+        assert (mlist.K == np.array(ani)).all()
 
     def test_append(self):
         system = grogupy.load("./benchmarks/test_builder.pkl")
