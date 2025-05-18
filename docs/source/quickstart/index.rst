@@ -20,12 +20,12 @@ Installation
 
             pip install grogupy
 
-        The plotting and GPU aceleration part of the package are optional, but 
-        they can also be download via pip.
+        The plotting, MPI acceleration and GPU aceleration part of the 
+        package are optional, but they can also be download via pip.
 
         .. code-block:: bash
 
-            pip install grogupy[viz,gpu]
+            pip install grogupy[viz,gpu,mpi]
 
 
     .. grid-item-card:: Using source code

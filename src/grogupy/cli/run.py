@@ -32,17 +32,15 @@ from ..io.io import load, read_fdf, read_py, save, save_magnopy, save_UppASD
 from ..io.utilities import DEFAULT_INPUT, standardize_input
 from ..physics import Builder, Contour, Hamiltonian, Kspace
 
-PRINTING = False
+# Only print on MPI root node
+PRINTING = True
 if CONFIG.is_CPU:
-    from mpi4py import MPI
+    if CONFIG.MPI_loaded:
+        from mpi4py import MPI
 
-    rank = MPI.COMM_WORLD.rank
-    if rank == 0:
-        PRINTING = True
-elif CONFIG.is_GPU:
-    PRINTING = True
-else:
-    raise Exception
+        rank = MPI.COMM_WORLD.rank
+        if rank != 0:
+            PRINTING = False
 
 
 def main():

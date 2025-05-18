@@ -17,7 +17,11 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 from .config import CONFIG
+
+if CONFIG.MPI_loaded:
+    from mpi4py import MPI
 
 # if tqdm is requested
 if CONFIG.tqdm_requested:
@@ -34,35 +38,33 @@ if CONFIG.tqdm_requested:
 
             def __iter__(self):
                 if CONFIG.is_CPU:
-                    from mpi4py import MPI
-
-                    if self.head_node:
-                        if MPI.COMM_WORLD.rank == 0:
-                            return iter(self.tqdm)
-                        else:
-                            return iter(self.iterable)
-                    else:
-                        return iter(self.tqdm)
+                    if (
+                        self.head_node
+                        and CONFIG.MPI_loaded
+                        and MPI.COMM_WORLD.rank != 0
+                    ):
+                        return iter(self.iterable)
+                    return iter(self.tqdm)
 
                 elif CONFIG.is_GPU:
                     return iter(self.tqdm)
+
                 else:
                     raise Exception("Unknown architecture, use CPU or GPU!")
 
             def __call__(self):
                 if CONFIG.is_CPU:
-                    from mpi4py import MPI
-
-                    if self.head_node:
-                        if MPI.COMM_WORLD.rank == 0:
-                            return self.tqdm
-                        else:
-                            return self.iterable
-                    else:
+                    if (
+                        self.head_node
+                        and CONFIG.MPI_loaded
+                        and MPI.COMM_WORLD.rank != 0
+                    ):
                         return self.tqdm
+                    return self.iterable
 
                 elif CONFIG.is_GPU:
                     return self.tqdm
+
                 else:
                     raise Exception("Unknown architecture, use CPU or GPU!")
 

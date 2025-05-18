@@ -17,6 +17,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 import copy
 import io
 import os
@@ -128,6 +129,8 @@ class Builder:
         dictionary, wth two elements, 'o', the reference direction and 'vw', the two
         perpendicular directions and a third direction that is the linear combination of
         the two
+    parallel_mode: Union[None, str], optional
+        The parallelization mode for the Hamiltonian inversions, by default None
     architecture: {"CPU", "GPU"}, optional
         The architecture of the machine that grogupy is run on, by default 'CPU'
     SLURM_ID: str
@@ -169,7 +172,7 @@ class Builder:
         self.__low_memory_mode = True
         self.__greens_function_solver: str = "Sequential"
         self.__max_g_per_loop: int = 10000
-        self.__parallel_mode: str = "K"
+        self.__parallel_mode: Union[None, str] = None
         self.__architecture = CONFIG.architecture
 
         # fix the matlab compatibility
@@ -379,12 +382,15 @@ class Builder:
         out += f"Architecture: {self.__architecture}" + newline
         if self.__architecture == "CPU":
             out += (
-                f"Number of nodes in the parallel cluster: {CONFIG.parallel_size}"
+                f"Number of threads in the parallel cluster: {CONFIG.parallel_size}"
                 + newline
             )
         elif self.__architecture == "GPU":
             out += f"Number of GPUs in the cluster: {CONFIG.parallel_size}" + newline
-        out += f"Parallelization is over: {self.parallel_mode}" + newline
+        if self.parallel_mode is None:
+            out += "Parallelization is over: Nothing" + newline
+        else:
+            out += f"Parallelization is over: {self.parallel_mode}" + newline
         out += (
             f"Solver used for Greens function calculation: {self.greens_function_solver}"
             + newline
@@ -556,7 +562,7 @@ class Builder:
 
     @property
     def parallel_mode(self) -> str:
-        """The parallelization mode for the Hamiltonian inversions, by default "K"."""
+        """The parallelization mode for the Hamiltonian inversions, by default None."""
         return self.__parallel_mode
 
     @property
@@ -943,8 +949,9 @@ class Builder:
     def solve(self, print_memory: bool = False) -> None:
         """Wrapper for Greens function solver.
 
-        It uses the parallelization over k-points, energy and directions if ``solver``
-        is `all` and it uses the parallel over k solver if ``solver`` is `k`.
+        The parallelization of the Brillouin sampling can be turned on and
+        off. And the parallelization of the energy samples can be tweaked by
+        a batch size. CPU and GPU solvers are availabel.
 
         Parameters
         ----------
@@ -972,16 +979,22 @@ class Builder:
                 "There are unnecessary perpendicular directions for the anisotropy or exchange solver!"
             )
 
-        # choose architecture solver
-        if self.__architecture.lower()[0] == "c":  # cpu
-            from .._core.cpu_solvers import solve_parallel_over_k
-        elif self.__architecture.lower()[0] == "g":  # gpu
-            from .._core.gpu_solvers import solve_parallel_over_k
+        # no parallelization
+        if self.__parallel_mode is None:
+            from .._core.cpu_solvers import default_solver as solver
+        # k point parallelization
+        elif self.__parallel_mode[0].lower() == "k":
+            # choose architecture solver
+            if self.__architecture.lower()[0] == "c":  # cpu
+                from .._core.cpu_solvers import solve_parallel_over_k as solver
+            elif self.__architecture.lower()[0] == "g":  # gpu
+                from .._core.gpu_solvers import solve_parallel_over_k as solver
+            else:
+                raise Exception(f"Unknown architecture: {self.__architecture}")
         else:
-            raise Exception(f"Unknown architecture: {self.__architecture}")
+            raise Exception(f"Unknown parallelization: {self.__architecture}")
 
-        solve_parallel_over_k(self, print_memory)
-
+        solver(self, print_memory)
         self.times.measure("solution", restart=True)
 
     def copy(self):

@@ -17,6 +17,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 from os import environ
 
 
@@ -36,6 +37,8 @@ class Config:
     ----------
     viz_loaded: bool
         Returns wether visualization packages are loaded or not
+    MPI_loaded: bool
+        Returns wether MPI packages are loaded or not
     architecture: str
         Returns the architecture
     parallel_size: int
@@ -51,6 +54,7 @@ class Config:
     def __init__(self, architecture: str, tqdm: str):
         """Initializing configuration class."""
         self.__viz_loaded = False
+        self.__MPI_loaded = False
 
         # get architecture
         if architecture.lower() == "cpu":
@@ -61,9 +65,13 @@ class Config:
             raise Exception("Unknown architecture, use CPU or GPU!")
 
         if self.__architecture == "CPU":
-            from mpi4py import MPI
+            try:
+                from mpi4py import MPI
 
-            self.__parallel_size = MPI.COMM_WORLD.Get_size()
+                self.__MPI_loaded = True
+                self.__parallel_size = MPI.COMM_WORLD.Get_size()
+            except:
+                self.__parallel_size = 1
 
         elif self.__architecture == "GPU":
             import cupy as cp
@@ -80,6 +88,11 @@ class Config:
     def viz_loaded(self) -> bool:
         """Returns wether visualization packages are loaded or not"""
         return self.__viz_loaded
+
+    @property
+    def MPI_loaded(self) -> bool:
+        """Returns wether MPI packages are loaded or not"""
+        return self.__MPI_loaded
 
     @property
     def architecture(self) -> str:
