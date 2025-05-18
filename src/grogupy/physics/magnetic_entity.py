@@ -700,8 +700,10 @@ class MagneticEntityList:
             self.__magnetic_entities = []
         elif isinstance(magnetic_entities, MagneticEntityList):
             self.__magnetic_entities = magnetic_entities.__magnetic_entities
-        elif isinstance(magnetic_entities, list):
-            self.__magnetic_entities = magnetic_entities
+        elif isinstance(magnetic_entities, list) or isinstance(
+            magnetic_entities, np.ndarray
+        ):
+            self.__magnetic_entities = list(magnetic_entities)
         else:
             raise Exception(f"Bad input type: {type(pairs)}!")
 

@@ -577,8 +577,8 @@ class PairList:
             self.__pairs = []
         elif isinstance(pairs, PairList):
             self.__pairs = pairs.__pairs
-        elif isinstance(pairs, list):
-            self.__pairs = pairs
+        elif isinstance(pairs, list) or isinstance(pairs, np.ndarray):
+            self.__pairs = list(pairs)
         else:
             raise Exception(f"Bad input type: {type(pairs)}!")
 
