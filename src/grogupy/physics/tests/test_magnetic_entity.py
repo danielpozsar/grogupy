@@ -17,6 +17,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 import numpy as np
 import pytest
 import sisl
@@ -26,7 +27,7 @@ from grogupy._core.utilities import arrays_lists_equal
 from grogupy.io.utilities import decipher
 from grogupy.physics import MagneticEntity
 
-pytestmark = [pytest.mark.physics]
+pytestmark = [pytest.mark.physics, pytest.mark.need_benchmark_data]
 
 
 class TestMagneticEntity:

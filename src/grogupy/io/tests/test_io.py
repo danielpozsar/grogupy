@@ -17,6 +17,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 import os
 import pickle
 
@@ -26,7 +27,7 @@ import grogupy
 import grogupy.batch
 from grogupy.io.io import *
 
-pytestmark = [pytest.mark.io]
+pytestmark = [pytest.mark.io, pytest.mark.need_benchmark_data]
 
 
 # cleaning up possible temorary output files

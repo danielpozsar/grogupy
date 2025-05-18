@@ -17,6 +17,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 import plotly.graph_objs as go
 import pytest
 
@@ -32,7 +33,7 @@ from grogupy.viz import (
     plot_pairs,
 )
 
-pytestmark = [pytest.mark.viz]
+pytestmark = [pytest.mark.viz, pytest.mark.need_benchmark_data]
 
 
 @pytest.fixture
