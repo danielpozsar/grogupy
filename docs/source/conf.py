@@ -59,7 +59,6 @@ templates_path = ["_templates"]
 
 # HTML stuff
 html_theme = "sphinx_rtd_theme"
-html_static_path = ["_static"]
 html_title = f"grogupy {__version__}"
 
 # for bibliography
