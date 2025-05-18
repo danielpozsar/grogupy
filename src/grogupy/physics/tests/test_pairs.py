@@ -243,7 +243,7 @@ class TestPairList:
         system = grogupy.load("./benchmarks/test_builder.pkl")
         plist = PairList(system.pairs)
 
-        assert len(system.pairs) == plist.len
+        assert len(system.pairs) == len(plist)
         for p1, p2 in zip(system.pairs, plist):
             assert p1 == p2
 
@@ -270,7 +270,7 @@ class TestPairList:
 
         for p in system.pairs:
             plist.append(p)
-        assert plist.len == len(system.pairs)
+        assert len(plist) == len(system.pairs)
 
 
 if __name__ == "__main__":

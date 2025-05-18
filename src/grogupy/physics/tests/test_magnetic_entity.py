@@ -663,7 +663,7 @@ class TestMagneticEntityList:
         system = grogupy.load("./benchmarks/test_builder.pkl")
         mlist = MagneticEntityList(system.magnetic_entities)
 
-        assert len(system.magnetic_entities) == mlist.len
+        assert len(system.magnetic_entities) == len(mlist)
         for m1, m2 in zip(system.magnetic_entities, mlist):
             assert m1 == m2
 
@@ -690,7 +690,7 @@ class TestMagneticEntityList:
 
         for m in system.magnetic_entities:
             mlist.append(m)
-        assert mlist.len == len(system.magnetic_entities)
+        assert len(mlist) == len(system.magnetic_entities)
 
 
 if __name__ == "__main__":
