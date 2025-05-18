@@ -17,6 +17,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 import copy
 import warnings
 from typing import Union
@@ -25,10 +26,10 @@ import numpy as np
 import sisl
 from numpy.typing import NDArray
 
-from .. import __version__
-from .._core.utilities import arrays_lists_equal, arrays_None_equal
-from .magnetic_entity import MagneticEntity
-from .utilities import (
+from grogupy import __version__
+from grogupy._core.utilities import arrays_lists_equal, arrays_None_equal
+from grogupy.physics.magnetic_entity import MagneticEntity
+from grogupy.physics.utilities import (
     calculate_exchange_tensor,
     fit_exchange_tensor,
     interaction_energy,

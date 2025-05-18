@@ -17,6 +17,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 from typing import Any, Union
 
 import numpy as np
@@ -24,9 +25,9 @@ import sisl
 from numpy.typing import NDArray
 from scipy.special import roots_legendre
 
-from .._tqdm import _tqdm
-from ..config import CONFIG
-from .constants import TAU_X, TAU_Y, TAU_Z
+from grogupy._core.constants import TAU_X, TAU_Y, TAU_Z
+from grogupy._tqdm import _tqdm
+from grogupy.config import CONFIG
 
 if CONFIG.is_GPU:
     import cupy as cp

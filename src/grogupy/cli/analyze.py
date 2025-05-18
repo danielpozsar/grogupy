@@ -17,12 +17,12 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-import argparse
-import subprocess
 
-from .. import __citation__, __definitely_not_grogu__
-from ..io.io import load
-from ..viz.plotters import (
+import argparse
+
+from grogupy import __citation__, __definitely_not_grogu__
+from grogupy.io.io import load
+from grogupy.viz.plotters import (
     plot_contour,
     plot_DM_distance,
     plot_DMI,

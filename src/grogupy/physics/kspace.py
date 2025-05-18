@@ -17,14 +17,15 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 import copy
 from typing import Union
 
 import numpy as np
 from numpy.typing import NDArray
 
-from .._core.utilities import make_kset
-from ..batch.timing import DefaultTimer
+from grogupy._core.utilities import make_kset
+from grogupy.batch.timing import DefaultTimer
 
 
 class Kspace:

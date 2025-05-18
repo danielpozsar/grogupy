@@ -17,22 +17,23 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 from typing import TYPE_CHECKING
 
 from numpy.typing import NDArray
 
 if TYPE_CHECKING:
-    from ..physics.builder import Builder
+    from grogupy.physics.builder import Builder
 
 import sys
 from concurrent.futures import ThreadPoolExecutor
 
 import numpy as np
 
-from .._tqdm import _tqdm
-from ..config import CONFIG
-from ..physics.utilities import interaction_energy, second_order_energy
-from .utilities import calc_Vu, onsite_projection, tau_u
+from grogupy._core.utilities import calc_Vu, onsite_projection, tau_u
+from grogupy._tqdm import _tqdm
+from grogupy.config import CONFIG
+from grogupy.physics.utilities import interaction_energy, second_order_energy
 
 if CONFIG.is_GPU:
     # initialize parallel GPU stuff

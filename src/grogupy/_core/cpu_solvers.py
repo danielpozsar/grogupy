@@ -23,16 +23,22 @@ from typing import TYPE_CHECKING
 from numpy.typing import NDArray
 
 if TYPE_CHECKING:
-    from ..physics.builder import Builder
+    from grogupy.physics.builder import Builder
 
 import sys
 
 import numpy as np
 
-from .._tqdm import _tqdm
-from ..config import CONFIG
-from ..physics.utilities import interaction_energy, second_order_energy
-from .utilities import calc_Vu, onsite_projection, parallel_Gk, sequential_Gk, tau_u
+from grogupy._core.utilities import (
+    calc_Vu,
+    onsite_projection,
+    parallel_Gk,
+    sequential_Gk,
+    tau_u,
+)
+from grogupy._tqdm import _tqdm
+from grogupy.config import CONFIG
+from grogupy.physics.utilities import interaction_energy, second_order_energy
 
 
 def default_solver(builder: "Builder", print_memory: bool = False) -> None:

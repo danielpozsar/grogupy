@@ -17,6 +17,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 import copy
 import warnings
 from typing import Union
@@ -25,12 +26,12 @@ import numpy as np
 import sisl
 from numpy.typing import NDArray
 
-from .._core.constants import TAU_X, TAU_Y, TAU_Z
-from .._core.utilities import RotMa2b, build_hh_ss, hsk
-from .._tqdm import _tqdm
-from ..batch.timing import DefaultTimer
-from ..config import CONFIG
-from .utilities import spin_tracer
+from grogupy._core.constants import TAU_X, TAU_Y, TAU_Z
+from grogupy._core.utilities import RotMa2b, build_hh_ss, hsk
+from grogupy._tqdm import _tqdm
+from grogupy.batch.timing import DefaultTimer
+from grogupy.config import CONFIG
+from grogupy.physics.utilities import spin_tracer
 
 if CONFIG.is_GPU:
     import cupy as cp

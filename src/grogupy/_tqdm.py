@@ -18,7 +18,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from .config import CONFIG
+from grogupy.config import CONFIG
 
 if CONFIG.MPI_loaded:
     from mpi4py import MPI

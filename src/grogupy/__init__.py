@@ -75,11 +75,11 @@ version = __version__
 # this is for version numbering
 from sisl import __version__ as __sisl__version__
 
-from .config import *
+from grogupy.config import *
 
 # pre-import stuff
-from .io import load, save, save_magnopy, save_UppASD
-from .physics import Builder, Contour, Hamiltonian, Kspace, MagneticEntity, Pair
+from grogupy.io import load, save, save_magnopy, save_UppASD
+from grogupy.physics import Builder, Contour, Hamiltonian, Kspace, MagneticEntity, Pair
 
 # extend namespace
 __all__.extend(

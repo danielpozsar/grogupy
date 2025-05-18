@@ -21,20 +21,13 @@
 import importlib.util
 import pickle
 from os.path import join
-from types import ModuleType
 from typing import Union
 
 import numpy as np
-import sisl
 
-from ..batch.timing import DefaultTimer
-from ..physics.builder import Builder
-from ..physics.contour import Contour
-from ..physics.hamiltonian import Hamiltonian
-from ..physics.kspace import Kspace
-from ..physics.magnetic_entity import MagneticEntity
-from ..physics.pair import Pair
-from .utilities import strip_dict_structure
+from grogupy.batch.timing import DefaultTimer
+from grogupy.io.utilities import strip_dict_structure
+from grogupy.physics import Builder, Contour, Hamiltonian, Kspace, MagneticEntity, Pair
 
 
 def load_DefaultTimer(infile: Union[str, dict]) -> DefaultTimer:

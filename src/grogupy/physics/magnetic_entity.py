@@ -17,20 +17,21 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 import copy
 from typing import TYPE_CHECKING, Union
 
 from numpy.typing import NDArray
 
 if TYPE_CHECKING:
-    from .hamiltonian import Hamiltonian
+    from grogupy.physics.hamiltonian import Hamiltonian
 
 import numpy as np
 import sisl
 
-from .. import __version__
-from .._core.utilities import arrays_lists_equal, arrays_None_equal
-from .utilities import (
+from grogupy import __version__
+from grogupy._core.utilities import arrays_lists_equal, arrays_None_equal
+from grogupy.physics.utilities import (
     blow_up_orbindx,
     calculate_anisotropy_tensor,
     fit_anisotropy_tensor,

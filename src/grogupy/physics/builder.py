@@ -28,16 +28,12 @@ import numpy as np
 import sisl
 from numpy.typing import NDArray
 
-from .. import __version__
-from .._core.utilities import RotMa2b, setup_from_range
-from .._tqdm import _tqdm
-from ..batch.timing import DefaultTimer
-from ..config import CONFIG
-from .contour import Contour
-from .hamiltonian import Hamiltonian
-from .kspace import Kspace
-from .magnetic_entity import MagneticEntity
-from .pair import Pair
+from grogupy import __version__
+from grogupy._core.utilities import RotMa2b, setup_from_range
+from grogupy._tqdm import _tqdm
+from grogupy.batch.timing import DefaultTimer
+from grogupy.config import CONFIG
+from grogupy.physics import Contour, Hamiltonian, Kspace, MagneticEntity, Pair
 
 try:
     import pytest
