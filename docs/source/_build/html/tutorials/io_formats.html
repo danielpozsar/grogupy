@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Input/Output formats &mdash; grogupy 0.0.12</title>
+  <title>Input/Output formats &mdash; grogupy 0.0.13</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=3bbcec59"></script>
+      <script src="../_static/documentation_options.js?v=9fc46840"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -200,6 +200,8 @@ PYTHON</label><div class="sd-tab-content docutils">
 <span class="c1"># the calculation of J and K from the energy derivations, either Fit or Grogupy</span>
 <span class="n">exchange_solver</span> <span class="o">=</span> <span class="s2">&quot;Fit&quot;</span>
 <span class="n">anisotropy_solver</span> <span class="o">=</span> <span class="s2">&quot;Fit&quot;</span>
+<span class="c1"># parallelization should be turned on for efficiency</span>
+<span class="n">parallel_mode</span> <span class="o">=</span> <span class="s2">&quot;K&quot;</span>
 
 
 <span class="c1">###############################################################################</span>
@@ -253,139 +255,141 @@ PYTHON</label><div class="sd-tab-content docutils">
 </div>
 </div>
 <input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
-<label class="sd-tab-label" data-sync-group="code" data-sync-id="fdf" for="sd-tab-item-1">
-FDF</label><div class="sd-tab-content docutils">
-<div class="highlight-fdf notranslate"><div class="highlight"><pre><span></span>###############################################################################
-#                                 Input files
-###############################################################################
+<label class="sd-tab-label" data-sync-group="code" data-sync-id="default" for="sd-tab-item-1">
+DEFAULT</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">###############################################################################</span>
+<span class="c1">#                                 Input files</span>
+<span class="c1">###############################################################################</span>
 
 
-InFolder        ./benchmarks/CrI3
-Infile          CrI3.fdf
+<span class="n">InFolder</span>        <span class="o">./</span><span class="n">benchmarks</span><span class="o">/</span><span class="n">CrI3</span>
+<span class="n">Infile</span>          <span class="n">CrI3</span><span class="o">.</span><span class="n">fdf</span>
 
 
-###############################################################################
-#                            Convergence parameters
-###############################################################################
+<span class="c1">###############################################################################</span>
+<span class="c1">#                            Convergence parameters</span>
+<span class="c1">###############################################################################</span>
 
 
-# kset should be at leas 100x100 for 2D diatomic systems
-Kset        2 2 1
-# eset should be 100 for insulators and 1000 for metals
-Eset        100
-# esetp should be 600 for insulators and 10000 for metals
-Esetp       600
-# emin None sets the minimum energy to the minimum energy in the eigfile
-Emin        None
-# emax is at the Fermi level at 0
-Emax        0
-# the bottom of the energy contour should be shifted by -5 eV
-EminShift   -5
-# the top of the energy contour can be shifted to the middle of the gap for
-# insulators
-EmaxShift   0
+<span class="c1"># kset should be at leas 100x100 for 2D diatomic systems</span>
+<span class="n">Kset</span>        <span class="mi">2</span> <span class="mi">2</span> <span class="mi">1</span>
+<span class="c1"># eset should be 100 for insulators and 1000 for metals</span>
+<span class="n">Eset</span>        <span class="mi">100</span>
+<span class="c1"># esetp should be 600 for insulators and 10000 for metals</span>
+<span class="n">Esetp</span>       <span class="mi">600</span>
+<span class="c1"># emin None sets the minimum energy to the minimum energy in the eigfile</span>
+<span class="n">Emin</span>        <span class="kc">None</span>
+<span class="c1"># emax is at the Fermi level at 0</span>
+<span class="n">Emax</span>        <span class="mi">0</span>
+<span class="c1"># the bottom of the energy contour should be shifted by -5 eV</span>
+<span class="n">EminShift</span>   <span class="o">-</span><span class="mi">5</span>
+<span class="c1"># the top of the energy contour can be shifted to the middle of the gap for</span>
+<span class="c1"># insulators</span>
+<span class="n">EmaxShift</span>   <span class="mi">0</span>
 
 
-###############################################################################
-#                                 Orientations
-###############################################################################
+<span class="c1">###############################################################################</span>
+<span class="c1">#                                 Orientations</span>
+<span class="c1">###############################################################################</span>
 
 
-# usually the DFT calculation axis is [0, 0, 1]
-ScfXcfOrientation   0   0   1
-# the reference directions for the energy derivations
-%block RefXcfOrientations
-    1   0   0
-    0   1   0
-    0   0   1
-%endblock RefXcfOrientations
+<span class="c1"># usually the DFT calculation axis is [0, 0, 1]</span>
+<span class="n">ScfXcfOrientation</span>   <span class="mi">0</span>   <span class="mi">0</span>   <span class="mi">1</span>
+<span class="c1"># the reference directions for the energy derivations</span>
+<span class="o">%</span><span class="n">block</span> <span class="n">RefXcfOrientations</span>
+    <span class="mi">1</span>   <span class="mi">0</span>   <span class="mi">0</span>
+    <span class="mi">0</span>   <span class="mi">1</span>   <span class="mi">0</span>
+    <span class="mi">0</span>   <span class="mi">0</span>   <span class="mi">1</span>
+<span class="o">%</span><span class="n">endblock</span> <span class="n">RefXcfOrientations</span>
 
 
-###############################################################################
-#                      Magnetic entity and pair definitions
-###############################################################################
+<span class="c1">###############################################################################</span>
+<span class="c1">#                      Magnetic entity and pair definitions</span>
+<span class="c1">###############################################################################</span>
 
 
-# magnetic entities and pairs can be defined automatically from the cutoff
-SetupFromRange          True
-Radius                  20                      # radius and magnetic atoms
-AtomicSubset            Cr
-KwargsForMagEnt         l   2
+<span class="c1"># magnetic entities and pairs can be defined automatically from the cutoff</span>
+<span class="n">SetupFromRange</span>          <span class="kc">True</span>
+<span class="n">Radius</span>                  <span class="mi">20</span>                      <span class="c1"># radius and magnetic atoms</span>
+<span class="n">AtomicSubset</span>            <span class="n">Cr</span>
+<span class="n">KwargsForMagEnt</span>         <span class="n">l</span>   <span class="mi">2</span>
 
 
-###############################################################################
-#                                Memory management
-###############################################################################
+<span class="c1">###############################################################################</span>
+<span class="c1">#                                Memory management</span>
+<span class="c1">###############################################################################</span>
 
 
-# maximum number of pairs per loop, reduce it to avoid memory overflow
-MaxPairsPerLoop         10000
-# in low memory mode we discard some temporary data that could be useful for
-# interactive work
-low_memory_mode         True
-# sequential solver is better for large systems
-GreensFunctionSolver    Parallel
-# maximum number of greens function samples per loop, when
-greens_function_solver is set to &quot;Sequential&quot;, reduce it to avoid memory
-# overflow on GPU for large systems
-MaxGPerLoop             20
+<span class="c1"># maximum number of pairs per loop, reduce it to avoid memory overflow</span>
+<span class="n">MaxPairsPerLoop</span>         <span class="mi">10000</span>
+<span class="c1"># in low memory mode we discard some temporary data that could be useful for</span>
+<span class="c1"># interactive work</span>
+<span class="n">low_memory_mode</span>         <span class="kc">True</span>
+<span class="c1"># sequential solver is better for large systems</span>
+<span class="n">GreensFunctionSolver</span>    <span class="n">Parallel</span>
+<span class="c1"># maximum number of greens function samples per loop, when</span>
+<span class="n">greens_function_solver</span> <span class="ow">is</span> <span class="nb">set</span> <span class="n">to</span> <span class="s2">&quot;Sequential&quot;</span><span class="p">,</span> <span class="n">reduce</span> <span class="n">it</span> <span class="n">to</span> <span class="n">avoid</span> <span class="n">memory</span>
+<span class="c1"># overflow on GPU for large systems</span>
+<span class="n">MaxGPerLoop</span>             <span class="mi">20</span>
 
 
-###############################################################################
-#                                 Solution methods
-###############################################################################
+<span class="c1">###############################################################################</span>
+<span class="c1">#                                 Solution methods</span>
+<span class="c1">###############################################################################</span>
 
 
-# the calculation of J and K from the energy derivations, either Fit or Grogupy
-ExchangeSolver          Fit
-AnisotropySolver        Fit
+<span class="c1"># the calculation of J and K from the energy derivations, either Fit or Grogupy</span>
+<span class="n">ExchangeSolver</span>          <span class="n">Fit</span>
+<span class="n">AnisotropySolver</span>        <span class="n">Fit</span>
+<span class="c1"># parallelization should be turned on for efficiency</span>
+<span class="n">ParallelMode</span> <span class="o">=</span> <span class="s2">&quot;K&quot;</span>
 
 
-###############################################################################
-#                                   Output files
-###############################################################################
+<span class="c1">###############################################################################</span>
+<span class="c1">#                                   Output files</span>
+<span class="c1">###############################################################################</span>
 
 
-# either total or local, which controls if only the magnetic
-# entity&#39;s magnetic monent or the whole atom&#39;s magnetic moment is printed
-# used by all output modes
-OutMagneticMoment           Total
+<span class="c1"># either total or local, which controls if only the magnetic</span>
+<span class="c1"># entity&#39;s magnetic monent or the whole atom&#39;s magnetic moment is printed</span>
+<span class="c1"># used by all output modes</span>
+<span class="n">OutMagneticMoment</span>           <span class="n">Total</span>
 
-# save the magnopy file
-SaveMagnopy                 True
-# precision of numerical values in the magnopy file
-MagnopyPrecision            None
-# add the simulation parameters to the magnopy file as comments
-MagnopyComments             True
+<span class="c1"># save the magnopy file</span>
+<span class="n">SaveMagnopy</span>                 <span class="kc">True</span>
+<span class="c1"># precision of numerical values in the magnopy file</span>
+<span class="n">MagnopyPrecision</span>            <span class="kc">None</span>
+<span class="c1"># add the simulation parameters to the magnopy file as comments</span>
+<span class="n">MagnopyComments</span>             <span class="kc">True</span>
 
-# save the Uppsala Atomistic Spin Dynamics software input files
-SaveUppASD                  True
-# add the simulation parameters to the cell.tmp.txt file as
-# comments
-UppASDComments = True
-
-
-# save the pickle file
-SavePickle                  True
-# The compression level can be set to 0,1,2. Every other value defaults to 2.
-# 0. This means that there is no compression at all.
-#
-# 1. This means, that the keys &quot;_dh&quot; and &quot;_ds&quot; are set
-#    to None, because othervise the loading would be dependent
-#    on the sisl version
-#
-# 2. This contains compression 1, but sets the keys &quot;Gii&quot;,
-#    &quot;Gij&quot;, &quot;Gji&quot;, &quot;Vu1&quot; and &quot;Vu2&quot; to [], to save space
-PickleCompressLevel         2
-
-# output folder, for example the input folder
-OutFolder                   ./src/grogupy/cli/tests/
-# outfile name, default name
-OutFile                     test
+<span class="c1"># save the Uppsala Atomistic Spin Dynamics software input files</span>
+<span class="n">SaveUppASD</span>                  <span class="kc">True</span>
+<span class="c1"># add the simulation parameters to the cell.tmp.txt file as</span>
+<span class="c1"># comments</span>
+<span class="n">UppASDComments</span> <span class="o">=</span> <span class="kc">True</span>
 
 
-###############################################################################
-###############################################################################
+<span class="c1"># save the pickle file</span>
+<span class="n">SavePickle</span>                  <span class="kc">True</span>
+<span class="c1"># The compression level can be set to 0,1,2. Every other value defaults to 2.</span>
+<span class="c1"># 0. This means that there is no compression at all.</span>
+<span class="c1">#</span>
+<span class="c1"># 1. This means, that the keys &quot;_dh&quot; and &quot;_ds&quot; are set</span>
+<span class="c1">#    to None, because othervise the loading would be dependent</span>
+<span class="c1">#    on the sisl version</span>
+<span class="c1">#</span>
+<span class="c1"># 2. This contains compression 1, but sets the keys &quot;Gii&quot;,</span>
+<span class="c1">#    &quot;Gij&quot;, &quot;Gji&quot;, &quot;Vu1&quot; and &quot;Vu2&quot; to [], to save space</span>
+<span class="n">PickleCompressLevel</span>         <span class="mi">2</span>
+
+<span class="c1"># output folder, for example the input folder</span>
+<span class="n">OutFolder</span>                   <span class="o">./</span><span class="n">src</span><span class="o">/</span><span class="n">grogupy</span><span class="o">/</span><span class="n">cli</span><span class="o">/</span><span class="n">tests</span><span class="o">/</span>
+<span class="c1"># outfile name, default name</span>
+<span class="n">OutFile</span>                     <span class="n">test</span>
+
+
+<span class="c1">###############################################################################</span>
+<span class="c1">###############################################################################</span>
 </pre></div>
 </div>
 </div>
@@ -505,6 +509,9 @@ anisotropy tensor from the energies upon rotations. grogu describes the
 method in the original paper, but can only be used for the x,y,z reference
 directions. Fit can be used for any number of reference directions, which
 can follow the symmetry of the system.</p>
+</dd>
+<dt>parallelmode, <em>by default None</em></dt><dd><p>Parallelization can be turned on over the Brillouin-zone sampling by
+setting parallelmode to “K”. It should be turned on for efficiency.</p>
 </dd>
 <dt>outmagneticmoment, <em>by default total</em></dt><dd><p>It can be total or local and determines wether to use the total magnetic
 moment from the atom or just magnetic moment of the selected shells or

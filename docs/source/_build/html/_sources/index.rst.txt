@@ -3,8 +3,7 @@
 
 .. title:: grogupy: Relativistic magnetic interactions from non-orthogonal basis sets
 .. meta::
-   :description: Relativistic magnetic interactions from non-orthogonal basis 
-   sets.
+   :description: Relativistic magnetic interactions from non-orthogonal basis sets.
    :keywords: DFT, physics, grogupy, magnetic interactions, Siesta
 
 
