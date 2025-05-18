@@ -566,6 +566,15 @@ class Builder:
         """The parallelization mode for the Hamiltonian inversions, by default None."""
         return self.__parallel_mode
 
+    @parallel_mode.setter
+    def parallel_mode(self, value) -> None:
+        if value is None:
+            self.__parallel_mode = None
+        elif value[0].lower() == "k":
+            self.__parallel_mode = "K"
+        else:
+            raise Exception(f"Unknown parallel mode: {value}!")
+
     @property
     def architecture(self) -> str:
         """The architecture of the machine that grogupy is run on, by default 'CPU'."""
