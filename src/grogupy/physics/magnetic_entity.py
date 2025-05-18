@@ -705,7 +705,7 @@ class MagneticEntityList:
         ):
             self.__magnetic_entities = list(magnetic_entities)
         else:
-            raise Exception(f"Bad input type: {type(pairs)}!")
+            raise Exception(f"Bad input type: {type(magnetic_entities)}!")
 
     def __len__(self):
         return len(self.__magnetic_entities)
