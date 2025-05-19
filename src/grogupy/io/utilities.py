@@ -245,11 +245,8 @@ def strip_dict_structure(
         "_dh",
         "_ds",
         "Gii",
-        "_Gii_tmp",
         "Gij",
-        "_Gij_tmp",
         "Gji",
-        "_Gji_tmp",
         "Vu1",
         "Vu2",
     ],
@@ -267,7 +264,7 @@ def strip_dict_structure(
         The dictionary structure that we want to strip down
     pops : list[str], optional
         These are the keys that should be set to None in the structure,
-        by defualt ["_dh", "_ds", "Gii", "_Gii_tmp", "Gij", "_Gij_tmp", "Gji", "_Gji_tmp", "Vu1", "Vu2"]
+        by defualt ["_dh", "_ds", "Gii", "Gij", "Gji", "Vu1", "Vu2"]
     setto : Any, optional
         The value will be set to this, by defualt []
 
@@ -360,8 +357,9 @@ DEFAULT_INPUT = dict(
     kwargsformagent=dict(l=None),
     maxpairsperloop=1000,
     maxgperloop=1,
-    lowmemorymode=True,
+    lowmemorymode=False,
     greensfunctionsolver="Parallel",
+    evaluateenergies=True,
     exchangesolver="Fit",
     anisotropysolver="Fit",
     isotropiconly=False,
