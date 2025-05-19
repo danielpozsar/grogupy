@@ -136,6 +136,9 @@ class Builder:
         If it is True, then the exchange and anisotropy tensors are calculated, by default True
     greens_function_solver: {"Sequential", "Parallel"}
         The solution method for the Hamiltonian inversion, by default "Parallel"
+    isotropic_only: bool, optional
+        If it is True, then only the isotropic exchange is calculated regardless
+        the reference directions or other parameters, by default False
     exchange_solver: {"Fit", "Grogupy"}
         The solution method for the exchange tensor, by default "Fit"
     anisotropy_solver: {"Fit", "Grogupy"}
@@ -186,6 +189,7 @@ class Builder:
         self.__parallel_mode: Union[None, str] = None
         self.__architecture: str = CONFIG.architecture
         self.__evaluate_energies: bool = True
+        self.__isotropic_only: bool = False
 
         # fix the matlab compatibility
         self.__matlabmode = matlabmode
@@ -500,6 +504,20 @@ class Builder:
             self.__evaluate_energies = False
         elif value == True:
             self.__evaluate_energies = True
+        else:
+            raise Exception("This must be Bool!")
+
+    @property
+    def isotropic_only(self) -> bool:
+        """If it is True, then only the isotropic exchange is calculated."""
+        return self.__isotropic_only
+
+    @isotropic_only.setter
+    def isotropic_only(self, value: bool) -> None:
+        if value == False:
+            self.__isotropic_only = False
+        elif value == True:
+            self.__isotropic_only = True
         else:
             raise Exception("This must be Bool!")
 
