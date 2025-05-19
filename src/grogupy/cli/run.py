@@ -134,6 +134,24 @@ def main():
     simulation.exchange_solver = params["exchangesolver"]
     simulation.anisotropy_solver = params["anisotropysolver"]
     simulation.parallel_mode = params["parallelmode"]
+    simulation.isotropic_only = params["isotropiconly"]
+    simulation.evaluate_energies = params["evaluateenergies"]
+
+    # check for the appropriate output formats if only the energies are
+    # evaluated
+    if not params["evaluateenergies"]:
+        if params["savemagnopy"]:
+            raise Exception(
+                "magnopy output is not available if only the energies are evaluated!"
+            )
+        if params["saveuppasd"]:
+            raise Exception(
+                "UppASD output is not available if only the energies are evaluated!"
+            )
+        if not params["savepickle"]:
+            raise Exception(
+                "Pickle output format is mandatory, because it contains the energies!"
+            )
 
     # Define Kspace
     kspace = Kspace(
@@ -275,7 +293,12 @@ def main():
         )
         print("solved:", (timer() - start) / 60, "min")
         print(simulation.times.times)
-        print(simulation.to_magnopy())
+        if not params["evaluateenergies"]:
+            print("THE ENERGIES ARE CALCULATED, BUT THE SUMMARY IS NOT AVAILABLE!")
+            print("THE ENERGIES ARE CALCULATED, BUT THE SUMMARY IS NOT AVAILABLE!")
+            print("THE ENERGIES ARE CALCULATED, BUT THE SUMMARY IS NOT AVAILABLE!")
+        else:
+            print(simulation.to_magnopy())
         print(
             "################################################################################"
         )
