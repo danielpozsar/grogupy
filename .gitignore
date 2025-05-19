@@ -15,7 +15,7 @@ dist*
 *.code-workspace
 
 # Docs
-docs/source/_build
+*_build
 *_generated
 
 # Debug
