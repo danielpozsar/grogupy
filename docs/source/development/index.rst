@@ -1,13 +1,20 @@
 Contributing to grogupy
 =======================
 
-Currently there is no way to contribute to the development.
-However here is a summary for the 'approved' developers.
+Currently it is more favourable to request new features 
+of you want something implemented, but if you really 
+want to contribute to the development of grogupy, 
+then you can download or fork the repository and once 
+you are satisfied with the state of the code you can 
+try to merge it. Unfortunately if you choose the second 
+option there is no guarantee that your work will be 
+implemented in the final product...
 
-Create environment
-------------------
+Developing new features
+-----------------------
 
-First you have to clone the repository from Github.
+To start with the developement first you have to clone 
+the repository from Github.
 
 .. code-block:: bash
 
@@ -26,8 +33,8 @@ example with VSCode.
 
   * /docs/requirements.txt
 
-Finally you have to install and run ``pre-commit``, which is mainly used
-to automatically format the code, which makes it nicer and reduces git
+Finally you have to install and run ``pre-commit``, which is mainly 
+used to automatically format the code to make it nicer and reduce git
 differences.
 
 .. code-block:: bash
@@ -35,63 +42,23 @@ differences.
     pre-commit install
     pre-commit run --all-files
 
+Releasing new version
+---------------------
 
+Before releasing you should be sure that pytest runs without 
+errors including the benchmarks as well. All new features 
+should be documented in both docs and in the relevant 
+**__init__.py** files and new tests should be created.
 
-Build and upload wheel
-----------------------
+The commit for the version release should not contain any new 
+features or bugfixes, just the final steps to update some 
+parameters. Here is a list of TODOs in the last commit:
 
-You can find a detailed documentation on `PYPI <https://packaging.python.
-org/en/latest/tutorials/packaging-projects/>`_, but you can read here a
-short summary. First you need some API Tokens for PyPi, to be able
-to upload. You can read about this `here 
-<https://test.pypi.org/help/#apitoken>`_. I own the current project, so you 
-have to contact me.
+1. Update release version in **CITATION.ciff**
+2. Update release date in **CITATION.ciff**
+3. Update release version in **__init__.py**
+4. Update the changelogs in documentation
+5. tag the commit with the proper version number
 
-Use the following commands for a quick setup from the **grogupy_project**
-folder:
-
-* Build wheel.
-
-.. code-block:: bash
-
-    python -m build
-
-* Install wheel.
-
-.. code-block:: bash
-
-    pip install dist/grogupy<version>
-
-* Run tests.
-
-.. code-block:: bash
-
-    pytest
-
-If you want to upload to the PYPI repository, then don't forget to 
-rewrite the version numbers.
-
-.. code-block:: bash
-
-    python -m twine upload dist/*
-
-Build documentation
--------------------
-
-Yo can go to the **docs/source** directory and modify the *.rst*
-files to change the documentation. However to document the API of the
-package it is advised to use automatic documentation generation.
-
-* To build the documentation navigate to the **docs/source** folder.
-
-.. code-block:: bash
-
-    cd docs/source
-
-* Then build the documentation. After this the html page can be found in
-  **docs/source/_build/html**. If there is already a documentation you can
-  remove it by running ``make clean``.
-
-.. code-block:: bash
-
-    make html
+The packaging and documentation generation is automatically 
+done during release by github workflows.
