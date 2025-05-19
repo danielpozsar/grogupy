@@ -190,7 +190,9 @@ class Builder:
             self.__anisotropy_solver: str = "Fit"
 
         # create reference directions
-        self.ref_xcf_orientations = process_ref_directions(ref_xcf_orientations)
+        self.ref_xcf_orientations = process_ref_directions(
+            ref_xcf_orientations, self.anisotropy_solver, self.matlabmode
+        )
         if self.matlabmode:
             warnings.warn(
                 "Matlabmode is used, the exchange field reference directions were set to x,y,z!"
@@ -641,25 +643,35 @@ class Builder:
             out += tag + " " + " ".join(map(str, pair.supercell_shift))
             out += f" # distance [Ang]: {pair.distance}" + newline
             out += "isotropic " + str(np.round(pair.J_iso_meV, precision)) + newline
-            D = np.around(pair.D_meV, decimals=precision)
-            out += "DMI " + f"{D[0]} {D[1]} {D[2]}" + " # Dx Dy Dz" + newline
-            J = np.around(pair.J_meV - np.eye(3) * pair.J_iso_meV, decimals=precision)
-            out += (
-                "symmetric-anisotropy "
-                + f"{J[0,0]} {J[1,1]} {J[0,1]} {J[0,2]} {J[1,2]}"
-                + " # Sxx Syy Sxy Sxz Syz"
-                + newline
-            )
+            if pair.D is not None:
+                D = np.around(pair.D_meV, decimals=precision)
+                out += "DMI " + f"{D[0]} {D[1]} {D[2]}" + " # Dx Dy Dz" + newline
+            if pair.J is not None:
+                J = np.around(
+                    pair.J_meV - np.eye(3) * pair.J_iso_meV, decimals=precision
+                )
+                out += (
+                    "symmetric-anisotropy "
+                    + f"{J[0,0]} {J[1,1]} {J[0,1]} {J[0,2]} {J[1,2]}"
+                    + " # Sxx Syy Sxy Sxz Syz"
+                    + newline
+                )
         out += subsection + newline + section + newline
+
+        # this is when anysotropy is not available
+        if (self.magnetic_entities.K == None).all():
+            return out
 
         out += "on-site meV" + newline
         for mag_ent in self.magnetic_entities:
             out += subsection + newline
             out += mag_ent.tag + newline
-            K = np.around(mag_ent.K_meV, decimals=precision)
-            out += f"{K[0,0]} {K[1,1]} {K[2,2]} {K[0,1]} {K[0,2]} {K[1,2]}"
-            out += " # Kxx Kyy Kzz Kxy Kxz Kyz" + newline
-
+            if mag_ent.K is not None:
+                K = np.around(mag_ent.K_meV, decimals=precision)
+                out += f"{K[0,0]} {K[1,1]} {K[2,2]} {K[0,1]} {K[0,2]} {K[1,2]}"
+                out += " # Kxx Kyy Kzz Kxy Kxz Kyz" + newline
+            else:
+                out += "None" + newline
         out += subsection + newline + section + newline
 
         return out
