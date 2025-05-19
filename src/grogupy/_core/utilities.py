@@ -848,8 +848,9 @@ def process_ref_directions(
 
     # normalize before return
     for ref in orientations:
+        ref["vw"] = np.array(ref["vw"])
         ref["o"] = ref["o"] / np.linalg.norm(ref["o"])
-        ref["vw"] = ref["vw"] / np.linalg.norm(ref["vw"], axis=1)
+        ref["vw"] = ref["vw"] / np.linalg.norm(ref["vw"], axis=1)[:, None]
 
     return orientations
 
