@@ -20,11 +20,13 @@
 
 import importlib.util
 import pickle
+import warnings
 from os.path import join
 from typing import Union
 
 import numpy as np
 
+from grogupy import __version__
 from grogupy.batch.timing import DefaultTimer
 from grogupy.physics import Builder, Contour, Hamiltonian, Kspace, MagneticEntity, Pair
 
@@ -283,6 +285,8 @@ def load(
         "_Builder__max_g_per_loop",
         "_Builder__parallel_mode",
         "_Builder__architecture",
+        "_Builder__evaluate_energies",
+        "_Builder__isotropic_only",
         "_Builder__matlabmode",
         "_Builder__exchange_solver",
         "_Builder__anisotropy_solver",
@@ -292,6 +296,24 @@ def load(
         "_Builder__version",
     ]:
         return load_Builder(infile)
+
+    elif list(infile.keys()) == [
+        "times",
+        "kspace",
+        "contour",
+        "hamiltonian",
+        "magnetic_entities",
+        "pairs",
+        "ref_xcf_orientations",
+        "_rotated_hamiltonians",
+        "SLURM_ID",
+        "_Builder__version",
+    ]:
+        b = load_Builder(infile)
+        warnings.warn(
+            f"There is a mismatch between Builder ({b.version}) and current ({__version__}) version!"
+        )
+        return b
 
     elif list(infile.keys()) == [
         "times",
