@@ -39,7 +39,8 @@ different levels of theoretical complexity, for example it can use as input
 collinear, non-collinear and spin-orbit Hamiltonians using `sisl 
 <https://sisl.readthedocs.io/en/latest/index.html>`_. More on the theoretical 
 background can be found on `arXiv <https://arxiv.org/abs/2309.02558>`_. 
-grogupy was created by the `TRILMAX Consortium <https://trilmax.elte.hu>`_.
+grogupy was created by the `TRILMAX Consortium <https://trilmax.elte.hu>`_ and 
+the source code is available on `github <https://github.com/danielpozsar/grogupy>`_.
 
 .. grid:: 1 1 2 2
     :gutter: 2
