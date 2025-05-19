@@ -94,6 +94,8 @@ format. See and compare the following examples.
             # the calculation of J and K from the energy derivations, either Fit or Grogupy
             exchange_solver = "Fit"
             anisotropy_solver = "Fit"
+            # it is possible to only calculate isotropic exchange, which reduces runtime
+            isotropic_only = False
             # parallelization should be turned on for efficiency
             parallel_mode = "K"
 
@@ -232,6 +234,9 @@ format. See and compare the following examples.
             # the calculation of J and K from the energy derivations, either Fit or Grogupy
             ExchangeSolver          Fit
             AnisotropySolver        Fit
+            # it is possible to only calculate isotropic exchange, which reduces runtime
+            IsotropicOnly = False
+            
             # parallelization should be turned on for efficiency
             ParallelMode = "K"
 
@@ -430,6 +435,12 @@ anisotropysolver, *by default Fit*
     method in the original paper, but can only be used for the x,y,z reference 
     directions. Fit can be used for any number of reference directions, which 
     can follow the symmetry of the system.
+
+isotropiconly, *by default False*
+    It is possible to only calculate isotropic exchange, which requires one 
+    reference direction and one perpendicular direction, which greatly reduces 
+    runtime. If it is turned, then the **exchangesolver** and 
+    **anisotropysolver** parameters does not make sense.
 
 parallelmode, *by default None*
     Parallelization can be turned on over the Brillouin-zone sampling by 
