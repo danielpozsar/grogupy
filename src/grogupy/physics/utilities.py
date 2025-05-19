@@ -591,7 +591,7 @@ def calculate_exchange_tensor(
         J_iso: float
             Isotropic exchange (Tr[J] / 3)
         J_S: NDArray
-            Symmetric-anisotropy (J_S = J - J_iso * I ––> Jxx, Jyy, Jxy, Jxz, Jyz)
+            Symmetric-anisotropy (J_S = J - J_iso * I --> Jxx, Jyy, Jxy, Jxz, Jyz)
         D: NDArray
             DM elements (Dx, Dy, Dz)
         J: NDArray
@@ -703,6 +703,28 @@ def fit_exchange_tensor(
     D = np.array([D[1, 2], -D[0, 2], D[0, 1]])
 
     return J_iso, J_S, D, J
+
+
+def calculate_isotropic_only(
+    energies: NDArray,
+) -> float:
+    """Calculates the isotropic exchange only.
+
+    Parameters
+    ----------
+        energies: NDArray
+            Energy upon one single rotation
+
+    Returns
+    -------
+        J_iso: float
+            Isotropic exchange interaction
+    """
+
+    # the isotropic exchange
+    J_iso = energies[0, 0]
+
+    return J_iso
 
 
 if __name__ == "__main__":
