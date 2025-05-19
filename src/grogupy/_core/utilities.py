@@ -744,17 +744,14 @@ def process_ref_directions(
     # this is the matlabmode default values
     elif matlabmode:
         orientations = [
-            # o=np.array([1, 0, 0]), vw=[np.array([0, 0, -1]), np.array([0, 1, 0])]
             dict(
                 o=np.array([1, 0, 0]),
                 vw=[np.array([0, 1, 0]), np.array([0, 0, 1])],
             ),
-            # o=np.array([0, 1, 0]), vw=[np.array([1, 0, 0]), np.array([0, 0, -1])]
             dict(
                 o=np.array([0, 1, 0]),
                 vw=[np.array([1, 0, 0]), np.array([0, 0, 1])],
             ),
-            # o=np.array([0, 0, 1]), vw=[np.array([1, 0, 0]), np.array([0, 1, 0])]
             dict(
                 o=np.array([0, 0, 1]),
                 vw=[np.array([1, 0, 0]), np.array([0, 1, 0])],
