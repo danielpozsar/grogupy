@@ -2,9 +2,7 @@ __pycache__
 *pdf
 
 # Build
-*.gz
-*.whl
-dist
+dist*
 **/*.egg-info
 
 # Tests
@@ -17,10 +15,8 @@ dist
 *.code-workspace
 
 # Docs
-docs/make.bat
-docs/build
-docs/source/api/generated
-*generated
+docs/source/_build
+*_generated
 
 # Debug
 *.coverage*
