@@ -31,16 +31,15 @@ grogupy was created by the [TRILMAX Consortium](https://trilmax.elte.hu).
 ## Tutorials and examples ##
 
 You can start with the 
-[Quick start guides](https://danielpozsar.web.elte.hu/grogupy/quickstart/index.html) 
+[Quick start guides](https://grogupy.readthedocs.io/en/latest/quickstart/index.html) 
 or learn more about the best practices in the 
-[Tutorials](https://danielpozsar.web.elte.hu/grogupy/tutorials/index.html) section.
+[Tutorials](https://grogupy.readthedocs.io/en/latest/tutorials/index.html) section.
 
 ## Documentation ##
 
 The documentation can be found 
-[here](https://danielpozsar.web.elte.hu/grogupy/index.html), 
-and the API reference is 
-[here](https://danielpozsar.web.elte.hu/grogupy/API/modules.html).
+[here](https://grogupy.readthedocs.io/), and the API reference is 
+[here](https://grogupy.readthedocs.io/en/latest/API/index.html).
 
 ## Installation ##
 
@@ -51,8 +50,8 @@ pip install grogupy
 ```
 
 Or you can install optional dependecies, like visualization packages or packages 
-for GPU acceleration:
+for MPI or GPU acceleration:
 
 ```bash
-pip install grogupy[viz,gpu]
+pip install grogupy[viz,mpi,gpu]
 ```
