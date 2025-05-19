@@ -90,6 +90,10 @@ class TestCore:
     def test_hsk(self):
         raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
+    def test_process_ref_directions(self):
+        raise NotImplementedError
+
 
 if __name__ == "__main__":
     pass

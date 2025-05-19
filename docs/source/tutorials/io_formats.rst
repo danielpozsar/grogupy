@@ -355,7 +355,15 @@ refxcforientations, *by default [[1, 0, 0], [0, 1, 0], [0, 0, 1]]*
     directions in a way that they represent the symmetries of the system and 
     use the fitting methods for the calculation of the exchange and anisotropy 
     tensor. These orientations depend on the specific unit cell and atomic 
-    postions so it is hard to determine them automatically.
+    postions so it is hard to determine them automatically. For special cases 
+    the perpendicular directions can be defined as well, if the reference 
+    directions is a list of dictionaries, with keys 'o', 'vw', where 'o' is 
+    the reference direction and 'vw' is any number of perpendicular directions.
+
+matlabmode, *by default False*
+    Forces the reference directions to be (x,y,z) and forces the exchange and 
+    anisotropy solver to use the origonal grogu methods. It is for backwards 
+    compatibility.
 
 magneticentities
     Explicit magnetic entity definition for comlicated systems.

@@ -760,5 +760,99 @@ def hsk(
     return HK, SK
 
 
+def process_ref_directions(
+    ref_xcf_orientations: Union[list[float], NDArray, list[dict]],
+    mixed_perpendicular: bool = False,
+    matlabmode: bool = False,
+) -> list[dict]:
+    """Preprocess the reference directions input for the Builder object.
+
+    If the reference directions are already in the expected format, which
+    is list of dictionaries, with keys 'o', 'vw', where 'o' is the
+    reference direction and 'vw' is any number of perpendicular directions,
+    then it just return that with normalization. Otherwise either creates
+    (x,y,z) directions for matlabmode or generates the perpendicular
+    directions for the given reference directions. In case of the orginal
+    grogu method for anysotropy we need an extra perpendicualar direction,
+    which can be created by the ``mixed_perpendicular`` parameter.
+
+    Parameters
+    ----------
+    ref_xcf_orientations : Union[list[float], NDArray, list[dict]]
+        The reference directions input for the Builder object
+    mixed_perpendicular : bool, optional
+        Wether to add a third perpendicular direction for the anisotropy,
+        by default False
+    matlabmode : bool, optional
+        It creates and returns (x,y,z) referenc directions, by default False
+
+    Returns
+    -------
+    list[dict]
+        The expected format for reference directions, see above.
+    """
+    orientations = []
+
+    # when it already contains dictionaries, then everythin was
+    # defined by hand
+    if isinstance(ref_xcf_orientations[0], dict):
+        orientations = ref_xcf_orientations
+
+    # this is the matlabmode default values
+    elif matlabmode:
+        orientations = [
+            # o=np.array([1, 0, 0]), vw=[np.array([0, 0, -1]), np.array([0, 1, 0])]
+            dict(
+                o=np.array([1, 0, 0]),
+                vw=[np.array([0, 1, 0]), np.array([0, 0, 1])],
+            ),
+            # o=np.array([0, 1, 0]), vw=[np.array([1, 0, 0]), np.array([0, 0, -1])]
+            dict(
+                o=np.array([0, 1, 0]),
+                vw=[np.array([1, 0, 0]), np.array([0, 0, 1])],
+            ),
+            # o=np.array([0, 0, 1]), vw=[np.array([1, 0, 0]), np.array([0, 1, 0])]
+            dict(
+                o=np.array([0, 0, 1]),
+                vw=[np.array([1, 0, 0]), np.array([0, 1, 0])],
+            ),
+        ]
+
+    # if not matlabmode, but just the reference directions are given,
+    # generate the perpendicular directions
+    else:
+        # this is the original three axes o is z and vw is x and y
+        x = np.array([1, 0, 0], dtype=float)
+        y = np.array([0, 1, 0], dtype=float)
+        z = np.array([0, 0, 1], dtype=float)
+        # for every given orientation we rotate the x,y,z coordinate system
+        orientations = []
+        for a in np.array(ref_xcf_orientations):
+            # normalize, just in case
+            a = a / np.linalg.norm(a)
+            ztoa = RotMa2b(z, a)
+            o = ztoa @ z
+            v = ztoa @ x
+            w = ztoa @ y
+            orientations.append(dict(o=o, vw=[v, w]))
+
+    # add third orientation, which is required for off-diagonal
+    # anisotropy elements
+    # it is always required for matlabmode
+    if mixed_perpendicular or matlabmode:
+        for ref in orientations:
+            v = ref["vw"][0]
+            w = ref["vw"][1]
+            vw = (v + w) / np.linalg.norm(v + w)
+            ref["vw"].append(vw)
+
+    # normalize before return
+    for ref in orientations:
+        ref["o"] = ref["o"] / np.linalg.norm(ref["o"])
+        ref["vw"] = ref["vw"] / np.linalg.norm(ref["vw"], axis=1)
+
+    return orientations
+
+
 if __name__ == "__main__":
     pass

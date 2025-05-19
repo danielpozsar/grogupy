@@ -909,19 +909,43 @@ def read_fdf(path: str) -> dict:
                         line = line[: line.find("#")]
                         if len(line.strip()) != 0:
                             lines.append(line)
+
                     if name == "refxcforientations":
                         out_lines = []
                         for l in lines:
-                            out_lines.append([])
                             l = l.split()
+                            # we expected either 3 numbers of reference direction or
+                            # some number of perpendicular directions which is defined
+                            # by 3 numbers as well
+                            if len(l) % 3 != 0:
+                                raise Exception(
+                                    "Some number of 3D vectors are expected."
+                                )
+                            # check if the row is integer or not
                             just_int = True
                             for v in l:
                                 if not v.isdigit():
                                     just_int = False
-                            if just_int:
-                                out_lines[-1] = list(map(int, l))
+                            # if the perpendicular directions are not given
+                            if len(l) == 3:
+                                if just_int:
+                                    out_lines.append(list(map(int, l)))
+                                else:
+                                    out_lines.append(list(map(float, l)))
+                            # if it is an input dictionary format
                             else:
-                                out_lines[-1] = list(map(float, l))
+                                if just_int:
+                                    l = list(map(int, l))
+                                else:
+                                    l = list(map(float, l))
+                                out_ref = {"o": [], "vw": []}
+                                # iterate over the vectors
+                                for i in range(len(l) // 3):
+                                    if i == 0:
+                                        out_ref["o"] = l[i * 3 : i * 3 + 3]
+                                    else:
+                                        out_ref["vw"].append(l[i * 3 : i * 3 + 3])
+                                out_lines.append(out_ref)
 
                     elif name == "magneticentities":
                         out_lines = []
@@ -946,6 +970,7 @@ def read_fdf(path: str) -> dict:
                                 )
                             else:
                                 raise Exception("Unknown magnetic entity!")
+
                     elif name == "pairs":
                         out_lines = []
                         for l in lines:

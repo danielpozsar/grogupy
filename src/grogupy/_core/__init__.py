@@ -84,6 +84,7 @@ Miscellaneous suport functions used around the code. There are mathematical func
    make_contour                 A more sophisticated contour generator.
    make_kset                    Simple k-grid generator to sample the Brillouin zone.
    hsk                          Speed up Hk and Sk generation.
+   process_ref_directions       Preprocess the reference directions input for the Builder object.
 """
 
 from .constants import *

@@ -29,7 +29,7 @@ import sisl
 from numpy.typing import NDArray
 
 from grogupy import __version__
-from grogupy._core.utilities import RotMa2b, setup_from_range
+from grogupy._core.utilities import process_ref_directions, setup_from_range
 from grogupy._tqdm import _tqdm
 from grogupy.batch.timing import DefaultTimer
 from grogupy.config import CONFIG
@@ -61,7 +61,7 @@ class Builder:
 
     Parameters
     ----------
-    ref_xcf_orientations: Union[list, NDArray], optional
+    ref_xcf_orientations: Union[list[float], NDArray, list[dict]], optional
         The reference directions. The perpendicular directions are created by rotating
         the x,y,z frame to the given reference directions, by default [[1,0,0], [0,1,0], [0,0,1]]
     matlabmode: bool, optional
@@ -125,7 +125,7 @@ class Builder:
         The solution method for the exchange tensor, by default "Fit"
     anisotropy_solver: {"Fit", "grogupy"}
         The solution method for the anisotropy tensor, by default "grogupy"
-    ref_xcf_orientations: NDArray
+    ref_xcf_orientations: list[dict]
         The reference directions and two perpendicular direction. Every element is a
         dictionary, wth two elements, 'o', the reference direction and 'vw', the two
         perpendicular directions and a third direction that is the linear combination of
@@ -150,7 +150,11 @@ class Builder:
 
     def __init__(
         self,
-        ref_xcf_orientations: Union[list, NDArray] = [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+        ref_xcf_orientations: Union[list[float], NDArray, list[dict]] = [
+            [1, 0, 0],
+            [0, 1, 0],
+            [0, 0, 1],
+        ],
         matlabmode: bool = False,
     ) -> None:
         """Initialize simulation."""
@@ -185,51 +189,9 @@ class Builder:
             self.__exchange_solver: str = "Fit"
             self.__anisotropy_solver: str = "Fit"
 
-        # this is the original three axes o is z and vw is x and y
-        x = np.array([1, 0, 0], dtype=float)
-        y = np.array([0, 1, 0], dtype=float)
-        z = np.array([0, 0, 1], dtype=float)
-        # for every given orientation we rotate the x,y,z coordinate system
-        orientations = []
-        for a in np.array(ref_xcf_orientations):
-            # normalize, just in case
-            a = a / np.linalg.norm(a)
-            ztoa = RotMa2b(z, a)
-            o = ztoa @ z
-            v = ztoa @ x
-            w = ztoa @ y
-            if self.__anisotropy_solver.lower()[0] == "g":
-                # add third orientation required for off-diagonal
-                # anisotropy elements
-                vw_mix = (v + w) / np.linalg.norm(v + w)
-                orientations.append(dict(o=o, vw=[v, w, vw_mix]))
-            else:
-                orientations.append(dict(o=o, vw=[v, w]))
-
-        self.ref_xcf_orientations: list[dict] = orientations
-        if self.__matlabmode:
-            self.ref_xcf_orientations = [
-                dict(
-                    #                    o=np.array([1, 0, 0]), vw=[np.array([0, 0, -1]), np.array([0, 1, 0])]
-                    o=np.array([1, 0, 0]),
-                    vw=[np.array([0, 1, 0]), np.array([0, 0, 1])],
-                ),
-                dict(
-                    #                    o=np.array([0, 1, 0]), vw=[np.array([1, 0, 0]), np.array([0, 0, -1])]
-                    o=np.array([0, 1, 0]),
-                    vw=[np.array([1, 0, 0]), np.array([0, 0, 1])],
-                ),
-                dict(
-                    #                    o=np.array([0, 0, 1]), vw=[np.array([1, 0, 0]), np.array([0, 1, 0])]
-                    o=np.array([0, 0, 1]),
-                    vw=[np.array([1, 0, 0]), np.array([0, 1, 0])],
-                ),
-            ]
-            for ref in self.ref_xcf_orientations:
-                v = ref["vw"][0]
-                w = ref["vw"][1]
-                vw = (v + w) / np.sqrt(2)
-                ref["vw"].append(vw)
+        # create reference directions
+        self.ref_xcf_orientations = process_ref_directions(ref_xcf_orientations)
+        if self.matlabmode:
             warnings.warn(
                 "Matlabmode is used, the exchange field reference directions were set to x,y,z!"
             )
