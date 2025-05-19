@@ -404,9 +404,9 @@ def interaction_energy(
         warnings.warn(
             "Only one energy point is given for integration! Returning energy point instead!"
         )
-        return -1 / np.pi * np.imag(traced * weights)
+        return float(-1 / np.pi * np.imag(traced * weights).squeeze())
 
-    integral = -1 / np.pi * np.sum(np.imag(traced * weights))
+    integral = float(-1 / np.pi * np.sum(np.imag(traced * weights)).squeeze())
     return integral
 
 
@@ -441,9 +441,9 @@ def second_order_energy(
         warnings.warn(
             "Only one energy point is given for integration! Returning energy point instead!"
         )
-        return -1 / np.pi * np.imag(traced * weights)
+        return float(-1 / np.pi * np.imag(traced * weights).squeeze())
 
-    integral = -1 / np.pi * np.sum(np.imag(traced * weights))
+    integral = float(-1 / np.pi * np.sum(np.imag(traced * weights)).squeeze())
     return integral
 
 
