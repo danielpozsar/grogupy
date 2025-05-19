@@ -705,6 +705,7 @@ def hsk(
 
 def process_ref_directions(
     ref_xcf_orientations: Union[list[float], NDArray, list[dict]],
+    isotropic_only: bool = False,
     mixed_perpendicular: bool = False,
     matlabmode: bool = False,
 ) -> list[dict]:
@@ -723,6 +724,10 @@ def process_ref_directions(
     ----------
     ref_xcf_orientations : Union[list[float], NDArray, list[dict]]
         The reference directions input for the Builder object
+    isotropic_only: bool, optional
+        If only the isotropic exchange is needed, then there should be
+        one reference direction and one perpendicular direction, by default
+        False
     mixed_perpendicular : bool, optional
         Wether to add a third perpendicular direction for the anisotropy,
         by default False
@@ -782,6 +787,11 @@ def process_ref_directions(
             w = ref["vw"][1]
             vw = (v + w) / np.linalg.norm(v + w)
             ref["vw"] = np.vstack((ref["vw"], vw))
+
+    # one reference directon and one perpendicular direction
+    if isotropic_only:
+        orientations = [orientations[0]]
+        orientations[0]["vw"] = orientations[0]["vw"][0]
 
     return orientations
 

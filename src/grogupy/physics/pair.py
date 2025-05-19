@@ -32,6 +32,7 @@ from grogupy._core.utilities import arrays_lists_equal, arrays_None_equal
 from .magnetic_entity import MagneticEntity
 from .utilities import (
     calculate_exchange_tensor,
+    calculate_isotropic_only,
     fit_exchange_tensor,
     interaction_energy,
 )
@@ -557,6 +558,30 @@ class Pair:
         self.J_S: NDArray = J_S
         self.J_iso: float = J_iso
         self.D: NDArray = D
+        # call these so they are updated
+        self.J_meV
+        self.J_mRy
+        self.J_S_meV
+        self.J_S_mRy
+        self.J_iso_meV
+        self.J_iso_mRy
+        self.D_meV
+        self.D_mRy
+
+    def calculate_isotropic_only(self) -> None:
+        """Calculates the isotropic exchange only.
+
+        It uses the instance properties to calculate the isotropic exchange.
+        It resets the other properties, but they can be recalculated from the
+        energies.
+
+        """
+
+        J_iso = calculate_isotropic_only(self.energies)
+        self.J: NDArray = None
+        self.J_S: NDArray = None
+        self.J_iso: float = J_iso
+        self.D: NDArray = None
         # call these so they are updated
         self.J_meV
         self.J_mRy

@@ -70,6 +70,10 @@ class TestUtilities:
     def test_fit_exchange_tensor(self):
         raise NotImplementedError
 
+    @pytest.mark.xfail(raises=NotImplementedError)
+    def test_calculate_isotropic_only(self):
+        raise NotImplementedError
+
 
 if __name__ == "__main__":
     pass

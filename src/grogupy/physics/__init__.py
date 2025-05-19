@@ -60,6 +60,7 @@ Utilities
    fit_anisotropy_tensor        Fits the anisotropy tensor to the energies
    calculate_exchange_tensor    Calculates the exchange tensor from the energies
    fit_exchange_tensor          Fits the exchange tensor to the energies
+   calculate_isotropic_only     Calculates the isotropic exchange only.
 
 Background information
 ----------------------
