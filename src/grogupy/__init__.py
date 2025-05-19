@@ -83,7 +83,9 @@ __all__.extend(
         "Contour",
         "Kspace",
         "MagneticEntity",
+        "MagneticEntityList",
         "Pair",
+        "PairList",
         "Hamiltonian",
         "Builder",
     ]
