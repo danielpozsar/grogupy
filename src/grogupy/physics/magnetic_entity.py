@@ -160,9 +160,9 @@ class MagneticEntity:
         The list of the projected Greens functions
     energies : Union[None, NDArray]
         The calculated energies for each direction
-    K : Union[NDArray, None]
+    K : Union[None, NDArray]
         The magnetic anisotropy, by default None
-    K_consistency : Union[float, None]
+    K_consistency : Union[None, float]
         Consistency check on the diagonal K elements, by default None
     """
 
@@ -224,9 +224,8 @@ class MagneticEntity:
         self._Vu1: list[list[NDArray]] = []
         self._Vu2: list[list[NDArray]] = []
         self._Gii: list[NDArray] = []
-        self._Gii_tmp: list[NDArray] = []
 
-        self.energies: Union[list, NDArray] = None
+        self.energies: Union[None, NDArray] = None
         self.K: Union[None, NDArray] = None
         self.K_consistency: Union[None, float] = None
 
@@ -593,12 +592,13 @@ class MagneticEntity:
         self._Vu1: list[list[NDArray]] = []
         self._Vu2: list[list[NDArray]] = []
         self._Gii: list[NDArray] = []
-        self._Gii_tmp: list[NDArray] = []
         self.energies: list[NDArray] = None
         self.K: Union[None, NDArray] = None
         self.K_consistency: Union[None, float] = None
 
-    def calculate_energies(self, weights: NDArray, matlabmode: bool = False) -> None:
+    def calculate_energies(
+        self, weights: NDArray, append: bool = False, matlabmode: bool = False
+    ) -> None:
         """Calculates the energies of the infinitesimal rotations.
 
         It uses the instance properties to calculate the energies and
@@ -608,17 +608,20 @@ class MagneticEntity:
         ----------
         weights : NDArray
             The weights of the energy contour integral
+        append: bool, optional
+            If it is True, then the energy of a single rotation is appended
+            to the energies from the temporary storages, by default False
         matlabmode : bool, optional
             Wether to use a linear combination of the two perpendicular
             orientation, by default False
         """
 
-        energies: list[list[float]] = []
-        for i, Gii in enumerate(self._Gii):
+        if append:
             storage: list[float] = []
+            Gii = self._Gii_tmp
             # iterate over the first and second order local perturbations
-            V1 = self._Vu1[i]
-            V2 = self._Vu2[i]
+            V1 = self._Vu1_tmp
+            V2 = self._Vu2_tmp
 
             # fill up the magnetic entities dictionary with the energies
             storage.append(second_order_energy(V1[0], V2[0], Gii, weights))
@@ -627,10 +630,28 @@ class MagneticEntity:
             storage.append(second_order_energy(V1[1], V2[1], Gii, weights))
             if matlabmode:
                 storage.append(second_order_energy(V1[2], V2[2], Gii, weights))
-            energies.append(storage)
+            if self.energies is None:
+                self.energies = np.array(storage)
+            else:
+                self.energies = np.vstack((self.energies, np.array(storage)))
+        else:
+            energies: list[list[float]] = []
+            for i, Gii in enumerate(self._Gii):
+                storage: list[float] = []
+                # iterate over the first and second order local perturbations
+                V1 = self._Vu1[i]
+                V2 = self._Vu2[i]
 
-        # convert to array
-        self.energies: NDArray = np.array(energies)
+                # fill up the magnetic entities dictionary with the energies
+                storage.append(second_order_energy(V1[0], V2[0], Gii, weights))
+                storage.append(interaction_energy(V1[0], V1[1], Gii, Gii, weights))
+                storage.append(interaction_energy(V1[1], V1[0], Gii, Gii, weights))
+                storage.append(second_order_energy(V1[1], V2[1], Gii, weights))
+                if matlabmode:
+                    storage.append(second_order_energy(V1[2], V2[2], Gii, weights))
+                energies.append(storage)
+            self.energies: NDArray = np.array(energies)
+
         # call these so they are updated
         self.energies_meV
         self.energies_mRy

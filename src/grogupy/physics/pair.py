@@ -182,8 +182,6 @@ class Pair:
         # initialize simulation parameters
         self._Gij: list[NDArray] = []
         self._Gji: list[NDArray] = []
-        self._Gij_tmp: list[NDArray] = []
-        self._Gji_tmp: list[NDArray] = []
 
         self.energies: Union[list, NDArray] = None
         self.J_iso: Union[float, None] = None
@@ -462,8 +460,6 @@ class Pair:
 
         self._Gij: list[NDArray] = []
         self._Gji: list[NDArray] = []
-        self._Gij_tmp: list[NDArray] = []
-        self._Gji_tmp: list[NDArray] = []
         self.energies: Union[None, NDArray] = None
 
         self.J_iso: Union[float, None] = None
@@ -471,7 +467,7 @@ class Pair:
         self.J_S: Union[NDArray, None] = None
         self.D: Union[NDArray, None] = None
 
-    def calculate_energies(self, weights: NDArray) -> None:
+    def calculate_energies(self, weights: NDArray, append: bool = False) -> None:
         """Calculates the energies of the infinitesimal rotations.
 
         It uses the instance properties to calculate the energies and
@@ -481,22 +477,40 @@ class Pair:
         ----------
         weights: NDArray
             The weights of the energy contour integral
+        append: bool, optional
+            If it is True, then the energy of a single rotation is appended
+            to the energies from the temporary storages, by default False
         """
-
-        energies: list[list[float]] = []
-        for i, (Gij, Gji) in enumerate(zip(self._Gij, self._Gji)):
-            storage: list = []
+        if append:
+            storage: list[float] = []
             # iterate over the first order local perturbations in all possible orientations for the two sites
             # actually all possible orientations without the orientation for the off-diagonal anisotropy
             # that is why we only take the first two of each Vu1
-            for Vui in self.M1._Vu1[i][:2]:
-                for Vuj in self.M2._Vu1[i][:2]:
-                    storage.append(interaction_energy(Vui, Vuj, Gij, Gji, weights))
-            # fill up the pairs dictionary with the energies
-            energies.append(storage)
+            for Vui in self.M1._Vu1_tmp[:2]:
+                for Vuj in self.M2._Vu1_tmp[:2]:
+                    storage.append(
+                        interaction_energy(
+                            Vui, Vuj, self._Gij_tmp, self._Gji_tmp, weights
+                        )
+                    )
+            if self.energies is None:
+                self.energies = np.array(storage)
+            else:
+                self.energies = np.vstack((self.energies, np.array(storage)))
+        else:
+            energies: list[list[float]] = []
+            for i, (Gij, Gji) in enumerate(zip(self._Gij, self._Gji)):
+                storage: list[float] = []
+                # iterate over the first order local perturbations in all possible orientations for the two sites
+                # actually all possible orientations without the orientation for the off-diagonal anisotropy
+                # that is why we only take the first two of each Vu1
+                for Vui in self.M1._Vu1[i][:2]:
+                    for Vuj in self.M2._Vu1[i][:2]:
+                        storage.append(interaction_energy(Vui, Vuj, Gij, Gji, weights))
+                # fill up the pairs dictionary with the energies
+                energies.append(storage)
+                self.energies: NDArray = np.array(energies)
 
-        # convert to np array
-        self.energies: NDArray = np.array(energies)
         # call these so they are updated
         self.energies_meV
         self.energies_mRy

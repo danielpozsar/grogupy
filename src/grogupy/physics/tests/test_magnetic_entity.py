@@ -105,7 +105,6 @@ class TestMagneticEntity:
         assert isinstance(mag_ent._Vu1, list)
         assert isinstance(mag_ent._Vu2, list)
         assert isinstance(mag_ent._Gii, list)
-        assert isinstance(mag_ent._Gii_tmp, list)
         assert mag_ent.energies is None
         assert mag_ent.K is None
         assert mag_ent.K_consistency is None
@@ -380,7 +379,6 @@ class TestMagneticEntity:
         assert mag_ent._Vu1 == []
         assert mag_ent._Vu2 == []
         assert mag_ent._Gii == []
-        assert mag_ent._Gii_tmp == []
         assert mag_ent.energies is None
         assert mag_ent.K is None
         assert mag_ent.K_consistency is None

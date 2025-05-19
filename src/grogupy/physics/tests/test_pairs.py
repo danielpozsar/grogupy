@@ -47,8 +47,6 @@ class TestPair:
 
         assert p._Gij == []
         assert p._Gji == []
-        assert p._Gij_tmp == []
-        assert p._Gji_tmp == []
 
         assert p.energies == None
         assert p.J_iso == None
@@ -62,8 +60,6 @@ class TestPair:
 
         pair._Gij = 1
         pair._Gji = None
-        pair._Gij_tmp = np.array([10])
-        pair._Gji_tmp = "[]"
         pair.energies = 3.14
         pair.J_iso = (10, 20, 30)
         pair.J = 2
@@ -73,8 +69,6 @@ class TestPair:
         pair.reset()
         assert pair._Gij == []
         assert pair._Gji == []
-        assert pair._Gij_tmp == []
-        assert pair._Gji_tmp == []
         assert pair.energies == None
         assert pair.J_iso == None
         assert pair.J == None
