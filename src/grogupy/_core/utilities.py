@@ -744,18 +744,9 @@ def process_ref_directions(
     # this is the matlabmode default values
     elif matlabmode:
         orientations = [
-            dict(
-                o=np.array([1, 0, 0]),
-                vw=[np.array([0, 1, 0]), np.array([0, 0, 1])],
-            ),
-            dict(
-                o=np.array([0, 1, 0]),
-                vw=[np.array([1, 0, 0]), np.array([0, 0, 1])],
-            ),
-            dict(
-                o=np.array([0, 0, 1]),
-                vw=[np.array([1, 0, 0]), np.array([0, 1, 0])],
-            ),
+            dict(o=np.array([1, 0, 0]), vw=np.array([[0, 1, 0], [0, 0, 1]])),
+            dict(o=np.array([0, 1, 0]), vw=np.array([[1, 0, 0], [0, 0, 1]])),
+            dict(o=np.array([0, 0, 1]), vw=np.array([[1, 0, 0], [0, 1, 0]])),
         ]
 
     # if not matlabmode, but just the reference directions are given,
@@ -774,7 +765,13 @@ def process_ref_directions(
             o = ztoa @ z
             v = ztoa @ x
             w = ztoa @ y
-            orientations.append(dict(o=o, vw=[v, w]))
+            orientations.append(dict(o=o, vw=np.array([v, w])))
+
+    # normalize before return
+    for ref in orientations:
+        ref["vw"] = np.array(ref["vw"])
+        ref["o"] = ref["o"] / np.linalg.norm(ref["o"])
+        ref["vw"] = ref["vw"] / np.linalg.norm(ref["vw"], axis=1)[:, None]
 
     # add third orientation, which is required for off-diagonal
     # anisotropy elements
@@ -784,13 +781,7 @@ def process_ref_directions(
             v = ref["vw"][0]
             w = ref["vw"][1]
             vw = (v + w) / np.linalg.norm(v + w)
-            ref["vw"].append(vw)
-
-    # normalize before return
-    for ref in orientations:
-        ref["vw"] = np.array(ref["vw"])
-        ref["o"] = ref["o"] / np.linalg.norm(ref["o"])
-        ref["vw"] = ref["vw"] / np.linalg.norm(ref["vw"], axis=1)[:, None]
+            ref["vw"] = np.vstack((ref["vw"], vw))
 
     return orientations
 
