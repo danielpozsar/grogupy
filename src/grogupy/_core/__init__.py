@@ -76,8 +76,6 @@ Miscellaneous suport functions used around the code. There are mathematical func
    setup_from_range             Generates all the pairs and magnetic entities from atoms in a given radius.
    arrays_lists_equal           Compares two objects with specific rules.
    arrays_None_equal            Compares two objects with specific rules.
-   parallel_Gk                  Calculates the Greens function by inversion.
-   sequential_Gk                Calculates the Greens function by inversion.
    onsite_projection            It produces the slices of a matrix for the on site projection.
    calc_Vu                      Calculates the local perturbation in case of a spin rotation.
    build_hh_ss                  It builds the Hamiltonian and Overlap matrix from the sisl.dh class.

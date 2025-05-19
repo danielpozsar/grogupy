@@ -388,63 +388,6 @@ def arrays_None_equal(array1: Any, array2: Any) -> bool:
         False
 
 
-def parallel_Gk(HK: NDArray, SK: NDArray, samples: NDArray, eset: int) -> NDArray:
-    """Calculates the Greens function by inversion.
-
-    It calculates the Greens function on all the energy levels at the same time.
-
-    Parameters
-    ----------
-        HK: (NO, NO), NDArray
-            Hamiltonian at a given k point
-        SK: (NO, NO), NDArray
-            Overlap Matrix at a given k point
-        samples: (eset) NDArray
-            Energy sample along the contour
-        eset: int
-            Number of energy samples along the contour
-
-    Returns
-    -------
-        Gk: (eset, NO, NO), NDArray
-            Green's function at a given k point
-    """
-
-    # Calculates the Greens function on all the energy levels
-    return np.linalg.inv(SK * samples.reshape(eset, 1, 1) - HK)
-
-
-def sequential_Gk(HK: NDArray, SK: NDArray, samples: NDArray, eset: int) -> NDArray:
-    """Calculates the Greens function by inversion.
-
-    It calculates sequentially over the energy levels.
-
-    Parameters
-    ----------
-        HK: (NO, NO), NDArray
-            Hamiltonian at a given k point
-        SK: (NO, NO), NDArray
-            Overlap Matrix at a given k point
-        samples: (eset) NDArray
-            Energy sample along the contour
-        eset: int
-            Number of energy samples along the contour
-
-    Returns
-    -------
-        Gk: (eset, NO, NO), NDArray
-            Green's function at a given k point
-    """
-
-    # creates an empty holder
-    Gk = np.zeros(shape=(eset, HK.shape[0], HK.shape[1]), dtype="complex128")
-    # fills the holder sequentially by the Greens function on a given energy
-    for j in range(eset):
-        Gk[j] = np.linalg.inv(SK * samples[j] - HK)
-
-    return Gk
-
-
 def onsite_projection(matrix: NDArray, idx1: NDArray, idx2: NDArray) -> NDArray:
     """It produces the slices of a matrix for the on site projection.
 

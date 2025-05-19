@@ -59,14 +59,6 @@ class TestCore:
         raise NotImplementedError
 
     @pytest.mark.xfail(raises=NotImplementedError)
-    def test_parallel_Gk(self):
-        raise NotImplementedError
-
-    @pytest.mark.xfail(raises=NotImplementedError)
-    def test_sequential_Gk(self):
-        raise NotImplementedError
-
-    @pytest.mark.xfail(raises=NotImplementedError)
     def test_onsite_projection(self):
         raise NotImplementedError
 
