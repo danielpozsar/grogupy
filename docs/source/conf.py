@@ -18,6 +18,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import datetime
 import os
 import sys
 
@@ -50,6 +51,7 @@ extensions = [
 rst_prolog = f"""
 .. |release| replace:: {release}
 .. |sisl_version| replace:: {__sisl__version__}
+.. |date| replace:: {str(datetime.date.today())}
 """
 
 # Autosummary and autodoc
