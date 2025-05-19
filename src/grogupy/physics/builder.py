@@ -109,6 +109,15 @@ class Builder:
 
     Attributes
     ----------
+    infile: str
+        Input path to the .fdf file
+    scf_xcf_orientation: NDArray
+        The DFT exchange filed orientation from the instance Hamiltonian
+    ref_xcf_orientations: list[dict]
+        The reference directions and two perpendicular direction. Every element is a
+        dictionary, wth two elements, 'o', the reference direction and 'vw', the two
+        perpendicular directions and a third direction that is the linear combination of
+        the two
     kspace: Union[None, Kspace]
         The k-space part of the integral
     contour: Union[None, Contour]
@@ -119,17 +128,18 @@ class Builder:
         List of magnetic entities
     pairs: PairList
         List of pairs
+    low_memory_mode: bool, optional
+        The memory mode of the calculation, by default False
+    max_g_per_loop: int, optional
+        Maximum number of greens function samples per loop, by default 1
+    evaluate_energies: bool, optional
+        If it is True, then the exchange and anisotropy tensors are calculated, by default True
     greens_function_solver: {"Sequential", "Parallel"}
-        The solution method for the Hamiltonian inversion, by default "Sequential"
-    exchange_solver: {"Fit", "grogupy"}
+        The solution method for the Hamiltonian inversion, by default "Parallel"
+    exchange_solver: {"Fit", "Grogupy"}
         The solution method for the exchange tensor, by default "Fit"
-    anisotropy_solver: {"Fit", "grogupy"}
-        The solution method for the anisotropy tensor, by default "grogupy"
-    ref_xcf_orientations: list[dict]
-        The reference directions and two perpendicular direction. Every element is a
-        dictionary, wth two elements, 'o', the reference direction and 'vw', the two
-        perpendicular directions and a third direction that is the linear combination of
-        the two
+    anisotropy_solver: {"Fit", "Grogupy"}
+        The solution method for the anisotropy tensor, by default "Grogupy"
     parallel_mode: Union[None, str], optional
         The parallelization mode for the Hamiltonian inversions, by default None
     architecture: {"CPU", "GPU"}, optional
@@ -138,10 +148,6 @@ class Builder:
         The ID of the SLURM job, if available, else 'Could not be determined.'
     _dh: sisl.physics.Hamiltonian
         The sisl Hamiltonian from the instance Hamiltonian
-    scf_xcf_orientation: NDArray
-        The DFT exchange filed orientation from the instance Hamiltonian
-    infile: str
-        Input path to the .fdf file
     times: grogupy.batch.timing.DefaultTimer
         It contains and measures runtime
     """
@@ -173,12 +179,13 @@ class Builder:
         #: The list of pairs
         self.pairs: PairList = PairList()
 
-        # fix the architecture
-        self.__low_memory_mode = True
-        self.__greens_function_solver: str = "Sequential"
-        self.__max_g_per_loop: int = 10000
+        # these are the relevant parameters for the solver
+        self.__low_memory_mode: bool = False
+        self.__greens_function_solver: str = "Parallel"
+        self.__max_g_per_loop: int = 1
         self.__parallel_mode: Union[None, str] = None
-        self.__architecture = CONFIG.architecture
+        self.__architecture: str = CONFIG.architecture
+        self.__evaluate_energies: bool = True
 
         # fix the matlab compatibility
         self.__matlabmode = matlabmode
@@ -469,7 +476,7 @@ class Builder:
             raise Exception(f"Unrecognized solution method: {value}")
 
     @property
-    def low_memory_mode(self) -> str:
+    def low_memory_mode(self) -> bool:
         """The memory mode of the calculation."""
         return self.__low_memory_mode
 
@@ -479,6 +486,20 @@ class Builder:
             self.__low_memory_mode = False
         elif value == True:
             self.__low_memory_mode = True
+        else:
+            raise Exception("This must be Bool!")
+
+    @property
+    def evaluate_energies(self) -> bool:
+        """If it is True, then the exchange and anisotropy tensors are calculated."""
+        return self.__evaluate_energies
+
+    @evaluate_energies.setter
+    def evaluate_energies(self, value: bool) -> None:
+        if value == False:
+            self.__evaluate_energies = False
+        elif value == True:
+            self.__evaluate_energies = True
         else:
             raise Exception("This must be Bool!")
 
