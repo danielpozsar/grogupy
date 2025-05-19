@@ -91,6 +91,9 @@ format. See and compare the following examples.
             ###############################################################################
 
 
+            # the exchange and anisotropy solvers can be turned off, in this case only the 
+            # energies upon rotations are meaningful
+            evaluate_energies = True
             # the calculation of J and K from the energy derivations, either Fit or Grogupy
             exchange_solver = "Fit"
             anisotropy_solver = "Fit"
@@ -231,6 +234,9 @@ format. See and compare the following examples.
             ###############################################################################
 
 
+            # the exchange and anisotropy solvers can be turned off, in this case only the 
+            # energies upon rotations are meaningful
+            EvaluateEnergies = True
             # the calculation of J and K from the energy derivations, either Fit or Grogupy
             ExchangeSolver          Fit
             AnisotropySolver        Fit
@@ -411,7 +417,7 @@ maxgperloop, *by default 1*
     **greensfunctionsolver** is "Sequential", otherwise grogupy uses full 
     parallelization of matrix inversions on all energy levels.
 
-lowmemorymode, *by default True*
+lowmemorymode, *by default False*
     Discards some temporary data that can be useful in interactive mode or for 
     some post processing. Reduces RAM usage so it is useful for memory bound 
     systems.
@@ -421,6 +427,14 @@ greensfunctionsolver, *by default Parallel*
     the energy levels for the matrix inversions. Useful of the system is memory 
     bound. If it is set to sequential, then **maxgperloop** is used to try some 
     less aggresive parallelization.
+
+evaluateenergies, *by default True*
+    The exchange and anisotropy solvers can be turned off, in this case only the 
+    energies upon rotations are meaningful. This can be useful if we want to 
+    apply some custom spin model in post processing, however it turns off many 
+    functions in grogupy, for example some output options are not available, but 
+    the **savepickle** is mandatory, because it contains the energies that we 
+    need. 
 
 exchangesolver, *by default Fit*
     Can be fit or grogu and it determines the calculation method of the 
