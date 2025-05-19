@@ -1003,7 +1003,6 @@ class Builder:
             warnings.warn(
                 "There are unnecessary orientations for the anisotropy or the exchange solver!"
             )
-
         elif (
             self.anisotropy_solver.lower()[0] == "f"
             or self.exchange_solver.lower()[0] == "f"
@@ -1011,6 +1010,16 @@ class Builder:
             warnings.warn(
                 "There are unnecessary perpendicular directions for the anisotropy or exchange solver!"
             )
+
+        # check the perpendicularity of directions
+        for ref in self.ref_xcf_orientations:
+            o = ref["o"]
+            vw = ref["vw"]
+            if (
+                not np.count_nonzero(np.apply_along_axis(lambda d: np.dot(o, d), 1, vw))
+                == 0
+            ):
+                raise Exception(f"Not all directions are perpendicular to {o}!")
 
         # no parallelization
         if self.__parallel_mode is None:
