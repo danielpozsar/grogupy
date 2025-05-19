@@ -661,6 +661,7 @@ class TestMagneticEntity:
 class TestMagneticEntityList:
     def test_properties(self):
         system = grogupy.load("./benchmarks/test_builder.pkl")
+        system.magnetic_entities = system.magnetic_entities.tolist()
         mlist = MagneticEntityList(system.magnetic_entities)
 
         assert len(system.magnetic_entities) == len(mlist)
@@ -669,6 +670,7 @@ class TestMagneticEntityList:
 
     def test_getitem(self):
         system = grogupy.load("./benchmarks/test_builder.pkl")
+        system.magnetic_entities = system.magnetic_entities.tolist()
         mlist = MagneticEntityList(system.magnetic_entities)
 
         assert system.magnetic_entities[0] == mlist[0]
@@ -676,6 +678,7 @@ class TestMagneticEntityList:
 
     def test_getattr(self):
         system = grogupy.load("./benchmarks/test_builder.pkl")
+        system.magnetic_entities = system.magnetic_entities.tolist()
         mlist = MagneticEntityList(system.magnetic_entities)
 
         ani = []
@@ -686,11 +689,28 @@ class TestMagneticEntityList:
 
     def test_append(self):
         system = grogupy.load("./benchmarks/test_builder.pkl")
+        system.magnetic_entities = system.magnetic_entities.tolist()
         mlist = MagneticEntityList()
 
         for m in system.magnetic_entities:
             mlist.append(m)
         assert len(mlist) == len(system.magnetic_entities)
+
+    def test_tolist(self):
+        system = grogupy.load("./benchmarks/test_builder.pkl")
+        system.magnetic_entities = system.magnetic_entities.tolist()
+        mlist = MagneticEntityList(system.magnetic_entities)
+
+        assert isinstance(mlist, MagneticEntityList)
+        assert isinstance(mlist.tolist(), list)
+
+    def test_toarray(self):
+        system = grogupy.load("./benchmarks/test_builder.pkl")
+        system.magnetic_entities = system.magnetic_entities.tolist()
+        mlist = MagneticEntityList(system.magnetic_entities)
+
+        assert isinstance(mlist, MagneticEntityList)
+        assert isinstance(mlist.toarray(), np.ndarray)
 
 
 if __name__ == "__main__":

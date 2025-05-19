@@ -241,6 +241,7 @@ class TestPair:
 class TestPairList:
     def test_properties(self):
         system = grogupy.load("./benchmarks/test_builder.pkl")
+        system.pairs = system.pairs.tolist()
         plist = PairList(system.pairs)
 
         assert len(system.pairs) == len(plist)
@@ -249,6 +250,7 @@ class TestPairList:
 
     def test_getitem(self):
         system = grogupy.load("./benchmarks/test_builder.pkl")
+        system.pairs = system.pairs.tolist()
         plist = PairList(system.pairs)
 
         assert system.pairs[0] == plist[0]
@@ -256,6 +258,7 @@ class TestPairList:
 
     def test_getattr(self):
         system = grogupy.load("./benchmarks/test_builder.pkl")
+        system.pairs = system.pairs.tolist()
         plist = PairList(system.pairs)
 
         iso = []
@@ -266,11 +269,28 @@ class TestPairList:
 
     def test_append(self):
         system = grogupy.load("./benchmarks/test_builder.pkl")
+        system.pairs = system.pairs.tolist()
         plist = PairList()
 
         for p in system.pairs:
             plist.append(p)
         assert len(plist) == len(system.pairs)
+
+    def test_tolist(self):
+        system = grogupy.load("./benchmarks/test_builder.pkl")
+        system.pairs = system.pairs.tolist()
+        plist = PairList(system.pairs)
+
+        assert isinstance(plist, PairList)
+        assert isinstance(plist.tolist(), list)
+
+    def test_toarray(self):
+        system = grogupy.load("./benchmarks/test_builder.pkl")
+        system.pairs = system.pairs.tolist()
+        plist = PairList(system.pairs)
+
+        assert isinstance(plist, PairList)
+        assert isinstance(plist.toarray(), np.ndarray)
 
 
 if __name__ == "__main__":

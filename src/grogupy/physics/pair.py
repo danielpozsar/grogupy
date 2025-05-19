@@ -634,6 +634,26 @@ class PairList:
         else:
             raise Exception("This class is reserved for Pair instances only!")
 
+    def tolist(self) -> list[Pair]:
+        """Returns a list from the underlying data.
+
+        Returns
+        -------
+        list
+            The pairs in a list format.
+        """
+        return self.__pairs
+
+    def toarray(self) -> NDArray:
+        """Returns a numpy array from the underlying data.
+
+        Returns
+        -------
+        NDArray
+            The pairs in a numpy array.
+        """
+        return np.array(self.__pairs, dtype=object)
+
 
 if __name__ == "__main__":
     pass

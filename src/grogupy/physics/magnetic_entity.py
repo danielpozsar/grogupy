@@ -762,6 +762,26 @@ class MagneticEntityList:
         else:
             raise Exception("This class is reserved for MagneticEntity instances only!")
 
+    def tolist(self) -> list[MagneticEntity]:
+        """Returns a list from the underlying data.
+
+        Returns
+        -------
+        list
+            The magnetic entities in a list format.
+        """
+        return self.__magnetic_entities
+
+    def toarray(self) -> NDArray:
+        """Returns a numpy array from the underlying data.
+
+        Returns
+        -------
+        NDArray
+            The magnetic entities in a numpy array.
+        """
+        return np.array(self.__magnetic_entities, dtype=object)
+
 
 if __name__ == "__main__":
     pass
