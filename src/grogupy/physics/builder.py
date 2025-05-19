@@ -202,7 +202,10 @@ class Builder:
 
         # create reference directions
         self.ref_xcf_orientations = process_ref_directions(
-            ref_xcf_orientations, self.anisotropy_solver, self.matlabmode
+            ref_xcf_orientations,
+            self.isotropic_only,
+            self.anisotropy_solver,
+            self.matlabmode,
         )
         if self.matlabmode:
             warnings.warn(
@@ -427,6 +430,25 @@ class Builder:
     @property
     def matlabmode(self) -> bool:
         """Wether to force compatibility with matlab or not."""
+        return self.__matlabmode
+
+    @matlabmode.setter
+    def matlabmode(self, value: bool) -> None:
+        if value == False:
+            self.__matlabmode = False
+        elif value == True:
+            self.__matlabmode = True
+            self.__exchange_solver: str = "grogupy"
+            self.__anisotropy_solver: str = "grogupy"
+            self.ref_xcf_orientations = process_ref_directions(
+                self.ref_xcf_orientations,
+                self.isotropic_only,
+                self.anisotropy_solver,
+                self.matlabmode,
+            )
+        else:
+            raise Exception("This must be Bool!")
+
         return self.__matlabmode
 
     @property
