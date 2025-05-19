@@ -68,7 +68,6 @@ class TestCommandLineTools:
         subprocess.run(["grogupy_run", path])
 
         assert not os.path.isfile("./src/grogupy/cli/tests/test.magnopy.txt")
-        os.remove("./src/grogupy/cli/tests/test.magnopy.txt")
         assert os.path.isfile("./src/grogupy/cli/tests/test.pkl")
         os.remove("./src/grogupy/cli/tests/test.pkl")
         assert not os.path.isdir("./src/grogupy/cli/tests/test_UppASD_output")
