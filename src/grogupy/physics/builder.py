@@ -451,10 +451,10 @@ class Builder:
                 )
             else:
                 self.__anisotropy_solver: str = "Fit"
-                # add the linear combination of the orientations
+                # remove the linear combination of the orientations
                 for ref_xcf in self.ref_xcf_orientations:
                     if len(ref_xcf["vw"]) == 3:
-                        ref_xcf["vw"].pop()
+                        ref_xcf["vw"] = ref_xcf["vw"][:-1]
 
         elif value.lower()[0] == "g":  # grogupy
             self.__anisotropy_solver: str = "grogupy"
@@ -464,7 +464,7 @@ class Builder:
                     vw_mix = (ref_xcf["vw"][0] + ref_xcf["vw"][1]) / np.linalg.norm(
                         ref_xcf["vw"][0] + ref_xcf["vw"][1]
                     )
-                    ref_xcf["vw"].append(vw_mix)
+                    ref_xcf["vw"] = np.vstack((ref_xcf["vw"], vw_mix))
         else:
             raise Exception(f"Unrecognized solution method: {value}")
 
