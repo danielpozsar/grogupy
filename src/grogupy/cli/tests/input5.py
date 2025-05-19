@@ -18,19 +18,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-infolder = "./benchmarks/CrI3"
-infile = "CrI3.fdf"
+infolder = "./benchmarks/Cr3"
+infile = "Cr3.fdf"
 ################################################################################
 #                            Convergence parameters
 ################################################################################
 # kset should be at leas 100x100 for 2D diatomic systems
-kset = [2, 2, 1]
+kset = [1, 1, 1]
 # eset should be 100 for insulators and 1000 for metals
 eset = 100
 # esetp should be 600 for insulators and 10000 for metals
 esetp = 600
 # emin None sets the minimum energy to the minimum energy in the eigfile
-emin = None
+emin = -100
 # emax is at the Fermi level at 0
 emax = 0
 # the bottom of the energy contour should be shifted by -5 eV
@@ -44,16 +44,32 @@ emax_shift = 0
 # usually the DFT calculation axis is [0, 0, 1]
 scf_xcf_orientation = [0, 0, 1]
 # the reference directions for the energy derivations
-ref_xcf_orientations = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+ref_xcf_orientations = [
+    dict(o=[1, 0, 0], vw=[[0, 1, 0], [0, 0, 1]]),
+    dict(o=[0, 1, 0], vw=[[1, 0, 0], [0, 0, 1]]),
+    dict(o=[0, 0, 1], vw=[[1, 0, 0], [0, 1, 0]]),
+]
 ################################################################################
 #                      Magnetic entity and pair definitions
 ################################################################################
 # magnetic entities and pairs can be defined automatically from the cutoff
 # radius and magnetic atoms
-setup_from_range = True
+setup_from_range = False
+
+
 radius = 20
 atomic_subset = "Cr"
 kwargs_for_mag_ent = dict(l=2)
+magnetic_entities = [
+    dict(atom=0, l=2),
+    dict(atom=1, l=2),
+    dict(atom=2, l=2),
+]
+pairs = [
+    dict(ai=0, aj=1, Ruc=[0, 0, 0]),
+    dict(ai=1, aj=2, Ruc=[0, 0, 0]),
+    dict(ai=2, aj=0, Ruc=[0, 0, 0]),
+]
 ################################################################################
 #                                Memory management
 ################################################################################
@@ -80,7 +96,7 @@ anisotropy_solver = "Fit"
 # either total or local, which controls if only the magnetic
 # entity's magnetic monent or the whole atom's magnetic moment is printed
 # used by all output modes
-out_magentic_moment = "total"
+out_magnetic_moment = "local"
 
 # save the magnopy file
 save_magnopy = True

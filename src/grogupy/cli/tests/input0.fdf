@@ -29,9 +29,9 @@ EmaxShift   0                                   # the top of the energy contour 
 ScfXcfOrientation   0   0   1                   # usually the DFT calculation axis is [0, 0, 1]
 # the reference directions for the energy derivations
 %block RefXcfOrientations
-    1   0   0
-    0   1   0
-    0   0   1
+    1   0   0   0   1   0   0   0   1
+    0   1   0   1   0   0   0   0   1
+    0   0   1   1   0   0   0   1   0
 %endblock RefXcfOrientations
 
 
@@ -44,7 +44,7 @@ ScfXcfOrientation   0   0   1                   # usually the DFT calculation ax
 SetupFromRange          True
 Radius                  20                      # radius and magnetic atoms
 AtomicSubset            Cr
-KwargsForMagEnt         l   2
+KwargsForMagEnt         orb   2 3 4
 
 
 ################################################################################

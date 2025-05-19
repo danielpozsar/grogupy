@@ -26,7 +26,7 @@ infile = "CrI3.fdf"
 # kset should be at leas 100x100 for 2D diatomic systems
 kset = [2, 2, 1]
 # eset should be 100 for insulators and 1000 for metals
-eset = 100
+eset = 1
 # esetp should be 600 for insulators and 10000 for metals
 esetp = 600
 # emin None sets the minimum energy to the minimum energy in the eigfile
@@ -61,7 +61,7 @@ kwargs_for_mag_ent = dict(l=2)
 max_pairs_per_loop = 100000
 # in low memory mode we discard some temporary data that could be useful for
 # interactive work
-low_memory_mode = True
+low_memory_mode = False
 # sequential solver is better for large systems
 greens_function_solver = "Parallel"
 # maximum number of greens function samples per loop, when greens_function_solver
@@ -73,7 +73,7 @@ max_g_per_loop = 20
 ################################################################################
 # the calculation of J and K from the energy derivations, either Fit or Grogupy
 exchange_solver = "Fit"
-anisotropy_solver = "Fit"
+anisotropy_solver = "Grogu"
 ################################################################################
 #                                   Output files
 ################################################################################

@@ -58,6 +58,27 @@ class TestCommandLineTools:
         os.remove("./src/grogupy/cli/tests/test_UppASD_output/cell.tmp.txt")
         os.rmdir("./src/grogupy/cli/tests/test_UppASD_output")
 
+    @pytest.mark.parametrize(
+        "path",
+        [
+            "./src/grogupy/cli/tests/input0.py",
+        ],
+    )
+    def test_run_eval_energies(self, path):
+        subprocess.run(["grogupy_run", path])
+
+        assert not os.path.isfile("./src/grogupy/cli/tests/test.magnopy.txt")
+        os.remove("./src/grogupy/cli/tests/test.magnopy.txt")
+        assert os.path.isfile("./src/grogupy/cli/tests/test.pkl")
+        os.remove("./src/grogupy/cli/tests/test.pkl")
+        assert not os.path.isdir("./src/grogupy/cli/tests/test_UppASD_output")
+        assert not os.path.isfile("./src/grogupy/cli/tests/test_UppASD_output/jfile")
+        assert not os.path.isfile("./src/grogupy/cli/tests/test_UppASD_output/momfile")
+        assert not os.path.isfile("./src/grogupy/cli/tests/test_UppASD_output/posfile")
+        assert not os.path.isfile(
+            "./src/grogupy/cli/tests/test_UppASD_output/cell.tmp.txt"
+        )
+
     def test_analyze(self):
         subprocess.run(["grogupy_run", "./src/grogupy/cli/tests/input5.py"])
         subprocess.run(["grogupy_analyze", "./src/grogupy/cli/tests/test.pkl"])
