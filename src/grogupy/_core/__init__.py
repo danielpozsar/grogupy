@@ -41,7 +41,7 @@ Parallelization is done using MPI if it is available.
 .. autosummary::
    :toctree: _generated/
 
-   default_solver          It calculates the energies by the Greens function method without parallelization.
+   default_solver          It calculates the energies by the Greens function method without MPI parallelization.
    solve_parallel_over_k   It calculates the energies by the Greens function method with parallelization over k points.
 
 
