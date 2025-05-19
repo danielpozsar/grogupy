@@ -19,30 +19,7 @@
 # SOFTWARE.
 
 """
-API reference
-=============
-
-.. toctree::
-   :maxdepth: 2
-   
-   physics
-   core
-   io
-   batch
-   cli
-   viz
-
-grogupy
--------
-
 .. currentmodule:: grogupy
-
-grogupy is a package capable of calculating magnetic interactions.
-
-The main focus is on calculating the parameters of the generalized Heisenberg
-model including the exchange between the pairs and the anisotropy of the
-magnetic entities. This is done by reading in the Hamiltonian to a single
-non-collinear DFT calculation, where the DFT software can be non-orthogonal.
 
 tqdm in grogupy
 ---------------
@@ -50,6 +27,12 @@ tqdm in grogupy
 tqdm is optional in grogupy, but when it is in use grogupy uses its own wrapper 
 to handle edge cases and print only on the root node, when there is MPI 
 parallelization.
+
+
+.. autosummary::
+   :toctree: _generated/
+
+    _tqdm   Tqdm wrapper for grogupy.
 
 Configuration
 -------------

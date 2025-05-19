@@ -18,6 +18,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from typing import Iterable
+
 from grogupy.config import CONFIG
 
 if CONFIG.MPI_loaded:
@@ -30,7 +32,28 @@ if CONFIG.tqdm_requested:
         from tqdm.autonotebook import tqdm
 
         class _tqdm:
-            def __init__(self, iterable, head_node=True, **kwargs):
+            """Tqdm wrapper for grogupy.
+
+            If tqdm is not available then it is a dummy object.
+
+            Parameters
+            ----------
+            iterable: Iterable
+                An iterable object
+            head_node: bool, optional
+                Printing can be turned on and off for other nodes
+                creating a cleaner or a more detailed progress bar,
+                by default True
+            kwargs:
+                Arguments passed for tqdm
+
+            Methods
+            -------
+            update():
+                Update progress bar if it is available
+            """
+
+            def __init__(self, iterable: Iterable, head_node: bool = True, **kwargs):
                 self.head_node = head_node
 
                 self.iterable = iterable
@@ -69,12 +92,34 @@ if CONFIG.tqdm_requested:
                     raise Exception("Unknown architecture, use CPU or GPU!")
 
             def update(self, **kwargs):
+                """Update progress bar if it is available."""
                 self.tqdm.update(**kwargs)
 
     except:
         print("Please install tqdm for nice progress bar.")
 
         class _tqdm:
+            """Tqdm wrapper for grogupy.
+
+            If tqdm is not available then it is a dummy object.
+
+            Parameters
+            ----------
+            iterable: Iterable
+                An iterable object
+            head_node: bool, optional
+                Printing can be turned on and off for other nodes
+                creating a cleaner or a more detailed progress bar,
+                by default True
+            kwargs:
+                Arguments passed for tqdm
+
+            Methods
+            -------
+            update():
+                Update progress bar if it is available
+            """
+
             def __init__(self, iterable, head_node=True, **kwargs):
                 self.iterable = iterable
 
@@ -85,6 +130,7 @@ if CONFIG.tqdm_requested:
                 return self.iterable
 
             def update(self, **kwargs):
+                """Update progress bar if it is available."""
                 pass
 
 
@@ -92,6 +138,27 @@ if CONFIG.tqdm_requested:
 else:
 
     class _tqdm:
+        """Tqdm wrapper for grogupy.
+
+        If tqdm is not available then it is a dummy object.
+
+        Parameters
+        ----------
+        iterable: Iterable
+            An iterable object
+        head_node: bool, optional
+            Printing can be turned on and off for other nodes
+            creating a cleaner or a more detailed progress bar,
+            by default True
+        kwargs:
+            Arguments passed for tqdm
+
+        Methods
+        -------
+        update():
+            Update progress bar if it is available
+        """
+
         def __init__(self, iterable, head_node=True, **kwargs):
             self.iterable = iterable
 
@@ -102,6 +169,7 @@ else:
             return self.iterable
 
         def update(self, **kwargs):
+            """Update progress bar if it is available."""
             pass
 
 

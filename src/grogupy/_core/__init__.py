@@ -36,12 +36,13 @@ Cpu solvers
 -----------
 
 Functions used in the solution method of the ``Builder`` class.
-Parallelization is done using MPI.
+Parallelization is done using MPI if it is available.
 
 .. autosummary::
    :toctree: _generated/
 
-   solve_parallel_over_k        It calculates the energies by the Greens function method.
+   default_solver          It calculates the energies by the Greens function method without parallelization.
+   solve_parallel_over_k   It calculates the energies by the Greens function method with parallelization over k points.
 
 
 Gpu solvers
