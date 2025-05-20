@@ -540,6 +540,12 @@ class Builder:
             self.__isotropic_only = False
         elif value == True:
             self.__isotropic_only = True
+            self.ref_xcf_orientations = process_ref_directions(
+                self.ref_xcf_orientations,
+                self.isotropic_only,
+                self.anisotropy_solver,
+                self.matlabmode,
+            )
         else:
             raise Exception("This must be Bool!")
 
