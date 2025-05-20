@@ -50,12 +50,10 @@ def load_DefaultTimer(infile: Union[str, dict]) -> DefaultTimer:
 
     # load pickled file
     if isinstance(infile, str):
-        try:
-            with open(infile, "rb") as file:
-                infile = pickle.load(file)
-        except:
-            with open(infile + ".pkl", "rb") as file:
-                infile = pickle.load(file)
+        if not infile.endswith(".pkl"):
+            infile += ".pkl"
+        with open(infile, "rb") as file:
+            infile = pickle.load(file)
 
     # build instance
     out = object.__new__(DefaultTimer)
@@ -81,12 +79,10 @@ def load_Contour(infile: Union[str, dict]) -> Contour:
 
     # load pickled file
     if isinstance(infile, str):
-        try:
-            with open(infile, "rb") as file:
-                infile = pickle.load(file)
-        except:
-            with open(infile + ".pkl", "rb") as file:
-                infile = pickle.load(file)
+        if not infile.endswith(".pkl"):
+            infile += ".pkl"
+        with open(infile, "rb") as file:
+            infile = pickle.load(file)
 
     # build instance
     out = object.__new__(Contour)
@@ -112,12 +108,10 @@ def load_Kspace(infile: Union[str, dict]) -> Kspace:
 
     # load pickled file
     if isinstance(infile, str):
-        try:
-            with open(infile, "rb") as file:
-                infile = pickle.load(file)
-        except:
-            with open(infile + ".pkl", "rb") as file:
-                infile = pickle.load(file)
+        if not infile.endswith(".pkl"):
+            infile += ".pkl"
+        with open(infile, "rb") as file:
+            infile = pickle.load(file)
 
     # build instance
     out = object.__new__(Kspace)
@@ -143,12 +137,10 @@ def load_MagneticEntity(infile: Union[str, dict]) -> MagneticEntity:
 
     # load pickled file
     if isinstance(infile, str):
-        try:
-            with open(infile, "rb") as file:
-                infile = pickle.load(file)
-        except:
-            with open(infile + ".pkl", "rb") as file:
-                infile = pickle.load(file)
+        if not infile.endswith(".pkl"):
+            infile += ".pkl"
+        with open(infile, "rb") as file:
+            infile = pickle.load(file)
 
     # build instance
     out = object.__new__(MagneticEntity)
@@ -174,12 +166,10 @@ def load_Pair(infile: Union[str, dict]) -> Pair:
 
     # load pickled file
     if isinstance(infile, str):
-        try:
-            with open(infile, "rb") as file:
-                infile = pickle.load(file)
-        except:
-            with open(infile + ".pkl", "rb") as file:
-                infile = pickle.load(file)
+        if not infile.endswith(".pkl"):
+            infile += ".pkl"
+        with open(infile, "rb") as file:
+            infile = pickle.load(file)
 
     # build instance
     out = object.__new__(Pair)
@@ -205,12 +195,10 @@ def load_Hamiltonian(infile: Union[str, dict]) -> Hamiltonian:
 
     # load pickled file
     if isinstance(infile, str):
-        try:
-            with open(infile, "rb") as file:
-                infile = pickle.load(file)
-        except:
-            with open(infile + ".pkl", "rb") as file:
-                infile = pickle.load(file)
+        if not infile.endswith(".pkl"):
+            infile += ".pkl"
+        with open(infile, "rb") as file:
+            infile = pickle.load(file)
 
     # build instance
     out = object.__new__(Hamiltonian)
@@ -236,12 +224,10 @@ def load_Builder(infile: Union[str, dict]) -> Builder:
 
     # load pickled file
     if isinstance(infile, str):
-        try:
-            with open(infile, "rb") as file:
-                infile = pickle.load(file)
-        except:
-            with open(infile + ".pkl", "rb") as file:
-                infile = pickle.load(file)
+        if not infile.endswith(".pkl"):
+            infile += ".pkl"
+        with open(infile, "rb") as file:
+            infile = pickle.load(file)
 
     # build instance
     out = object.__new__(Builder)
@@ -271,9 +257,11 @@ def load(
         if not infile.endswith(".pkl"):
             infile += ".pkl"
         with open(infile, "rb") as file:
-            infile = pickle.load(file)
+            dat = pickle.load(file)
+    else:
+        dat = infile
 
-    if list(infile.keys()) == [
+    if list(dat.keys()) == [
         "times",
         "kspace",
         "contour",
@@ -297,7 +285,7 @@ def load(
     ]:
         return load_Builder(infile)
 
-    elif list(infile.keys()) == [
+    elif list(dat.keys()) == [
         "times",
         "kspace",
         "contour",
@@ -315,7 +303,7 @@ def load(
         )
         return b
 
-    elif list(infile.keys()) == [
+    elif list(dat.keys()) == [
         "times",
         "_dh",
         "_ds",
@@ -331,7 +319,7 @@ def load(
         "_Hamiltonian__uc_in_sc_index",
     ]:
         return load_Hamiltonian(infile)
-    elif list(infile.keys()) == [
+    elif list(dat.keys()) == [
         "_dh",
         "M1",
         "M2",
@@ -365,7 +353,7 @@ def load(
         "_Pair__J_iso_mRy",
     ]:
         return load_Pair(infile)
-    elif list(infile.keys()) == [
+    elif list(dat.keys()) == [
         "_dh",
         "_ds",
         "infile",
@@ -402,9 +390,9 @@ def load(
         "_MagneticEntity__K_consistency_mRy",
     ]:
         return load_MagneticEntity(infile)
-    elif list(infile.keys()) == ["times", "_Kspace__kset", "kpoints", "weights"]:
+    elif list(dat.keys()) == ["times", "_Kspace__kset", "kpoints", "weights"]:
         return load_Kspace(infile)
-    elif list(infile.keys()) == [
+    elif list(dat.keys()) == [
         "times",
         "_Contour__automatic_emin",
         "_eigfile",
@@ -416,7 +404,7 @@ def load(
         "weights",
     ]:
         return load_Contour(infile)
-    elif list(infile.keys()) == ["_DefaultTimer__start_measure", "_times"]:
+    elif list(dat.keys()) == ["_DefaultTimer__start_measure", "_times"]:
         return load_DefaultTimer(infile)
     else:
         raise Exception("Unknown pickle format!")
@@ -684,9 +672,9 @@ def read_magnopy(file: str):
         If the unit for on-site is not recognized
     """
 
-    with open(file, "r") as file:
+    with open(file, "r") as f:
         # select which sections and lines to parse
-        lines = file.readlines()
+        lines = f.readlines()
 
     out: dict = dict()
     section = None
@@ -1069,8 +1057,16 @@ def read_py(path: str) -> dict:
     spec = importlib.util.spec_from_file_location("grogupy_command_line_input", path)
 
     # Create the module
-    params = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(params)
+    if spec is not None:
+        params = importlib.util.module_from_spec(spec)
+        loader = spec.loader
+        if loader is not None:
+            loader.exec_module(params)
+        else:
+            raise Exception("File could not be loaded!")
+
+    else:
+        raise Exception("File could not be loaded!")
 
     # convert to dictionary
     out = dict()

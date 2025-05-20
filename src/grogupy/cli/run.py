@@ -30,7 +30,7 @@ from grogupy import __citation__, __definitely_not_grogu__
 from grogupy.config import CONFIG
 from grogupy.io import (
     DEFAULT_INPUT,
-    load,
+    load_Builder,
     read_fdf,
     read_py,
     save,
@@ -227,7 +227,7 @@ def main():
         number_of_chunks: int = (
             np.floor(len(simulation.pairs) / params["maxpairsperloop"]) + 1
         )
-        pair_chunks = np.array_split(simulation.pairs, number_of_chunks)
+        pair_chunks = np.array_split(simulation.pairs.toarray(), number_of_chunks)
 
         if PRINTING:
             print("\n\n\n")
@@ -265,10 +265,10 @@ def main():
                 )
         if PRINTING:
             # add pairs to Builder
-            new_pairs = []
+            new_pairs: PairList = PairList()
             for i in range(len(pair_chunks)):
-                new_pairs += load(outfile + "_temp_" + str(i) + ".pkl").pairs
-            simulation.pairs = PairList(new_pairs)
+                new_pairs += load_Builder(outfile + "_temp_" + str(i) + ".pkl").pairs
+            simulation.pairs = new_pairs
             # remove hamiltonian from magnetic entities so the comparison does not fail
             if params["picklecompresslevel"] != 0:
                 for mag_ent in simulation.magnetic_entities:

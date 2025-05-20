@@ -340,8 +340,12 @@ class Builder:
         out += section + newline
         out += f"grogupy version: {self.__version}" + newline
         out += f"Input file: {self.infile}" + newline
-        out += f"Spin mode: {self.hamiltonian._spin_state}" + newline
-        out += f"Number of orbitals: {self.hamiltonian.NO}" + newline
+        if self.hamiltonian is not None:
+            out += f"Spin mode: {self.hamiltonian._spin_state}" + newline
+            out += f"Number of orbitals: {self.hamiltonian.NO}" + newline
+        else:
+            out += f"Spin mode: Not defined" + newline
+            out += f"Number of orbitals: Not defined" + newline
         out += section + newline
         out += f"SLURM job ID: {self.SLURM_ID}" + newline
         out += f"Architecture: {self.__architecture}" + newline
@@ -363,7 +367,10 @@ class Builder:
         if self.greens_function_solver[0].lower() == "s":
             max_g = self.__max_g_per_loop
         else:
-            max_g = self.contour.eset
+            if self.contour is not None:
+                max_g = self.contour.eset
+            else:
+                max_g = "Not defined"
         out += f"Maximum number of Greens function samples per batch: {max_g}" + newline
 
         out += f"Solver used for Exchange tensor: {self.exchange_solver}" + newline
@@ -372,10 +379,13 @@ class Builder:
 
         out += f"Cell [Ang]:" + newline
 
-        bio = io.BytesIO()
-        np.savetxt(bio, self.hamiltonian.cell)
-        cell = bio.getvalue().decode("latin1")
-        out += cell
+        if self.hamiltonian is not None:
+            bio = io.BytesIO()
+            np.savetxt(bio, self.hamiltonian.cell)
+            cell = bio.getvalue().decode("latin1")
+            out += cell
+        else:
+            out += "Not defined"
 
         out += section + newline
         out += f"DFT axis: {self.scf_xcf_orientation}" + newline
@@ -385,19 +395,26 @@ class Builder:
 
         out += section + newline
         out += "Parameters for the Brillouin zone sampling:" + newline
-        out += f"Number of k points: {self.kspace.kset.prod()}" + newline
-        out += f"K points in each directions: {self.kspace.kset}" + newline
-        out += "Parameters for the contour integral:" + newline
-        out += f"Eset: {self.contour.eset}" + newline
-        out += f"Esetp: {self.contour.esetp}" + newline
-        if self.contour.automatic_emin:
-            out += (
-                f"Ebot: {self.contour.emin}        WARNING: This was automatically determined!"
-                + newline
-            )
+        if self.kspace is not None:
+            out += f"Number of k points: {self.kspace.kset.prod()}" + newline
+            out += f"K points in each directions: {self.kspace.kset}" + newline
         else:
-            out += f"Ebot: {self.contour.emin}" + newline
-        out += f"Etop: {self.contour.emax}" + newline
+            out += f"Number of k points: Not defined" + newline
+            out += f"K points in each directions: Not defined" + newline
+        out += "Parameters for the contour integral:" + newline
+        if self.contour is not None:
+            out += f"Eset: {self.contour.eset}" + newline
+            out += f"Esetp: {self.contour.esetp}" + newline
+            if self.contour.automatic_emin:
+                out += (
+                    f"Ebot: {self.contour.emin}        WARNING: This was automatically determined!"
+                    + newline
+                )
+            else:
+                out += f"Ebot: {self.contour.emin}" + newline
+            out += f"Etop: {self.contour.emax}" + newline
+        else:
+            out += "Not defined"
         out += section + newline
 
         return out
@@ -596,29 +613,44 @@ class Builder:
         return self.__architecture
 
     @property
-    def _dh(self) -> sisl.physics.Hamiltonian:
+    def _dh(self) -> Union[None, sisl.physics.Hamiltonian]:
         """``sisl`` Hamiltonian object used in the input."""
-        return self.hamiltonian._dh
+        if self.hamiltonian is None:
+            return None
+        else:
+            return self.hamiltonian._dh
 
     @property
     def _ds(self) -> Union[None, sisl.physics.DensityMatrix]:
         """``sisl`` density matrix object used in the input."""
-        return self.hamiltonian._ds
+        if self.hamiltonian is None:
+            return None
+        else:
+            return self.hamiltonian._ds
 
     @property
-    def geometry(self) -> sisl.geometry.Geometry:
+    def geometry(self) -> Union[None, sisl.geometry.Geometry]:
         """``sisl`` geometry object."""
-        return self.hamiltonian._dh.geometry
+        if self.hamiltonian is None:
+            return None
+        else:
+            return self.hamiltonian._dh.geometry
 
     @property
-    def scf_xcf_orientation(self) -> NDArray:
+    def scf_xcf_orientation(self) -> Union[None, NDArray]:
         """Exchange field orientation in the DFT calculation."""
-        return self.hamiltonian.scf_xcf_orientation
+        if self.hamiltonian is None:
+            return None
+        else:
+            return self.hamiltonian.scf_xcf_orientation
 
     @property
-    def infile(self) -> str:
+    def infile(self) -> Union[None, str]:
         """Input file used to build the Hamiltonian."""
-        return self.hamiltonian.infile
+        if self.hamiltonian is None:
+            return None
+        else:
+            return self.hamiltonian.infile
 
     @property
     def version(self) -> str:
@@ -676,10 +708,13 @@ class Builder:
         out += section + newline
         out += f"cell Angstrom" + newline
 
-        bio = io.BytesIO()
-        np.savetxt(bio, self.hamiltonian.cell)
-        cell = bio.getvalue().decode("latin1")
-        out += cell
+        if self.hamiltonian is not None:
+            bio = io.BytesIO()
+            np.savetxt(bio, self.hamiltonian.cell)
+            cell = bio.getvalue().decode("latin1")
+            out += cell
+        else:
+            raise Exception("Hamiltonian is not defined!")
 
         out += section + newline
         out += "atoms Angstrom" + newline
@@ -751,7 +786,7 @@ class Builder:
         """
 
         if isinstance(kspace, Kspace):
-            self.kspace: Kspace = kspace
+            self.kspace: Union[None, Kspace] = kspace
         else:
             raise Exception(f"Bad type for Kspace: {type(kspace)}")
 
@@ -765,7 +800,7 @@ class Builder:
         """
 
         if isinstance(contour, Contour):
-            self.contour: Contour = contour
+            self.contour: Union[None, Contour] = contour
         else:
             raise Exception(f"Bad type for Contour: {type(contour)}")
 
@@ -779,7 +814,7 @@ class Builder:
         """
 
         if isinstance(hamiltonian, Hamiltonian):
-            self.hamiltonian: Hamiltonian = hamiltonian
+            self.hamiltonian: Union[None, Hamiltonian] = hamiltonian
         else:
             raise Exception(f"Bad type for Hamiltonian: {type(hamiltonian)}")
 
@@ -826,11 +861,15 @@ class Builder:
             These are passed to the magnetic entity dictionary
 
         """
+        if self.hamiltonian is not None:
+            magnetic_entities, pairs = setup_from_range(
+                self.hamiltonian._dh, R, subset, **kwargs
+            )
 
-        magnetic_entities, pairs = setup_from_range(self._dh, R, subset, **kwargs)
-
-        self.add_magnetic_entities(magnetic_entities)
-        self.add_pairs(pairs)
+            self.add_magnetic_entities(magnetic_entities)
+            self.add_pairs(pairs)
+        else:
+            raise Exception("Hamiltonian not defined!")
 
     def create_magnetic_entities(
         self, magnetic_entities: Union[dict, list[dict]]
@@ -865,7 +904,7 @@ class Builder:
 
         out = MagneticEntityList()
         for mag_ent in magnetic_entities:
-            out.append(MagneticEntity((self._dh, self._ds), **mag_ent))
+            out.append(MagneticEntity((self.hamiltonian._dh, self._ds), **mag_ent))
 
         return out
 

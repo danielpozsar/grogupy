@@ -21,7 +21,7 @@
 import argparse
 
 from grogupy import __citation__, __definitely_not_grogu__
-from grogupy.io import load
+from grogupy.io import load_Builder
 from grogupy.viz import (
     plot_contour,
     plot_DM_distance,
@@ -61,7 +61,7 @@ def main():
             return
 
     # Reading input
-    system = load(args.file)
+    system = load_Builder(args.file)
 
     # get the output name
     name = args.file
@@ -93,7 +93,7 @@ def main():
         fig = plot_pairs(system)
         file.write(fig.to_html(full_html=False, include_plotlyjs="cdn"))
 
-        fig = plot_DMI(system).add_traces(system.plot_pairs(connect=True).data)
+        fig = plot_DMI(system).add_traces(plot_pairs(system, connect=True).data)
         file.write(fig.to_html(full_html=False, include_plotlyjs="cdn"))
 
     print(f"The output file is: {name}")
