@@ -25,13 +25,11 @@ from numpy.typing import NDArray
 if TYPE_CHECKING:
     from grogupy.physics.builder import Builder
 
-import sys
-
 import numpy as np
 
 from grogupy._tqdm import _tqdm
 from grogupy.config import CONFIG
-from grogupy.physics.utilities import interaction_energy, second_order_energy
+from grogupy.physics.utilities import interaction_energy
 
 from .utilities import calc_Vu, onsite_projection, tau_u
 
@@ -56,6 +54,14 @@ def default_solver(builder: "Builder", print_memory: bool = False) -> None:
     print_memory: bool, optional
         It can be turned on to print extra memory info, by default False
     """
+
+    # checks for setup
+    if builder.kspace is None:
+        raise Exception("Kspace is not defined!")
+    if builder.contour is None:
+        raise Exception("Kspace is not defined!")
+    if builder.hamiltonian is None:
+        raise Exception("Kspace is not defined!")
 
     # reset hamiltonians, magnetic entities and pairs
     builder._rotated_hamiltonians = []
@@ -344,6 +350,14 @@ if CONFIG.MPI_loaded:
 
         # wait for pre process to finish before start
         comm.Barrier()
+
+        # checks for setup
+        if builder.kspace is None:
+            raise Exception("Kspace is not defined!")
+        if builder.contour is None:
+            raise Exception("Kspace is not defined!")
+        if builder.hamiltonian is None:
+            raise Exception("Kspace is not defined!")
 
         # reset hamiltonians, magnetic entities and pairs
         builder._rotated_hamiltonians = []
