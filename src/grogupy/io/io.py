@@ -525,36 +525,41 @@ def save_UppASD(
     """
     posfile = ""
     momfile = ""
-    # iterating over magnetic entities
-    for i, mag_ent in enumerate(builder.magnetic_entities):
-        # calculating positions in basis vector coordinates
-        basis_vector_coords = mag_ent.xyz_center @ np.linalg.inv(
-            builder.hamiltonian.cell
-        )
-        bvc = np.around(basis_vector_coords, decimals=5)
-        # adding line to posfile
-        posfile += f"{i+1} {i+1} {bvc[0]:.5f} {bvc[1]:.5f} {bvc[2]:.5f}\n"
-
-        # if magnetic moment is local
-        if magnetic_moment.lower() == "l":
-            S = np.array([mag_ent.local_Sx, mag_ent.local_Sy, mag_ent.local_Sz])
-        # if magnetic moment is total
-        else:
-            S = np.array([mag_ent.total_Sx, mag_ent.total_Sy, mag_ent.total_Sz])
-        # get the norm of the vector
-        S_abs = np.linalg.norm(S)
-        S = S / S_abs
-        S = np.around(S, decimals=5)
-        S_abs = np.around(S_abs, decimals=5)
-        # adding line to momfile
-        momfile += f"{i+1} 1 {S_abs:.5f} {S[0]:.5f} {S[1]:.5f} {S[2]:.5f}\n"
+    if not builder.isotropic_only:
+        # iterating over magnetic entities
+        for i, mag_ent in enumerate(builder.magnetic_entities):
+            # calculating positions in basis vector coordinates
+            basis_vector_coords = mag_ent.xyz_center @ np.linalg.inv(
+                builder.hamiltonian.cell
+            )
+            bvc = np.around(basis_vector_coords, decimals=5)
+            # adding line to posfile
+            posfile += f"{i+1} {i+1} {bvc[0]:.5f} {bvc[1]:.5f} {bvc[2]:.5f}\n"
+            # if magnetic moment is local
+            if magnetic_moment.lower() == "l":
+                S = np.array([mag_ent.local_Sx, mag_ent.local_Sy, mag_ent.local_Sz])
+            # if magnetic moment is total
+            else:
+                S = np.array([mag_ent.total_Sx, mag_ent.total_Sy, mag_ent.total_Sz])
+            # get the norm of the vector
+            S_abs = np.linalg.norm(S)
+            S = S / S_abs
+            S = np.around(S, decimals=5)
+            S_abs = np.around(S_abs, decimals=5)
+            # adding line to momfile
+            momfile += f"{i+1} 1 {S_abs:.5f} {S[0]:.5f} {S[1]:.5f} {S[2]:.5f}\n"
+    else:
+        momfile = "No on site anisotropy in Isotropic Exchange only mode!"
 
     jfile = ""
-    # adding anisotropy to jfile
-    for i, mag_ent in enumerate(builder.magnetic_entities):
-        K = np.around(mag_ent.K_mRy.flatten(), decimals=5)
-        # adding line to jfile
-        jfile += f"{i+1} {i+1} 0 0 0 " + " ".join(map(lambda x: f"{x:.5f}", K)) + "\n"
+    if not builder.isotropic_only:
+        # adding anisotropy to jfile
+        for i, mag_ent in enumerate(builder.magnetic_entities):
+            K = np.around(mag_ent.K_mRy.flatten(), decimals=5)
+            # adding line to jfile
+            jfile += (
+                f"{i+1} {i+1} 0 0 0 " + " ".join(map(lambda x: f"{x:.5f}", K)) + "\n"
+            )
 
     # iterating over pairs
     for pair in builder.pairs:
@@ -573,8 +578,11 @@ def save_UppASD(
 
         # this is the unit cell shift
         shift = pair.supercell_shift
-        # -2 for convention, from Marci
-        J = np.around(-2 * pair.J_mRy.flatten(), decimals=5)
+        if builder.isotropic_only:
+            J = np.around(-2 * pair.J_iso_mRy.flatten(), decimals=5)
+        else:
+            # -2 for convention, from Marci
+            J = np.around(-2 * pair.J_mRy.flatten(), decimals=5)
         # adding line to jfile
         jfile += (
             f"{ai} {aj} {shift[0]} {shift[1]} {shift[2]} "
