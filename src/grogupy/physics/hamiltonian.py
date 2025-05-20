@@ -37,6 +37,11 @@ if CONFIG.is_GPU:
     import cupy as cp
     from cupy.typing import NDArray as CNDArray
 
+    # Disable memory pool for device memory (GPU)
+    cp.cuda.set_allocator(None)
+    # Disable memory pool for pinned memory (CPU).
+    cp.cuda.set_pinned_memory_allocator(None)
+
 
 class Hamiltonian:
     """This class contains the data and the methods related to the Hamiltonian and geometry.
@@ -325,10 +330,6 @@ class Hamiltonian:
                 bar.update()
 
         elif CONFIG.is_GPU:
-            # free up unused memory
-            mempool = cp.get_default_memory_pool()
-            mempool.free_all_blocks()
-
             # identifying TRS and TRB parts of the Hamiltonian
             TAUY: "CNDArray" = cp.kron(cp.eye(int(self.NO / 2)), cp.array(TAU_Y))
 
@@ -407,10 +408,6 @@ class Hamiltonian:
             ):
                 H_XCF += np.kron(XCF[i], tau)
         elif CONFIG.is_GPU:
-            # free up unused memory
-            mempool = cp.get_default_memory_pool()
-            mempool.free_all_blocks()
-
             H_XCF: "CNDArray" = cp.zeros(
                 (self.nsc.prod(), self.NO, self.NO), dtype=np.complex128
             )
