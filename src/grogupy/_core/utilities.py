@@ -31,7 +31,9 @@ from grogupy.config import CONFIG
 from .constants import TAU_X, TAU_Y, TAU_Z
 
 if CONFIG.is_GPU:
+    # initialize parallel GPU stuff
     import cupy as cp
+    from cupy.typing import NDArray as CNDArray
 
 
 def commutator(a: NDArray[np.float64], b: NDArray[np.float64]) -> NDArray[np.float64]:
@@ -390,16 +392,22 @@ def arrays_None_equal(array1: Any, array2: Any) -> bool:
         return False
 
 
-def onsite_projection(matrix: NDArray, idx1: NDArray, idx2: NDArray) -> NDArray:
+def onsite_projection(
+    matrix: Union[NDArray, "CNDArray"],
+    idx1: Union[NDArray, "CNDArray"],
+    idx2: Union[NDArray, "CNDArray"],
+) -> Union[NDArray, "CNDArray"]:
     """It produces the slices of a matrix for the on site projection.
 
     The slicing is along the last two axes as these contains the orbital indexing.
 
     Parameters
     ----------
-        matrix: (..., :, :) NDArray
+        matrix: Union[NDArray, CNDArray]
             Some matrix
-        idx: NDArray
+        idx1: NDArray
+            The indexes of the orbitals
+        idx2: NDArray
             The indexes of the orbitals
 
     Returns
