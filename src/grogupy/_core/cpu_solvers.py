@@ -222,6 +222,8 @@ def default_solver(builder: "Builder", print_memory: bool = False) -> None:
                         pair._Gji_tmp[slice] += (
                             onsite_projection(Gk, pair.SBI2, pair.SBI1) / phase * wk
                         )
+            else:
+                raise Exception("Unknown Green's function solver!")
 
         # these are the rotations perpendicular to the quantization axis
         for u in orient["vw"]:
@@ -420,7 +422,7 @@ if CONFIG.MPI_loaded:
             print("\n\n\n")
 
         # iterate over the reference directions (quantization axes)
-        for orient in builder.ref_xcf_orientations:
+        for i, orient in enumerate(builder.ref_xcf_orientations):
             # obtain rotated Hamiltonian
             if builder.low_memory_mode:
                 rot_H = builder.hamiltonian
@@ -448,8 +450,14 @@ if CONFIG.MPI_loaded:
             # split k points to parallelize
             # (this could be outside loop, but it was an easy fix for the
             # reset of tqdm in each reference direction)
-            parallel_k = np.array_split(builder.kspace.kpoints, parallel_size)
-            parallel_w = np.array_split(builder.kspace.weights, parallel_size)
+            parallel_k: list = np.array_split(builder.kspace.kpoints, parallel_size)
+            parallel_w: list = np.array_split(builder.kspace.weights, parallel_size)
+
+            if rank == root_node:
+                parallel_k[rank] = _tqdm(
+                    parallel_k[rank],
+                    desc=f"Rotation {i+1}, parallel over k on CPU{rank}",
+                )
             for j, k in enumerate(parallel_k[rank]):
 
                 # weight of k point in BZ integral
@@ -536,6 +544,8 @@ if CONFIG.MPI_loaded:
                             pair._Gji_tmp[slice] += (
                                 onsite_projection(Gk, pair.SBI2, pair.SBI1) / phase * wk
                             )
+                else:
+                    raise Exception("Unknown Green's function solver!")
 
             # sum reduce partial results of mpi nodes and delete temprorary stuff
             for mag_ent in builder.magnetic_entities:
