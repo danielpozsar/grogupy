@@ -791,7 +791,7 @@ def process_ref_directions(
     # one reference directon and one perpendicular direction
     if isotropic_only:
         orientations = [orientations[0]]
-        orientations[0]["vw"] = orientations[0]["vw"][0]
+        orientations[0]["vw"] = np.array([orientations[0]["vw"][0]])
 
     return orientations
 
