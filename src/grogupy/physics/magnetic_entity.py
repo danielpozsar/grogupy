@@ -19,7 +19,7 @@
 # SOFTWARE.
 
 import copy
-from typing import TYPE_CHECKING, Any, Union
+from typing import TYPE_CHECKING, Any, Iterator, Union
 
 from numpy.typing import NDArray
 
@@ -734,7 +734,9 @@ class MagneticEntityList:
     the list.
     """
 
-    def __init__(self, magnetic_entities: Union[None, list[MagneticEntity]] = None):
+    def __init__(
+        self, magnetic_entities: Union[None, list[MagneticEntity], NDArray] = None
+    ):
         if magnetic_entities is None:
             self.__magnetic_entities = []
         elif isinstance(magnetic_entities, MagneticEntityList):
@@ -748,6 +750,22 @@ class MagneticEntityList:
 
     def __len__(self):
         return len(self.__magnetic_entities)
+
+    def __iter__(self) -> Iterator:
+        return iter(self.__magnetic_entities)
+
+    def __add__(self, other):
+        if isinstance(other, MagneticEntityList):
+            other = other.__magnetic_entities
+        elif isinstance(other, list):
+            pass
+        elif isinstance(other, np.ndarray):
+            other = other.tolist()
+        else:
+            raise Exception(
+                "Only list, np.ndparray and MagneticEntityList can be added to MagneticEntityList"
+            )
+        return MagneticEntityList(self.__magnetic_entities + other)
 
     def __getstate__(self):
         state = self.__dict__.copy()

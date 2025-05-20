@@ -20,7 +20,7 @@
 
 import copy
 import warnings
-from typing import Any, Union
+from typing import Any, Iterator, Union
 
 import numpy as np
 import sisl
@@ -617,7 +617,7 @@ class PairList:
     the list.
     """
 
-    def __init__(self, pairs: Union[None, list[Pair]] = None):
+    def __init__(self, pairs: Union[None, list[Pair], NDArray] = None):
         if pairs is None:
             self.__pairs = []
         elif isinstance(pairs, PairList):
@@ -629,6 +629,22 @@ class PairList:
 
     def __len__(self):
         return len(self.__pairs)
+
+    def __iter__(self) -> Iterator:
+        return iter(self.__pairs)
+
+    def __add__(self, other):
+        if isinstance(other, PairList):
+            other = other.__pairs
+        elif isinstance(other, list):
+            pass
+        elif isinstance(other, np.ndarray):
+            other = other.tolist()
+        else:
+            raise Exception(
+                "Only list, np.ndparray and PairList can be added to PairList"
+            )
+        return PairList(self.__pairs + other)
 
     def __getstate__(self):
         state = self.__dict__.copy()
