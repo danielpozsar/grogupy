@@ -20,7 +20,7 @@
 
 import copy
 import warnings
-from typing import Union
+from typing import Any, Union
 
 import numpy as np
 import sisl
@@ -184,11 +184,11 @@ class Pair:
         self._Gij: list[NDArray] = []
         self._Gji: list[NDArray] = []
 
-        self.energies: Union[list, NDArray] = None
-        self.J_iso: Union[float, None] = None
-        self.J: Union[NDArray, None] = None
-        self.J_S: Union[NDArray, None] = None
-        self.D: Union[NDArray, None] = None
+        self.energies: Union[None, NDArray] = None
+        self.J_iso: Union[None, float] = None
+        self.J: Union[None, NDArray] = None
+        self.J_S: Union[None, NDArray] = None
+        self.D: Union[None, NDArray] = None
 
         # pre calculate hidden unuseed properties
         # they are here so they are dumped to the self.__dict__ upon saving
@@ -235,6 +235,12 @@ class Pair:
         state["M2"] = M2
 
         self.__dict__ = state
+
+    def __getattr__(self, name: str) -> Any:
+        return self.name
+
+    def __setattr__(self, name: str, value: Any) -> None:
+        self.name = value
 
     def __eq__(self, value):
         if isinstance(value, Pair):
@@ -364,7 +370,7 @@ class Pair:
         return self.__distance
 
     @property
-    def energies_meV(self) -> NDArray:
+    def energies_meV(self) -> Union[None, NDArray]:
         """The energies, but in meV."""
         if self.energies is None:
             self.__energies_meV = None
@@ -373,7 +379,7 @@ class Pair:
         return self.__energies_meV
 
     @property
-    def energies_mRy(self) -> NDArray:
+    def energies_mRy(self) -> Union[None, NDArray]:
         """The energies, but in mRy."""
         if self.energies is None:
             self.__energies_mRy = None
@@ -382,7 +388,7 @@ class Pair:
         return self.__energies_mRy
 
     @property
-    def J_meV(self) -> NDArray:
+    def J_meV(self) -> Union[None, NDArray]:
         """The exchange tensor, but in meV."""
         if self.J is None:
             self.__J_meV = None
@@ -391,7 +397,7 @@ class Pair:
         return self.__J_meV
 
     @property
-    def J_mRy(self) -> NDArray:
+    def J_mRy(self) -> Union[None, NDArray]:
         """The exchange tensor, but in mRy."""
         if self.J is None:
             self.__J_mRy = None
@@ -400,7 +406,7 @@ class Pair:
         return self.__J_mRy
 
     @property
-    def D_meV(self) -> NDArray:
+    def D_meV(self) -> Union[None, NDArray]:
         """The DM vector, but in meV."""
         if self.D is None:
             self.__D_meV = None
@@ -409,7 +415,7 @@ class Pair:
         return self.__D_meV
 
     @property
-    def D_mRy(self) -> NDArray:
+    def D_mRy(self) -> Union[None, NDArray]:
         """The DM vector, but in mRy."""
         if self.D is None:
             self.__D_mRy = None
@@ -418,7 +424,7 @@ class Pair:
         return self.__D_mRy
 
     @property
-    def J_S_meV(self) -> NDArray:
+    def J_S_meV(self) -> Union[None, NDArray]:
         """The symmetric part of the exchange tensor, but in meV."""
         if self.J_S is None:
             self.__J_S_meV = None
@@ -427,7 +433,7 @@ class Pair:
         return self.__J_S_meV
 
     @property
-    def J_S_mRy(self) -> NDArray:
+    def J_S_mRy(self) -> Union[None, NDArray]:
         """The symmetric part of the exchange tensor, but in mRy."""
         if self.J_S is None:
             self.__J_S_mRy = None
@@ -436,7 +442,7 @@ class Pair:
         return self.__J_S_mRy
 
     @property
-    def J_iso_meV(self) -> NDArray:
+    def J_iso_meV(self) -> Union[None, NDArray]:
         """The isotropic exchange, but in meV."""
         if self.J_iso is None:
             self.__J_iso_meV = None
@@ -445,7 +451,7 @@ class Pair:
         return self.__J_iso_meV
 
     @property
-    def J_iso_mRy(self) -> NDArray:
+    def J_iso_mRy(self) -> Union[None, NDArray]:
         """The isotropic exchange, but in mRy."""
         if self.J_iso is None:
             self.__J_iso_mRy = None
@@ -463,10 +469,10 @@ class Pair:
         self._Gji: list[NDArray] = []
         self.energies: Union[None, NDArray] = None
 
-        self.J_iso: Union[float, None] = None
-        self.J: Union[NDArray, None] = None
-        self.J_S: Union[NDArray, None] = None
-        self.D: Union[NDArray, None] = None
+        self.J_iso: Union[None, float] = None
+        self.J: Union[None, NDArray] = None
+        self.J_S: Union[None, NDArray] = None
+        self.D: Union[None, NDArray] = None
 
     def calculate_energies(self, weights: NDArray, append: bool = False) -> None:
         """Calculates the energies of the infinitesimal rotations.
@@ -526,10 +532,10 @@ class Pair:
         """
 
         J_iso, J_S, D, J = calculate_exchange_tensor(self.energies)
-        self.J: NDArray = J
-        self.J_S: NDArray = J_S
-        self.J_iso: float = J_iso
-        self.D: NDArray = D
+        self.J: Union[None, NDArray] = J
+        self.J_S: Union[None, NDArray] = J_S
+        self.J_iso: Union[None, float] = J_iso
+        self.D: Union[None, NDArray] = D
         # call these so they are updated
         self.J_meV
         self.J_mRy
@@ -554,10 +560,10 @@ class Pair:
         """
 
         J_iso, J_S, D, J = fit_exchange_tensor(self.energies, ref_xcf)
-        self.J: NDArray = J
-        self.J_S: NDArray = J_S
-        self.J_iso: float = J_iso
-        self.D: NDArray = D
+        self.J: Union[None, NDArray] = J
+        self.J_S: Union[None, NDArray] = J_S
+        self.J_iso: Union[None, float] = J_iso
+        self.D: Union[None, NDArray] = D
         # call these so they are updated
         self.J_meV
         self.J_mRy
@@ -578,10 +584,10 @@ class Pair:
         """
 
         J_iso = calculate_isotropic_only(self.energies)
-        self.J: NDArray = None
-        self.J_S: NDArray = None
-        self.J_iso: float = J_iso
-        self.D: NDArray = None
+        self.J: Union[None, NDArray] = None
+        self.J_S: Union[None, NDArray] = None
+        self.J_iso: Union[None, float] = J_iso
+        self.D: Union[None, NDArray] = None
         # call these so they are updated
         self.J_meV
         self.J_mRy
@@ -611,7 +617,7 @@ class PairList:
     the list.
     """
 
-    def __init__(self, pairs: list[Pair] = None):
+    def __init__(self, pairs: Union[None, list[Pair]] = None):
         if pairs is None:
             self.__pairs = []
         elif isinstance(pairs, PairList):

@@ -116,7 +116,7 @@ class Kspace:
         return len(self.kpoints)
 
     @property
-    def kset(self) -> int:
+    def kset(self) -> NDArray:
         """Number of kpoints in each direction."""
         return self.__kset
 

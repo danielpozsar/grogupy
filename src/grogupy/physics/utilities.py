@@ -505,9 +505,7 @@ def calculate_anisotropy_tensor(energies: NDArray) -> tuple[NDArray, float]:
     return K, consistency_check
 
 
-def fit_anisotropy_tensor(
-    energies: NDArray, ref_xcf: list[dict]
-) -> tuple[NDArray, float]:
+def fit_anisotropy_tensor(energies: NDArray, ref_xcf: list[dict]) -> NDArray:
     """Fits the anisotropy tensor to the energies.
 
     It uses a fitting method to calculate the anisotropy tensor from the

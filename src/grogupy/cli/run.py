@@ -224,7 +224,7 @@ def main():
         print("\n\n\n")
 
     if params["maxpairsperloop"] < len(simulation.pairs):
-        number_of_chunks = (
+        number_of_chunks: int = (
             np.floor(len(simulation.pairs) / params["maxpairsperloop"]) + 1
         )
         pair_chunks = np.array_split(simulation.pairs, number_of_chunks)

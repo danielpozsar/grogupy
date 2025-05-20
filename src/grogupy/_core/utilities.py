@@ -34,7 +34,7 @@ if CONFIG.is_GPU:
     import cupy as cp
 
 
-def commutator(a: NDArray, b: NDArray) -> NDArray:
+def commutator(a: NDArray[np.float64], b: NDArray[np.float64]) -> NDArray[np.float64]:
     """Shorthand for commutator.
 
     Commutator of two matrices in the mathematical sense.
@@ -55,7 +55,7 @@ def commutator(a: NDArray, b: NDArray) -> NDArray:
     return a @ b - b @ a
 
 
-def tau_u(u: Union[list, NDArray]) -> NDArray:
+def tau_u(u: NDArray) -> NDArray:
     """Pauli matrix in direction u.
 
     Returns the vector u in the basis of the Pauli matrices.
@@ -72,12 +72,12 @@ def tau_u(u: Union[list, NDArray]) -> NDArray:
     """
 
     # u is force to be of unit length
-    u = u / np.linalg.norm(u)
+    u = np.array(u) / np.linalg.norm(u)
 
     return u[0] * TAU_X + u[1] * TAU_Y + u[2] * TAU_Z
 
 
-def crossM(u: Union[list, NDArray]) -> NDArray:
+def crossM(u: NDArray) -> NDArray:
     """Definition for the cross-product matrix.
 
     It acts as a cross product with vector u.
@@ -93,7 +93,9 @@ def crossM(u: Union[list, NDArray]) -> NDArray:
             The matrix that represents teh cross product with a vector
     """
 
-    return np.array([[0, -u[2], u[1]], [u[2], 0, -u[0]], [-u[1], u[0], 0]])
+    return np.array(
+        [[0, -u[2], u[1]], [u[2], 0, -u[0]], [-u[1], u[0], 0]], dtype=np.float64
+    )
 
 
 def RotM(theta: float, u: NDArray, eps: float = 1e-10) -> NDArray:
@@ -114,7 +116,7 @@ def RotM(theta: float, u: NDArray, eps: float = 1e-10) -> NDArray:
             The rotation matrix
     """
 
-    u = u / np.linalg.norm(u)
+    u = np.array(u) / np.linalg.norm(u)
 
     M = (
         np.cos(theta) * np.eye(3)
@@ -159,9 +161,9 @@ def RotMa2b(a: NDArray, b: NDArray, eps: float = 1e-10) -> NDArray:
 def setup_from_range(
     dh: sisl.physics.Hamiltonian,
     R: float,
-    subset: Union[None, list[int], list[list[int], list[int]]] = None,
+    subset: Union[None, list[int], list[list[int]]] = None,
     **kwargs,
-) -> tuple[sisl.physics.Hamiltonian, list[dict], list[dict]]:
+) -> tuple[list[dict], list[dict]]:
     """Generates all the pairs and magnetic entities from atoms in a given radius.
 
     It takes all the atoms from the unit cell and generates
@@ -218,7 +220,7 @@ def setup_from_range(
         uc_atoms = range(dh.na)
         uc_out_atoms = range(dh.na)
 
-    elif isinstance(subset, list):
+    else:
         # case 2
         # if only the unit cell atoms are given
         if isinstance(subset[0], int):
@@ -345,7 +347,7 @@ def arrays_lists_equal(array1: Any, array2: Any) -> bool:
 
     # othervise they are not the desired structure
     else:
-        False
+        return False
 
 
 def arrays_None_equal(array1: Any, array2: Any) -> bool:
@@ -385,7 +387,7 @@ def arrays_None_equal(array1: Any, array2: Any) -> bool:
 
     # othervise they are not the desired structure
     else:
-        False
+        return False
 
 
 def onsite_projection(matrix: NDArray, idx1: NDArray, idx2: NDArray) -> NDArray:
@@ -409,7 +411,7 @@ def onsite_projection(matrix: NDArray, idx1: NDArray, idx2: NDArray) -> NDArray:
     return matrix[..., idx1, :][..., idx2]
 
 
-def calc_Vu(H: NDArray, Tu: NDArray) -> NDArray:
+def calc_Vu(H: NDArray, Tu: NDArray) -> tuple[NDArray, NDArray]:
     """Calculates the local perturbation in case of a spin rotation.
 
     Parameters
@@ -664,7 +666,7 @@ def make_kset(kset: Union[list, NDArray] = np.array([1, 1, 1])) -> NDArray:
 
 
 def hsk(
-    H: NDArray, S: NDArray, sc_off: list, k: tuple = (0, 0, 0)
+    H: NDArray, S: NDArray, sc_off: NDArray, k: tuple = (0, 0, 0)
 ) -> tuple[NDArray, NDArray]:
     """Speed up Hk and Sk generation.
 
@@ -689,12 +691,10 @@ def hsk(
             Overlap matrix at the given k point
     """
 
-    # this two conversion lines are from the sisl source
-    k = np.asarray(k, np.float64)
-    k.shape = (-1,)
+    k_n: NDArray = np.asarray(k, np.float64).squeeze()
 
     # this generates the list of phases
-    phases = np.exp(-1j * 2 * np.pi * k @ sc_off.T)
+    phases = np.exp(-1j * 2 * np.pi * k_n @ sc_off.T)
 
     # phases applied to the hamiltonian
     HK = np.einsum("abc,a->bc", H, phases)
@@ -704,11 +704,11 @@ def hsk(
 
 
 def process_ref_directions(
-    ref_xcf_orientations: Union[list[float], NDArray, list[dict]],
+    ref_xcf_orientations: Union[list[list[float]], NDArray, list[dict]],
     isotropic_only: bool = False,
     mixed_perpendicular: bool = False,
     matlabmode: bool = False,
-) -> list[dict]:
+) -> list[dict[str, NDArray[np.float64]]]:
     """Preprocess the reference directions input for the Builder object.
 
     If the reference directions are already in the expected format, which
@@ -743,8 +743,10 @@ def process_ref_directions(
 
     # when it already contains dictionaries, then everythin was
     # defined by hand
-    if isinstance(ref_xcf_orientations[0], dict):
-        orientations = ref_xcf_orientations
+    if isinstance(ref_xcf_orientations, list) and isinstance(
+        ref_xcf_orientations[0], dict
+    ):
+        orientations: list[dict] = ref_xcf_orientations
 
     # this is the matlabmode default values
     elif matlabmode:
@@ -762,7 +764,7 @@ def process_ref_directions(
         y = np.array([0, 1, 0], dtype=float)
         z = np.array([0, 0, 1], dtype=float)
         # for every given orientation we rotate the x,y,z coordinate system
-        orientations = []
+        orientations: list[dict] = []
         for a in np.array(ref_xcf_orientations):
             # normalize, just in case
             a = a / np.linalg.norm(a)

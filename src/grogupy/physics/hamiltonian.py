@@ -119,20 +119,22 @@ class Hamiltonian:
         self.times: DefaultTimer = DefaultTimer()
         if isinstance(infile, str):
             # get sisl sile
-            sile = sisl.io.get_sile(infile)
+            sile = sisl.get_sile(infile)
             # load hamiltonian
             self._dh: sisl.physics.Hamiltonian = sile.read_hamiltonian()
             try:
-                self._ds: sisl.physics.DensityMatrix = sile.read_density_matrix()
+                self._ds: Union[None, sisl.physics.DensityMatrix] = (
+                    sile.read_density_matrix()
+                )
             except:
-                self._ds = None
+                self._ds: Union[None, sisl.physics.DensityMatrix] = None
             self.infile: str = infile
         elif isinstance(infile, tuple):
             if isinstance(infile[0], sisl.physics.Hamiltonian) and isinstance(
                 infile[1], sisl.physics.DensityMatrix
             ):
-                self._dh = infile[0]
-                self._ds = infile[1]
+                self._dh: sisl.physics.Hamiltonian = infile[0]
+                self._ds: Union[None, sisl.physics.DensityMatrix] = infile[1]
                 self.infile = "Unknown!"
             else:
                 raise Exception("Not valid input:", (type(infile[0]), type(infile[1])))
@@ -142,23 +144,22 @@ class Hamiltonian:
         if self._dh.spin.kind not in {1, 2, 3}:
             raise Exception("Unpolarized DFT calculation cannot be used!")
         if self._dh.spin.kind == 1:
-            self._spin_state = "POLARIZED"
+            self._spin_state: str = "POLARIZED"
         if self._dh.spin.kind == 2:
-            self._spin_state = "NON-COLINEAR"
+            self._spin_state: str = "NON-COLINEAR"
         if self._dh.spin.kind == 3:
-            self._spin_state = "SPIN-ORBIT"
+            self._spin_state: str = "SPIN-ORBIT"
 
         H, S = build_hh_ss(self._dh)
-        self.H: Union[NDArray, None] = H
-        self.S: Union[NDArray, None] = S
+        self.H: NDArray = H
+        self.S: NDArray = S
         self.scf_xcf_orientation: NDArray = np.array(scf_xcf_orientation)
         if (self.scf_xcf_orientation != 0).sum() != 1:
             warnings.warn(
-                "Tilted exchange field in the DFT calculation: ",
-                self.scf_xcf_orientation,
+                f"Tilted exchange field in the DFT calculation: {self.scf_xcf_orientation}"
             )
 
-        self.orientation: NDArray = scf_xcf_orientation
+        self.orientation: NDArray = np.array(self.scf_xcf_orientation)
 
         # pre calculate hidden unuseed properties
         # they are here so they are dumped to the self.__dict__ upon saving
@@ -218,7 +219,7 @@ class Hamiltonian:
         return out
 
     @property
-    def geometry(self) -> sisl.geometry:
+    def geometry(self) -> sisl.geometry.Geometry:
         return self._dh.geometry
 
     @property
@@ -242,7 +243,7 @@ class Hamiltonian:
         return self.__cell
 
     @property
-    def nsc(self) -> int:
+    def nsc(self) -> NDArray:
         return self._dh.geometry.nsc
 
     @property
@@ -264,7 +265,7 @@ class Hamiltonian:
     def H_uc(self) -> NDArray:
         return self.H[self.uc_in_sc_index]
 
-    def extract_exchange_field(self) -> list[NDArray, NDArray, NDArray, NDArray]:
+    def extract_exchange_field(self) -> tuple[NDArray, NDArray, NDArray, NDArray]:
         """Extract the exchange field and other useful quantities.
 
         Returns
@@ -293,7 +294,7 @@ class Hamiltonian:
             # identifying TRS and TRB parts of the Hamiltonian
             TAUY: NDArray = np.kron(np.eye(int(self.NO / 2)), TAU_Y)
 
-            hTR: NDArray = []
+            hTR: list = []
             for i in range(self.nsc.prod()):
                 hTR.append(TAUY @ self.H[i].conj() @ TAUY)
                 bar.update()
@@ -303,11 +304,10 @@ class Hamiltonian:
             hTRB: NDArray = (self.H - hTR) / 2
 
             # extracting the exchange field
-            traced: NDArray = []
+            traced: list = []
             for i in range(self.nsc.prod()):
                 traced.append(spin_tracer(hTRB[i]))
                 bar.update()
-            traced = np.array(traced)  # equation 77
 
             XCF: NDArray = np.array(
                 [
@@ -330,13 +330,13 @@ class Hamiltonian:
             mempool.free_all_blocks()
 
             # identifying TRS and TRB parts of the Hamiltonian
-            TAUY: CNDArray = cp.kron(cp.eye(int(self.NO / 2)), cp.array(TAU_Y))
+            TAUY: "CNDArray" = cp.kron(cp.eye(int(self.NO / 2)), cp.array(TAU_Y))
 
-            hTR: NDArray = []
+            tmp: list = []
             for i in range(self.nsc.prod()):
-                hTR.append((TAUY @ cp.array(self.H[i]).conj() @ TAUY).get())
+                tmp.append((TAUY @ cp.array(self.H[i]).conj() @ TAUY).get())
                 bar.update()
-            hTR = np.array(hTR)
+            hTR: NDArray = np.array(tmp)
 
             # release this from memory
             TAUY = None
@@ -350,7 +350,7 @@ class Hamiltonian:
                 traced.append(spin_tracer(hTRB[i]))
                 bar.update()
 
-            XCF: CNDArray = cp.array(
+            XCF: "CNDArray" = cp.array(
                 [
                     cp.array([f["x"] / 2 for f in traced]),
                     cp.array([f["y"] / 2 for f in traced]),
@@ -411,7 +411,7 @@ class Hamiltonian:
             mempool = cp.get_default_memory_pool()
             mempool.free_all_blocks()
 
-            H_XCF: CNDArray = cp.zeros(
+            H_XCF: "CNDArray" = cp.zeros(
                 (self.nsc.prod(), self.NO, self.NO), dtype=np.complex128
             )
             XCF = cp.array(XCF)

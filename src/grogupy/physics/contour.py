@@ -89,7 +89,7 @@ class Contour:
         eset: int,
         esetp: float,
         emin: Union[float, None] = None,
-        emax: Union[float, None] = 0,
+        emax: float = 0,
         emin_shift: float = -5,
         emax_shift: float = 0,
         eigfile: Union[str, None] = None,
@@ -119,12 +119,15 @@ class Contour:
 
         self.times: DefaultTimer = DefaultTimer()
         self.__automatic_emin: bool = False
-        self._eigfile = eigfile
+        self._eigfile: Union[str, None] = eigfile
 
-        self._emin: float = emin
         if self._emin is None:
-            self._emin = automatic_emin(eigfile)
+            if self._eigfile is None:
+                raise Exception("Eigfile is needed for automatic emin!")
+            self._emin: float = automatic_emin(eigfile)
             self.__automatic_emin = True
+        else:
+            self._emin: float = emin
         self._emax: float = emax
 
         self._emin += emin_shift
@@ -132,8 +135,8 @@ class Contour:
 
         self._eset: int = eset
         self._esetp: float = esetp
-        self.samples: Union[NDArray, None] = None
-        self.weights: Union[NDArray, None] = None
+        self.samples: NDArray = np.empty(1)
+        self.weights: NDArray = np.empty(1)
         self.__make_contour()
         self.times.measure("setup", restart=True)
 

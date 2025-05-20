@@ -61,7 +61,7 @@ class Builder:
 
     Parameters
     ----------
-    ref_xcf_orientations: Union[list[float], NDArray, list[dict]], optional
+    ref_xcf_orientations: Union[list[list[Union[int, float]]], NDArray[Union[np.int64, np.float64]], dict[str, Union[NDArray[Union[np.int64, np.float64]], list[float]]]], optional
         The reference directions. The perpendicular directions are created by rotating
         the x,y,z frame to the given reference directions, by default [[1,0,0], [0,1,0], [0,0,1]]
     matlabmode: bool, optional
@@ -159,7 +159,7 @@ class Builder:
 
     def __init__(
         self,
-        ref_xcf_orientations: Union[list[float], NDArray, list[dict]] = [
+        ref_xcf_orientations: Union[list[list[float]], NDArray, list[dict]] = [
             [1, 0, 0],
             [0, 1, 0],
             [0, 0, 1],
@@ -204,7 +204,7 @@ class Builder:
         self.ref_xcf_orientations = process_ref_directions(
             ref_xcf_orientations,
             self.isotropic_only,
-            self.anisotropy_solver,
+            self.anisotropy_solver[0].lower() == "g",
             self.matlabmode,
         )
         if self.matlabmode:
@@ -252,7 +252,7 @@ class Builder:
         kspace.__setstate__(state["kspace"])
         state["kspace"] = kspace
 
-        hamiltonian = object.__new__(Hamiltonian)
+        hamiltonian: Hamiltonian = object.__new__(Hamiltonian)
         hamiltonian.__setstate__(state["hamiltonian"])
         state["hamiltonian"] = hamiltonian
 
@@ -443,13 +443,11 @@ class Builder:
             self.ref_xcf_orientations = process_ref_directions(
                 self.ref_xcf_orientations,
                 self.isotropic_only,
-                self.anisotropy_solver,
+                self.anisotropy_solver[0].lower() == "g",
                 self.matlabmode,
             )
         else:
             raise Exception("This must be Bool!")
-
-        return self.__matlabmode
 
     @property
     def exchange_solver(self) -> str:
@@ -543,7 +541,7 @@ class Builder:
             self.ref_xcf_orientations = process_ref_directions(
                 self.ref_xcf_orientations,
                 self.isotropic_only,
-                self.anisotropy_solver,
+                self.anisotropy_solver[0].lower() == "g",
                 self.matlabmode,
             )
         else:
@@ -579,7 +577,7 @@ class Builder:
             raise Exception("It should be a positive integer.")
 
     @property
-    def parallel_mode(self) -> str:
+    def parallel_mode(self) -> Union[str, None]:
         """The parallelization mode for the Hamiltonian inversions, by default None."""
         return self.__parallel_mode
 
@@ -603,12 +601,12 @@ class Builder:
         return self.hamiltonian._dh
 
     @property
-    def _ds(self) -> sisl.physics.DensityMatrix:
+    def _ds(self) -> Union[None, sisl.physics.DensityMatrix]:
         """``sisl`` density matrix object used in the input."""
         return self.hamiltonian._ds
 
     @property
-    def geometry(self) -> sisl.geometry:
+    def geometry(self) -> sisl.geometry.Geometry:
         """``sisl`` geometry object."""
         return self.hamiltonian._dh.geometry
 
@@ -753,7 +751,7 @@ class Builder:
         """
 
         if isinstance(kspace, Kspace):
-            self.kspace = kspace
+            self.kspace: Kspace = kspace
         else:
             raise Exception(f"Bad type for Kspace: {type(kspace)}")
 
@@ -767,7 +765,7 @@ class Builder:
         """
 
         if isinstance(contour, Contour):
-            self.contour = contour
+            self.contour: Contour = contour
         else:
             raise Exception(f"Bad type for Contour: {type(contour)}")
 
@@ -781,14 +779,14 @@ class Builder:
         """
 
         if isinstance(hamiltonian, Hamiltonian):
-            self.hamiltonian = hamiltonian
+            self.hamiltonian: Hamiltonian = hamiltonian
         else:
             raise Exception(f"Bad type for Hamiltonian: {type(hamiltonian)}")
 
     def setup_from_range(
         self,
         R: float,
-        subset: Union[None, list[int], list[list[int], list[int]]] = None,
+        subset: Union[None, list[int], list[list[int]]] = None,
         **kwargs,
     ) -> None:
         """Generates all the pairs and magnetic entities from atoms in a given radius.
@@ -917,7 +915,7 @@ class Builder:
     def add_magnetic_entities(
         self,
         magnetic_entities: Union[
-            MagneticEntityList, dict, MagneticEntity, list[Union[dict, MagneticEntity]]
+            MagneticEntityList, dict, MagneticEntity, list[dict], list[MagneticEntity]
         ],
     ) -> None:
         """Adds a MagneticEntity or a list of MagneticEntity to the instance.
@@ -932,7 +930,7 @@ class Builder:
         """
 
         # if it is not a list, then convert
-        if not isinstance(magnetic_entities, list):
+        if not isinstance(magnetic_entities, list) or not MagneticEntityList:
             magnetic_entities = [magnetic_entities]
 
         # iterate over magnetic entities
@@ -952,7 +950,7 @@ class Builder:
             self.magnetic_entities.append(mag_ent)
 
     def add_pairs(
-        self, pairs: Union[PairList, dict, Pair, list[Union[dict, Pair]]]
+        self, pairs: Union[PairList, dict, Pair, list[dict], list[Pair]]
     ) -> None:
         """Adds a Pair or a list of Pair to the instance.
 
@@ -966,7 +964,7 @@ class Builder:
         """
 
         # if it is not a list, then convert
-        if not isinstance(pairs, list):
+        if not isinstance(pairs, list) or not PairList:
             pairs = [pairs]
 
         # iterate over pairs
@@ -1079,19 +1077,20 @@ class Builder:
         if isinstance(atom, int):
             atom = [atom]
 
+        M: list = []
+
         # partial matching
         if mode.lower()[0] == "p":
-            M: list = []
             for at in atom:
                 for mag_ent in self.magnetic_entities:
-                    if at in mag_ent.atom:
+                    if at in mag_ent._atom:
                         M.append(mag_ent)
 
         # complete matching
         elif mode.lower()[0] == "c":
             for at in atom:
                 for mag_ent in self.magnetic_entities:
-                    if at == mag_ent.atom:
+                    if at == mag_ent._atom:
                         return [mag_ent]
 
         else:

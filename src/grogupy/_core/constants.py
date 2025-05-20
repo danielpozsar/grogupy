@@ -24,10 +24,10 @@ import numpy as np
 from numpy.typing import NDArray
 
 # Pauli matrices
-TAU_X: Final[NDArray] = np.array([[0, 1], [1, 0]])
-TAU_Y: Final[NDArray] = np.array([[0, -1j], [1j, 0]])
-TAU_Z: Final[NDArray] = np.array([[1, 0], [0, -1]])
-TAU_0: Final[NDArray] = np.array([[1, 0], [0, 1]])
+TAU_X: Final[NDArray] = np.array([[0, 1], [1, 0]], dtype=np.complex128)
+TAU_Y: Final[NDArray] = np.array([[0, -1j], [1j, 0]], dtype=np.complex128)
+TAU_Z: Final[NDArray] = np.array([[1, 0], [0, -1]], dtype=np.complex128)
+TAU_0: Final[NDArray] = np.array([[1, 0], [0, 1]], dtype=np.complex128)
 
 if __name__ == "__main__":
     pass
