@@ -75,6 +75,7 @@ max_g_per_loop = 20
 # the calculation of J and K from the energy derivations, either Fit or Grogupy
 exchange_solver = "Grogu"
 anisotropy_solver = "Grogu"
+isotropic_only = True
 ################################################################################
 #                                   Output files
 ################################################################################
