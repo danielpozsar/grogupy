@@ -427,14 +427,14 @@ class Builder:
 
     @spin_model.setter
     def spin_model(self, value: str) -> None:
-        if self.spin_model == "generalised-fit":
+        if value == "generalised-fit":
             self.__spin_model: str = "generalised-fit"
             # remove the linear combination of the perpendicular orientations
             for ref_xcf in self.ref_xcf_orientations:
                 if len(ref_xcf["vw"]) == 3:
                     ref_xcf["vw"] = ref_xcf["vw"][:-1]
 
-        elif self.spin_model == "generalised-grogu":
+        elif value == "generalised-grogu":
             self.__spin_model: str = "generalised-grogu"
             # add the linear combination of the orientations
             for ref_xcf in self.ref_xcf_orientations:
@@ -444,7 +444,7 @@ class Builder:
                     )
                     ref_xcf["vw"] = np.vstack((ref_xcf["vw"], vw_mix))
 
-        elif self.spin_model == "isotropic-only":
+        elif value == "isotropic-only":
             self.__spin_model: str = "isotropic-only"
             self.ref_xcf_orientations = [self.ref_xcf_orientations[0]]
             self.ref_xcf_orientations[0]["vw"] = np.array(
