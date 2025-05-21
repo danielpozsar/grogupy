@@ -43,6 +43,10 @@ For examples, see the `running in HPC <running_in_hpc>`_ section in the document
 
 """
 
-from .analyze import *
-from .check_convergence import *
+from grogupy import CONFIG
+
 from .run import *
+
+if CONFIG.viz_loaded:
+    from .analyze import *
+    from .check_convergence import *
