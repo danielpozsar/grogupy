@@ -121,11 +121,12 @@ class Contour:
         self.__automatic_emin: bool = False
         self._eigfile: Union[str, None] = eigfile
 
-        if self._emin is None:
+        if emin is None:
             if self._eigfile is None:
                 raise Exception("Eigfile is needed for automatic emin!")
-            self._emin: float = automatic_emin(eigfile)
-            self.__automatic_emin = True
+            else:
+                self._emin: float = automatic_emin(self._eigfile)
+                self.__automatic_emin = True
         else:
             self._emin: float = emin
         self._emax: float = emax
