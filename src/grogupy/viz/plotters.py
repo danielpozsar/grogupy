@@ -646,9 +646,16 @@ def plot_1D_convergence(
     if not isinstance(files, list):
         files = [files]
     builders = []
+    spin_models = []
     for f in files:
         builders.append(load_Builder(f))
+        spin_models.append(builders[-1].spin_model)
     builders = np.array(builders, dtype=object)
+
+    # check spin models
+    spin_models = np.unique(np.array(spin_models))
+    if len(spin_models) != 1:
+        raise Exception(f"Multiple spin models in files: {spin_models}!")
 
     # sort
     conv_params = []
@@ -684,10 +691,14 @@ def plot_1D_convergence(
     compare = []
     for b in builders:
         dat = []
-        for m in b.magnetic_entities:
-            dat.append(m.K_meV)
-        for p in b.pairs:
-            dat.append(p.J_meV)
+        if spin_models[0] != "isotropic-only":
+            for m in b.magnetic_entities:
+                dat.append(m.K_meV)
+            for p in b.pairs:
+                dat.append(p.J_meV)
+        else:
+            for p in b.pairs:
+                dat.append(p.J_iso_meV)
         compare.append(np.array(dat).flatten())
     compare = np.array(compare).T
 
