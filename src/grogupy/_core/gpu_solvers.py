@@ -298,7 +298,8 @@ if CONFIG.is_GPU:
                 rot_H = builder.hamiltonian
             else:
                 rot_H = builder.hamiltonian.copy()
-            rot_H.rotate(orient["o"])
+            if not np.allclose(rot_H.orientation, orient["o"]):
+                rot_H.rotate(orient["o"])
 
         # setup empty Greens function holders for integration and
         # initialize rotation storage
