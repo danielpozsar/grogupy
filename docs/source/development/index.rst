@@ -48,7 +48,11 @@ Releasing new version
 Before releasing you should be sure that pytest runs without 
 errors including the benchmarks as well. All new features 
 should be documented in both docs and in the relevant 
-**__init__.py** files and new tests should be created.
+**__init__.py** files and new tests should be created. The 
+example notebooks should be run as well and the documentation 
+building should not throw any warnings after removing the 
+**_genrated** folder from **API** and running ``make clean```, 
+``make build```.
 
 The commit for the version release should not contain any new 
 features or bugfixes, just the final steps to update some 
