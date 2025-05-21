@@ -72,8 +72,7 @@ max_g_per_loop = 20
 #                                 Solution methods
 ################################################################################
 # the calculation of J and K from the energy derivations, either Fit or Grogupy
-exchange_solver = "Grogu"
-anisotropy_solver = "Grogu"
+spin_model = "generalised-grogu"
 ################################################################################
 #                                   Output files
 ################################################################################

@@ -45,7 +45,7 @@ emax_shift = 0
 scf_xcf_orientation = [0, 0, 1]
 # the reference directions for the energy derivations
 ref_xcf_orientations = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
-matlabmode = True
+
 ################################################################################
 #                      Magnetic entity and pair definitions
 ################################################################################
@@ -73,9 +73,7 @@ max_g_per_loop = 20
 #                                 Solution methods
 ################################################################################
 # the calculation of J and K from the energy derivations, either Fit or Grogupy
-exchange_solver = "Grogu"
-anisotropy_solver = "Grogu"
-isotropic_only = True
+spin_model = "isotropic-only"
 ################################################################################
 #                                   Output files
 ################################################################################

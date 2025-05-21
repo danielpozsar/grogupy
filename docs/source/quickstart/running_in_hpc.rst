@@ -182,8 +182,7 @@ as we did in the jupyter notebook examples.
 
 
    # the calculation of J and K from the energy derivations, either Fit or Grogupy
-   exchange_solver = "Fit"
-   anisotropy_solver = "Fit"
+   spin_model = "generalised-fit"
    # parallelization should be turned on for efficiency
    parallel_mode = "K"
 

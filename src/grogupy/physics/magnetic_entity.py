@@ -603,7 +603,7 @@ class MagneticEntity:
         self.K_consistency: Union[None, float] = None
 
     def calculate_energies(
-        self, weights: NDArray, append: bool = False, matlabmode: bool = False
+        self, weights: NDArray, append: bool = False, third_direction: bool = False
     ) -> None:
         """Calculates the energies of the infinitesimal rotations.
 
@@ -617,7 +617,7 @@ class MagneticEntity:
         append: bool, optional
             If it is True, then the energy of a single rotation is appended
             to the energies from the temporary storages, by default False
-        matlabmode : bool, optional
+        third_direction : bool, optional
             Wether to use a linear combination of the two perpendicular
             orientation, by default False
         """
@@ -634,7 +634,7 @@ class MagneticEntity:
             storage.append(interaction_energy(V1[0], V1[1], Gii, Gii, weights))
             storage.append(interaction_energy(V1[1], V1[0], Gii, Gii, weights))
             storage.append(second_order_energy(V1[1], V2[1], Gii, weights))
-            if matlabmode:
+            if third_direction:
                 storage.append(second_order_energy(V1[2], V2[2], Gii, weights))
             if self.energies is None:
                 self.energies = np.array(storage)
@@ -653,7 +653,7 @@ class MagneticEntity:
                 storage.append(interaction_energy(V1[0], V1[1], Gii, Gii, weights))
                 storage.append(interaction_energy(V1[1], V1[0], Gii, Gii, weights))
                 storage.append(second_order_energy(V1[1], V2[1], Gii, weights))
-                if matlabmode:
+                if third_direction:
                     storage.append(second_order_energy(V1[2], V2[2], Gii, weights))
                 energies.append(storage)
             self.energies: Union[None, NDArray] = np.array(energies)
@@ -745,7 +745,7 @@ class MagneticEntityList:
     def __len__(self):
         return len(self.__magnetic_entities)
 
-    def __iter__(self) -> Iterator:
+    def __iter__(self) -> Iterator[MagneticEntity]:
         return iter(self.__magnetic_entities)
 
     def __add__(self, other):

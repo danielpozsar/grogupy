@@ -122,24 +122,19 @@ def main():
     outfile = join(params["outfolder"], params["outfile"])
 
     # Define simulation
-    simulation = Builder(
-        ref_xcf_orientations=params["refxcforientations"],
-        matlabmode=params["matlabmode"],
-    )
+    simulation = Builder(ref_xcf_orientations=params["refxcforientations"])
 
     # Add solvers and parallellizations
     simulation.low_memory_mode = params["lowmemorymode"]
+    simulation.parallel_mode = params["parallelmode"]
     simulation.greens_function_solver = params["greensfunctionsolver"]
     simulation.max_g_per_loop = params["maxgperloop"]
-    simulation.exchange_solver = params["exchangesolver"]
-    simulation.anisotropy_solver = params["anisotropysolver"]
-    simulation.parallel_mode = params["parallelmode"]
-    simulation.isotropic_only = params["isotropiconly"]
-    simulation.evaluate_energies = params["evaluateenergies"]
+    simulation.apply_spin_model = params["applyspinmodel"]
+    simulation.spin_model = params["spinmodel"]
 
     # check for the appropriate output formats if only the energies are
     # evaluated
-    if not params["evaluateenergies"]:
+    if not params["applyspinmodel"]:
         if params["savemagnopy"]:
             raise Exception(
                 "magnopy output is not available if only the energies are evaluated!"
@@ -293,7 +288,7 @@ def main():
         )
         print("solved:", (timer() - start) / 60, "min")
         print(simulation.times.times)
-        if not params["evaluateenergies"]:
+        if not params["applyspinmodel"]:
             print("THE ENERGIES ARE CALCULATED, BUT THE SUMMARY IS NOT AVAILABLE!")
             print("THE ENERGIES ARE CALCULATED, BUT THE SUMMARY IS NOT AVAILABLE!")
             print("THE ENERGIES ARE CALCULATED, BUT THE SUMMARY IS NOT AVAILABLE!")

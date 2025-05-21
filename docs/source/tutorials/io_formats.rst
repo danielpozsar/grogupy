@@ -91,14 +91,12 @@ format. See and compare the following examples.
             ###############################################################################
 
 
-            # the exchange and anisotropy solvers can be turned off, in this case only the 
+            # the spin model solvers solvers can be turned off, in this case only the 
             # energies upon rotations are meaningful
-            evaluate_energies = True
-            # the calculation of J and K from the energy derivations, either Fit or Grogupy
-            exchange_solver = "Fit"
-            anisotropy_solver = "Fit"
-            # it is possible to only calculate isotropic exchange, which reduces runtime
-            isotropic_only = False
+            apply_spin_model = True
+            # the calculation of J and K from the energy derivations, either 
+            # "generalised-fit", "generalised-grogu" or "isotropic-only"
+            spin_model = "generalised-fit"
             # parallelization should be turned on for efficiency
             parallel_mode = "K"
 
@@ -234,15 +232,12 @@ format. See and compare the following examples.
             ###############################################################################
 
 
-            # the exchange and anisotropy solvers can be turned off, in this case only the 
+            # the spin model solvers solvers can be turned off, in this case only the 
             # energies upon rotations are meaningful
-            EvaluateEnergies = True
-            # the calculation of J and K from the energy derivations, either Fit or Grogupy
-            ExchangeSolver          Fit
-            AnisotropySolver        Fit
-            # it is possible to only calculate isotropic exchange, which reduces runtime
-            IsotropicOnly = False
-            
+            ApplySpinModel  True
+            # the calculation of J and K from the energy derivations, either 
+            # "generalised-fit", "generalised-grogu" or "isotropic-only"
+            SpinModel       generalised-fit
             # parallelization should be turned on for efficiency
             ParallelMode = "K"
 
@@ -371,11 +366,6 @@ refxcforientations, *by default [[1, 0, 0], [0, 1, 0], [0, 0, 1]]*
     directions is a list of dictionaries, with keys 'o', 'vw', where 'o' is 
     the reference direction and 'vw' is any number of perpendicular directions.
 
-matlabmode, *by default False*
-    Forces the reference directions to be (x,y,z) and forces the exchange and 
-    anisotropy solver to use the origonal grogu methods. It is for backwards 
-    compatibility.
-
 magneticentities
     Explicit magnetic entity definition for comlicated systems.
 
@@ -428,33 +418,24 @@ greensfunctionsolver, *by default Parallel*
     bound. If it is set to sequential, then **maxgperloop** is used to try some 
     less aggresive parallelization.
 
-evaluateenergies, *by default True*
-    The exchange and anisotropy solvers can be turned off, in this case only the 
+applyspinmodel, *by default True*
+    The spin model solvers can be turned off, in this case only the 
     energies upon rotations are meaningful. This can be useful if we want to 
     apply some custom spin model in post processing, however it turns off many 
-    functions in grogupy, for example some output options are not available, but 
+    functions in grogupy. For example some output options are not available, but 
     the **savepickle** is mandatory, because it contains the energies that we 
     need. 
 
-exchangesolver, *by default Fit*
-    Can be fit or grogu and it determines the calculation method of the 
-    exchange tensor from the energies upon rotations. grogu describes the 
-    method in the original paper, but can only be used for the x,y,z reference 
-    directions. Fit can be used for any number of reference directions, which 
-    can follow the symmetry of the system.
-
-anisotropysolver, *by default Fit*
-    Can be fit or grogu and it determines the calculation method of the 
-    anisotropy tensor from the energies upon rotations. grogu describes the 
-    method in the original paper, but can only be used for the x,y,z reference 
-    directions. Fit can be used for any number of reference directions, which 
-    can follow the symmetry of the system.
-
-isotropiconly, *by default False*
-    It is possible to only calculate isotropic exchange, which requires one 
-    reference direction and one perpendicular direction, which greatly reduces 
-    runtime. If it is turned, then the **exchangesolver** and 
-    **anisotropysolver** parameters does not make sense.
+spinmodel, *by default generalised-fit*
+    It describes the spin model used for the calculation of the physical 
+    interaction parameters from the energies upon rotations. It can be 
+    'generalised-fit', 'generalised-grogu' or 'isotropic-only'. 'generalised-grogu' 
+    describes the method in the original paper, but can only be used for the x,y,z 
+    reference directions, which is enforced. Fit can be used for any number of 
+    reference directions, which can follow the symmetry of the system. 
+    'isotropic-only' only calculates the isotropic exchange, which requires one 
+    reference direction and one perpendicular direction, which  is also enforced 
+    and it greatly reduces runtime.
 
 parallelmode, *by default None*
     Parallelization can be turned on over the Brillouin-zone sampling by 

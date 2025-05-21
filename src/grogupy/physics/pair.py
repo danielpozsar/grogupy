@@ -624,7 +624,7 @@ class PairList:
     def __len__(self):
         return len(self.__pairs)
 
-    def __iter__(self) -> Iterator:
+    def __iter__(self) -> Iterator[Pair]:
         return iter(self.__pairs)
 
     def __add__(self, other):

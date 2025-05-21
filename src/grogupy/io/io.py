@@ -273,11 +273,8 @@ def load(
         "_Builder__max_g_per_loop",
         "_Builder__parallel_mode",
         "_Builder__architecture",
-        "_Builder__evaluate_energies",
-        "_Builder__isotropic_only",
-        "_Builder__matlabmode",
-        "_Builder__exchange_solver",
-        "_Builder__anisotropy_solver",
+        "_Builder__apply_spin_model",
+        "_Builder__spin_model",
         "ref_xcf_orientations",
         "_rotated_hamiltonians",
         "SLURM_ID",
@@ -511,9 +508,15 @@ def save_UppASD(
         Wether to add comments in the beginning of the cell.tmp.txt, by default True
 
     """
+
+    if builder.apply_spin_model == False:
+        raise Exception(
+            "Exchange and anisotropy is not calculated! Use apply_spin_model=True"
+        )
+
     posfile = ""
     momfile = ""
-    if not builder.isotropic_only:
+    if not builder.spin_model == "isotropic-only":
         # iterating over magnetic entities
         for i, mag_ent in enumerate(builder.magnetic_entities):
             # calculating positions in basis vector coordinates
@@ -540,7 +543,7 @@ def save_UppASD(
         momfile = "No on site anisotropy in Isotropic Exchange only mode!"
 
     jfile = ""
-    if not builder.isotropic_only:
+    if not builder.spin_model == "isotropic-only":
         # adding anisotropy to jfile
         for i, mag_ent in enumerate(builder.magnetic_entities):
             K = np.around(mag_ent.K_mRy.flatten(), decimals=5)
@@ -566,7 +569,7 @@ def save_UppASD(
 
         # this is the unit cell shift
         shift = pair.supercell_shift
-        if builder.isotropic_only:
+        if builder.spin_model == "isotropic-only":
             J = np.around(-2 * pair.J_iso_mRy.flatten(), decimals=5)
         else:
             # -2 for convention, from Marci

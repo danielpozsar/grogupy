@@ -389,17 +389,7 @@ if CONFIG.is_GPU:
                         )
                     )
 
-            if not builder.isotropic_only:
-                # calculate energies in the current reference hamiltonian direction
-                for mag_ent in builder.magnetic_entities:
-                    mag_ent.calculate_energies(
-                        builder.contour.weights,
-                        append=True,
-                        matlabmode=builder.matlabmode,
-                    )
-                for pair in builder.pairs:
-                    pair.calculate_energies(builder.contour.weights, append=True)
-            else:
+            if builder.spin_model == "isotropic-only":
                 for pair in builder.pairs:
                     pair.energies = np.array(
                         [
@@ -414,6 +404,16 @@ if CONFIG.is_GPU:
                             ]
                         ]
                     )
+            else:
+                # calculate energies in the current reference hamiltonian direction
+                for mag_ent in builder.magnetic_entities:
+                    mag_ent.calculate_energies(
+                        builder.contour.weights,
+                        append=True,
+                        third_direction=builder.spin_model == "generalised-grogu",
+                    )
+                for pair in builder.pairs:
+                    pair.calculate_energies(builder.contour.weights, append=True)
 
             # if we want to keep all the information for some reason we can do it
             if not builder.low_memory_mode:
@@ -446,26 +446,30 @@ if CONFIG.is_GPU:
             del mag_ent._Vu1_tmp
             del mag_ent._Vu2_tmp
 
-            # if isotropic only, then do not evaluate these
-            if builder.evaluate_energies and not builder.isotropic_only:
-                if builder.anisotropy_solver.lower()[0] == "f":  # fit
+            if builder.apply_spin_model:
+                if builder.spin_model == "generalised-fit":
                     mag_ent.fit_anisotropy_tensor(builder.ref_xcf_orientations)
-                elif builder.anisotropy_solver.lower()[0] == "g":  # grogupy
+                elif builder.spin_model == "generalised-grogu":
                     mag_ent.calculate_anisotropy()
+                else:
+                    pass
 
         for pair in builder.pairs:
             # delete temporary stuff
             del pair._Gij_tmp
             del pair._Gji_tmp
 
-            if builder.evaluate_energies and not builder.isotropic_only:
-                if builder.exchange_solver.lower()[0] == "f":  # fit
+            if builder.apply_spin_model:
+                if builder.spin_model == "generalised-fit":
                     pair.fit_exchange_tensor(builder.ref_xcf_orientations)
-                elif builder.exchange_solver.lower()[0] == "g":  # grogupy
+                elif builder.spin_model == "generalised-grogu":
                     pair.calculate_exchange_tensor()
-            # if isotropic only, then use the special solver
-            else:
-                pair.calculate_isotropic_only()
+                elif builder.spin_model == "isotropic-only":
+                    pair.calculate_isotropic_only()
+                else:
+                    raise Exception(
+                        f"Unknown spin model: {builder.spin_model}! Use apply_spin_model=False"
+                    )
 
 else:
 

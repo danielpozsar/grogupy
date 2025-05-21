@@ -64,8 +64,6 @@ class Builder:
     ref_xcf_orientations: Union[list[list[Union[int, float]]], NDArray[Union[np.int64, np.float64]], dict[str, Union[NDArray[Union[np.int64, np.float64]], list[float]]]], optional
         The reference directions. The perpendicular directions are created by rotating
         the x,y,z frame to the given reference directions, by default [[1,0,0], [0,1,0], [0,0,1]]
-    matlabmode: bool, optional
-        Wether to use the convention of the Matlab implementation, by default False
 
     Examples
     --------
@@ -130,19 +128,16 @@ class Builder:
         List of pairs
     low_memory_mode: bool, optional
         The memory mode of the calculation, by default False
-    max_g_per_loop: int, optional
-        Maximum number of greens function samples per loop, by default 1
-    evaluate_energies: bool, optional
-        If it is True, then the exchange and anisotropy tensors are calculated, by default True
     greens_function_solver: {"Sequential", "Parallel"}
         The solution method for the Hamiltonian inversion, by default "Parallel"
-    isotropic_only: bool, optional
-        If it is True, then only the isotropic exchange is calculated regardless
-        the reference directions or other parameters, by default False
-    exchange_solver: {"Fit", "Grogupy"}
-        The solution method for the exchange tensor, by default "Fit"
-    anisotropy_solver: {"Fit", "Grogupy"}
-        The solution method for the anisotropy tensor, by default "Grogupy"
+    max_g_per_loop: int, optional
+        Maximum number of greens function samples per loop, by default 1
+    apply_spin_model: bool, optional
+        If it is True, then the exchange and anisotropy tensors are calculated,
+        by default True
+    spin_model: {"generalised-fit", "generalised-grogu", "isotropic-only"}
+        The solution method for the exchange and anisotropy tensor, by default
+        "generalised-fit"
     parallel_mode: Union[None, str], optional
         The parallelization mode for the Hamiltonian inversions, by default None
     architecture: {"CPU", "GPU"}, optional
@@ -164,7 +159,6 @@ class Builder:
             [0, 1, 0],
             [0, 0, 1],
         ],
-        matlabmode: bool = False,
     ) -> None:
         """Initialize simulation."""
 
@@ -188,29 +182,14 @@ class Builder:
         self.__max_g_per_loop: int = 1
         self.__parallel_mode: Union[None, str] = None
         self.__architecture: str = CONFIG.architecture
-        self.__evaluate_energies: bool = True
-        self.__isotropic_only: bool = False
-
-        # fix the matlab compatibility
-        self.__matlabmode = matlabmode
-        if self.__matlabmode:
-            self.__exchange_solver: str = "grogupy"
-            self.__anisotropy_solver: str = "grogupy"
-        else:
-            self.__exchange_solver: str = "Fit"
-            self.__anisotropy_solver: str = "Fit"
+        self.__apply_spin_model: bool = True
+        self.__spin_model: str = "generalised-fit"
 
         # create reference directions
         self.ref_xcf_orientations = process_ref_directions(
             ref_xcf_orientations,
-            self.isotropic_only,
-            self.anisotropy_solver[0].lower() == "g",
-            self.matlabmode,
+            self.spin_model,
         )
-        if self.matlabmode:
-            warnings.warn(
-                "Matlabmode is used, the exchange field reference directions were set to x,y,z!"
-            )
 
         self._rotated_hamiltonians: list[Hamiltonian] = []
 
@@ -285,9 +264,7 @@ class Builder:
                 and self.__max_g_per_loop == value.__max_g_per_loop
                 and self.__parallel_mode == value.__parallel_mode
                 and self.__architecture == value.__architecture
-                and self.__matlabmode == value.__matlabmode
-                and self.__exchange_solver == value.__exchange_solver
-                and self.__anisotropy_solver == value.__anisotropy_solver
+                and self.__spin_model == value.__spin_model
                 and self.SLURM_ID == value.SLURM_ID
                 and self.__version == value.__version
             ):
@@ -373,8 +350,7 @@ class Builder:
                 max_g = "Not defined"
         out += f"Maximum number of Greens function samples per batch: {max_g}" + newline
 
-        out += f"Solver used for Exchange tensor: {self.exchange_solver}" + newline
-        out += f"Solver used for Anisotropy tensor: {self.anisotropy_solver}" + newline
+        out += f"Spin model: {self.spin_model}"
         out += section + newline
 
         out += f"Cell [Ang]:" + newline
@@ -445,67 +421,21 @@ class Builder:
         return self.hamiltonian.NO
 
     @property
-    def matlabmode(self) -> bool:
-        """Wether to force compatibility with matlab or not."""
-        return self.__matlabmode
+    def spin_model(self) -> str:
+        """The solver used for the exchange and anisotropy tensor calculation."""
+        return self.__spin_model
 
-    @matlabmode.setter
-    def matlabmode(self, value: bool) -> None:
-        if value == False:
-            self.__matlabmode = False
-        elif value == True:
-            self.__matlabmode = True
-            self.__exchange_solver: str = "grogupy"
-            self.__anisotropy_solver: str = "grogupy"
-            self.ref_xcf_orientations = process_ref_directions(
-                self.ref_xcf_orientations,
-                self.isotropic_only,
-                self.anisotropy_solver[0].lower() == "g",
-                self.matlabmode,
-            )
-        else:
-            raise Exception("This must be Bool!")
+    @spin_model.setter
+    def spin_model(self, value: str) -> None:
+        if self.spin_model == "generalised-fit":
+            self.__spin_model: str = "generalised-fit"
+            # remove the linear combination of the perpendicular orientations
+            for ref_xcf in self.ref_xcf_orientations:
+                if len(ref_xcf["vw"]) == 3:
+                    ref_xcf["vw"] = ref_xcf["vw"][:-1]
 
-    @property
-    def exchange_solver(self) -> str:
-        """The solver used for the exchange tensor calculation."""
-        return self.__exchange_solver
-
-    @exchange_solver.setter
-    def exchange_solver(self, value: str) -> None:
-        if value.lower()[0] == "f":  # fit
-            if self.__matlabmode:
-                raise Exception(
-                    f"Matlab does not support this solution method: {value}"
-                )
-            else:
-                self.__exchange_solver: str = "Fit"
-        elif value.lower()[0] == "g":  # grogupy
-            self.__exchange_solver: str = "grogupy"
-        else:
-            raise Exception(f"Unrecognized solution method: {value}")
-
-    @property
-    def anisotropy_solver(self) -> str:
-        """The solver used for the anisotropy tensor calculation."""
-        return self.__anisotropy_solver
-
-    @anisotropy_solver.setter
-    def anisotropy_solver(self, value: str) -> None:
-        if value.lower()[0] == "f":  # fit
-            if self.__matlabmode:
-                raise Exception(
-                    f"Matlab does not support this solution method: {value}"
-                )
-            else:
-                self.__anisotropy_solver: str = "Fit"
-                # remove the linear combination of the orientations
-                for ref_xcf in self.ref_xcf_orientations:
-                    if len(ref_xcf["vw"]) == 3:
-                        ref_xcf["vw"] = ref_xcf["vw"][:-1]
-
-        elif value.lower()[0] == "g":  # grogupy
-            self.__anisotropy_solver: str = "grogupy"
+        elif self.spin_model == "generalised-grogu":
+            self.__spin_model: str = "generalised-grogu"
             # add the linear combination of the orientations
             for ref_xcf in self.ref_xcf_orientations:
                 if len(ref_xcf["vw"]) == 2:
@@ -513,6 +443,14 @@ class Builder:
                         ref_xcf["vw"][0] + ref_xcf["vw"][1]
                     )
                     ref_xcf["vw"] = np.vstack((ref_xcf["vw"], vw_mix))
+
+        elif self.spin_model == "isotropic-only":
+            self.__spin_model: str = "isotropic-only"
+            self.ref_xcf_orientations = [self.ref_xcf_orientations[0]]
+            self.ref_xcf_orientations[0]["vw"] = np.array(
+                [self.ref_xcf_orientations[0]["vw"][0]]
+            )
+
         else:
             raise Exception(f"Unrecognized solution method: {value}")
 
@@ -531,36 +469,16 @@ class Builder:
             raise Exception("This must be Bool!")
 
     @property
-    def evaluate_energies(self) -> bool:
+    def apply_spin_model(self) -> bool:
         """If it is True, then the exchange and anisotropy tensors are calculated."""
-        return self.__evaluate_energies
+        return self.__apply_spin_model
 
-    @evaluate_energies.setter
-    def evaluate_energies(self, value: bool) -> None:
+    @apply_spin_model.setter
+    def apply_spin_model(self, value: bool) -> None:
         if value == False:
-            self.__evaluate_energies = False
+            self.__apply_spin_model = False
         elif value == True:
-            self.__evaluate_energies = True
-        else:
-            raise Exception("This must be Bool!")
-
-    @property
-    def isotropic_only(self) -> bool:
-        """If it is True, then only the isotropic exchange is calculated."""
-        return self.__isotropic_only
-
-    @isotropic_only.setter
-    def isotropic_only(self, value: bool) -> None:
-        if value == False:
-            self.__isotropic_only = False
-        elif value == True:
-            self.__isotropic_only = True
-            self.ref_xcf_orientations = process_ref_directions(
-                self.ref_xcf_orientations,
-                self.isotropic_only,
-                self.anisotropy_solver[0].lower() == "g",
-                self.matlabmode,
-            )
+            self.__apply_spin_model = True
         else:
             raise Exception("This must be Bool!")
 
@@ -687,6 +605,11 @@ class Builder:
         str
             Magnopy input file
         """
+
+        if self.apply_spin_model == False:
+            raise Exception(
+                "Exchange and anisotropy is not calculated! Use apply_spin_model=True"
+            )
 
         if precision is not None:
             if not isinstance(precision, int):
@@ -1039,17 +962,15 @@ class Builder:
         self.times.restart()
 
         # check to optimize calculation
-        if (
-            self.anisotropy_solver.lower()[0] == "g"
-            or self.exchange_solver.lower()[0] == "g"
-        ) and len(self.ref_xcf_orientations) > 3:
+        if (self.spin_model == "generalised-grogu") and len(
+            self.ref_xcf_orientations
+        ) > 3:
             warnings.warn(
                 "There are unnecessary orientations for the anisotropy or the exchange solver!"
             )
-        elif (
-            self.anisotropy_solver.lower()[0] == "f"
-            or self.exchange_solver.lower()[0] == "f"
-        ) and np.array([len(i["vw"]) > 2 for i in self.ref_xcf_orientations]).any():
+        elif (self.spin_model == "generalised-fit") and np.array(
+            [len(i["vw"]) > 2 for i in self.ref_xcf_orientations]
+        ).any():
             warnings.warn(
                 "There are unnecessary perpendicular directions for the anisotropy or exchange solver!"
             )

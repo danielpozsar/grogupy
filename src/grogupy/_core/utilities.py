@@ -713,9 +713,7 @@ def hsk(
 
 def process_ref_directions(
     ref_xcf_orientations: Union[list[list[float]], NDArray, list[dict]],
-    isotropic_only: bool = False,
-    mixed_perpendicular: bool = False,
-    matlabmode: bool = False,
+    spin_model: str = "generalised-fit",
 ) -> list[dict[str, NDArray[np.float64]]]:
     """Preprocess the reference directions input for the Builder object.
 
@@ -723,24 +721,18 @@ def process_ref_directions(
     is list of dictionaries, with keys 'o', 'vw', where 'o' is the
     reference direction and 'vw' is any number of perpendicular directions,
     then it just return that with normalization. Otherwise either creates
-    (x,y,z) directions for matlabmode or generates the perpendicular
-    directions for the given reference directions. In case of the orginal
-    grogu method for anysotropy we need an extra perpendicualar direction,
-    which can be created by the ``mixed_perpendicular`` parameter.
+    (x,y,z) directions for "generalised-grogu" or generates the perpendicular
+    directions for the given reference directions for the "generalised-fit"
+    model. In case of "isotropic-only" only one reference direction and one
+    perpendicular direction is needed.
 
     Parameters
     ----------
     ref_xcf_orientations : Union[list[float], NDArray, list[dict]]
         The reference directions input for the Builder object
-    isotropic_only: bool, optional
-        If only the isotropic exchange is needed, then there should be
-        one reference direction and one perpendicular direction, by default
-        False
-    mixed_perpendicular : bool, optional
-        Wether to add a third perpendicular direction for the anisotropy,
-        by default False
-    matlabmode : bool, optional
-        It creates and returns (x,y,z) referenc directions, by default False
+    spin_model: str, optional
+        Defines the spin model used for the exchange and anisotropy, by
+        default "generalised-fit"
 
     Returns
     -------
@@ -756,17 +748,22 @@ def process_ref_directions(
     ):
         orientations: list[dict] = ref_xcf_orientations
 
-    # this is the matlabmode default values
-    elif matlabmode:
+    # this is the default values from the paper
+    elif spin_model == "generalised-grogu":
         orientations = [
             dict(o=np.array([1, 0, 0]), vw=np.array([[0, 1, 0], [0, 0, 1]])),
             dict(o=np.array([0, 1, 0]), vw=np.array([[1, 0, 0], [0, 0, 1]])),
             dict(o=np.array([0, 0, 1]), vw=np.array([[1, 0, 0], [0, 1, 0]])),
         ]
+        for ref in orientations:
+            v = ref["vw"][0]
+            w = ref["vw"][1]
+            vw = (v + w) / np.linalg.norm(v + w)
+            ref["vw"] = np.vstack((ref["vw"], vw))
 
-    # if not matlabmode, but just the reference directions are given,
+    # if fit method, but just the reference directions are given,
     # generate the perpendicular directions
-    else:
+    elif spin_model == "generalised-fit":
         # this is the original three axes o is z and vw is x and y
         x = np.array([1, 0, 0], dtype=float)
         y = np.array([0, 1, 0], dtype=float)
@@ -782,26 +779,19 @@ def process_ref_directions(
             w = ztoa @ y
             orientations.append(dict(o=o, vw=np.array([v, w])))
 
-    # normalize before return
-    for ref in orientations:
-        ref["vw"] = np.array(ref["vw"])
-        ref["o"] = ref["o"] / np.linalg.norm(ref["o"])
-        ref["vw"] = ref["vw"] / np.linalg.norm(ref["vw"], axis=1)[:, None]
-
-    # add third orientation, which is required for off-diagonal
-    # anisotropy elements
-    # it is always required for matlabmode
-    if mixed_perpendicular or matlabmode:
+        # normalize before return
         for ref in orientations:
-            v = ref["vw"][0]
-            w = ref["vw"][1]
-            vw = (v + w) / np.linalg.norm(v + w)
-            ref["vw"] = np.vstack((ref["vw"], vw))
+            ref["vw"] = np.array(ref["vw"])
+            ref["o"] = ref["o"] / np.linalg.norm(ref["o"])
+            ref["vw"] = ref["vw"] / np.linalg.norm(ref["vw"], axis=1)[:, None]
 
     # one reference directon and one perpendicular direction
-    if isotropic_only:
+    elif spin_model == "isotropic-only":
         orientations = [orientations[0]]
         orientations[0]["vw"] = np.array([orientations[0]["vw"][0]])
+
+    else:
+        raise Exception(f"Unknown spin model: {spin_model}!")
 
     return orientations
 

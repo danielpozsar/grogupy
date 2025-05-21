@@ -329,7 +329,7 @@ def standardize_input(input: dict, defaults: dict) -> dict:
         defaults["outfolder"] = defaults["infolder"]
     if defaults["outfile"] is None:
         defaults["outfile"] = (
-            f"{defaults['infile'].split('.')[0]}_kset_{'_'.join(map(str, defaults['kset']))}_eset_{defaults['eset']}_{defaults['anisotropysolver']}"
+            f"{defaults['infile'].split('.')[0]}_kset_{'_'.join(map(str, defaults['kset']))}_eset_{defaults['eset']}_{defaults['spinmodel']}"
         )
 
     return defaults
@@ -348,7 +348,6 @@ DEFAULT_INPUT = dict(
     emaxshift=0,
     scfxcforientation=[0, 0, 1],
     refxcforientations=[[1, 0, 0], [0, 1, 0], [0, 0, 1]],
-    matlabmode=False,
     pairs=None,
     magneticentities=None,
     setupfromrange=None,
@@ -359,10 +358,8 @@ DEFAULT_INPUT = dict(
     maxgperloop=1,
     lowmemorymode=False,
     greensfunctionsolver="Parallel",
-    evaluateenergies=True,
-    exchangesolver="Fit",
-    anisotropysolver="Fit",
-    isotropiconly=False,
+    applyspinmodel=True,
+    spinmodel="generalised-fit",
     parallelmode=None,
     outmagneticmoment="total",
     savemagnopy=False,
