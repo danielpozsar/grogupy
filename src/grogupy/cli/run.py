@@ -53,6 +53,7 @@ if CONFIG.is_CPU:
 
 def main():
     """Main entry point of the script."""
+
     # setup parser
     parser = argparse.ArgumentParser(
         description="This script takes a .py or a .fdf input files and runs grogupy with the given input."
@@ -74,10 +75,6 @@ def main():
         if args.file is None:
             return
 
-    if PRINTING:
-        print("Simulation started at:", datetime.datetime.now())
-    start = timer()
-
     # Reading input
     if args.file.endswith(".py"):
         params = read_py(args.file)
@@ -87,6 +84,10 @@ def main():
         raise Exception(f"Unknown input format: {args.file}!")
 
     params = standardize_input(params, defaults=DEFAULT_INPUT)
+
+    if PRINTING:
+        print("Simulation started at:", datetime.datetime.now())
+    start = timer()
 
     # print input
     if PRINTING:
@@ -334,6 +335,8 @@ def main():
         print("\n\n\n")
         print(__definitely_not_grogu__)
         print("Simulation ended at:", datetime.datetime.now())
+
+    return simulation
 
 
 if __name__ == "__main__":
