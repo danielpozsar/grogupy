@@ -30,14 +30,22 @@ class TestCommandLineTools:
     @pytest.mark.parametrize(
         "path",
         [
+            "./src/grogupy/cli/tests/input0.py",
             "./src/grogupy/cli/tests/input1.py",
             "./src/grogupy/cli/tests/input2.py",
             "./src/grogupy/cli/tests/input3.py",
-            "./src/grogupy/cli/tests/input4.py",
-            "./src/grogupy/cli/tests/input5.py",
-            "./src/grogupy/cli/tests/input6.py",
+            "./src/grogupy/cli/tests/input0_k.py",
+            "./src/grogupy/cli/tests/input1_k.py",
+            "./src/grogupy/cli/tests/input2_k.py",
+            "./src/grogupy/cli/tests/input3_k.py",
             "./src/grogupy/cli/tests/input0.fdf",
             "./src/grogupy/cli/tests/input1.fdf",
+            "./src/grogupy/cli/tests/input2.fdf",
+            "./src/grogupy/cli/tests/input3.fdf",
+            "./src/grogupy/cli/tests/input0_k.fdf",
+            "./src/grogupy/cli/tests/input1_k.fdf",
+            "./src/grogupy/cli/tests/input2_k.fdf",
+            "./src/grogupy/cli/tests/input3_k.fdf",
         ],
     )
     def test_run(self, path):
@@ -61,7 +69,8 @@ class TestCommandLineTools:
     @pytest.mark.parametrize(
         "path",
         [
-            "./src/grogupy/cli/tests/input0.py",
+            "./src/grogupy/cli/tests/input_non_eval.py",
+            "./src/grogupy/cli/tests/input_non_eval.fdf",
         ],
     )
     def test_run_eval_energies(self, path):
@@ -79,7 +88,7 @@ class TestCommandLineTools:
         )
 
     def test_analyze(self):
-        subprocess.run(["grogupy_run", "./src/grogupy/cli/tests/input5.py"])
+        subprocess.run(["grogupy_run", "./src/grogupy/cli/tests/input0.py"])
         subprocess.run(["grogupy_analyze", "./src/grogupy/cli/tests/test.pkl"])
 
         assert os.path.isfile("./src/grogupy/cli/tests/test.analysis.html")

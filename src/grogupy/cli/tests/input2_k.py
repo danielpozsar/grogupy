@@ -62,11 +62,19 @@ ref_xcf_orientations = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
 
 # magnetic entities and pairs can be defined automatically from the cutoff
 # radius and magnetic atoms
-setup_from_range = True
-radius = 10
-atomic_subset = "Cr"
-kwargs_for_mag_ent = dict(l=2)
-
+setup_from_range = False
+magnetic_entities = [
+    dict(atom=0),
+    dict(atom=[0, 1]),
+    dict(atom=0, l=2),
+    dict(atom=0, orb=2),
+    dict(orb=0),
+]
+pairs = [
+    dict(ai=0, aj=1, Ruc=[0, 0, 0]),
+    dict(ai=0, aj=1, Ruc=[1, 0, 0]),
+    dict(ai=0, aj=0, Ruc=[1, 0, 0]),
+]
 
 ###############################################################################
 #                                Memory management
@@ -74,16 +82,16 @@ kwargs_for_mag_ent = dict(l=2)
 
 
 # maximum number of pairs per loop, reduce it to avoid memory overflow
-max_pairs_per_loop = 10000
+max_pairs_per_loop = 2
 # in low memory mode we discard some temporary data that could be useful for
 # interactive work
-low_memory_mode = True
+low_memory_mode = False
 # sequential solver is better for large systems
-greens_function_solver = "Parallel"
+greens_function_solver = "Sequential"
 # maximum number of greens function samples per loop, when
 # greens_function_solver is set to "Sequential", reduce it to avoid memory
 # overflow on GPU for large systems
-max_g_per_loop = 20
+max_g_per_loop = 1000
 
 
 ###############################################################################
@@ -98,7 +106,7 @@ apply_spin_model = True
 # "generalised-fit", "generalised-grogu" or "isotropic-only"
 spin_model = "generalised-grogu"
 # parallelization should be turned on for efficiency
-parallel_mode = None
+parallel_mode = "K"
 
 
 ###############################################################################

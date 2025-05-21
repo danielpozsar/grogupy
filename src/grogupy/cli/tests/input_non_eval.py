@@ -93,7 +93,7 @@ max_g_per_loop = 20
 
 # the spin model solvers solvers can be turned off, in this case only the
 # energies upon rotations are meaningful
-apply_spin_model = True
+apply_spin_model = False
 # the calculation of J and K from the energy derivations, either
 # "generalised-fit", "generalised-grogu" or "isotropic-only"
 spin_model = "generalised-grogu"
@@ -112,7 +112,7 @@ parallel_mode = None
 out_magnetic_moment = "Total"
 
 # save the magnopy file
-save_magnopy = True
+save_magnopy = False
 # precision of numerical values in the magnopy file
 magnopy_precision = None
 # add the simulation parameters to the magnopy file as comments
@@ -120,7 +120,7 @@ magnopy_comments = True
 
 # save the Uppsala Atomistic Spin Dynamics software input files
 # uses the outfolder and out_magentic_moment
-save_UppASD = True
+save_UppASD = False
 # add the simulation parameters to the cell.tmp.txt file as
 # comments
 uppasd_comments = True

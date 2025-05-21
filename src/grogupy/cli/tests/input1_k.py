@@ -28,13 +28,13 @@ infile = "CrI3.fdf"
 
 
 # kset should be at leas 100x100 for 2D diatomic systems
-kset = [3, 3, 1]
+kset = [1, 1, 1]
 # eset should be 100 for insulators and 1000 for metals
-eset = 10
+eset = 1
 # esetp should be 600 for insulators and 10000 for metals
 esetp = 600
 # emin None sets the minimum energy to the minimum energy in the eigfile
-emin = None
+emin = -20
 # emax is at the Fermi level at 0
 emax = 0
 # the bottom of the energy contour should be shifted by -5 eV
@@ -52,7 +52,13 @@ emax_shift = 0
 # usually the DFT calculation axis is [0, 0, 1]
 scf_xcf_orientation = [0, 0, 1]
 # the reference directions for the energy derivations
-ref_xcf_orientations = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+import numpy as np
+
+ref_xcf_orientations = [
+    dict(o=np.array([1, 0, 0]), vw=np.array([[0, 1, 0], [0, 0, 1]])),
+    dict(o=np.array([0, 1, 0]), vw=np.array([[1, 0, 0], [0, 0, 1]])),
+    dict(o=np.array([0, 0, 1]), vw=np.array([[1, 0, 0], [0, 1, 0]])),
+]
 
 
 ###############################################################################
@@ -98,7 +104,7 @@ apply_spin_model = True
 # "generalised-fit", "generalised-grogu" or "isotropic-only"
 spin_model = "generalised-grogu"
 # parallelization should be turned on for efficiency
-parallel_mode = None
+parallel_mode = "K"
 
 
 ###############################################################################
