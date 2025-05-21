@@ -291,12 +291,6 @@ class MagneticEntity:
     def __setstate__(self, state):
         self.__dict__ = state
 
-    def __getattr__(self, name: str) -> Any:
-        return self.name
-
-    def __setattr__(self, name: str, value: Any) -> None:
-        self.name = value
-
     def __add__(self, value):
         if not isinstance(value, MagneticEntity):
             raise Exception("Only MagneticEntity instances can be added!")

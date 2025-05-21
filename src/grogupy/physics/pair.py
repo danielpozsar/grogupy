@@ -236,12 +236,6 @@ class Pair:
 
         self.__dict__ = state
 
-    def __getattr__(self, name: str) -> Any:
-        return self.name
-
-    def __setattr__(self, name: str, value: Any) -> None:
-        self.name = value
-
     def __eq__(self, value):
         if isinstance(value, Pair):
             # if the IDs are identical, skip comaprison
