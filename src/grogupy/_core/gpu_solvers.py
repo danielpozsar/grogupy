@@ -19,16 +19,19 @@
 # SOFTWARE.
 
 from concurrent.futures import ThreadPoolExecutor
-from typing import Union
+from typing import TYPE_CHECKING, Union
 
 import numpy as np
 from numpy.typing import NDArray
 
 from grogupy._tqdm import _tqdm
 from grogupy.config import CONFIG
-from grogupy.physics import Builder, interaction_energy
+from grogupy.physics.utilities import interaction_energy
 
 from .utilities import calc_Vu, onsite_projection, tau_u
+
+if TYPE_CHECKING:
+    from grogupy.physics.builder import Builder
 
 if CONFIG.is_GPU:
     # initialize parallel GPU stuff
@@ -201,7 +204,7 @@ if CONFIG.is_GPU:
 
         return G_mag, G_pair_ij, G_pair_ji
 
-    def solve_parallel_over_k(builder: Builder, print_memory: bool = False) -> None:
+    def solve_parallel_over_k(builder: "Builder", print_memory: bool = False) -> None:
         """It calculates the energies by the Greens function method.
 
         It inverts the Hamiltonians of all directions set up in the given
@@ -538,7 +541,7 @@ else:
 
         raise Exception("GPU is not available!")
 
-    def solve_parallel_over_k(builder: Builder, print_memory: bool = False) -> None:
+    def solve_parallel_over_k(builder: "Builder", print_memory: bool = False) -> None:
         """It calculates the energies by the Greens function method.
 
         It inverts the Hamiltonians of all directions set up in the given
