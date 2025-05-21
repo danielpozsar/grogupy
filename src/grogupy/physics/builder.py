@@ -350,7 +350,7 @@ class Builder:
                 max_g = "Not defined"
         out += f"Maximum number of Greens function samples per batch: {max_g}" + newline
 
-        out += f"Spin model: {self.spin_model}"
+        out += f"Spin model: {self.spin_model}" + newline
         out += section + newline
 
         out += f"Cell [Ang]:" + newline
