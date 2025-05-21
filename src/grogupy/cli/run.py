@@ -38,14 +38,7 @@ from grogupy.io import (
     save_UppASD,
     standardize_input,
 )
-from grogupy.physics import (
-    Builder,
-    Contour,
-    Hamiltonian,
-    Kspace,
-    MagneticEntityList,
-    PairList,
-)
+from grogupy.physics import Builder, Contour, Hamiltonian, Kspace, PairList
 
 # Only print on MPI root node
 PRINTING = True
