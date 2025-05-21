@@ -72,10 +72,10 @@ class Kspace:
         It contains and measures runtime
     """
 
-    def __init__(self, kset: np.ndarray = np.array([1, 1, 1])) -> None:
+    def __init__(self, kset: Union[list[int], NDArray] = np.array([1, 1, 1])) -> None:
         """Initialize kspace sampling."""
         self.times: DefaultTimer = DefaultTimer()
-        self.__kset: np.ndarray = np.array(kset, dtype=int)
+        self.__kset: NDArray = np.array(kset, dtype=int)
         self.kpoints: NDArray = make_kset(self.__kset)
         self.weights: NDArray = np.ones(len(self.kpoints)) / len(self.kpoints)
         self.times.measure("setup", restart=True)
