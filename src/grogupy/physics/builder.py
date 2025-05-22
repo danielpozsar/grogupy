@@ -429,26 +429,46 @@ class Builder:
     def spin_model(self, value: str) -> None:
         if value == "generalised-fit":
             self.__spin_model: str = "generalised-fit"
-            # remove the linear combination of the perpendicular orientations
+            # if there are more than two perpendicular directions (generalised-grogu)
+            # or ther are less than two perpendicular directions (isotropic-only),
+            # then generate the perpendicular directions from the reference directions
             for ref_xcf in self.ref_xcf_orientations:
-                if len(ref_xcf["vw"]) == 3:
-                    ref_xcf["vw"] = ref_xcf["vw"][:-1]
+                if len(ref_xcf["vw"]) != 2:
+                    process_ref_directions(
+                        ref_xcf_orientations=[
+                            ref["o"] for ref in self.ref_xcf_orientations
+                        ],
+                        spin_model="generalised-fit",
+                    )
+                    warnings.warn(
+                        "generalised-fit spin model: reset perpendicular directions!"
+                    )
+                    break
 
         elif value == "generalised-grogu":
             self.__spin_model: str = "generalised-grogu"
-            # add the linear combination of the orientations
-            for ref_xcf in self.ref_xcf_orientations:
-                if len(ref_xcf["vw"]) == 2:
-                    vw_mix = (ref_xcf["vw"][0] + ref_xcf["vw"][1]) / np.linalg.norm(
-                        ref_xcf["vw"][0] + ref_xcf["vw"][1]
-                    )
-                    ref_xcf["vw"] = np.vstack((ref_xcf["vw"], vw_mix))
+            self.ref_xcf_orientations = [
+                dict(o=np.array([1, 0, 0]), vw=np.array([[0, 1, 0], [0, 0, 1]])),
+                dict(o=np.array([0, 1, 0]), vw=np.array([[1, 0, 0], [0, 0, 1]])),
+                dict(o=np.array([0, 0, 1]), vw=np.array([[1, 0, 0], [0, 1, 0]])),
+            ]
+            for ref in orientations:
+                v = ref["vw"][0]
+                w = ref["vw"][1]
+                vw = (v + w) / np.linalg.norm(v + w)
+                ref["vw"] = np.vstack((ref["vw"], vw))
+            warnings.warn(
+                "generalised-grogu spin model: reset reference and perpendicular directions!"
+            )
 
         elif value == "isotropic-only":
             self.__spin_model: str = "isotropic-only"
             self.ref_xcf_orientations = [self.ref_xcf_orientations[0]]
             self.ref_xcf_orientations[0]["vw"] = np.array(
                 [self.ref_xcf_orientations[0]["vw"][0]]
+            )
+            warnings.warn(
+                "isotropic-only spin model: first reference and first perpendicular direction is used!"
             )
 
         else:
@@ -979,10 +999,8 @@ class Builder:
         for ref in self.ref_xcf_orientations:
             o = ref["o"]
             vw = ref["vw"]
-            if (
-                not np.count_nonzero(np.apply_along_axis(lambda d: np.dot(o, d), 1, vw))
-                == 0
-            ):
+            perp = np.apply_along_axis(lambda d: np.dot(o, d), 1, vw)
+            if not np.allclose(perp, np.zeros_like(perp)):
                 raise Exception(f"Not all directions are perpendicular to {o}!")
 
         # no parallelization
