@@ -452,7 +452,7 @@ class Builder:
                 dict(o=np.array([0, 1, 0]), vw=np.array([[1, 0, 0], [0, 0, 1]])),
                 dict(o=np.array([0, 0, 1]), vw=np.array([[1, 0, 0], [0, 1, 0]])),
             ]
-            for ref in orientations:
+            for ref in self.ref_xcf_orientations:
                 v = ref["vw"][0]
                 w = ref["vw"][1]
                 vw = (v + w) / np.linalg.norm(v + w)
