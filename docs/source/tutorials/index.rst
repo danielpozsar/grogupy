@@ -15,3 +15,4 @@ features.
    memory_management
    convergence_with_high_throughput
    command_line_usage
+   fix_gpu_linking
