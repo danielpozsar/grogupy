@@ -336,8 +336,6 @@ def main():
         print(__definitely_not_grogu__)
         print("Simulation ended at:", datetime.datetime.now())
 
-    return simulation
-
 
 if __name__ == "__main__":
     main()
