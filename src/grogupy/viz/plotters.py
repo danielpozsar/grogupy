@@ -625,7 +625,7 @@ def plot_1D_convergence(
         The parameter for the test
 
     maxdiff : float, optional
-        The criteria for the convergence by maximum difference from the last step, by default 1e-4
+        The criteria for the convergence by relative difference from the last step, by default 1e-4
 
     Returns
     -------
@@ -712,7 +712,9 @@ def plot_1D_convergence(
         )
 
     # find maxdiff point
-    idx = np.argwhere(abs(np.diff(compare, axis=1)).max(axis=0) < maxdiff)
+    idx = np.argwhere(
+        abs(np.diff(compare, axis=1) / compare[:, :-1]).max(axis=0) < maxdiff
+    )
     if len(idx) != 0:
         idx = idx.min()
         fig.add_vline(
