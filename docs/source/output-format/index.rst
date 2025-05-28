@@ -56,14 +56,14 @@ line   Formal description
 ====== =========================================================================
 7      Section separator. Approximately 80 "=" symbols.
 8      Keyword ``Hamiltonian convention``.
-9      Keyword ``Double-counting`` followed by at least one space symbol and the
+9      Keyword ``Double counting`` followed by at least one space symbol and the
        value keyword ``true``.
-10     Keyword ``Spin-normalized`` followed by at least one space symbol and the
+10     Keyword ``Normalized spins`` followed by at least one space symbol and the
        value keyword ``true``.
-11     Keyword ``Exchange-factor`` followed by at least one space symbol and the
+11     Keyword ``Intra-atomic factor`` followed by at least one space symbol and
+       the value ``+1``.
+12     Keyword ``Exchange factor`` followed by at least one space symbol and the
        value ``+0.5``.
-12     Keyword ``On-site-factor`` followed by at least one space symbol and the
-       value ``+1``.
 13     Section separator. Approximately 80 "=" symbols.
 ====== =========================================================================
 
@@ -93,12 +93,12 @@ The Hamiltonian in this convention would be written as
     \boldsymbol{e}_{j}
 
 where :math:`\boldsymbol{e}_{i} = \boldsymbol{S}_{i}/S_i` is a spin vector operator 
-normalised by its value (thus ``Spin-norrmalized true`` in the convention); 
+normalised by its value (thus ``Normalized spins true`` in the convention); 
 :math:`\boldsymbol{A}_{i}` is an intra-atomic anisotropy tensor; :math:`\boldsymbol{J}_{ij}` 
 is a full matrix of the exchange parameter. Both pairs 
 :math:`\boldsymbol{e}_{i}\boldsymbol{J}_{ij}\boldsymbol{e}_{j}` and 
 :math:`\boldsymbol{e}_{j}\boldsymbol{J}_{ji}\boldsymbol{e}_{i}` are explicitly included in the
-sum (hence the ``Double-counting  true`` in the convention).
+sum (hence the ``Double counting true`` in the convention).
 
 .. _user-guide_output-format_cell:
 

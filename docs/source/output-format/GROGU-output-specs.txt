@@ -6,10 +6,10 @@ Any comments
 Any details here>
 ===============================================================================
 Hamiltonian convention
-Double-counting  true
-Spin-normalized  true 
-Exchange-factor  +0.5  
-On-site-factor   +1   
+Double counting      true
+Normalized spins     true
+Intra-atomic factor  +1
+Exchange factor      +0.5 
 ===============================================================================
 Cell (Ang)
 <a1_x> <a1_y> <a1_z>
