@@ -177,21 +177,8 @@ def main():
 
     # If it is automatically set up from range
     if params["setupfromrange"]:
-        if not isinstance(params["atomicsubset"], list):
-            params["atomicsubset"] = [params["atomicsubset"]]
-
-        tags = []
-        for at in hamiltonian._dh.atoms:
-            tags.append(at.tag)
-        tags = np.array(tags)
-
-        atoms = []
-        for i, tag in enumerate(tags):
-            if tag in params["atomicsubset"]:
-                atoms.append(i)
-
         simulation.setup_from_range(
-            params["radius"], [atoms, atoms], **params["kwargsformagent"]
+            params["radius"], params["atomicsubset"], **params["kwargsformagent"]
         )
 
     if PRINTING:

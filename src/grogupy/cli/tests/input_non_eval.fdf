@@ -74,7 +74,9 @@ ScfXcfOrientation       0   0   1
 Setup_FromRange     True
 Radius              10
 AtomicSubset        Cr
-KwargsForMagEnt     l   2
+%block KwargsForMagEnt
+    l                   2
+%endblock KwargsForMagEnt
 
 
 ###############################################################################

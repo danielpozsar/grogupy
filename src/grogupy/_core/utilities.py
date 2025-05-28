@@ -163,7 +163,9 @@ def RotMa2b(a: NDArray, b: NDArray, eps: float = 1e-10) -> NDArray:
 def setup_from_range(
     dh: sisl.physics.Hamiltonian,
     R: float,
-    subset: Union[None, list[int], list[list[int]]] = None,
+    subset: Union[
+        None, int, str, list[int], list[list[int]], list[str], list[list[str]]
+    ] = None,
     **kwargs,
 ) -> tuple[list[dict], list[dict]]:
     """Generates all the pairs and magnetic entities from atoms in a given radius.
@@ -176,18 +178,19 @@ def setup_from_range(
     1. If subset is None all atoms can create pairs
 
     2. If subset is a list of integers, then all the
-    possible pairs will be generated to these atoms in
-    the unit cell
+    possible pairs will be generated using these atoms,
+    from and outside the unit cell.
 
     3. If subset is two list, then the first list is the
     list of atoms in the unit cell (``Ri``), that can create
     pairs and the second list is the list of atoms outside
     the unit cell that can create pairs (``Rj``)
 
-    !!!WARNING!!!
-    In the third case it is really ``Ri`` and ``Rj``, that
-    are given, so in some cases we could miss pairs in the
-    unit cell.
+    The keyword arguments can be ``l``, ``orb`` or a tag of an atom,
+    ``l`` and ``orb`` are passed to the atoms for wich the tag was not
+    given. If a tag was passed to an atom, then it should contain a
+    dictionary in the same format as the magnetic entity dictionary,
+    which will be only passed to the specific atoms.
 
     Parameters
     ----------
@@ -196,7 +199,7 @@ def setup_from_range(
         atomic information
     R : float
         The radius where the pairs are found
-    subset : Union[None, list[int], list[list[int], list[int]]], optional
+    subset : Union[None, int ,str, list[int], list[list[int]], list[str], list[list[str]]], optional
         The subset of atoms that contribute to the pairs, by default None
 
     Other Parameters
@@ -215,26 +218,66 @@ def setup_from_range(
     # copy so we do not overwrite
     dh = dh.copy()
 
+    # convert subset to list
+    if not isinstance(subset, list):
+        subset = [subset]
     # case 1
     # if subset is not given, then use all the atoms in the
     # unit cell
-    if subset is None:
+    if len(subset) == 1 and subset[0] is None:
         uc_atoms = range(dh.na)
         uc_out_atoms = range(dh.na)
 
     else:
+        tags = []
+        for at in dh.atoms:
+            tags.append(at.tag)
+        tags = np.array(tags)
+
         # case 2
         # if only the unit cell atoms are given
-        if isinstance(subset[0], int):
-            uc_atoms = subset
-            uc_out_atoms = range(dh.na)
+        if not isinstance(subset[0], list):
+            uc_atoms = []
+            for i in subset:
+                if isinstance(i, str):
+                    found = np.arange(dh.na)[i == tags]
+                    if len(found) == 0:
+                        raise Exception(f"Atom {i} not found in the unit cell!")
+                    for f in found:
+                        uc_atoms.append(f)
+                else:
+                    uc_atoms.append(i)
+
+            uc_atoms = np.unique(uc_atoms).astype(int).tolist()
+            uc_out_atoms = np.unique(uc_atoms).astype(int).tolist()
 
         # case 3
         # if the unit cell atoms and the atoms outside the unit cell
         # are both given
         elif isinstance(subset[0], list):
-            uc_atoms = subset[0]
-            uc_out_atoms = subset[1]
+            uc_atoms = []
+            for i in subset[0]:
+                if isinstance(i, str):
+                    found = np.arange(dh.na)[i == tags]
+                    if len(found) == 0:
+                        raise Exception(f"Atom {i} not found in the unit cell!")
+                    for f in found:
+                        uc_atoms.append(f)
+                else:
+                    uc_atoms.append(i)
+            uc_out_atoms = []
+            for i in subset[1]:
+                if isinstance(i, str):
+                    found = np.arange(dh.na)[i == tags]
+                    if len(found) == 0:
+                        raise Exception(f"Atom {i} not found in the unit cell!")
+                    for f in found:
+                        uc_out_atoms.append(f)
+                else:
+                    uc_out_atoms.append(i)
+
+            uc_atoms = np.unique(uc_atoms).astype(int).tolist()
+            uc_out_atoms = np.unique(uc_out_atoms).astype(int).tolist()
 
     pairs = []
     # the center from which we measure the distance
@@ -283,8 +326,16 @@ def setup_from_range(
     pairs = pairs[idx]
 
     # create magnetic entities
+    magnetic_entities = []
     atoms = np.unique(pairs[:, [0, 1]])
-    magnetic_entities = [dict(atom=at, **kwargs) for at in atoms]
+    for at in atoms:
+        tag = dh.atoms[at].tag
+        if kwargs.get(tag) is not None:
+            magnetic_entities.append(dict(atom=at, **kwargs[tag]))
+        else:
+            l = kwargs.get("l")
+            orb = kwargs.get("orb")
+            magnetic_entities.append(dict(atom=at, l=l, orb=orb))
 
     # create output pair information
     out = []

@@ -904,16 +904,8 @@ def read_fdf(path: str) -> dict:
                 line = line.split()
                 line[0] = line[0].replace("_", "").replace(".", "").lower()
 
-                # this is special, because we have to set up a dict from a single line
-                if line[0].lower() == "kwargsformagent":
-                    if line[1][0].lower() == "l":
-                        out[line[0]] = dict(l=list(map(int, line[2:])))
-                    elif line[1][0].lower() == "o":
-                        out[line[0]] = dict(orb=list(map(int, line[2:])))
-                    else:
-                        raise Exception("Unknown kwarg for magnetic entities!")
                 # these are blocks
-                elif line[0].lower() == r"%block":
+                if line[0].lower() == r"%block":
                     # name so we can choose process function
                     name = line[1].replace("_", "").replace(".", "").lower()
 
@@ -1003,6 +995,24 @@ def read_fdf(path: str) -> dict:
                                     Ruc=list(map(int, l[2:5])),
                                 )
                             )
+                            # this is special, because we have to set up a dict from a single line
+                    elif name == "kwargsformagent":
+                        out_dict = dict()
+                        for l in lines:
+                            l = l.split()
+                            if l[0].lower() == "l":
+                                out_dict["l"] = list(map(int, l[1:]))
+                            elif l[0].lower() == "o":
+                                out_dict["orb"] = list(map(int, l[1:]))
+                            else:
+                                if l[1].lower() == "l":
+                                    out_dict[l[0]]["l"] = list(map(int, l[2:]))
+                                elif l[1].lower() == "o":
+                                    out_dict[l[0]]["orb"] = list(map(int, l[2:]))
+                                else:
+                                    raise Exception(
+                                        f"Unknown kwarg for magnetic entities: {l[0]}!"
+                                    )
                     else:
                         pass
                     out[name] = out_lines

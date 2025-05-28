@@ -206,7 +206,9 @@ format. See and compare the following examples.
             SetupFromRange          True
             Radius                  20                      # radius and magnetic atoms
             AtomicSubset            Cr
-            KwargsForMagEnt         l   2
+            %block KwargsForMagEnt
+                l                   2
+            %endblock KwargsForMagEnt
 
 
             ###############################################################################
@@ -393,7 +395,9 @@ kwargsformagent, *by default dict(l=None)*
     Even if the magnetic entity is confined to a single atom there are many 
     ways to tweak its definition. See the :ref:`setting magnetic entities 
     <setting_up_magnetic_entities>` tutorial. This parameter passes a 
-    dictionary to each magnetic entity definition.
+    dictionary to each magnetic entity definition. Furthermore you can specify
+    dictionaries for each magnetic entity, by using their tags as keys. Then the 
+    corresponding values will be used for that specific magnetic entity.
 
 maxpairsperloop, *by default 1000*
     Maximum number of pairs in a single simulation. This can be set to avoid 
