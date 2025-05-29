@@ -765,7 +765,7 @@ def hsk(
 def process_ref_directions(
     ref_xcf_orientations: Union[list[list[float]], NDArray, list[dict]],
     spin_model: str = "generalised-fit",
-) -> list[dict[str, NDArray[np.float64]]]:
+) -> list[dict[str, NDArray]]:
     """Preprocess the reference directions input for the Builder object.
 
     If the reference directions are already in the expected format, which
@@ -779,7 +779,7 @@ def process_ref_directions(
 
     Parameters
     ----------
-    ref_xcf_orientations : Union[list[float], NDArray, list[dict]]
+    ref_xcf_orientations : Union[list[list[float]], NDArray, list[dict]]
         The reference directions input for the Builder object
     spin_model: str, optional
         Defines the spin model used for the exchange and anisotropy, by
