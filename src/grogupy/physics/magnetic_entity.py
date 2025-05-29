@@ -245,10 +245,14 @@ class MagneticEntity:
         ):
             self.__total_Q = self._total_mulliken[0].sum()
             if self._total_mulliken.shape[0] == 2:
+                self.__total_S: Union[None, float] = self._total_mulliken[1].sum()
                 self.__total_Sx: Union[None, float] = 0
                 self.__total_Sy: Union[None, float] = 0
                 self.__total_Sz: Union[None, float] = self._total_mulliken[1].sum()
             elif self._total_mulliken.shape[0] in {3, 4}:
+                self.__total_S: Union[None, float] = np.linalg.norm(
+                    self._total_mulliken.sum(axis=1)[1:]
+                ).astype(float)
                 self.__total_Sx: Union[None, float] = self._total_mulliken[1].sum()
                 self.__total_Sy: Union[None, float] = self._total_mulliken[2].sum()
                 self.__total_Sz: Union[None, float] = self._total_mulliken[3].sum()
@@ -257,10 +261,14 @@ class MagneticEntity:
 
             self.__local_Q = self._local_mulliken[0].sum()
             if self._local_mulliken.shape[0] == 2:
+                self.__local_S: Union[None, float] = self._local_mulliken[1].sum()
                 self.__local_Sx: Union[None, float] = 0
                 self.__local_Sy: Union[None, float] = 0
                 self.__local_Sz: Union[None, float] = self._local_mulliken[1].sum()
             elif self._local_mulliken.shape[0] in {3, 4}:
+                self.__local_S: Union[None, float] = np.linalg.norm(
+                    self._local_mulliken.sum(axis=1)[1:]
+                ).astype(float)
                 self.__local_Sx: Union[None, float] = self._local_mulliken[1].sum()
                 self.__local_Sy: Union[None, float] = self._local_mulliken[2].sum()
                 self.__local_Sz: Union[None, float] = self._local_mulliken[3].sum()
@@ -268,10 +276,12 @@ class MagneticEntity:
                 raise Exception("Unpolarized DFT calculation cannot be used!")
         else:
             self.__total_Q = None
+            self.__total_S = None
             self.__total_Sx = None
             self.__total_Sy = None
             self.__total_Sz = None
             self.__local_Q = None
+            self.__local_S = None
             self.__local_Sx = None
             self.__local_Sy = None
             self.__local_Sz = None
@@ -429,6 +439,23 @@ class MagneticEntity:
         return self.__total_Q
 
     @property
+    def total_S(self) -> Union[None, float]:
+        """Magnetic moment of the atom or the atoms of the magnetic entity."""
+        # check if DM is available
+        if self._total_mulliken is None:
+            return None
+
+        if self._total_mulliken.shape[0] == 2:
+            self.__total_S = self._total_mulliken[1].sum()
+        elif self._total_mulliken.shape[0] in {3, 4}:
+            self.__total_S = np.linalg.norm(
+                self._total_mulliken.sum(axis=1)[1:]
+            ).astype(float)
+        else:
+            Exception("Unpolarized DFT calculation cannot be used!")
+        return self.__total_S
+
+    @property
     def total_Sx(self) -> Union[None, float]:
         """Sx of the atom or the atoms of the magnetic entity."""
         # check if DM is available
@@ -485,6 +512,23 @@ class MagneticEntity:
         self.__local_Q = self._local_mulliken[0].sum()
 
         return self.__local_Q
+
+    @property
+    def local_S(self) -> Union[None, float]:
+        """Magnetic moment of the atom or the atoms of the magnetic entity."""
+        # check if DM is available
+        if self._local_mulliken is None:
+            return None
+
+        if self._local_mulliken.shape[0] == 2:
+            self.__local_S = self._local_mulliken[1].sum()
+        elif self._local_mulliken.shape[0] in {3, 4}:
+            self.__local_S = np.linalg.norm(
+                self._local_mulliken.sum(axis=1)[1:]
+            ).astype(float)
+        else:
+            Exception("Unpolarized DFT calculation cannot be used!")
+        return self.__local_S
 
     @property
     def local_Sx(self) -> Union[None, float]:
