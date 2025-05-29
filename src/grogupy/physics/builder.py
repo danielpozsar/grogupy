@@ -310,7 +310,7 @@ class Builder:
                 It contains the simulations parameters
         """
 
-        section = "================================================================================"
+        section = "========================================"
         newline = "\n"
 
         out = ""
@@ -435,9 +435,9 @@ class Builder:
             for ref_xcf in self.ref_xcf_orientations:
                 if len(ref_xcf["vw"]) != 2:
                     process_ref_directions(
-                        ref_xcf_orientations=[
-                            ref["o"] for ref in self.ref_xcf_orientations
-                        ],
+                        ref_xcf_orientations=np.array(
+                            [ref["o"] for ref in self.ref_xcf_orientations]
+                        ),
                         spin_model="generalised-fit",
                     )
                     warnings.warn(
@@ -645,12 +645,22 @@ class Builder:
         newline = "\n"
 
         out = ""
-        if comments:
-            out += "\n".join(["# " + row for row in self.__str__().split("\n")])
-            out += newline
         out += section + newline
-        out += f"cell Angstrom" + newline
+        out += "GROGU INFORMATION" + newline
+        if comments:
+            out += newline
+            out += "\n".join(self.__str__().split("\n"))
+            out += newline
 
+        out += section + newline
+        out += "Hamiltonian convention" + newline
+        out += "Double counting      true" + newline
+        out += "Normalized spins     true" + newline
+        out += "Intra-atomic factor  +1" + newline
+        out += "Exchange factor      +0.5" + newline
+
+        out += section + newline
+        out += f"Cell (Ang)" + newline
         if self.hamiltonian is not None:
             bio = io.BytesIO()
             np.savetxt(bio, self.hamiltonian.cell)
@@ -660,62 +670,54 @@ class Builder:
             raise Exception("Hamiltonian is not defined!")
 
         out += section + newline
-        out += "atoms Angstrom" + newline
-        out += "name\tx\ty\tz\tSx\tSy\tSz\t# Q"
-        out += newline
+        out += "Magnetic sites" + newline
+        out += f"Number of sites {len(self.magnetic_entities)}" + newline
+        out += "Name x (Ang) y (Ang) z (Ang) s sx sy sz" + newline
         for mag_ent in self.magnetic_entities:
             out += mag_ent.tag + " "
             out += f"{mag_ent._xyz.mean(axis=0)[0]} {mag_ent._xyz.mean(axis=0)[1]} {mag_ent._xyz.mean(axis=0)[2]} "
             if magnetic_moment[0].lower() == "l":
-                out += f"{mag_ent.local_Sx} {mag_ent.local_Sy} {mag_ent.local_Sz} # {mag_ent.local_Q}"
+                out += f"{mag_ent.local_S} {mag_ent.local_Sx} {mag_ent.local_Sy} {mag_ent.local_Sz}"
             else:
-                out += f"{mag_ent.total_Sx} {mag_ent.total_Sy} {mag_ent.total_Sz} # {mag_ent.total_Q}"
+                out += f"{mag_ent.total_S} {mag_ent.total_Sx} {mag_ent.total_Sy} {mag_ent.total_Sz}"
             out += newline
-        out += section + newline
-        out += "notation" + newline
-        out += "double-counting True" + newline
-        out += "spin-normalized True" + newline
-        out += f"exchange-factor {0.5}" + newline
-        out += f"on-site-factor {1}" + newline
 
         out += section + newline
-        out += "exchange meV" + newline
+        out += "Intra-atomic anisotropy tensor (meV)" + newline
+        for mag_ent in self.magnetic_entities:
+            out += subsection + newline
+            out += mag_ent.tag + newline
+            if mag_ent.K_meV is not None:
+                K = np.around(mag_ent.K_meV, decimals=precision)
+            else:
+                K = np.around(np.zeros((3, 3)), decimals=precision)
+            out += "Matrix" + newline
+            out += f"    {K[0,0]} {K[0,1]} {K[0,2]}" + newline
+            out += f"    {K[1,0]} {K[1,1]} {K[1,2]}" + newline
+            out += f"    {K[2,0]} {K[2,1]} {K[2,2]}" + newline
+        out += subsection + newline
+
+        out += section + newline
+        out += "Exchange tensor (meV)" + newline
+        out += f"Number of pairs {len(self.pairs)}" + newline
+        out += subsection + newline
+        out += "Name1    Name2    i    j    k    d (Ang)" + newline
         for pair in self.pairs:
             out += subsection + newline
             tag = pair.tags[0] + " " + pair.tags[1]
             out += tag + " " + " ".join(map(str, pair.supercell_shift))
-            out += f" # distance [Ang]: {pair.distance}" + newline
-            out += "isotropic " + str(np.round(pair.J_iso_meV, precision)) + newline
-            if pair.D is not None:
-                D = np.around(pair.D_meV, decimals=precision)
-                out += "DMI " + f"{D[0]} {D[1]} {D[2]}" + " # Dx Dy Dz" + newline
-            if pair.J is not None:
-                J = np.around(
-                    pair.J_meV - np.eye(3) * pair.J_iso_meV, decimals=precision
-                )
-                out += (
-                    "symmetric-anisotropy "
-                    + f"{J[0,0]} {J[1,1]} {J[0,1]} {J[0,2]} {J[1,2]}"
-                    + " # Sxx Syy Sxy Sxz Syz"
-                    + newline
-                )
-        out += subsection + newline + section + newline
-
-        # this is when anysotropy is not available
-        if (self.magnetic_entities.K == None).all():
-            return out
-
-        out += "on-site meV" + newline
-        for mag_ent in self.magnetic_entities:
-            out += subsection + newline
-            out += mag_ent.tag + newline
-            if mag_ent.K is not None:
-                K = np.around(mag_ent.K_meV, decimals=precision)
-                out += f"{K[0,0]} {K[1,1]} {K[2,2]} {K[0,1]} {K[0,2]} {K[1,2]}"
-                out += " # Kxx Kyy Kzz Kxy Kxz Kyz" + newline
+            out += f" {pair.distance}" + newline
+            if pair.J_meV is not None:
+                J = np.around(pair.J_meV, decimals=precision)
             else:
-                out += "None" + newline
-        out += subsection + newline + section + newline
+                J = np.around(np.diag(np.ones(3) * pair.J_iso_meV), decimals=precision)
+            out += "Matrix" + newline
+            out += f"    {J[0,0]} {J[0,1]} {J[0,2]}" + newline
+            out += f"    {J[1,0]} {J[1,1]} {J[1,2]}" + newline
+            out += f"    {J[2,0]} {J[2,1]} {J[2,2]}" + newline
+        out += subsection + newline
+
+        out += section + newline
 
         return out
 
