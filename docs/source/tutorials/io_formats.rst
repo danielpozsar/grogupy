@@ -96,7 +96,7 @@ format. See and compare the following examples.
             apply_spin_model = True
             # the calculation of J and K from the energy derivations, either 
             # "generalised-fit", "generalised-grogu" or "isotropic-only"
-            spin_model = "generalised-fit"
+            spin_model = "generalised-grogu"
             # parallelization should be turned on for efficiency
             parallel_mode = "K"
 
@@ -239,7 +239,7 @@ format. See and compare the following examples.
             ApplySpinModel  True
             # the calculation of J and K from the energy derivations, either 
             # "generalised-fit", "generalised-grogu" or "isotropic-only"
-            SpinModel       generalised-fit
+            SpinModel       generalised-grogu
             # parallelization should be turned on for efficiency
             ParallelMode = "K"
 
@@ -430,7 +430,7 @@ applyspinmodel, *by default True*
     the **savepickle** is mandatory, because it contains the energies that we 
     need. 
 
-spinmodel, *by default generalised-fit*
+spinmodel, *by default generalised-grogu*
     It describes the spin model used for the calculation of the physical 
     interaction parameters from the energies upon rotations. It can be 
     'generalised-fit', 'generalised-grogu' or 'isotropic-only'. 'generalised-grogu' 
@@ -440,6 +440,9 @@ spinmodel, *by default generalised-fit*
     'isotropic-only' only calculates the isotropic exchange, which requires one 
     reference direction and one perpendicular direction, which  is also enforced 
     and it greatly reduces runtime.
+
+    .. warning::
+        The 'generalised-fit' method does not work for the anisotropy tensors yet.
 
 parallelmode, *by default None*
     Parallelization can be turned on over the Brillouin-zone sampling by 
