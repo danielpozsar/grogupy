@@ -86,6 +86,7 @@ the source code is available on `github <https://github.com/danielpozsar/grogupy
    :caption: User Guide
 
    tutorials/index
+   output-format/index
 
 .. toctree::
    :hidden:
