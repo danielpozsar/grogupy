@@ -58,10 +58,13 @@ For examples, see the *Visualize the exchange* in  :ref:`tutorials <quickstart-g
 
 """
 
+from grogupy import __all__
 from grogupy.config import CONFIG
 from grogupy.physics import Builder, Contour, Kspace
 
 from .plotters import *
+
+__all__.extend(["plot_1D_convergence"])
 
 CONFIG._Config__viz_loaded = True
 
