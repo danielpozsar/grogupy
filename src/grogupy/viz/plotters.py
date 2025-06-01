@@ -613,7 +613,10 @@ def plot_DM_distance(pairs: Union[Builder, list[Pair], PairList]) -> go.Figure:
 
 
 def plot_1D_convergence(
-    files: Union[str, list[str]], parameter: str, maxdiff: float = 1e-4
+    files: Union[str, list[str]],
+    parameter: str,
+    maxdiff: float = 1e-4,
+    method: str = "absolute",
 ) -> go.Figure:
     """Reads output files and create a plot for the convergence test.
 
@@ -623,9 +626,10 @@ def plot_1D_convergence(
         The path to the output files .pkl
     parameter : {"eset", "esetp", "kset"}
         The parameter for the test
-
     maxdiff : float, optional
         The criteria for the convergence by relative difference from the last step, by default 1e-4
+    method: str, optional
+        The convergence method, can be 'relative' or 'absolute', by default 'absolute'
 
     Returns
     -------
@@ -712,9 +716,15 @@ def plot_1D_convergence(
         )
 
     # find maxdiff point
-    idx = np.argwhere(
-        abs(np.diff(compare, axis=1) / compare[:, :-1]).max(axis=0) < maxdiff
-    )
+    if method[0].lower() == "r":
+        idx = np.argwhere(
+            abs(np.diff(compare, axis=1) / compare[:, :-1]).max(axis=0) < maxdiff
+        )
+    elif method[0].lower() == "a":
+        idx = np.argwhere(abs(np.diff(compare, axis=1)).max(axis=0) < maxdiff)
+    else:
+        raise Exception(f"Unknown convergence method: {method}")
+
     if len(idx) != 0:
         idx = idx.min()
         fig.add_vline(
@@ -746,7 +756,7 @@ def plot_1D_convergence(
         ),
         yaxis=dict(
             type="log",
-            tickformat="0.0e",
+            tickformat="0.2e",
             showgrid=True,
             gridwidth=1,
         ),
