@@ -646,237 +646,156 @@ def save_magnopy(
         file.write(data)
 
 
-def read_magnopy(file: str):
-    """This function reads the magnopy input file and return a dictionary
-
-    The dictionary contains sub-dictionaries with the section names and
-    all of those sections contains a unit. Furthermore, because the main
-    use of this function is to parse for magnetic entities and pair
-    information it does that in the appropriate sections under the
-    ``magnetic_entity`` and ``pairs`` keywords.
+def read_magnopy(file: str, dense_output: bool = True):
+    """This function reads the magnopy input file and returns a dictionary
 
     Parameters
     ----------
     file: str
         Path to the ``magnopy`` input file
+    dense_output: bool, optional
+        It adds the magnetic sites to the anisotropy and then the anisotropy
+        to the pair information for easier post processing, by duplicating
+        data, by default True
 
     Returns
     -------
     dict
         The dictionary containing all the information from the ``magnopy`` file
 
-    Raises
-    ------
     Exception
-        If the unit for cell is not recognized
-    Exception
-        If the unit for atom is not recognized
-    Exception
-        If the unit for exchange is not recognized
-    Exception
-        If the unit for on-site is not recognized
+    ---------
+        If there is an unrecognised section
     """
 
+    # read file
     with open(file, "r") as f:
-        # select which sections and lines to parse
         lines = f.readlines()
 
-    out: dict = dict()
-    section = None
-    pair = None
-    full_matrix = 0
-    for line in lines:
-        # remove comments from line
-        comment = line.find("#")
-        line = line[:comment]
-        # check for empty line
-        if len(line.split()) == 0:
-            continue
+    # this is a dense line that splits the magnopy file to sections,
+    # then splits the sections by lines
+    # this creates a list if lists of strings
+    sections = [
+        sec.split("\n")
+        for sec in "".join(lines).split(
+            "================================================================================\n"
+        )[1:-1]
+    ]
 
-        # if we are in the matrix of a pair we have to read the next couple of lines
-        if full_matrix > 0:
-            if full_matrix == 3:
-                pair["J"] = np.empty((3, 3))
-                pair["J"][0] = np.array(line.split(), dtype=float)
-            elif full_matrix == 2:
-                pair["J"][1] = np.array(line.split(), dtype=float)
-            elif full_matrix == 1:
-                pair["J"][2] = np.array(line.split(), dtype=float)
-            # the row is read, continue
-            full_matrix -= 1
-            continue
-
-        # if section is not set, look for sections
-        elif section is None:
-            unit = None
-            if line.split()[0].lower() == "cell":
-                section = "cell"
-                # unit is given
-                if len(line.split()) > 1:
-                    # only the first letter is checked and it is case-insensitive
-                    unit = line.split()[1][0].lower()
-                    if unit not in {"a", "b"}:
-                        raise Exception("Unknown unit for cell")
-                else:
-                    unit = "a"
-
-                # create cell part in the dictionary
-                out["cell"] = dict()
-                out["cell"]["unit"] = unit
-
-            elif line.split()[0].lower() == "atoms":
-                section = "atoms"
-                # unit is given
-                if len(line.split()) > 1:
-                    # only the first letter is checked and it is case-insensitive
-                    unit = line.split()[1][0].lower()
-                    if unit not in {"a", "b"}:
-                        raise Exception("Unknown unit for atoms")
-                else:
-                    unit = "a"
-
-                # create cell part in the dictionary
-                out["atoms"] = dict()
-                out["atoms"]["unit"] = unit
-                out["atoms"]["magnetic_entities"] = []
-
-            elif line.split()[0].lower() == "notation":
-                section = "notation"
-                unit = None
-
-            elif line.split()[0].lower() == "exchange":
-                section = "exchange"
-                # unit is given
-                if len(line.split()) > 1:
-                    # only the first letter is checked and it is case-insensitive
-                    unit = line.split()[1][0].lower()
-                    if unit not in {"m", "e", "j", "k", "r"}:
-                        raise Exception("Unknown unit for exchange")
-                else:
-                    unit = "m"
-
-                # create cell part in the dictionary
-                out["exchange"] = dict()
-                out["exchange"]["unit"] = unit
-                out["exchange"]["pairs"] = []
-
-            elif line.split()[0].lower() == "on-site":
-                section = "on-site"
-                # unit is given
-                if len(line.split()) > 1:
-                    # only the first letter is checked and it is case-insensitive
-                    unit = line.split()[1][0].lower()
-                    if unit not in {"m", "e", "j", "k", "r"}:
-                        raise Exception("Unknown unit for on-site")
-                else:
-                    unit = "m"
-
-                # create cell part in the dictionary
-                out["on-site"] = dict()
-                out["on-site"]["unit"] = unit
-                out["on-site"]["magnetic_entities"] = []
-
-            # we parsed the line
-            continue
-
-        # if section separator found set section for None
-        if line[:10] == "==========":
-            section = None
-            atom = None
-            pair = None
-            continue
-
-        # these are not needed for pair information
-        if section == "cell":
-            continue
-        elif section == "notation":
-            continue
-        elif section == "on-site":
-            if line[:10] == "----------":
-                if atom is None:
-                    continue
-                else:
-                    out["on-site"]["magnetic_entities"].append(atom)
-                    atom = None
-
-            elif len(line.split()) == 1:
-                atom = dict(tag=line.split()[0])
-
-            elif len(line.split()) == 6:
-                atom["K"] = np.array([float(i) for i in line.split()])
-
-        # these are needed for pair information
-        # magnetic entities
-        elif section == "atoms":
-            # the name line
-            if line.split()[0].lower() == "name":
-                x_pos = np.where([word == "x" for word in line.split()])[0][0]
-                y_pos = np.where([word == "y" for word in line.split()])[0][0]
-                z_pos = np.where([word == "z" for word in line.split()])[0][0]
-            # magnetic entity line
+    out = dict()
+    # iterate over sections
+    for section in sections:
+        if section[0] == "GROGU INFORMATION":
+            out["grogu_information"] = "\n".join(section)
+        elif section[0] == "Magnetic sites":
+            if section[2] == "Name x (Ang) y (Ang) z (Ang) s sx sy sz":
+                magnetic_sites = []
+                for l in section[3:-1]:
+                    l = l.split()
+                    site = dict()
+                    site["tag"] = l[0]
+                    site["xyz"] = [
+                        float(l[1]),
+                        float(l[2]),
+                        float(l[3]),
+                    ]
+                    site["s"] = float(l[4])
+                    site["s_xyz"] = [
+                        float(l[5]),
+                        float(l[6]),
+                        float(l[7]),
+                    ]
+                    magnetic_sites.append(site)
+                out["magnetic_sites"] = magnetic_sites
             else:
-                tag = line.split()[0]
-                x = float(np.array(line.split())[x_pos])
-                y = float(np.array(line.split())[y_pos])
-                z = float(np.array(line.split())[z_pos])
-
-                atom = dict(tag=tag, xyz=np.array([x, y, z]))
-                out["atoms"]["magnetic_entities"].append(atom)
-
-        elif section == "exchange":
-            if line[:10] == "----------":
-                if pair is None:
-                    continue
-                else:
-                    out["exchange"]["pairs"].append(pair)
-                    pair = None
-
-            # isotropic keyword
-            elif line.split()[0][0].lower() == "i":
-                pair["iso"] = float(line.split()[1])
-
-            # Dzyaloshinskii-Morilla keyword
-            elif line.split()[0][0].lower() == "d":
-                dx = float(line.split()[1])
-                dy = float(line.split()[2])
-                dz = float(line.split()[3])
-                pair["DM"] = np.array([dx, dy, dz])
-
-            # symmetric-anisotropy keyword
-            elif line.split()[0][0].lower() == "s":
-                sxx = float(line.split()[1])
-                syy = float(line.split()[2])
-                sxy = float(line.split()[3])
-                sxz = float(line.split()[4])
-                syz = float(line.split()[5])
-                pair["S"] = np.array([sxx, syy, sxy, sxz, syz])
-
-            # full matrix
-            elif line.split()[0][0].lower() == "m":
-                # this will avoid the whole loop and force to read the next 3 rows
-                full_matrix = 3
-
-            # tags and unit cell shift
-            else:
-                pair = dict()
-                pair["tag1"] = line.split()[0]
-                pair["tag2"] = line.split()[1]
-                i = int(line.split()[2])
-                j = int(line.split()[3])
-                k = int(line.split()[4])
-
-                pair["Ruc"] = np.array([i, j, k])
-
+                warnings.warn("Not standard magnetic site definition!")
+                out["magnetic_sites"] = section
+        elif section[0] == "Hamiltonian convention":
+            hamiltonian_convention = []
+            for l in section[1:-1]:
+                l = l.split()
+                convention = dict()
+                convention["_".join(l[:-1]).lower()] = l[-1]
+                hamiltonian_convention.append(convention)
+            out["hamiltonian_convention"] = hamiltonian_convention
+        elif section[0] == "Cell (Ang)":
+            out["cell"] = np.array(
+                [
+                    section[1].split(),
+                    section[2].split(),
+                    section[3].split(),
+                ]
+            ).astype(float)
+        elif section[0] == "Intra-atomic anisotropy tensor (meV)":
+            # similar to the above processing, but here we separate
+            # the intra-atomic anisotropies to subsections
+            tmp = "\n".join(section).split(
+                "--------------------------------------------------------------------------------\n"
+            )
+            magnetic_sites = []
+            for site in tmp[1:-1]:
+                site = site.split("\n")[:-1]
+                out_site = dict()
+                out_site["tag"] = site[0]
+                out_site["K"] = np.array(
+                    [
+                        site[2].split(),
+                        site[3].split(),
+                        site[4].split(),
+                    ]
+                ).astype(float)
+                magnetic_sites.append(out_site)
+            out["anisotropy"] = magnetic_sites
+        elif section[0] == "Exchange tensor (meV)":
+            # similar to the above processing, but here we separate
+            # the pairs to subsections
+            tmp = "\n".join(section).split(
+                "--------------------------------------------------------------------------------\n"
+            )
+            pairs = []
+            for pair in tmp[2:-1]:
+                pair = pair.split("\n")[:-1]
+                out_pair = dict()
+                info_line = pair[0].split()
+                out_pair["tags"] = np.array(
+                    [
+                        info_line[0],
+                        info_line[1],
+                    ]
+                )
+                out_pair["cell_shift"] = np.array(
+                    [
+                        info_line[2],
+                        info_line[3],
+                        info_line[4],
+                    ]
+                ).astype(int)
+                out_pair["distance"] = float(info_line[5])
+                out_pair["J"] = np.array(
+                    [
+                        pair[2].split(),
+                        pair[3].split(),
+                        pair[4].split(),
+                    ]
+                ).astype(float)
+                pairs.append(out_pair)
+            out["exchange"] = pairs
         else:
-            continue
+            raise Exception(f"Unknown section title: {section[0]}")
 
-    for pair in out["exchange"]["pairs"]:
-        for i, mag_ent in enumerate(out["atoms"]["magnetic_entities"]):
-            if pair["tag1"] == mag_ent["tag"]:
-                pair["xyz1"] = mag_ent["xyz"]
-            if pair["tag2"] == mag_ent["tag"]:
-                pair["xyz2"] = mag_ent["xyz"]
-
+    if dense_output:
+        for ani in out["anisotropy"]:
+            for site in out["magnetic_sites"]:
+                if ani["tag"] == site["tag"]:
+                    ani["xyz"] = site["xyz"]
+                    ani["s"] = site["s"]
+                    ani["s_xyz"] = site["s_xyz"]
+        for pair in out["exchange"]:
+            for site in out["anisotropy"]:
+                if pair["tags"][0] == site["tag"]:
+                    pair["ai"] = site
+                if pair["tags"][1] == site["tag"]:
+                    pair["aj"] = site
     return out
 
 
@@ -999,18 +918,18 @@ def read_fdf(path: str) -> dict:
                             )
                             # this is special, because we have to set up a dict from a single line
                     elif name == "kwargsformagent":
-                        out_dict = dict()
+                        out_lines = dict()
                         for l in lines:
                             l = l.split()
                             if l[0].lower() == "l":
-                                out_dict["l"] = list(map(int, l[1:]))
+                                out_lines["l"] = list(map(int, l[1:]))
                             elif l[0].lower() == "o":
-                                out_dict["orb"] = list(map(int, l[1:]))
+                                out_lines["orb"] = list(map(int, l[1:]))
                             else:
                                 if l[1].lower() == "l":
-                                    out_dict[l[0]]["l"] = list(map(int, l[2:]))
+                                    out_lines[l[0]]["l"] = list(map(int, l[2:]))
                                 elif l[1].lower() == "o":
-                                    out_dict[l[0]]["orb"] = list(map(int, l[2:]))
+                                    out_lines[l[0]]["orb"] = list(map(int, l[2:]))
                                 else:
                                     raise Exception(
                                         f"Unknown kwarg for magnetic entities: {l[0]}!"
