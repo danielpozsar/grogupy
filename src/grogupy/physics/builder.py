@@ -448,8 +448,8 @@ class Builder:
         elif value == "generalised-grogu":
             self.__spin_model: str = "generalised-grogu"
             self.ref_xcf_orientations = [
-                dict(o=np.array([1, 0, 0]), vw=np.array([[0, 1, 0], [0, 0, 1]])),
-                dict(o=np.array([0, 1, 0]), vw=np.array([[1, 0, 0], [0, 0, 1]])),
+                dict(o=np.array([1, 0, 0]), vw=np.array([[0, 0, -1], [0, 1, 0]])),
+                dict(o=np.array([0, 1, 0]), vw=np.array([[1, 0, 0], [0, 0, -1]])),
                 dict(o=np.array([0, 0, 1]), vw=np.array([[1, 0, 0], [0, 1, 0]])),
             ]
             for ref in self.ref_xcf_orientations:

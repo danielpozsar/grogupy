@@ -802,8 +802,8 @@ def process_ref_directions(
     # this is the default values from the paper
     elif spin_model == "generalised-grogu":
         orientations = [
-            dict(o=np.array([1, 0, 0]), vw=np.array([[0, 1, 0], [0, 0, 1]])),
-            dict(o=np.array([0, 1, 0]), vw=np.array([[1, 0, 0], [0, 0, 1]])),
+            dict(o=np.array([1, 0, 0]), vw=np.array([[0, 0, -1], [0, 1, 0]])),
+            dict(o=np.array([0, 1, 0]), vw=np.array([[1, 0, 0], [0, 0, -1]])),
             dict(o=np.array([0, 0, 1]), vw=np.array([[1, 0, 0], [0, 1, 0]])),
         ]
         for ref in orientations:
