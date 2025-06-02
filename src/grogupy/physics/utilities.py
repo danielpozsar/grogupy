@@ -474,8 +474,13 @@ def calculate_anisotropy_tensor(energies: NDArray) -> tuple[NDArray, float]:
 
     K = np.zeros((3, 3))
 
+    # WARNING this has been rewritten to work with the auto-generated directions, meaning
+    # the orientations are:
+    # o=[1, 0, 0], vw=[[0, 0, -1], [0, 1, 0]]
+    # o=[0, 1, 0], vw=[[1, 0, 0], [0, 0, -1]],
+    # o=[0, 0, 1], vw=[[1, 0, 0], [0, 1, 0]],
+
     # WARNING O should be Z, but it is not if we index incorrectly
-    #
     # the energies are given like
     # E**2({o},v), E({o},vw), E({o},wv), E**2({o},w), E**2({o},(v+w)/sqrt(2))
     # E**2({v},o), E({v},ow), E({v},wo), E**2({v},w), E**2({v},(o+w)/sqrt(2))
@@ -485,16 +490,16 @@ def calculate_anisotropy_tensor(energies: NDArray) -> tuple[NDArray, float]:
     # Koo = E**2({v},w) - E**2({v},o)
     K[0, 0] = energies[1, 3] - energies[1, 0]
     # Kvv = E**2({o},w) - E**2({o},v)
-    K[1, 1] = energies[0, 3] - energies[0, 0]
+    K[1, 1] = energies[0, 0] - energies[0, 3]
     K[2, 2] = 0
 
     # calculate the off-diagonal tensor elements
     # Kvw = 1/2 * (E**2({o},v) + E**2({o},w)) - E**2({o},(v+w)/sqrt(2))
     K[0, 1] = (energies[2, 0] + energies[2, 3]) / 2 - energies[2, 4]
     K[1, 0] = K[0, 1]
-    K[0, 2] = (energies[1, 0] + energies[1, 3]) / 2 - energies[1, 4]
+    K[0, 2] = -(energies[1, 0] + energies[1, 3]) / 2 + energies[1, 4]
     K[2, 0] = K[0, 2]
-    K[1, 2] = (energies[0, 0] + energies[0, 3]) / 2 - energies[0, 4]
+    K[1, 2] = -(energies[0, 0] + energies[0, 3]) / 2 + energies[0, 4]
     K[2, 1] = K[1, 2]
 
     # perform consistency check
@@ -611,16 +616,16 @@ def calculate_exchange_tensor(
     # first calculate the diagonal elements
     J_diag[0] = energies[1, 3]
     J_diag[1] = energies[2, 0]
-    J_diag[2] = energies[0, 0]
+    J_diag[2] = energies[0, 3]
 
     # symmetric part
-    J_S[0] = -0.5 * (energies[0, 1] + energies[0, 2])
-    J_S[1] = -0.5 * (energies[1, 1] + energies[1, 2])
+    J_S[0] = 0.5 * (energies[0, 1] + energies[0, 2])
+    J_S[1] = 0.5 * (energies[1, 1] + energies[1, 2])
     J_S[2] = -0.5 * (energies[2, 1] + energies[2, 2])
 
     # anti-symmetric part
     D[0] = 0.5 * (energies[0, 1] - energies[0, 2])
-    D[1] = -0.5 * (energies[1, 1] - energies[1, 2])
+    D[1] = 0.5 * (energies[1, 1] - energies[1, 2])
     D[2] = 0.5 * (energies[2, 1] - energies[2, 2])
 
     # put together
