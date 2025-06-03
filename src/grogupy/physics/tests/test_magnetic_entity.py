@@ -452,12 +452,12 @@ class TestMagneticEntity:
         m2 = m.copy()
         assert m == m2
 
-        m2._dh = sisl.get_sile("./benchmarks/Cr3/Cr3.fdf").read_hamiltonian()
+        m2._dh = sisl.get_sile("./benchmarks/CrI3/CrI3.fdf").read_hamiltonian()
         assert m != m2
         m2._dh = m._dh
         assert m == m2
 
-        m2._ds = sisl.get_sile("./benchmarks/Cr3/Cr3.fdf").read_density_matrix()
+        m2._ds = sisl.get_sile("./benchmarks/CrI3/CrI3.fdf").read_density_matrix()
         assert m != m2
         m2._ds = m._ds
         assert m == m2
