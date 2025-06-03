@@ -36,7 +36,7 @@ from grogupy.physics import (
 )
 
 
-def plot_contour(contour: Contour) -> go.Figure:
+def plot_contour(contour: Contour, **kwargs) -> go.Figure:
     """Creates a plot from the contour sample points.
 
     If there are too many eigenvalues, then they are subsamled
@@ -66,7 +66,7 @@ def plot_contour(contour: Contour) -> go.Figure:
         # try to use the path to the EIG file...
         try:
             # read eigenvals
-            eigs = sisl.io.siesta.eigSileSiesta(eigfile).read_data().flatten()
+            eigs = sisl.get_sile(eigfile).read_data().flatten()
             eigs.sort()
             # if there are too many eigenvalues subsample them for plot
             if len(eigs) > 10000:
@@ -109,8 +109,8 @@ def plot_contour(contour: Contour) -> go.Figure:
     # Update the layout
     fig.update_layout(
         autosize=False,
-        width=800,
-        height=500,
+        width=kwargs.get("width", 800),
+        height=kwargs.get("height", 500),
         title="Energy contour integral",
         xaxis_title="Real axis [eV]",
         yaxis_title="Imaginary axis [eV]",
@@ -132,7 +132,7 @@ def plot_contour(contour: Contour) -> go.Figure:
     return fig
 
 
-def plot_kspace(kspace: Kspace) -> go.Figure:
+def plot_kspace(kspace: Kspace, **kwargs) -> go.Figure:
     """Creates a plot from the Brillouin zone sample points.
 
     Parameters
@@ -168,8 +168,8 @@ def plot_kspace(kspace: Kspace) -> go.Figure:
     layout = go.Layout(
         autosize=False,
         title="Brillouin zone sampling",
-        width=800,
-        height=500,
+        width=kwargs.get("width", 800),
+        height=kwargs.get("height", 500),
         scene=dict(
             aspectmode="data",
             xaxis=dict(title="X Axis", showgrid=True, gridwidth=1),
@@ -185,7 +185,8 @@ def plot_kspace(kspace: Kspace) -> go.Figure:
 
 
 def plot_magnetic_entities(
-    magnetic_entities: Union[Builder, list[MagneticEntity], MagneticEntityList]
+    magnetic_entities: Union[Builder, list[MagneticEntity], MagneticEntityList],
+    **kwargs,
 ) -> go.Figure:
     """Creates a plot from a list of magnetic entities.
 
@@ -232,8 +233,8 @@ def plot_magnetic_entities(
     # Create layout
     fig.update_layout(
         autosize=False,
-        width=800,
-        height=500,
+        width=kwargs.get("width", 800),
+        height=kwargs.get("height", 500),
         scene=dict(
             aspectmode="data",
             xaxis=dict(title="X Axis", showgrid=True, gridwidth=1),
@@ -249,6 +250,7 @@ def plot_pairs(
     pairs: Union[Builder, list[Pair], PairList],
     connect: bool = False,
     cell: bool = True,
+    **kwargs,
 ) -> go.Figure:
     """Creates a plot from a list of pairs.
 
@@ -354,10 +356,9 @@ def plot_pairs(
 
     # add unit cell to the plot
     if cell:
-        cell = pairs[0].cell
-        x = cell[0, :]
-        y = cell[1, :]
-        z = cell[2, :]
+        x = pairs[0].cell[0, :]
+        y = pairs[0].cell[1, :]
+        z = pairs[0].cell[2, :]
         vecs0 = np.array(
             [
                 np.zeros(3),
@@ -392,8 +393,8 @@ def plot_pairs(
     # Create layout
     fig.update_layout(
         autosize=False,
-        width=800,
-        height=500,
+        width=kwargs.get("width", 800),
+        height=kwargs.get("height", 500),
         scene=dict(
             aspectmode="data",
             xaxis=dict(title="X Axis", showgrid=True, gridwidth=1),
@@ -406,7 +407,7 @@ def plot_pairs(
 
 
 def plot_DMI(
-    pairs: Union[Builder, list[Pair], PairList], rescale: float = 1
+    pairs: Union[Builder, list[Pair], PairList], rescale: float = 1, **kwargs
 ) -> go.Figure:
     """Creates a plot of the DM vectors from a list of pairs.
 
@@ -499,8 +500,8 @@ def plot_DMI(
     # Create layout
     fig.update_layout(
         autosize=False,
-        width=800,
-        height=500,
+        width=kwargs.get("width", 800),
+        height=kwargs.get("height", 500),
         scene=dict(
             aspectmode="data",
             xaxis=dict(title="X Axis", showgrid=True, gridwidth=1),
@@ -512,7 +513,9 @@ def plot_DMI(
     return fig
 
 
-def plot_Jiso_distance(pairs: Union[Builder, list[Pair], PairList]) -> go.Figure:
+def plot_Jiso_distance(
+    pairs: Union[Builder, list[Pair], PairList], **kwargs
+) -> go.Figure:
     """Plots the isotropic exchange as a function of distance.
 
     Parameters
@@ -544,8 +547,8 @@ def plot_Jiso_distance(pairs: Union[Builder, list[Pair], PairList]) -> go.Figure
     # Update the layout
     fig.update_layout(
         autosize=False,
-        width=800,
-        height=500,
+        width=kwargs.get("width", 800),
+        height=kwargs.get("height", 500),
         title=f"Isotropic exchange",
         xaxis_title="Pair distance [Ang]",
         yaxis_title="Isotropic exchange [meV]",
@@ -562,7 +565,9 @@ def plot_Jiso_distance(pairs: Union[Builder, list[Pair], PairList]) -> go.Figure
     return fig
 
 
-def plot_DM_distance(pairs: Union[Builder, list[Pair], PairList]) -> go.Figure:
+def plot_DM_distance(
+    pairs: Union[Builder, list[Pair], PairList], **kwargs
+) -> go.Figure:
     """Plots the magnitude of DM vectors as a function of distance.
 
     Parameters
@@ -594,8 +599,8 @@ def plot_DM_distance(pairs: Union[Builder, list[Pair], PairList]) -> go.Figure:
     # Update the layout
     fig.update_layout(
         autosize=False,
-        width=800,
-        height=500,
+        width=kwargs.get("width", 800),
+        height=kwargs.get("height", 500),
         title=f"Norm of the DM vectors",
         xaxis_title="Pair distance [Ang]",
         yaxis_title="DM norm [meV]",
@@ -617,6 +622,7 @@ def plot_1D_convergence(
     parameter: str,
     maxdiff: float = 1e-4,
     method: str = "absolute",
+    **kwargs,
 ) -> go.Figure:
     """Reads output files and create a plot for the convergence test.
 
@@ -742,8 +748,8 @@ def plot_1D_convergence(
     # Update the layout
     fig.update_layout(
         autosize=False,
-        width=800,
-        height=500,
+        width=kwargs.get("width", 800),
+        height=kwargs.get("height", 500),
         title=f"Convergence on {parameter}",
         xaxis_title=f"{parameter.capitalize()} [ ]",
         yaxis_title="System vector [meV]",
