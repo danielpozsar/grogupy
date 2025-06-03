@@ -709,8 +709,10 @@ class Builder:
             out += f" {pair.distance}" + newline
             if pair.J_meV is not None:
                 J = np.around(pair.J_meV, decimals=precision)
-            else:
+            elif pair.J_iso_meV is not None:
                 J = np.around(np.diag(np.ones(3) * pair.J_iso_meV), decimals=precision)
+            else:
+                raise Exception("Both J and J_iso is None!")
             out += "Matrix" + newline
             out += f"    {J[0,0]} {J[0,1]} {J[0,2]}" + newline
             out += f"    {J[1,0]} {J[1,1]} {J[1,2]}" + newline
@@ -766,7 +768,9 @@ class Builder:
     def setup_from_range(
         self,
         R: float,
-        subset: Union[None, list[int], list[list[int]]] = None,
+        subset: Union[
+            None, int, str, list[int], list[list[int]], list[str], list[list[str]]
+        ] = None,
         **kwargs,
     ) -> None:
         """Generates all the pairs and magnetic entities from atoms in a given radius.
@@ -796,7 +800,7 @@ class Builder:
         ----------
         R : float
             The radius where the pairs are found
-        subset : Union[None, list[int], list[list[int], list[int]]]
+        subset : Union[None, int, str, list[int], list[list[int]], list[str], list[list[str]]]
             The subset of atoms that contribute to the pairs, by
             default None
 

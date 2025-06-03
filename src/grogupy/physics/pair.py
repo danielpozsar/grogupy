@@ -640,7 +640,7 @@ class PairList:
             )
         return PairList(self.__pairs + other)
 
-    def __getstate__(self):
+    def __getstate__(self) -> dict:
         state = self.__dict__.copy()
         out = []
         for p in state["_PairList__pairs"]:
@@ -649,7 +649,7 @@ class PairList:
 
         return state
 
-    def __setstate__(self, state):
+    def __setstate__(self, state) -> None:
         out = []
         for p in state["_PairList__pairs"]:
             temp = object.__new__(Pair)
