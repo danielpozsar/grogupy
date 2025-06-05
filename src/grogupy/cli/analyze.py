@@ -76,25 +76,25 @@ def main():
             .replace(" ", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
         )
         fig = plot_contour(system.contour)
-        file.write(fig.to_html(full_html=False, include_plotlyjs="cdn"))
+        file.write(fig.to_html(full_html=False, include_plotlyjs=True))
 
         fig = plot_kspace(system.kspace)
-        file.write(fig.to_html(full_html=False, include_plotlyjs="cdn"))
+        file.write(fig.to_html(full_html=False, include_plotlyjs=False))
 
         fig = plot_Jiso_distance(system)
-        file.write(fig.to_html(full_html=False, include_plotlyjs="cdn"))
+        file.write(fig.to_html(full_html=False, include_plotlyjs=False))
 
         fig = plot_DM_distance(system)
-        file.write(fig.to_html(full_html=False, include_plotlyjs="cdn"))
+        file.write(fig.to_html(full_html=False, include_plotlyjs=False))
 
         fig = plot_magnetic_entities(system)
-        file.write(fig.to_html(full_html=False, include_plotlyjs="cdn"))
+        file.write(fig.to_html(full_html=False, include_plotlyjs=False))
 
         fig = plot_pairs(system)
-        file.write(fig.to_html(full_html=False, include_plotlyjs="cdn"))
+        file.write(fig.to_html(full_html=False, include_plotlyjs=False))
 
         fig = plot_DMI(system).add_traces(plot_pairs(system, connect=True).data)
-        file.write(fig.to_html(full_html=False, include_plotlyjs="cdn"))
+        file.write(fig.to_html(full_html=False, include_plotlyjs=False))
 
     print(f"The output file is: {name}")
     print(__definitely_not_grogu__)
