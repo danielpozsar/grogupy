@@ -97,7 +97,7 @@ def main():
         file.write(r"<br>".join(files))
 
         fig = plot_1D_convergence(files, args.type, args.maxdiff)
-        file.write(fig.to_html(full_html=False, include_plotlyjs="cdn"))
+        file.write(fig.to_html(full_html=False, include_plotlyjs=True))
 
     print(f"The output file is: {name}")
     print(__definitely_not_grogu__)
