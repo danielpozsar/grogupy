@@ -58,7 +58,7 @@ license-files = ["LICENSE"]
 
 [project.optional-dependencies]
 viz = ["plotly", "nbconvert"]
-mpi = ["mpi4py", "openmpi"]
+mpi = ["mpi4py"]
 gpu = ["cupy-cuda12x"]
 
 [project.scripts]
