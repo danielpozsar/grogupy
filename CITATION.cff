@@ -1,7 +1,7 @@
 # This CITATION.cff file was generated with cffinit.
 # Visit https://bit.ly/cffinit to generate yours today!
 
-version: 0.0.0
+version: 0.1.0
 date-released: "2025-06-10"
 cff-version: 1.2.0
 title: grogupy
