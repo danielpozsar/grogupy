@@ -67,8 +67,8 @@ grogupy_analyze = "grogupy.cli.analyze:main"
 grogupy_convergence = "grogupy.cli.check_convergence:main"
 
 [project.urls]
-Homepage = "https://danielpozsar.web.elte.hu/grogupy/"
-Documentation = "https://danielpozsar.web.elte.hu/grogupy/"
+Homepage = "https://grogupy.readthedocs.io/"
+Documentation = "https://grogupy.readthedocs.io/"
 Repository = "https://github.com/danielpozsar/grogupy"
 Issues = "https://github.com/danielpozsar/grogupy/issues"
 
