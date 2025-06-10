@@ -183,7 +183,7 @@ class Builder:
         self.__parallel_mode: Union[None, str] = None
         self.__architecture: str = CONFIG.architecture
         self.__apply_spin_model: bool = True
-        self.__spin_model: str = "generalised-fit"
+        self.__spin_model: str = "generalised-grogu"
 
         # create reference directions
         self.ref_xcf_orientations = process_ref_directions(
