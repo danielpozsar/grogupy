@@ -19,6 +19,7 @@
 # SOFTWARE.
 
 import pytest
+from numpy.testing import assert_allclose
 
 from grogupy._core.utilities import *
 
@@ -26,9 +27,12 @@ pytestmark = [pytest.mark.core]
 
 
 class TestCore:
-    @pytest.mark.xfail(raises=NotImplementedError)
     def test_commutator(self):
-        raise NotImplementedError
+        A = np.random.random((10, 10))
+        B = np.random.random((10, 10))
+
+        assert not np.allclose(commutator(A, B), np.zeros_like(A))
+        assert np.allclose(commutator(A, A), np.zeros_like(A))
 
     @pytest.mark.xfail(raises=NotImplementedError)
     def test_tau_u(self):
