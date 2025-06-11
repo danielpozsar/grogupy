@@ -421,6 +421,11 @@ class MagneticEntity:
         return self.__SBS
 
     @property
+    def SBI(self) -> NDArray:
+        """The spin box indices of the magnetic entity"""
+        return self._spin_box_indices
+
+    @property
     def xyz_center(self) -> NDArray:
         """The mean of the position of the atoms that are in the magnetic entity."""
         self.__xyz_center = self._xyz.mean(axis=0)
