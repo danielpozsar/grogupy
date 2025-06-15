@@ -28,11 +28,11 @@ format. See and compare the following examples.
 
 
             # kset should be at leas 100x100 for 2D diatomic systems
-            kset = [2, 2, 1]
+            kset = [100, 100, 1]
             # eset should be 100 for insulators and 1000 for metals
             eset = 100
             # esetp should be 600 for insulators and 10000 for metals
-            esetp = 600
+            esetp = 10000
             # emin None sets the minimum energy to the minimum energy in the eigfile
             emin = None
             # emax is at the Fermi level at 0
@@ -166,11 +166,11 @@ format. See and compare the following examples.
 
 
             # kset should be at leas 100x100 for 2D diatomic systems
-            Kset        2 2 1
+            Kset        100 100 1
             # eset should be 100 for insulators and 1000 for metals
             Eset        100
             # esetp should be 600 for insulators and 10000 for metals
-            Esetp       600
+            Esetp       10000
             # emin None sets the minimum energy to the minimum energy in the eigfile
             Emin        None
             # emax is at the Fermi level at 0
