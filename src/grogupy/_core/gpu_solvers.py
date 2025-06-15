@@ -152,7 +152,7 @@ if CONFIG.is_GPU:
 
                     # store the Greens function slice of the magnetic entities
                     for l, sbi in enumerate(SBI):
-                        G_mag[l] += onsite_projection(Gk, sbi, sbi).get() * wk
+                        G_mag[l] += (onsite_projection(Gk, sbi, sbi) * wk).get()
 
                     # store the Greens function slice of the pairs
                     for l, dat in enumerate(zip(SBI1, SBI2, supercell_shift)):
@@ -160,11 +160,11 @@ if CONFIG.is_GPU:
                         phase = cp.exp(1j * 2 * cp.pi * k @ ruc.T)
 
                         G_pair_ij[l] += (
-                            onsite_projection(Gk, sbi1, sbi2).get() * wk * phase
-                        )
+                            onsite_projection(Gk, sbi1, sbi2) * wk * phase
+                        ).get()
                         G_pair_ji[l] += (
-                            onsite_projection(Gk, sbi2, sbi1).get() * wk / phase
-                        )
+                            onsite_projection(Gk, sbi2, sbi1) * wk / phase
+                        ).get()
 
                 # solve Greens function sequentially for the energies, because of memory bound
                 elif mode[0].lower() == "s":
@@ -187,8 +187,8 @@ if CONFIG.is_GPU:
                         # store the Greens function slice of the magnetic entities
                         for l, sbi in enumerate(SBI):
                             G_mag[l][slice] += (
-                                onsite_projection(Gk, sbi, sbi).get() * wk
-                            )
+                                onsite_projection(Gk, sbi, sbi) * wk
+                            ).get()
 
                         # store the Greens function slice of the pairs
                         for l, dat in enumerate(zip(SBI1, SBI2, Ruc)):
@@ -196,11 +196,11 @@ if CONFIG.is_GPU:
                             phase = cp.exp(1j * 2 * cp.pi * k @ ruc.T)
 
                             G_pair_ij[l][slice] += (
-                                onsite_projection(Gk, sbi1, sbi2).get() * wk * phase
-                            )
+                                onsite_projection(Gk, sbi1, sbi2) * wk * phase
+                            ).get()
                             G_pair_ji[l][slice] += (
-                                onsite_projection(Gk, sbi2, sbi1).get() * wk / phase
-                            )
+                                onsite_projection(Gk, sbi2, sbi1) * wk / phase
+                            ).get()
 
         return G_mag, G_pair_ij, G_pair_ji
 
@@ -301,22 +301,22 @@ if CONFIG.is_GPU:
             if not np.allclose(rot_H.orientation, orient["o"]):
                 rot_H.rotate(orient["o"])
 
-        # setup empty Greens function holders for integration and
-        # initialize rotation storage
-        for mag_ent in builder.magnetic_entities:
-            mag_ent._Vu1_tmp = []
-            mag_ent._Vu2_tmp = []
-            mag_ent._Gii_tmp = np.zeros(
-                (builder.contour.eset, mag_ent.SBS, mag_ent.SBS),
-                dtype="complex128",
-            )
-        for pair in builder.pairs:
-            pair._Gij_tmp = np.zeros(
-                (builder.contour.eset, pair.SBS1, pair.SBS2), dtype="complex128"
-            )
-            pair._Gji_tmp = np.zeros(
-                (builder.contour.eset, pair.SBS2, pair.SBS1), dtype="complex128"
-            )
+            # setup empty Greens function holders for integration and
+            # initialize rotation storage
+            for mag_ent in builder.magnetic_entities:
+                mag_ent._Vu1_tmp = []
+                mag_ent._Vu2_tmp = []
+                mag_ent._Gii_tmp = np.zeros(
+                    (builder.contour.eset, mag_ent.SBS, mag_ent.SBS),
+                    dtype="complex128",
+                )
+            for pair in builder.pairs:
+                pair._Gij_tmp = np.zeros(
+                    (builder.contour.eset, pair.SBS1, pair.SBS2), dtype="complex128"
+                )
+                pair._Gji_tmp = np.zeros(
+                    (builder.contour.eset, pair.SBS2, pair.SBS1), dtype="complex128"
+                )
 
             # split k points to parallelize
             # (this could be outside loop, but it was an easy fix for the
