@@ -3,13 +3,15 @@
 Input/Output formats
 ====================
 
+Input formats
+-------------
+
 The **grogupy_run** command line tool accepts input in the  *.py* and *.fdf* 
 format. See and compare the following examples.
 
-.. dropdown:: Input formats
-    :open:
+.. tabs:: Input formats
 
-    .. tab-set-code::
+    .. tab:: Python
 
         .. code-block:: python
 
@@ -149,7 +151,9 @@ format. See and compare the following examples.
             ###############################################################################
             ###############################################################################
 
-        .. code-block:: fdf
+    .. tab:: fdf
+
+        .. code-block::
 
             ###############################################################################
             #                                 Input files
@@ -495,3 +499,14 @@ outfile, *by default <infile>_kset_<kset>_eset_<eset>_<anisotropysolver>*
     concatenate some information or filename extension to this. For example 
     the UppASD output format is a directory of multiple input files.
     
+
+Output formats
+--------------
+
+For the specific output formats see the table below.
+
+.. toctree::
+   :maxdepth: 1
+   
+   magnopy_input.rst
+   uppsala_input.rst
