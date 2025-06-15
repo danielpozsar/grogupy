@@ -8,7 +8,7 @@ guides designed to help you get started with grogupy and explore its advanced
 features.
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    io_formats
    magnetic_entity
