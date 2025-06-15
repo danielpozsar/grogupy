@@ -9,6 +9,7 @@ numpydoc
 
 # grids
 sphinx-design
+sphinx-tabs
 
 # include bibtex citations
 sphinxcontrib-bibtex
