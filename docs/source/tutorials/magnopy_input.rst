@@ -1,12 +1,15 @@
-.. _user-guide_output-format:
+.. _magnopy_input_format:
+
+Magnopy input format
+====================
 
 Spin Hamiltonian file
-=====================
+---------------------
 
 On this page we describe the format of the spin Hamiltonian file that can be produced by GROGU.
 First of all here is the specification of the full file
 
-.. literalinclude:: GROGU-output-specs.txt
+.. literalinclude:: magnopy-input-specs.txt
     :linenos:
     :language: text 
 
@@ -20,7 +23,7 @@ Next we describe the sections of the file one by one.
 Comment section
 ---------------
 
-.. literalinclude:: GROGU-output-specs.txt
+.. literalinclude:: magnopy-input-specs.txt
     :linenos:
     :lineno-match:
     :lines: 1-7
@@ -44,7 +47,7 @@ is not restricted and can be arbitrary as well.
 Hamiltonian convention
 ----------------------
 
-.. literalinclude:: GROGU-output-specs.txt
+.. literalinclude:: magnopy-input-specs.txt
     :linenos:
     :lineno-match:
     :lines: 7-13
@@ -105,7 +108,7 @@ sum (hence the ``Double counting true`` in the convention).
 Cell
 ----
 
-.. literalinclude:: GROGU-output-specs.txt
+.. literalinclude:: magnopy-input-specs.txt
     :linenos:
     :lineno-match:
     :lines: 13-18
@@ -137,7 +140,7 @@ spin Hamiltonian is defined.
 Magnetic sites
 --------------
 
-.. literalinclude:: GROGU-output-specs.txt
+.. literalinclude:: magnopy-input-specs.txt
     :linenos:
     :lineno-match:
     :lines: 18-25
@@ -176,7 +179,7 @@ Magnetic sites can correspond to the atoms of the underlying crystall or to more
 Intra-atomic anisotropy
 -----------------------
 
-.. literalinclude:: GROGU-output-specs.txt
+.. literalinclude:: magnopy-input-specs.txt
     :linenos:
     :lineno-match:
     :lines: 25-36
@@ -220,7 +223,7 @@ Hamiltonian :math:`\boldsymbol{A}_{i}`
 Exchange interaction
 --------------------
  
-.. literalinclude:: GROGU-output-specs.txt
+.. literalinclude:: magnopy-input-specs.txt
     :linenos:
     :lineno-match:
     :lines: 36-50
