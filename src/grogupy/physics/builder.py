@@ -677,9 +677,13 @@ class Builder:
             out += mag_ent.tag + " "
             out += f"{mag_ent._xyz.mean(axis=0)[0]} {mag_ent._xyz.mean(axis=0)[1]} {mag_ent._xyz.mean(axis=0)[2]} "
             if magnetic_moment[0].lower() == "l":
-                out += f"{mag_ent.local_S} {mag_ent.local_Sx} {mag_ent.local_Sy} {mag_ent.local_Sz}"
+                s = np.array([mag_ent.local_Sx, mag_ent.local_Sy, mag_ent.local_Sz])
+                s = s / np.linalg.norm(s)
+                out += f"{mag_ent.local_S} {s[0]} {s[1]} {s[2]}"
             else:
-                out += f"{mag_ent.total_S} {mag_ent.total_Sx} {mag_ent.total_Sy} {mag_ent.total_Sz}"
+                s = np.array([mag_ent.total_Sx, mag_ent.total_Sy, mag_ent.total_Sz])
+                s = s / np.linalg.norm(s)
+                out += f"{mag_ent.total_S} {s[0]} {s[1]} {s[2]}"
             out += newline
 
         out += section + newline
