@@ -191,7 +191,7 @@ if CONFIG.is_GPU:
                             ).get()
 
                         # store the Greens function slice of the pairs
-                        for l, dat in enumerate(zip(SBI1, SBI2, Ruc)):
+                        for l, dat in enumerate(zip(SBI1, SBI2, supercell_shift)):
                             sbi1, sbi2, ruc = dat
                             phase = cp.exp(1j * 2 * cp.pi * k @ ruc.T)
 
