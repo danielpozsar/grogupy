@@ -32,7 +32,7 @@ on an HPC system, in this case on `Komondor
     source ~/.bashrc
     yes | module clear
     module purge
-    module load PrgEnv-gnu cray-pals cuda/12.3
+    module load PrgEnv-gnu cray-pals cuda/12.3 cray-python
 
     export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
     export OPENBLAS_NUM_THREADS=$SLURM_CPUS_PER_TASK
