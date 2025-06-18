@@ -730,5 +730,13 @@ def calculate_isotropic_only(
     return J_iso
 
 
+def calculate_isotropic_biquadratic_only(
+    energies: NDArray,
+) -> float:
+    """Calculates the isotropic and isotropic biquadratic exchange only."""
+
+    raise NotImplementedError
+
+
 if __name__ == "__main__":
     pass

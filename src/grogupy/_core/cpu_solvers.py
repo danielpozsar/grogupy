@@ -374,6 +374,8 @@ if CONFIG.MPI_loaded:
                         pair.calculate_exchange_tensor()
                     elif builder.spin_model == "isotropic-only":
                         pair.calculate_isotropic_only()
+                    elif builder.spin_model == "isotropic-biquadratic-only":
+                        pair.calculate_isotropic_biquadratic_only()
                     else:
                         raise Exception(
                             f"Unknown spin model: {builder.spin_model}! Use apply_spin_model=False"
@@ -726,6 +728,8 @@ if CONFIG.MPI_loaded:
                     pair.calculate_exchange_tensor()
                 elif builder.spin_model == "isotropic-only":
                     pair.calculate_isotropic_only()
+                elif builder.spin_model == "isotropic-biquadratic-only":
+                    pair.calculate_isotropic_biquadratic_only()
                 else:
                     raise Exception(
                         f"Unknown spin model: {builder.spin_model}! Use apply_spin_model=False"
@@ -1038,6 +1042,8 @@ else:
                     pair.calculate_exchange_tensor()
                 elif builder.spin_model == "isotropic-only":
                     pair.calculate_isotropic_only()
+                elif builder.spin_model == "isotropic-biquadratic-only":
+                    pair.calculate_isotropic_biquadratic_only()
                 else:
                     raise Exception(
                         f"Unknown spin model: {builder.spin_model}! Use apply_spin_model=False"
