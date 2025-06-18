@@ -204,6 +204,259 @@ if CONFIG.is_GPU:
 
         return G_mag, G_pair_ij, G_pair_ji
 
+    def default_solver(builder: "Builder", print_memory: bool = False) -> None:
+        """It calculates the energies by the Greens function method.
+
+        It inverts the Hamiltonians of all directions set up in the given
+        k-points at the given energy levels. The solution is parallelized over
+        k-points. It uses the number of GPUs given. And determines the parallelization
+        over energy levels from the ``builder.greens_function_solver`` attribute.
+
+        Parameters
+        ----------
+        builder : Builder
+            The system that we want to solve
+        print_memory: bool, optional
+            It can be turned on to print extra memory info, by default False
+        """
+
+        parallel_size = CONFIG.parallel_size
+
+        # checks for setup
+        if builder.kspace is None:
+            raise Exception("Kspace is not defined!")
+        if builder.contour is None:
+            raise Exception("Kspace is not defined!")
+        if builder.hamiltonian is None:
+            raise Exception("Kspace is not defined!")
+
+        # reset hamiltonians, magnetic entities and pairs
+        builder._rotated_hamiltonians = []
+        for mag_ent in builder.magnetic_entities:
+            mag_ent.reset()
+        for pair in builder.pairs:
+            pair.reset()
+
+        # calculate and print memory stuff
+        # 16 is the size of complex numbers in byte, when using np.float64
+        H_mem = np.sum(
+            [
+                np.prod(builder.hamiltonian.H.shape) * 16,
+                np.prod(builder.hamiltonian.S.shape) * 16,
+            ]
+        )
+        mag_ent_mem = (
+            builder.contour.eset * builder.magnetic_entities.SBS**2
+        ).sum() * 16
+        pair_mem = (
+            builder.contour.eset * builder.pairs.SBS1 * builder.pairs.SBS2
+        ).sum() * 16
+        if print_memory:
+            print("\n\n\n")
+            print(
+                "################################################################################"
+            )
+            print(
+                "################################################################################"
+            )
+            print(f"Memory allocated by rotated Hamilonian: {H_mem/1e6} MB")
+            print(f"Memory allocated by magnetic entities: {mag_ent_mem/1e6} MB")
+            print(f"Memory allocated by pairs: {pair_mem/1e6} MB")
+            print(
+                f"Total memory allocated in RAM: {(H_mem+mag_ent_mem+pair_mem) / 1e6} MB"
+            )
+            print(
+                "--------------------------------------------------------------------------------"
+            )
+            if builder.greens_function_solver[0].lower() == "p":  # parallel solver
+                G_mem = builder.contour.eset * np.prod(builder.hamiltonian.H.shape) * 16
+            elif builder.greens_function_solver[0].lower() == "s":  # sequentia solver
+                G_mem = (
+                    builder.max_g_per_loop * np.prod(builder.hamiltonian.H.shape) * 16
+                )
+            else:
+                raise Exception("Unknown Greens function solver!")
+
+            print("Memory allocated on GPU:")
+            print(f"Memory allocated by rotated Hamilonian: {H_mem/1e6} MB")
+            print(f"Memory allocated for Greens function samples: {G_mem/1e6} MB")
+            # 25 is the maximum amount of memory used for matrix inversion
+            gpu_max_mem = np.max([mag_ent_mem + pair_mem + H_mem, G_mem * 25]) / 1e6
+            print(f"Total peak memory on GPU during solution: {gpu_max_mem} MB")
+            print(
+                "################################################################################"
+            )
+            print(
+                "################################################################################"
+            )
+            print("\n\n\n")
+
+        # iterate over the reference directions (quantization axes)
+        for i, orient in enumerate(builder.ref_xcf_orientations):
+            # obtain rotated Hamiltonian
+            if builder.low_memory_mode:
+                rot_H = builder.hamiltonian
+            else:
+                rot_H = builder.hamiltonian.copy()
+            if not np.allclose(rot_H.orientation, orient["o"]):
+                rot_H.rotate(orient["o"])
+
+            # setup empty Greens function holders for integration and
+            # initialize rotation storage
+            for mag_ent in builder.magnetic_entities:
+                mag_ent._Vu1_tmp = []
+                mag_ent._Vu2_tmp = []
+                mag_ent._Gii_tmp = np.zeros(
+                    (builder.contour.eset, mag_ent.SBS, mag_ent.SBS),
+                    dtype="complex128",
+                )
+            for pair in builder.pairs:
+                pair._Gij_tmp = np.zeros(
+                    (builder.contour.eset, pair.SBS1, pair.SBS2), dtype="complex128"
+                )
+                pair._Gji_tmp = np.zeros(
+                    (builder.contour.eset, pair.SBS2, pair.SBS1), dtype="complex128"
+                )
+
+                # GPU solver only on GPU0 is the default solver, it does not
+                # parallelze over GPU
+                G_mag_reduce, G_pair_ij_reduce, G_pair_ji_reduce = gpu_solver(
+                    builder.max_g_per_loop,
+                    builder.greens_function_solver,
+                    0,
+                    builder.kspace.kpoints,
+                    builder.kspace.weights,
+                    builder.magnetic_entities.SBI,
+                    builder.pairs.SBI1,
+                    builder.pairs.SBI2,
+                    builder.pairs.supercell_shift,
+                    builder.hamiltonian.sc_off,
+                    builder.contour.samples,
+                    builder.magnetic_entities._Gii_tmp,
+                    builder.pairs._Gij_tmp,
+                    builder.pairs._Gji_tmp,
+                    builder.hamiltonian.H,
+                    builder.hamiltonian.S,
+                    i + 1,
+                )
+
+            for i, mag_ent in enumerate(builder.magnetic_entities):
+                mag_ent._Gii_tmp = G_mag_reduce[i]
+
+            for i, pair in enumerate(builder.pairs):
+                pair._Gij_tmp = G_pair_ij_reduce[i]
+                pair._Gji_tmp = G_pair_ji_reduce[i]
+
+            # these are the rotations perpendicular to the quantization axis
+            for u in orient["vw"]:
+                # section 2.H
+                H_XCF = rot_H.extract_exchange_field()[3]
+                Tu: NDArray = np.kron(
+                    np.eye(int(builder.hamiltonian.NO / 2), dtype=int), tau_u(u)
+                )
+                Vu1, Vu2 = calc_Vu(H_XCF[rot_H.uc_in_sc_index], Tu)
+
+                for mag_ent in _tqdm(
+                    builder.magnetic_entities,
+                    desc="Setup perturbations for rotated hamiltonian",
+                ):
+                    # fill up the perturbed potentials (for now) based on the on-site projections
+                    mag_ent._Vu1_tmp.append(
+                        onsite_projection(
+                            Vu1, mag_ent._spin_box_indices, mag_ent._spin_box_indices
+                        )
+                    )
+                    mag_ent._Vu2_tmp.append(
+                        onsite_projection(
+                            Vu2, mag_ent._spin_box_indices, mag_ent._spin_box_indices
+                        )
+                    )
+
+            if (
+                builder.spin_model == "isotropic-only"
+                or builder.spin_model == "isotropic-biquadratic-only"
+            ):
+                for pair in builder.pairs:
+                    pair.energies = np.array(
+                        [
+                            [
+                                interaction_energy(
+                                    pair.M1._Vu1_tmp,
+                                    pair.M2._Vu1_tmp,
+                                    pair._Gij_tmp,
+                                    pair._Gji_tmp,
+                                    builder.contour.weights,
+                                )
+                            ]
+                        ]
+                    )
+            else:
+                # calculate energies in the current reference hamiltonian direction
+                for mag_ent in builder.magnetic_entities:
+                    mag_ent.calculate_energies(
+                        builder.contour.weights,
+                        append=True,
+                        third_direction=builder.spin_model == "generalised-grogu",
+                    )
+                for pair in builder.pairs:
+                    pair.calculate_energies(builder.contour.weights, append=True)
+
+            # if we want to keep all the information for some reason we can do it
+            if not builder.low_memory_mode:
+                builder._rotated_hamiltonians.append(rot_H)
+                for mag_ent in builder.magnetic_entities:
+                    mag_ent._Vu1.append(mag_ent._Vu1_tmp)
+                    mag_ent._Vu2.append(mag_ent._Vu2_tmp)
+                    mag_ent._Gii.append(mag_ent._Gii_tmp)
+                for pair in builder.pairs:
+                    pair._Gij.append(pair._Gij_tmp)
+                    pair._Gji.append(pair._Gji_tmp)
+            # or fill with empty stuff
+            else:
+                for mag_ent in builder.magnetic_entities:
+                    mag_ent._Vu1.append([])
+                    mag_ent._Vu2.append([])
+                    mag_ent._Gii.append([])
+                for pair in builder.pairs:
+                    pair._Gij.append([])
+                    pair._Gji.append([])
+
+                # rotate back hamiltonian for the original DFT orientation
+                rot_H.rotate(rot_H.scf_xcf_orientation)
+
+        # finalize energies of the magnetic entities and pairs
+        # calculate magnetic parameters
+        for mag_ent in builder.magnetic_entities:
+            # delete temporary stuff
+            del mag_ent._Gii_tmp
+            del mag_ent._Vu1_tmp
+            del mag_ent._Vu2_tmp
+
+            if builder.apply_spin_model:
+                if builder.spin_model == "generalised-fit":
+                    mag_ent.fit_anisotropy_tensor(builder.ref_xcf_orientations)
+                elif builder.spin_model == "generalised-grogu":
+                    mag_ent.calculate_anisotropy()
+                else:
+                    pass
+
+        for pair in builder.pairs:
+            # delete temporary stuff
+            del pair._Gij_tmp
+            del pair._Gji_tmp
+
+            if builder.apply_spin_model:
+                if builder.spin_model == "generalised-fit":
+                    pair.fit_exchange_tensor(builder.ref_xcf_orientations)
+                elif builder.spin_model == "generalised-grogu":
+                    pair.calculate_exchange_tensor()
+                elif builder.spin_model == "isotropic-only":
+                    pair.calculate_isotropic_only()
+                else:
+                    raise Exception(
+                        f"Unknown spin model: {builder.spin_model}! Use apply_spin_model=False"
+                    )
+
     def solve_parallel_over_k(builder: "Builder", print_memory: bool = False) -> None:
         """It calculates the energies by the Greens function method.
 
@@ -390,7 +643,10 @@ if CONFIG.is_GPU:
                         )
                     )
 
-            if builder.spin_model == "isotropic-only":
+            if (
+                builder.spin_model == "isotropic-only"
+                or builder.spin_model == "isotropic-biquadratic-only"
+            ):
                 for pair in builder.pairs:
                     pair.energies = np.array(
                         [
