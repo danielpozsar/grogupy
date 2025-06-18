@@ -437,13 +437,15 @@ applyspinmodel, *by default True*
 spinmodel, *by default generalised-grogu*
     It describes the spin model used for the calculation of the physical 
     interaction parameters from the energies upon rotations. It can be 
-    'generalised-fit', 'generalised-grogu' or 'isotropic-only'. 'generalised-grogu' 
-    describes the method in the original paper, but can only be used for the x,y,z 
-    reference directions, which is enforced. Fit can be used for any number of 
-    reference directions, which can follow the symmetry of the system. 
-    'isotropic-only' only calculates the isotropic exchange, which requires one 
-    reference direction and one perpendicular direction, which  is also enforced 
-    and it greatly reduces runtime.
+    'generalised-fit', 'generalised-grogu', 'isotropic-only' or 
+    'isotropic-biquadratic-only'. 'generalised-grogu' describes the method in 
+    the original paper, but can only be used for the x,y,z reference directions, 
+    which is enforced. Fit can be used for any number of reference directions, 
+    which can follow the symmetry of the system. 'isotropic-only' only calculates 
+    the isotropic exchange, which requires one reference direction and one 
+    perpendicular direction, which  is also enforced and it greatly reduces runtime.
+     'isotropic-biquadratic-only' is the same as the 'isotropic-only', but it also 
+     includes the biquadratic exchange parameters.
 
     .. warning::
         The 'generalised-fit' method does not work for the anisotropy tensors yet.

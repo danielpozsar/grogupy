@@ -461,14 +461,14 @@ class Builder:
                 "generalised-grogu spin model: reset reference and perpendicular directions!"
             )
 
-        elif value == "isotropic-only":
+        elif value == "isotropic-only" or value == "isotropic-biquadratic-only":
             self.__spin_model: str = "isotropic-only"
             self.ref_xcf_orientations = [self.ref_xcf_orientations[0]]
             self.ref_xcf_orientations[0]["vw"] = np.array(
                 [self.ref_xcf_orientations[0]["vw"][0]]
             )
             warnings.warn(
-                "isotropic-only spin model: first reference and first perpendicular direction is used!"
+                "Isotropic spin model: first reference and first perpendicular direction is used!"
             )
 
         else:
@@ -1015,7 +1015,14 @@ class Builder:
 
         # no parallelization
         if self.__parallel_mode is None:
-            from .._core.cpu_solvers import default_solver as solver
+            # choose architecture solver
+            if self.__architecture.lower()[0] == "c":  # cpu
+                from .._core.cpu_solvers import default_solver as solver
+            elif self.__architecture.lower()[0] == "g":  # gpu
+                from .._core.gpu_solvers import default_solver as solver
+            else:
+                raise Exception(f"Unknown architecture: {self.__architecture}")
+
         # k point parallelization
         elif self.__parallel_mode[0].lower() == "k":
             # choose architecture solver
