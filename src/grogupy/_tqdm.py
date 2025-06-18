@@ -54,46 +54,26 @@ if CONFIG.tqdm_requested:
             """
 
             def __init__(self, iterable: Iterable, head_node: bool = True, **kwargs):
-                self.head_node = head_node
-
-                self.iterable = iterable
-                self.tqdm = tqdm(iterable, **kwargs)
+                if CONFIG.is_CPU:
+                    if head_node and CONFIG.MPI_loaded and MPI.COMM_WORLD.rank != 0:
+                        self.iterable = iterable
+                    else:
+                        self.iterable = tqdm(iterable, **kwargs)
+                elif CONFIG.is_GPU:
+                    self.iterable = tqdm(iterable, **kwargs)
+                else:
+                    raise Exception("Unknown architecture, use CPU or GPU!")
 
             def __iter__(self):
-                if CONFIG.is_CPU:
-                    if (
-                        self.head_node
-                        and CONFIG.MPI_loaded
-                        and MPI.COMM_WORLD.rank != 0
-                    ):
-                        return iter(self.iterable)
-                    return iter(self.tqdm)
-
-                elif CONFIG.is_GPU:
-                    return iter(self.tqdm)
-
-                else:
-                    raise Exception("Unknown architecture, use CPU or GPU!")
+                return iter(self.iterable)
 
             def __call__(self):
-                if CONFIG.is_CPU:
-                    if (
-                        self.head_node
-                        and CONFIG.MPI_loaded
-                        and MPI.COMM_WORLD.rank != 0
-                    ):
-                        return self.tqdm
-                    return self.iterable
-
-                elif CONFIG.is_GPU:
-                    return self.tqdm
-
-                else:
-                    raise Exception("Unknown architecture, use CPU or GPU!")
+                return self.iterable
 
             def update(self, **kwargs):
                 """Update progress bar if it is available."""
-                self.tqdm.update(**kwargs)
+                if isinstance(self.iterable, tqdm):
+                    self.iterable.update(**kwargs)
 
     except:
         print("Please install tqdm for nice progress bar.")
