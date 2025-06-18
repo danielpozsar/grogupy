@@ -3,4 +3,3 @@ numpy
 scipy
 sisl
 netCDF4
-numba
