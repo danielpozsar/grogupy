@@ -418,7 +418,7 @@ def save(
 ) -> None:
     """Saves the instance from a pickled state.
 
-    The compression level can be set to 0,1,2,3. Every other value defaults to 3.
+    The compression level can be set to 0,1,2,3,4. Every other value defaults to 2.
 
     0. This means that there is no compression at all.
 
@@ -426,8 +426,15 @@ def save(
        to None, because othervise the loading would be dependent
        on the sisl version
 
-    2. This contains compression 1, but sets the keys "S", "H", "Gii",
-       "Gij", "Gji", "Vu1" and "Vu2" to [], to save space
+    2. This contains compression 1, but sets the keys "Gii", "Gij",
+       "Gji", "Vu1" and "Vu2" to [], to save space
+
+    3. This contains compression 1 and 2, but sets the keys "S", "H",
+       to [], to save space
+
+    4. This contains compression 1, 2 and 3, but sets the keys "kpoints",
+       "samples", "weights" (for kpoints and energy points) to [], to
+       save space
 
     Parameters
     ----------
@@ -436,7 +443,7 @@ def save(
     path: str
         The path to the output file
     compress: int, optional
-        The level of lossy compression of the output pickle, by default 3
+        The level of lossy compression of the output pickle, by default 2
     """
 
     # check if the object is ours
@@ -453,8 +460,7 @@ def save(
             pass
         elif compress == 1:
             out_dict = strip_dict_structure(out_dict, pops=["_dh", "_ds"], setto=None)
-        # compress 2 is the default
-        else:
+        elif compress == 3:
             out_dict = strip_dict_structure(out_dict, pops=["_dh", "_ds"], setto=None)
             out_dict = strip_dict_structure(
                 out_dict,
@@ -469,7 +475,38 @@ def save(
                 ],
                 setto=[],
             )
-
+        elif compress == 4:
+            out_dict = strip_dict_structure(out_dict, pops=["_dh", "_ds"], setto=None)
+            out_dict = strip_dict_structure(
+                out_dict,
+                pops=[
+                    "S",
+                    "H",
+                    "kpoints",
+                    "samples",
+                    "weights",
+                    "_Gii",
+                    "_Gij",
+                    "_Gji",
+                    "_Vu1",
+                    "_Vu2",
+                ],
+                setto=[],
+            )
+        # compress 2 is the default
+        else:
+            out_dict = strip_dict_structure(out_dict, pops=["_dh", "_ds"], setto=None)
+            out_dict = strip_dict_structure(
+                out_dict,
+                pops=[
+                    "_Gii",
+                    "_Gij",
+                    "_Gji",
+                    "_Vu1",
+                    "_Vu2",
+                ],
+                setto=[],
+            )
         # write to file
         with open(path, "wb") as f:
             pickle.dump(out_dict, f)

@@ -129,17 +129,26 @@ format. See and compare the following examples.
 
             # save the pickle file
             save_pickle = True
-            """
-            The compression level can be set to 0,1,2. Every other value defaults to 2.
-            0. This means that there is no compression at all.
 
-            1. This means, that the keys "_dh" and "_ds" are set
-            to None, because othervise the loading would be dependent
-            on the sisl version
-
-            2. This contains compression 1, but sets the keys "Gii",
-            "Gij", "Gji", "Vu1" and "Vu2" to [], to save space
-            """
+            # The compression level can be set to 0,1,2,3,4. 
+            # Every other value defaults to 2.
+            # 
+            # 0. This means that there is no compression at all.
+            # 
+            # 1. This means, that the keys "_dh" and "_ds" are set
+            # to None, because othervise the loading would be dependent
+            # on the sisl version
+            # 
+            # 2. This contains compression 1, but sets the keys "Gii", "Gij", 
+            # "Gji", "Vu1" and "Vu2" to [], to save space
+            # 
+            # 3. This contains compression 1 and 2, but sets the keys "S", "H",
+            # to [], to save space
+            # 
+            # 4. This contains compression 1, 2 and 3, but sets the keys "kpoints", 
+            # "samples", "weights" (for kpoints and energy points) to [], to 
+            # save space
+            
             pickle_compress_level = 2
 
             # output folder, for example the current folder
@@ -274,15 +283,26 @@ format. See and compare the following examples.
             
             # save the pickle file
             SavePickle                  True
-            # The compression level can be set to 0,1,2. Every other value defaults to 2.
+
+            # The compression level can be set to 0,1,2,3,4. 
+            # Every other value defaults to 2.
+            # 
             # 0. This means that there is no compression at all.
             # 
             # 1. This means, that the keys "_dh" and "_ds" are set
-            #    to None, because othervise the loading would be dependent
-            #    on the sisl version
+            # to None, because othervise the loading would be dependent
+            # on the sisl version
             # 
-            # 2. This contains compression 1, but sets the keys "Gii",
-            #    "Gij", "Gji", "Vu1" and "Vu2" to [], to save space
+            # 2. This contains compression 1, but sets the keys "Gii", "Gij", 
+            # "Gji", "Vu1" and "Vu2" to [], to save space
+            # 
+            # 3. This contains compression 1 and 2, but sets the keys "S", "H",
+            # to [], to save space
+            # 
+            # 4. This contains compression 1, 2 and 3, but sets the keys "kpoints", 
+            # "samples", "weights" (for kpoints and energy points) to [], to 
+            # save space
+
             PickleCompressLevel         2
 
             # output folder, for example the input folder
@@ -485,12 +505,14 @@ savepickle, *by default False*
 picklecompresslevel, *by default 2*
     It determines the compression level in the *.pkl* output file, Of course 
     if **lowmemorymode** is used a large part of the data is already discarded. 
-    Otherwise the compression level can be set to 0,1,2. Every other value 
+    Otherwise the compression level can be set to 0,1,2,3,4. Every other value 
     defaults to 2. 0 means that there is no compression at all. 1 means, that 
     the keys "_dh" and "_ds" are set to None, because othervise the loading of 
-    the object would depend on the sisl version. And finally 2 contains 
-    compression 1, but furthermore sets the keys "Gii", "Gij", "Gji", "Vu1" 
-    and "Vu2" to [], to save space.
+    the object would depend on the sisl version. 2 contains compression 1, but 
+    sets the keys "Gii", "Gij", "Gji", "Vu1" and "Vu2" to [], to save space. 3 
+    contains compression 1 and 2, but sets the keys "S", "H", to [], to save 
+    space. 4 contains compression 1, 2 and 3, but sets the keys "kpoints", 
+    "samples", "weights" (for kpoints and energy points) to [], to save space.
 
 outfolder, *by default infolder*
     The output folder of all the requested output formats. If not specified 
