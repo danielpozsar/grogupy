@@ -468,7 +468,9 @@ spinmodel, *by default generalised-grogu*
      includes the biquadratic exchange parameters.
 
     .. warning::
-        The 'generalised-fit' method does not work for the anisotropy tensors yet.
+        The 'generalised-fit' method does not work for the anisotropy tensors yet. 
+        The 'isotropic-biquadratic-only' method does not work, because we need to 
+        make design decesions about how to strore the energies.
 
 parallelmode, *by default None*
     Parallelization can be turned on over the Brillouin-zone sampling by 
