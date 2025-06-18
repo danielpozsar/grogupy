@@ -84,8 +84,12 @@ def main():
         fig = plot_Jiso_distance(system)
         file.write(fig.to_html(full_html=False, include_plotlyjs=False))
 
-        fig = plot_DM_distance(system)
-        file.write(fig.to_html(full_html=False, include_plotlyjs=False))
+        if (
+            system.spin_model != "isotropic-only"
+            and system.spin_model != "isotropic-biquadratic-only"
+        ):
+            fig = plot_DM_distance(system)
+            file.write(fig.to_html(full_html=False, include_plotlyjs=False))
 
         fig = plot_magnetic_entities(system)
         file.write(fig.to_html(full_html=False, include_plotlyjs=False))
@@ -93,8 +97,12 @@ def main():
         fig = plot_pairs(system)
         file.write(fig.to_html(full_html=False, include_plotlyjs=False))
 
-        fig = plot_DMI(system).add_traces(plot_pairs(system, connect=True).data)
-        file.write(fig.to_html(full_html=False, include_plotlyjs=False))
+        if (
+            system.spin_model != "isotropic-only"
+            and system.spin_model != "isotropic-biquadratic-only"
+        ):
+            fig = plot_DMI(system).add_traces(plot_pairs(system, connect=True).data)
+            file.write(fig.to_html(full_html=False, include_plotlyjs=False))
 
     print(f"The output file is: {name}")
     print(__definitely_not_grogu__)
