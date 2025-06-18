@@ -294,7 +294,10 @@ if CONFIG.MPI_loaded:
                             )
                         )
 
-                if builder.spin_model == "isotropic-only":
+                if (
+                    builder.spin_model == "isotropic-only"
+                    or builder.spin_model == "isotropic-biquadratic-only"
+                ):
                     for pair in builder.pairs:
                         pair.energies = np.array(
                             [
@@ -640,7 +643,10 @@ if CONFIG.MPI_loaded:
                         )
                     )
 
-            if builder.spin_model == "isotropic-only":
+            if (
+                builder.spin_model == "isotropic-only"
+                or builder.spin_model == "isotropic-biquadratic-only"
+            ):
                 for pair in builder.pairs:
                     pair.energies = np.array(
                         [
