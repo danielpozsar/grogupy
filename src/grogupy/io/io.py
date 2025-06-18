@@ -426,7 +426,7 @@ def save(
        to None, because othervise the loading would be dependent
        on the sisl version
 
-    2. This contains compression 1, but sets the keys "Gii",
+    2. This contains compression 1, but sets the keys "S", "H", "Gii",
        "Gij", "Gji", "Vu1" and "Vu2" to [], to save space
 
     Parameters
@@ -459,6 +459,8 @@ def save(
             out_dict = strip_dict_structure(
                 out_dict,
                 pops=[
+                    "S",
+                    "H",
                     "_Gii",
                     "_Gij",
                     "_Gji",
