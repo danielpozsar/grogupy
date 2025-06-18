@@ -26,6 +26,7 @@ kewords = [
 ]
 requires-python = ">=3.9"
 dependencies = [
+  "numba",
   "numpy",
   "sisl",
   "scipy",
