@@ -115,15 +115,15 @@ if CONFIG.is_GPU:
 
         # use the specified GPU
         with cp.cuda.Device(gpu_number):
-            # copy everything to GPU
-            kpoints = cp.array(kpoints[gpu_number])
-            kweights = cp.array(kweights[gpu_number])
-            SBI = cp.array(SBI)
-            SBI1 = cp.array(SBI1)
-            SBI2 = cp.array(SBI2)
-            supercell_shift = cp.array(Ruc)
+            # copy some stuff to GPU
+            kpoints = np.array(kpoints[gpu_number])
+            kweights = np.array(kweights[gpu_number])
+            SBI = np.array(SBI)
+            SBI1 = np.array(SBI1)
+            SBI2 = np.array(SBI2)
+            supercell_shift = np.array(Ruc)
 
-            sc_off = cp.array(sc_off)
+            sc_off = np.array(sc_off)
             eset = samples.shape[0]
             samples = cp.array(samples.reshape(eset, 1, 1))
 
@@ -141,30 +141,26 @@ if CONFIG.is_GPU:
 
                 # calculate Hamiltonian and Overlap matrix in a given k point
                 # this generates the list of phases
-                phases = cp.exp(-1j * 2 * cp.pi * k @ sc_off.T)
+                phases = cp.array(np.exp(-1j * 2 * np.pi * k @ sc_off.T))
                 # phases applied to the hamiltonian
                 HK = cp.einsum("abc,a->bc", cp.array(rotated_H), phases)
                 SK = cp.einsum("abc,a->bc", cp.array(S), phases)
 
                 # solve the Greens function on all energy points in one step
                 if mode[0].lower() == "p":
-                    Gk = cp.linalg.inv(SK * samples - HK)
+                    Gk = cp.linalg.inv(SK * samples - HK).get()
 
                     # store the Greens function slice of the magnetic entities
                     for l, sbi in enumerate(SBI):
-                        G_mag[l] += (onsite_projection(Gk, sbi, sbi) * wk).get()
+                        G_mag[l] += onsite_projection(Gk, sbi, sbi) * wk
 
                     # store the Greens function slice of the pairs
                     for l, dat in enumerate(zip(SBI1, SBI2, supercell_shift)):
                         sbi1, sbi2, ruc = dat
-                        phase = cp.exp(1j * 2 * cp.pi * k @ ruc.T)
+                        phase = cp.exp(1j * 2 * np.pi * k @ ruc.T)
 
-                        G_pair_ij[l] += (
-                            onsite_projection(Gk, sbi1, sbi2) * wk * phase
-                        ).get()
-                        G_pair_ji[l] += (
-                            onsite_projection(Gk, sbi2, sbi1) * wk / phase
-                        ).get()
+                        G_pair_ij[l] += onsite_projection(Gk, sbi1, sbi2) * wk * phase
+                        G_pair_ji[l] += onsite_projection(Gk, sbi2, sbi1) * wk / phase
 
                 # solve Greens function sequentially for the energies, because of memory bound
                 elif mode[0].lower() == "s":
@@ -182,25 +178,23 @@ if CONFIG.is_GPU:
                     # fills the holders sequentially by the Greens function slices on
                     # a given energy
                     for slice in slices:
-                        Gk = cp.linalg.inv(SK * samples[slice] - HK)
+                        Gk = cp.linalg.inv(SK * samples[slice] - HK).get()
 
                         # store the Greens function slice of the magnetic entities
                         for l, sbi in enumerate(SBI):
-                            G_mag[l][slice] += (
-                                onsite_projection(Gk, sbi, sbi) * wk
-                            ).get()
+                            G_mag[l][slice] += onsite_projection(Gk, sbi, sbi) * wk
 
                         # store the Greens function slice of the pairs
                         for l, dat in enumerate(zip(SBI1, SBI2, supercell_shift)):
                             sbi1, sbi2, ruc = dat
-                            phase = cp.exp(1j * 2 * cp.pi * k @ ruc.T)
+                            phase = np.exp(1j * 2 * np.pi * k @ ruc.T)
 
                             G_pair_ij[l][slice] += (
                                 onsite_projection(Gk, sbi1, sbi2) * wk * phase
-                            ).get()
+                            )
                             G_pair_ji[l][slice] += (
                                 onsite_projection(Gk, sbi2, sbi1) * wk / phase
-                            ).get()
+                            )
 
         return G_mag, G_pair_ij, G_pair_ji
 
