@@ -152,9 +152,9 @@ format. See and compare the following examples.
             pickle_compress_level = 2
 
             # output folder, for example the current folder
-            outfolder = "./src/grogupy/cli/tests/"
+            outfolder = "./"
             # outfile name
-            outfile = "test"
+            outfile = None
 
 
             ###############################################################################
@@ -306,9 +306,9 @@ format. See and compare the following examples.
             PickleCompressLevel         2
 
             # output folder, for example the input folder
-            OutFolder                   ./src/grogupy/cli/tests/
+            OutFolder                   ./
             # outfile name, default name
-            OutFile                     test
+            OutFile                     None
 
 
             ###############################################################################
