@@ -464,8 +464,8 @@ spinmodel, *by default generalised-grogu*
     which can follow the symmetry of the system. 'isotropic-only' only calculates 
     the isotropic exchange, which requires one reference direction and one 
     perpendicular direction, which  is also enforced and it greatly reduces runtime.
-     'isotropic-biquadratic-only' is the same as the 'isotropic-only', but it also 
-     includes the biquadratic exchange parameters.
+    'isotropic-biquadratic-only' is the same as the 'isotropic-only', but it also 
+    includes the biquadratic exchange parameters.
 
     .. warning::
         The 'generalised-fit' method does not work for the anisotropy tensors yet. 
