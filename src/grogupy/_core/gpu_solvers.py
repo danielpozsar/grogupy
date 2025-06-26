@@ -264,7 +264,7 @@ if CONFIG.is_GPU:
             )
             if builder.greens_function_solver[0].lower() == "p":  # parallel solver
                 G_mem = builder.contour.eset * np.prod(builder.hamiltonian.H.shape) * 16
-            elif builder.greens_function_solver[0].lower() == "s":  # sequentia solver
+            elif builder.greens_function_solver[0].lower() == "s":  # sequential solver
                 G_mem = (
                     builder.max_g_per_loop * np.prod(builder.hamiltonian.H.shape) * 16
                 )
