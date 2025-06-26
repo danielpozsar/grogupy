@@ -157,7 +157,7 @@ if CONFIG.is_GPU:
                     # store the Greens function slice of the pairs
                     for l, dat in enumerate(zip(SBI1, SBI2, supercell_shift)):
                         sbi1, sbi2, ruc = dat
-                        phase = cp.exp(1j * 2 * np.pi * k @ ruc.T)
+                        phase = np.exp(1j * 2 * np.pi * k @ ruc.T)
 
                         G_pair_ij[l] += onsite_projection(Gk, sbi1, sbi2) * wk * phase
                         G_pair_ji[l] += onsite_projection(Gk, sbi2, sbi1) * wk / phase
