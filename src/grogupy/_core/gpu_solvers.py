@@ -273,10 +273,10 @@ if CONFIG.is_GPU:
 
             print("Memory allocated on GPU:")
             print(f"Memory allocated by rotated Hamilonian: {H_mem/1e6} MB")
-            print(f"Memory allocated for Greens function samples: {G_mem/1e6} MB")
             # 25 is the maximum amount of memory used for matrix inversion
-            gpu_max_mem = np.max([mag_ent_mem + pair_mem + H_mem, G_mem * 25]) / 1e6
-            print(f"Total peak memory on GPU during solution: {gpu_max_mem} MB")
+            print(
+                f"Maximum memory allocated during Hamiltonian inversion: {G_mem * 25 / 1e6} MB"
+            )
             print(
                 "################################################################################"
             )
@@ -528,10 +528,10 @@ if CONFIG.is_GPU:
 
             print("Memory allocated on GPU:")
             print(f"Memory allocated by rotated Hamilonian: {H_mem/1e6} MB")
-            print(f"Memory allocated for Greens function samples: {G_mem/1e6} MB")
             # 25 is the maximum amount of memory used for matrix inversion
-            gpu_max_mem = np.max([mag_ent_mem + pair_mem + H_mem, G_mem * 25]) / 1e6
-            print(f"Total peak memory on GPU during solution: {gpu_max_mem} MB")
+            print(
+                f"Maximum memory allocated during Hamiltonian inversion: {G_mem * 25 / 1e6} MB"
+            )
             print(
                 "################################################################################"
             )
