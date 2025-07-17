@@ -36,6 +36,7 @@ from grogupy.io import (
     save,
     save_magnopy,
     save_UppASD,
+    save_Vampire,
     standardize_input,
 )
 from grogupy.physics import Builder, Contour, Hamiltonian, Kspace, PairList
@@ -134,6 +135,10 @@ def main():
                 "magnopy output is not available if only the energies are evaluated!"
             )
         if params["saveuppasd"]:
+            raise Exception(
+                "UppASD output is not available if only the energies are evaluated!"
+            )
+        if params["savevampire"]:
             raise Exception(
                 "UppASD output is not available if only the energies are evaluated!"
             )
@@ -313,6 +318,21 @@ def main():
                 comments=params["uppasdcomments"],
             )
             print("Saved UppASD")
+
+        if params["savevampire"]:
+            # create folder if it does not exist
+            Vampire_folder = outfile + "_Vampire_output"
+            if not os.path.isdir(Vampire_folder):
+                os.mkdir(Vampire_folder)
+            # save
+            save_Vampire(
+                simulation,
+                folder=Vampire_folder,
+                fast_compare=True,
+                magnetic_moment=params["outmagneticmoment"],
+                comments=params["vampirecomments"],
+            )
+            print("Saved Vampire")
 
     if PRINTING:
         if params["maxpairsperloop"] < len(simulation.pairs):

@@ -127,6 +127,11 @@ format. See and compare the following examples.
             # comments
             uppasd_comments = True
 
+            # save the Vampire input files
+            save_Vampire = True
+            # add the simulation parameters to the files as comments
+            vampire_comments = True
+
             # save the pickle file
             save_pickle = True
 
@@ -278,8 +283,12 @@ format. See and compare the following examples.
             SaveUppASD                  True
             # add the simulation parameters to the cell.tmp.txt file as 
             # comments
-            UppASDComments = True
+            UppASDComments =  True
 
+            # save the Vampire input files
+            SaveVampire                 True
+            # add the simulation parameters to the files as comments
+            VampireComments = True
             
             # save the pickle file
             SavePickle                  True
@@ -479,7 +488,7 @@ parallelmode, *by default None*
 outmagneticmoment, *by default total*
     It can be total or local and determines wether to use the total magnetic 
     moment from the atom or just magnetic moment of the selected shells or 
-    orbitals. It is used for the Uppsala input file.
+    orbitals. It is used for the Uppsala and Vampire input files.
 
 savemagnopy, *by default False*
     If True the magnopy input file is saved.
@@ -498,6 +507,13 @@ saveuppasd, *by default False*
 uppasdcomments, *by default True*
     If it is True, then the system and simulaton information is prepended in 
     the UppASD *cell.tmp.txt* file as comments.
+
+savevampire, *by default False*
+    If True the Vampire spin dynamics input file is saved.
+
+vampirecomments, *by default True*
+    If it is True, then the system and simulaton information is prepended in 
+    the Vampire files as comments.
 
 savepickle, *by default False*
     If True the Builder object is saved in the *.pkl* file as dictionary. The 

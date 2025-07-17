@@ -535,7 +535,7 @@ def save_UppASD(
     builder : Builder
         Main simulation object containing all the data
     folder : str
-        The out put folder where the files are created
+        The output folder where the files are created
     fast_compare: bool, optional
         When determining the magnetic entity index a fast comparison can
         be used where only the tags are checked, by default False
@@ -642,6 +642,204 @@ def save_UppASD(
         print(momfile, file=f)
     with open(join(folder, "posfile"), "w") as f:
         print(posfile, file=f)
+
+
+def save_Vampire(
+    builder: Builder,
+    folder: str,
+    fast_compare: bool = False,
+    magnetic_moment: str = "total",
+    comments: bool = True,
+):
+    """Writes the Vampire input files to the given folder.
+
+    The main Vampire input file, the .mat and .UCF files
+    are created.
+
+    Parameters
+    ----------
+    builder : Builder
+        Main simulation object containing all the data
+    folder : str
+        The output folder where the files are created
+    fast_compare: bool, optional
+        When determining the magnetic entity index a fast comparison can
+        be used where only the tags are checked, by default False
+    magnetic_moment: str, optional
+        It switches the used spin moment in the output, can be 'total'
+        for the whole atom or atoms involved in the magnetic entity or
+        'local' if we only use the part of the mulliken projections that
+        are exactly on the magnetic entity, which may be just a subshell
+        of the atom, by default 'total'
+    comments: bool, optional
+        Wether to add comments in the beginning of the input files, by default True
+
+    """
+
+    # number of atoms in the unit cell, number of new layers
+    MODULUS = len(builder.magnetic_entities)
+
+    cell = builder.hamiltonian.cell
+    # 1 or -1, direction of unit cell 'tilt'
+    if np.isclose(
+        np.dot(cell[0] / np.linalg.norm(cell[0]), cell[1] / np.linalg.norm(cell[1])),
+        -0.5,
+    ):
+        DIRECTION = -1
+    elif np.isclose(
+        np.dot(cell[0] / np.linalg.norm(cell[0]), cell[1] / np.linalg.norm(cell[1])),
+        0.5,
+    ):
+        DIRECTION = 1
+    else:
+        raise Exception("Unknown unit cell!")
+    # test for perpendicular z orientation
+    if not np.allclose(cell[2] / np.linalg.norm(cell[2]), np.array([0, 0, 1])):
+        raise Exception("Unknown unit cell!")
+
+    # new rectangular cell
+    a = builder.hamiltonian.cell[0]
+    b = np.array([0, np.sqrt(3), 0]) * a[0]
+    cell = np.array([a, b, builder.hamiltonian.cell[2]])
+
+    # generate new magnetic entities
+    new_mag_ents = []
+    for i in range(len(builder.magnetic_entities)):
+        for j in range(MODULUS):
+            mag_ent = builder.magnetic_entities[i]
+            xyz_rel = np.linalg.inv(cell) @ mag_ent.xyz_center
+            if magnetic_moment[0].lower() == "l":
+                mu = mag_ent.local_S
+            elif magnetic_moment[0].lower() == "t":
+                mu = mag_ent.total_S
+            else:
+                raise Exception(
+                    "Unrecognized magnetic moment: {magnetic_moment}. It can be local or total."
+                )
+            # this is the index, tag, new index, magnetic moment, relative atomix coordinates (xyz)
+            new_mag_ents.append(
+                [
+                    i,
+                    mag_ent.tag,
+                    MODULUS * i + j,
+                    mu,
+                    xyz_rel[0],
+                    xyz_rel[1],
+                    xyz_rel[2],
+                ]
+            )
+    new_mag_ents = np.array(new_mag_ents, dtype=object)
+
+    # generate new pairs
+    new_pairs = []
+    for l in range(len(builder.pairs)):
+        for k in range(MODULUS):
+            # current pair
+            pair = builder.pairs[l]
+            # iterating over magnetic entities and comparing them to the ones stored in the pairs
+            for i, mag_ent in enumerate(builder.magnetic_entities):
+                if fast_compare:
+                    if mag_ent.tag == pair.M1.tag:
+                        p = i
+                    if mag_ent.tag == pair.M2.tag:
+                        q = i
+                else:
+                    if mag_ent == pair.M1:
+                        p = i
+                    if mag_ent == pair.M2:
+                        q = i
+
+            # unit cell shift of the pair
+            i = pair.supercell_shift[0]
+            j = pair.supercell_shift[1]
+            k = pair.supercell_shift[2]
+
+            # new indices and unit cell shifts
+            a = [
+                MODULUS * p + k,
+                MODULUS * q + (k + (j % MODULUS + MODULUS) % MODULUS) % MODULUS,
+                i
+                + DIRECTION * ((j - (j % MODULUS + MODULUS) % MODULUS) // MODULUS)
+                + DIRECTION * ((k + (j % MODULUS + MODULUS) % MODULUS) // MODULUS),
+                (j - (j % MODULUS + MODULUS) % MODULUS) // MODULUS
+                + (k + (j % MODULUS + MODULUS) % MODULUS) // MODULUS,
+                k,
+            ]
+            # corresponding exchange in J
+            b = list(builder.pairs[l].J.flatten() * sisl.unit_convert("eV", "J"))
+            # write out data
+            new_pairs.append(a + b)
+    new_pairs = np.array(new_pairs)
+
+    # Vampire main file
+    with open(join(folder, "input"), "w") as f:
+        if comments:
+            f.write("#" + "\n#".join(str(builder).split("\n"))[:-1])
+            f.write("\n\n\n")
+
+        f.write("material:file = vampire.mat\n")
+        f.write("material:unit-cell-file = vampire.UCF\n")
+        f.write("#========================================\n")
+        f.write("# TODO: your simulation parameters\n")
+
+    # Vampire material file
+    with open(join(folder, "vampire.mat"), "w") as f:
+        if comments:
+            f.write("#" + "\n#".join(str(builder).split("\n"))[:-1])
+            f.write("\n\n\n")
+
+        f.write(f"material:num-materials = {len(new_mag_ents)}\n")
+        f.write("#---------------------------------------------------\n")
+        for i in range(len(new_mag_ents)):
+            f.write(f"# Material {i+1}\n")
+            f.write("\n")
+            f.write("#---------------------------------------------------\n")
+
+            f.write(f"material[{i+1}]:material-name = {new_mag_ents[i,1]}\n")
+            f.write(
+                f"material[{i+1}]:material-element = {''.join([i for i in new_mag_ents[i,1].split('(')[0] if not i.isdigit()])}\n"
+            )
+            f.write(f"material[{i+1}]:atomic-spin-moment = {new_mag_ents[i,3]} ! muB\n")
+
+            f.write(f"material[{i+1}]:initial-spin-direction = random\n")
+            f.write(f"material[{i+1}]:damping-constant = 0.1\n")
+            f.write(
+                f"material[{i+1}]:uniaxial-anisotropy-constant = \t\tWarning: tensorial anisotropy is not possible, this is a user input!\n"
+            )
+            f.write("#---------------------------------------------------\n")
+
+    # Vampire unit cell file
+    with open(join(folder, "vampire.UCF"), "w") as f:
+        if comments:
+            f.write("#" + "\n#".join(str(builder).split("\n"))[:-1])
+            f.write("\n\n\n")
+
+        f.write("# Unit cell size:\n")
+        f.write(
+            "\t".join(map(lambda x: f"{x:.8f}", np.linalg.norm(cell, axis=1))) + "\n"
+        )
+        f.write("# Unit cell lattice vectors:\n")
+        f.write("\t".join(map(lambda x: f"{x:.8f}", cell[0])) + "\n")
+        f.write("\t".join(map(lambda x: f"{x:.8f}", cell[1])) + "\n")
+        f.write("\t".join(map(lambda x: f"{x:.8f}", cell[2])) + "\n")
+        f.write("# Atoms\n")
+        f.write(f"{len(new_mag_ents)}\t{len(new_mag_ents)}\n")
+        for i in range(len(new_mag_ents)):
+            f.write(
+                f"{i}\t"
+                + "\t".join(map(lambda x: f"{x:.8f}", new_mag_ents[i, 4:]))
+                + "\n"
+            )
+        f.write("# Interactions\n")
+        f.write(f"{len(new_pairs)} tensorial\n")
+        for i in range(len(new_pairs)):
+            f.write(
+                f"{i}\t"
+                + "\t".join(map(lambda x: f"{x:d}", new_pairs[i, :5].astype(int)))
+                + "\t"
+                + "\t".join(map(lambda x: f"{x:.6e}", new_pairs[i, 5:]))
+                + "\n"
+            )
 
 
 def save_magnopy(
