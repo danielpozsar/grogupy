@@ -222,7 +222,6 @@ class MagneticEntity:
             self._total_mulliken: Union[None, NDArray] = None
             self._local_mulliken: Union[None, NDArray] = None
 
-        self._spin_box_indices: NDArray = blow_up_orbindx(self._orbital_box_indices)
         self._xyz: NDArray = np.array([self._dh.xyz[i] for i in self._atom])
 
         # initialize simulation parameters
@@ -264,7 +263,6 @@ class MagneticEntity:
         )
         new._tags = new._tags + value._tags
 
-        new._spin_box_indices = blow_up_orbindx(new._orbital_box_indices)
         new._xyz = np.vstack((new._xyz, value._xyz))
 
         return new
@@ -310,8 +308,6 @@ class MagneticEntity:
                 return False
             if not arrays_lists_equal(self._local_mulliken, value._local_mulliken):
                 return False
-            if not arrays_lists_equal(self._spin_box_indices, value._spin_box_indices):
-                return False
             if not arrays_lists_equal(self._xyz, value._xyz):
                 return False
             if not arrays_lists_equal(self._Vu1, value._Vu1):
@@ -351,6 +347,11 @@ class MagneticEntity:
     def tag(self):
         """The description of the magnetic entity"""
         return "--".join(self._tags)
+
+    @property
+    def _spin_box_indices(self) -> NDArray:
+        """The spin box indices of the magnetic entity"""
+        return blow_up_orbindx(self._orbital_box_indices)
 
     @property
     def SBS(self) -> int:

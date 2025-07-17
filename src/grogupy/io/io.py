@@ -337,7 +337,6 @@ def load(
         "_tags",
         "_total_mulliken",
         "_local_mulliken",
-        "_spin_box_indices",
         "_xyz",
         "_Vu1",
         "_Vu2",
