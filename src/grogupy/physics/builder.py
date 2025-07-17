@@ -575,6 +575,14 @@ class Builder:
             return self.hamiltonian._dh.geometry
 
     @property
+    def cell(self) -> Union[None, NDArray]:
+        """Unit cell vectors."""
+        if self.hamiltonian is None:
+            return None
+        else:
+            return self.hamiltonian.cell
+
+    @property
     def scf_xcf_orientation(self) -> Union[None, NDArray]:
         """Exchange field orientation in the DFT calculation."""
         if self.hamiltonian is None:
@@ -649,7 +657,7 @@ class Builder:
         out += "GROGU INFORMATION" + newline
         if comments:
             out += newline
-            out += "\n".join(self.__str__().split("\n"))
+            out += "#" + "\n#".join(self.__str__().split("\n"))
             out += newline
 
         out += section + newline
@@ -675,15 +683,15 @@ class Builder:
         out += "Name x (Ang) y (Ang) z (Ang) s sx sy sz" + newline
         for mag_ent in self.magnetic_entities:
             out += mag_ent.tag + " "
-            out += f"{mag_ent._xyz.mean(axis=0)[0]} {mag_ent._xyz.mean(axis=0)[1]} {mag_ent._xyz.mean(axis=0)[2]} "
+            out += "\t".join(map(lambda s: f"{s:.8e}", mag_ent._xyz.mean(axis=0)))
             if magnetic_moment[0].lower() == "l":
                 s = np.array([mag_ent.local_Sx, mag_ent.local_Sy, mag_ent.local_Sz])
                 s = s / np.linalg.norm(s)
-                out += f"{mag_ent.local_S} {s[0]} {s[1]} {s[2]}"
+                out += f"{mag_ent.local_S:.8e}\t{s[0]:.8e}\t{s[1]:.8e}\t{s[2]}"
             else:
                 s = np.array([mag_ent.total_Sx, mag_ent.total_Sy, mag_ent.total_Sz])
                 s = s / np.linalg.norm(s)
-                out += f"{mag_ent.total_S} {s[0]} {s[1]} {s[2]}"
+                out += f"{mag_ent.total_S:.8e}\t{s[0]:.8e}\t{s[1]:.8e}\t{s[2]}"
             out += newline
 
         out += section + newline
@@ -696,9 +704,9 @@ class Builder:
             else:
                 K = np.around(np.zeros((3, 3)), decimals=precision)
             out += "Matrix" + newline
-            out += f"    {K[0,0]} {K[0,1]} {K[0,2]}" + newline
-            out += f"    {K[1,0]} {K[1,1]} {K[1,2]}" + newline
-            out += f"    {K[2,0]} {K[2,1]} {K[2,2]}" + newline
+            out += "\t" + "\t".join(map(lambda s: f"{s:.8e}", K[0])) + newline
+            out += "\t" + "\t".join(map(lambda s: f"{s:.8e}", K[1])) + newline
+            out += "\t" + "\t".join(map(lambda s: f"{s:.8e}", K[2])) + newline
         out += subsection + newline
 
         out += section + newline
@@ -718,9 +726,9 @@ class Builder:
             else:
                 raise Exception("Both J and J_iso is None!")
             out += "Matrix" + newline
-            out += f"    {J[0,0]} {J[0,1]} {J[0,2]}" + newline
-            out += f"    {J[1,0]} {J[1,1]} {J[1,2]}" + newline
-            out += f"    {J[2,0]} {J[2,1]} {J[2,2]}" + newline
+            out += "\t" + "\t".join(map(lambda s: f"{s:.8e}", J[0])) + newline
+            out += "\t" + "\t".join(map(lambda s: f"{s:.8e}", J[1])) + newline
+            out += "\t" + "\t".join(map(lambda s: f"{s:.8e}", J[2])) + newline
         out += subsection + newline
 
         out += section + newline
