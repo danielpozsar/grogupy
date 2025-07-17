@@ -372,8 +372,8 @@ class TestMagneticEntity:
         mag_ent._Vu2 = None
         mag_ent._Gii = np.array([10])
         mag_ent.energies = 3.14
-        mag_ent.K = (10, 20, 30)
-        mag_ent.K_consistency = 2
+        mag_ent._K = (10, 20, 30)
+        mag_ent._K_consistency = 2
 
         mag_ent.reset()
         assert mag_ent._Vu1 == []
@@ -527,14 +527,15 @@ class TestMagneticEntity:
         m2.energies = m.energies
         assert m == m2
 
-        m2.K = []
+        m2._K = np.ones((3, 3)) * 1000
+        print(m._K, m2._K)
         assert m != m2
-        m2.K = m.K
+        m2._K = m._K
         assert m == m2
 
-        m2.K_consistency = 1000
+        m2._K_consistency = 1000
         assert m != m2
-        m2.K_consistency = m.K_consistency
+        m2._K_consistency = m._K_consistency
         assert m == m2
 
     @pytest.mark.parametrize(
