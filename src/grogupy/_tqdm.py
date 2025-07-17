@@ -22,8 +22,15 @@ from typing import Iterable
 
 from grogupy.config import CONFIG
 
-if CONFIG.MPI_loaded:
-    from mpi4py import MPI
+# Only print on MPI root node
+PRINTING = True
+if CONFIG.is_CPU:
+    if CONFIG.MPI_loaded:
+        from mpi4py import MPI
+
+        rank = MPI.COMM_WORLD.rank
+        if rank != 0:
+            PRINTING = False
 
 # if tqdm is requested
 if CONFIG.tqdm_requested:
@@ -76,7 +83,8 @@ if CONFIG.tqdm_requested:
                     self.iterable.update(**kwargs)
 
     except:
-        print("Please install tqdm for nice progress bar.")
+        if PRINTING:
+            print("Please install tqdm for nice progress bar.")
 
         class _tqdm:
             """Tqdm wrapper for grogupy.
