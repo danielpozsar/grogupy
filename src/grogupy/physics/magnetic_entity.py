@@ -215,6 +215,9 @@ class MagneticEntity:
             self._local_mulliken: Union[None, NDArray] = self._ds.mulliken()[
                 :, self._orbital_box_indices
             ]
+            # this is the spin moment instwad of the magnetic moment
+            self._total_mulliken[:, 1:] = self._total_mulliken[:, 1:] / 2
+            self._local_mulliken[:, 1:] = self._local_mulliken[:, 1:] / 2
         else:
             self._total_mulliken: Union[None, NDArray] = None
             self._local_mulliken: Union[None, NDArray] = None
@@ -445,7 +448,7 @@ class MagneticEntity:
 
     @property
     def total_S(self) -> Union[None, float]:
-        """Magnetic moment of the atom or the atoms of the magnetic entity."""
+        """Spin moment of the atom or the atoms of the magnetic entity."""
         # check if DM is available
         if self._total_mulliken is None:
             return None
@@ -520,7 +523,7 @@ class MagneticEntity:
 
     @property
     def local_S(self) -> Union[None, float]:
-        """Magnetic moment of the atom or the atoms of the magnetic entity."""
+        """Spin moment of the atom or the atoms of the magnetic entity."""
         # check if DM is available
         if self._local_mulliken is None:
             return None
