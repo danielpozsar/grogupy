@@ -20,7 +20,7 @@
 
 import copy
 import warnings
-from typing import Any, Iterator, Union
+from typing import Iterator, Union
 
 import numpy as np
 import sisl
@@ -186,37 +186,7 @@ class Pair:
         self._Gji: list[NDArray] = []
 
         self.energies: Union[None, NDArray] = None
-        self.J_iso: Union[None, float] = None
-        self.J: Union[None, NDArray] = None
-        self.J_S: Union[None, NDArray] = None
-        self.D: Union[None, NDArray] = None
-
-        # pre calculate hidden unuseed properties
-        # they are here so they are dumped to the self.__dict__ upon saving
-        self.__SBS1 = self.M1.SBS
-        self.__SBS2 = self.M2.SBS
-        self.__SBI1 = self.M1._spin_box_indices
-        self.__SBI2 = self.M2._spin_box_indices
-        self.__tags = [self.M1.tag, self.M2.tag]
-        self.__cell = self._dh.cell
-        self.__supercell_shift_xyz = self.supercell_shift @ self.cell
-        self.__xyz = np.array(
-            [self.M1._xyz, self.M2._xyz + self.supercell_shift_xyz], dtype=object
-        )
-        self.__xyz_center = np.array(
-            [self.M1.xyz_center, self.M2.xyz_center + self.supercell_shift_xyz]
-        )
-        self.__distance = np.linalg.norm(self.xyz_center[0] - self.xyz_center[1])
-        self.__energies_meV = None
-        self.__energies_mRy = None
-        self.__J_meV = None
-        self.__J_mRy = None
-        self.__D_meV = None
-        self.__D_mRy = None
-        self.__J_S_meV = None
-        self.__J_S_mRy = None
-        self.__J_iso_meV = None
-        self.__J_iso_mRy = None
+        self._J: Union[None, NDArray] = None
 
         Pair.number_of_pairs += 1
 
@@ -266,23 +236,7 @@ class Pair:
                 return False
             if not arrays_None_equal(self.energies, value.energies):
                 return False
-            if not arrays_None_equal(self.J, value.J):
-                return False
-            if not arrays_None_equal(self.J_S, value.J_S):
-                return False
-            if not arrays_None_equal(self.D, value.D):
-                return False
-            # Checking J_iso separately
-            # if both are None, then pass and no other check is perfomred because of elif
-            if self.J_iso is None and value.J_iso is None:
-                pass
-            # if either one is None, but the other is not, then return false
-            elif self.J_iso is not None and value.J_iso is None:
-                return False
-            elif self.J_iso is None and value.J_iso is not None:
-                return False
-            # If neither of them is None, compare them
-            elif not np.isclose(self.J_iso, value.J_iso):
+            if not arrays_None_equal(self.J, value._J):
                 return False
             return True
         else:
@@ -298,161 +252,215 @@ class Pair:
     @property
     def SBS1(self) -> int:
         """Spin box size of the first magnetic entity."""
-        self.__SBS1 = self.M1.SBS
-        return self.__SBS1
+        return self.M1.SBS
 
     @property
     def SBS2(self) -> int:
         """Spin box size of the second magnetic entity."""
-        self.__SBS2 = self.M2.SBS
-        return self.__SBS2
+        return self.M2.SBS
 
     @property
     def SBI1(self) -> NDArray:
         """Spin box indices of the first magnetic entity."""
-        self.__SBI1 = self.M1._spin_box_indices
-        return self.__SBI1
+        return self.M1._spin_box_indices
 
     @property
     def SBI2(self) -> NDArray:
         """Spin box indices of the second magnetic entity."""
-        self.__SBI2 = self.M2._spin_box_indices
-        return self.__SBI2
+        return self.M2._spin_box_indices
 
     @property
     def tags(self) -> list[str]:
         """Tags of the magnetic entities."""
-        self.__tags = [self.M1.tag, self.M2.tag]
-        return self.__tags
+        return [self.M1.tag, self.M2.tag]
 
     @property
     def cell(self):
         """Unit cell of the system."""
         try:
-            self.__cell = self._dh.cell
+            cell = self._dh.cell
         except:
             warnings.warn(
                 "Property could not be calculated. This is only acceptable for loaded Hamiltonian!"
             )
-        return self.__cell
+        return cell
 
     @property
     def supercell_shift_xyz(self) -> NDArray:
         """Supercell shift in Angstrom."""
-        self.__supercell_shift_xyz = self.supercell_shift @ self.cell
-        return self.__supercell_shift_xyz
+        return self.supercell_shift @ self.cell
 
     @property
     def xyz(self) -> NDArray:
         """Coordinates of the magnetic entities."""
-        self.__xyz = np.array(
+        return np.array(
             [self.M1._xyz, self.M2._xyz + self.supercell_shift_xyz], dtype=object
         )
-        return self.__xyz
 
     @property
     def xyz_center(self) -> NDArray:
         """Center coordinates of the magnetic entities."""
-        self.__xyz_center = np.array(
+        return np.array(
             [self.M1.xyz_center, self.M2.xyz_center + self.supercell_shift_xyz]
         )
-        return self.__xyz_center
 
     @property
     def distance(self) -> float:
         """Distance of the magnetic entities."""
-        self.__distance = np.linalg.norm(self.xyz_center[0] - self.xyz_center[1])
-        return self.__distance
+        return np.linalg.norm(self.xyz_center[0] - self.xyz_center[1])
 
     @property
     def energies_meV(self) -> Union[None, NDArray]:
         """The energies, but in meV."""
         if self.energies is None:
-            self.__energies_meV = None
+            return None
         else:
-            self.__energies_meV = self.energies * sisl.unit_convert("eV", "meV")
-        return self.__energies_meV
+            return self.energies * sisl.unit_convert("eV", "meV")
 
     @property
     def energies_mRy(self) -> Union[None, NDArray]:
         """The energies, but in mRy."""
         if self.energies is None:
-            self.__energies_mRy = None
+            return None
         else:
-            self.__energies_mRy = self.energies * sisl.unit_convert("eV", "mRy")
-        return self.__energies_mRy
+            return self.energies * sisl.unit_convert("eV", "mRy")
+
+    @property
+    def energies_J(self) -> Union[None, NDArray]:
+        """The energies, but in J."""
+        if self.energies is None:
+            return None
+        else:
+            return self.energies * sisl.unit_convert("eV", "J")
+
+    @property
+    def J(self) -> Union[None, NDArray]:
+        """The exchange tensor, in eV."""
+        if self._J is None:
+            return None
+        else:
+            return self._J
 
     @property
     def J_meV(self) -> Union[None, NDArray]:
         """The exchange tensor, but in meV."""
         if self.J is None:
-            self.__J_meV = None
+            return None
         else:
-            self.__J_meV = self.J * sisl.unit_convert("eV", "meV")
-        return self.__J_meV
+            return self.J * sisl.unit_convert("eV", "meV")
 
     @property
     def J_mRy(self) -> Union[None, NDArray]:
         """The exchange tensor, but in mRy."""
         if self.J is None:
-            self.__J_mRy = None
+            return None
         else:
-            self.__J_mRy = self.J * sisl.unit_convert("eV", "mRy")
-        return self.__J_mRy
+            return self.J * sisl.unit_convert("eV", "mRy")
+
+    @property
+    def J_J(self) -> Union[None, NDArray]:
+        """The exchange tensor, but in J."""
+        if self.J is None:
+            return None
+        else:
+            return self.J * sisl.unit_convert("eV", "J")
+
+    @property
+    def D(self) -> Union[None, NDArray]:
+        """The DM vector in eV."""
+        if self.J is None:
+            return None
+        else:
+            D = 0.5 * (self.J - self.J.T)
+            return np.array([D[1, 2], -D[0, 2], D[0, 1]])
 
     @property
     def D_meV(self) -> Union[None, NDArray]:
         """The DM vector, but in meV."""
         if self.D is None:
-            self.__D_meV = None
+            return None
         else:
-            self.__D_meV = self.D * sisl.unit_convert("eV", "meV")
-        return self.__D_meV
+            return self.D * sisl.unit_convert("eV", "meV")
 
     @property
     def D_mRy(self) -> Union[None, NDArray]:
         """The DM vector, but in mRy."""
         if self.D is None:
-            self.__D_mRy = None
+            return None
         else:
-            self.__D_mRy = self.D * sisl.unit_convert("eV", "mRy")
-        return self.__D_mRy
+            return self.D * sisl.unit_convert("eV", "mRy")
+
+    @property
+    def D_J(self) -> Union[None, NDArray]:
+        """The DM vector, but in J."""
+        if self.D is None:
+            return None
+        else:
+            return self.D * sisl.unit_convert("eV", "J")
+
+    @property
+    def J_S(self) -> Union[None, NDArray]:
+        """The symmetric part of the exchange tensor, in eV."""
+        if self.J is None:
+            return None
+        else:
+            return 0.5 * (self.J + self.J.T)
 
     @property
     def J_S_meV(self) -> Union[None, NDArray]:
         """The symmetric part of the exchange tensor, but in meV."""
         if self.J_S is None:
-            self.__J_S_meV = None
+            return None
         else:
-            self.__J_S_meV = self.J_S * sisl.unit_convert("eV", "meV")
-        return self.__J_S_meV
+            return self.J_S * sisl.unit_convert("eV", "meV")
 
     @property
     def J_S_mRy(self) -> Union[None, NDArray]:
         """The symmetric part of the exchange tensor, but in mRy."""
         if self.J_S is None:
-            self.__J_S_mRy = None
+            return None
         else:
-            self.__J_S_mRy = self.J_S * sisl.unit_convert("eV", "mRy")
-        return self.__J_S_mRy
+            return self.J_S * sisl.unit_convert("eV", "mRy")
+
+    @property
+    def J_S_J(self) -> Union[None, NDArray]:
+        """The symmetric part of the exchange tensor, but in J."""
+        if self.J_S is None:
+            return None
+        else:
+            return self.J_S * sisl.unit_convert("eV", "J")
+
+    @property
+    def J_iso(self) -> Union[None, NDArray]:
+        """The isotropic exchange, in eV."""
+        if self.J is None:
+            return None
+        else:
+            return np.trace(self.J) / 3
 
     @property
     def J_iso_meV(self) -> Union[None, NDArray]:
         """The isotropic exchange, but in meV."""
         if self.J_iso is None:
-            self.__J_iso_meV = None
+            return None
         else:
-            self.__J_iso_meV = self.J_iso * sisl.unit_convert("eV", "meV")
-        return self.__J_iso_meV
+            return self.J_iso * sisl.unit_convert("eV", "meV")
 
     @property
     def J_iso_mRy(self) -> Union[None, NDArray]:
         """The isotropic exchange, but in mRy."""
         if self.J_iso is None:
-            self.__J_iso_mRy = None
+            return None
         else:
-            self.__J_iso_mRy = self.J_iso * sisl.unit_convert("eV", "mRy")
-        return self.__J_iso_mRy
+            return self.J_iso * sisl.unit_convert("eV", "mRy")
+
+    @property
+    def J_iso_J(self) -> Union[None, NDArray]:
+        """The isotropic exchange, but in J."""
+        if self.J_iso is None:
+            return None
+        else:
+            return self.J_iso * sisl.unit_convert("eV", "J")
 
     def reset(self) -> None:
         """Resets the simulation results of the Pair.
@@ -464,10 +472,7 @@ class Pair:
         self._Gji: list[NDArray] = []
         self.energies: Union[None, NDArray] = None
 
-        self.J_iso: Union[None, float] = None
-        self.J: Union[None, NDArray] = None
-        self.J_S: Union[None, NDArray] = None
-        self.D: Union[None, NDArray] = None
+        self._J: Union[None, NDArray] = None
 
     def calculate_energies(self, weights: NDArray, append: bool = False) -> None:
         """Calculates the energies of the infinitesimal rotations.
@@ -513,40 +518,14 @@ class Pair:
                 energies.append(storage)
                 self.energies: NDArray = np.array(energies)
 
-        # call these so they are updated
-        self.energies_meV
-        self.energies_mRy
-
     def calculate_exchange_tensor(self) -> None:
-        """Calculates the exchange tensor from the energies.
+        """Calculates the exchange tensor from the energies."""
 
-        It uses the instance properties to calculate the exchange tensor
-        and its different representations and dumps them to the `J`, `J_iso`,
-        `J_S` and `D` properties.
-
-        """
-
-        J_iso, J_S, D, J = calculate_exchange_tensor(self.energies)
-        self.J: Union[None, NDArray] = J
-        self.J_S: Union[None, NDArray] = J_S
-        self.J_iso: Union[None, float] = J_iso
-        self.D: Union[None, NDArray] = D
-        # call these so they are updated
-        self.J_meV
-        self.J_mRy
-        self.J_S_meV
-        self.J_S_mRy
-        self.J_iso_meV
-        self.J_iso_mRy
-        self.D_meV
-        self.D_mRy
+        J = calculate_exchange_tensor(self.energies)
+        self._J: Union[None, NDArray] = J
 
     def fit_exchange_tensor(self, ref_xcf: list[dict]) -> None:
         """Fits the exchange tensor to the energies.
-
-        It uses a fitting method to calculate the exchange tensor from the
-        reference directions and its different representations and dumps
-        them to the `J`, `J_iso`, `J_S` and `D` properties.
 
         Parameters
         ----------
@@ -554,66 +533,20 @@ class Pair:
             The reference directions containing the orientation and perpendicular directions
         """
 
-        J_iso, J_S, D, J = fit_exchange_tensor(self.energies, ref_xcf)
-        self.J: Union[None, NDArray] = J
-        self.J_S: Union[None, NDArray] = J_S
-        self.J_iso: Union[None, float] = J_iso
-        self.D: Union[None, NDArray] = D
-        # call these so they are updated
-        self.J_meV
-        self.J_mRy
-        self.J_S_meV
-        self.J_S_mRy
-        self.J_iso_meV
-        self.J_iso_mRy
-        self.D_meV
-        self.D_mRy
+        J = fit_exchange_tensor(self.energies, ref_xcf)
+        self._J: Union[None, NDArray] = J
 
     def calculate_isotropic_only(self) -> None:
-        """Calculates the isotropic exchange only.
+        """Calculates the isotropic exchange only."""
 
-        It uses the instance properties to calculate the isotropic exchange.
-        It resets the other properties, but they can be recalculated from the
-        energies.
-        """
-
-        J_iso = calculate_isotropic_only(self.energies)
-        self.J: Union[None, NDArray] = None
-        self.J_S: Union[None, NDArray] = None
-        self.J_iso: Union[None, float] = J_iso
-        self.D: Union[None, NDArray] = None
-        # call these so they are updated
-        self.J_meV
-        self.J_mRy
-        self.J_S_meV
-        self.J_S_mRy
-        self.J_iso_meV
-        self.J_iso_mRy
-        self.D_meV
-        self.D_mRy
+        J = calculate_isotropic_only(self.energies)
+        self._J: Union[None, NDArray] = J
 
     def calculate_isotropic_biquadratic_only(self) -> None:
-        """Calculates the isotropic and biquadratic isotropic exchange.
+        """Calculates the isotropic and biquadratic isotropic exchange."""
 
-        It uses the instance properties to calculate the isotropic and
-        biquadratic isotropic exchange. It resets the other properties,
-        but they can be recalculated from the energies.
-        """
-
-        J_iso = calculate_isotropic_biquadratic_only(self.energies)
-        self.J: Union[None, NDArray] = None
-        self.J_S: Union[None, NDArray] = None
-        self.J_iso: Union[None, float] = J_iso
-        self.D: Union[None, NDArray] = None
-        # call these so they are updated
-        self.J_meV
-        self.J_mRy
-        self.J_S_meV
-        self.J_S_mRy
-        self.J_iso_meV
-        self.J_iso_mRy
-        self.D_meV
-        self.D_mRy
+        J = calculate_isotropic_biquadratic_only(self.energies)
+        self._J: Union[None, NDArray] = None
 
     def copy(self):
         """Returns the deepcopy of the instance.

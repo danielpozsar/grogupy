@@ -577,12 +577,8 @@ def fit_anisotropy_tensor(energies: NDArray, ref_xcf: list[dict]) -> NDArray:
 
 def calculate_exchange_tensor(
     energies: NDArray,
-) -> tuple[float, NDArray, NDArray, NDArray]:
+) -> NDArray:
     """Calculates the exchange tensor from the energies.
-
-    It produces the isotropic exchange, the relevant elements
-    from the Dzyaloshinskii-Morilla (Dm) tensor, the symmetric-anisotropy
-    and the complete exchange tensor.
 
     Parameters
     ----------
@@ -591,14 +587,8 @@ def calculate_exchange_tensor(
 
     Returns
     -------
-        J_iso: float
-            Isotropic exchange (Tr[J] / 3)
-        J_S: NDArray
-            Symmetric-anisotropy (J_S = J - J_iso * I --> Jxx, Jyy, Jxy, Jxz, Jyz)
-        D: NDArray
-            DM elements (Dx, Dy, Dz)
         J: NDArray
-            Complete exchange tensor flattened (Jxx, Jxy, Jxz, Jyx, Jyy, Jyz, Jzx, Jzy, Jzz)
+            Complete exchange tensor
     """
 
     # more directions are useless
@@ -639,9 +629,7 @@ def calculate_exchange_tensor(
     J[2, 0] = J_S[1] + D[1]
     J[2, 1] = J_S[0] - D[0]
 
-    J_iso = np.trace(J) / 3
-
-    return J_iso, J_S, D, J
+    return J
 
 
 def fit_exchange_tensor(
@@ -661,14 +649,8 @@ def fit_exchange_tensor(
 
     Returns
     -------
-        J_iso : float
-            Isotropic exchange (Tr[J] / 3)
-        J_S : NDArray
-            Symmetric-anisotropy (J_S = J - J_iso * I -> Jxx, Jyy, Jxy, Jxz, Jyz)
-        D : NDArray
-            DM elements (Dx, Dy, Dz)
         J : NDArray
-            Complete exchange tensor flattened (Jxx, Jxy, Jxz, Jyx, Jyy, Jyz, Jzx, Jzy, Jzz)
+            Complete exchange tensor
     """
 
     warnings.warn("This is experimenal!")
@@ -694,18 +676,9 @@ def fit_exchange_tensor(
             V += E[j] * epsilon1
 
     J = np.linalg.solve(M, V)
-
-    # dump data to instance
     J = J.reshape(3, 3)
-    J_S = 0.5 * (J + J.T)
-    D = 0.5 * (J - J.T)
 
-    J_iso = np.trace(J) / 3
-
-    J_S = np.array([J_S[1, 2], J_S[0, 2], J_S[0, 1]])
-    D = np.array([D[1, 2], -D[0, 2], D[0, 1]])
-
-    return J_iso, J_S, D, J
+    return J
 
 
 def calculate_isotropic_only(
@@ -720,14 +693,16 @@ def calculate_isotropic_only(
 
     Returns
     -------
-        J_iso: float
-            Isotropic exchange interaction
+        J: float
+            Isotropic exchange interaction in tensorial form
     """
 
     # the isotropic exchange
     J_iso = energies[0, 0]
 
-    return J_iso
+    J = np.eye(3) * J_iso
+
+    return J
 
 
 def calculate_isotropic_biquadratic_only(

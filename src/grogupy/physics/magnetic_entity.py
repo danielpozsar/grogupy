@@ -231,70 +231,8 @@ class MagneticEntity:
         self._Gii: Union[list[list[NDArray]], list[NDArray]] = []
 
         self.energies: Union[None, NDArray] = None
-        self.K: Union[None, NDArray] = None
-        self.K_consistency: Union[None, float] = None
-
-        # pre calculate hidden unuseed properties
-        # they are here so they are dumped to the self.__dict__ upon saving
-        self.__tag = "--".join(self._tags)
-        self.__SBS = len(self._spin_box_indices)
-        self.__xyz_center = self._xyz.mean(axis=0)
-
-        # setup Mullikens if DM is available
-        if (
-            self._ds is not None
-            and self._total_mulliken is not None
-            and self._local_mulliken is not None
-        ):
-            self.__total_Q = self._total_mulliken[0].sum()
-            if self._total_mulliken.shape[0] == 2:
-                self.__total_S: Union[None, float] = self._total_mulliken[1].sum()
-                self.__total_Sx: Union[None, float] = 0
-                self.__total_Sy: Union[None, float] = 0
-                self.__total_Sz: Union[None, float] = self._total_mulliken[1].sum()
-            elif self._total_mulliken.shape[0] in {3, 4}:
-                self.__total_S: Union[None, float] = np.linalg.norm(
-                    self._total_mulliken.sum(axis=1)[1:]
-                ).astype(float)
-                self.__total_Sx: Union[None, float] = self._total_mulliken[1].sum()
-                self.__total_Sy: Union[None, float] = self._total_mulliken[2].sum()
-                self.__total_Sz: Union[None, float] = self._total_mulliken[3].sum()
-            else:
-                raise Exception("Unpolarized DFT calculation cannot be used!")
-
-            self.__local_Q = self._local_mulliken[0].sum()
-            if self._local_mulliken.shape[0] == 2:
-                self.__local_S: Union[None, float] = self._local_mulliken[1].sum()
-                self.__local_Sx: Union[None, float] = 0
-                self.__local_Sy: Union[None, float] = 0
-                self.__local_Sz: Union[None, float] = self._local_mulliken[1].sum()
-            elif self._local_mulliken.shape[0] in {3, 4}:
-                self.__local_S: Union[None, float] = np.linalg.norm(
-                    self._local_mulliken.sum(axis=1)[1:]
-                ).astype(float)
-                self.__local_Sx: Union[None, float] = self._local_mulliken[1].sum()
-                self.__local_Sy: Union[None, float] = self._local_mulliken[2].sum()
-                self.__local_Sz: Union[None, float] = self._local_mulliken[3].sum()
-            else:
-                raise Exception("Unpolarized DFT calculation cannot be used!")
-        else:
-            self.__total_Q = None
-            self.__total_S = None
-            self.__total_Sx = None
-            self.__total_Sy = None
-            self.__total_Sz = None
-            self.__local_Q = None
-            self.__local_S = None
-            self.__local_Sx = None
-            self.__local_Sy = None
-            self.__local_Sz = None
-
-        self.__energies_meV = None
-        self.__energies_mRy = None
-        self.__K_meV = None
-        self.__K_mRy = None
-        self.__K_consistency_meV = None
-        self.__K_consistency_mRy = None
+        self._K: Union[None, NDArray] = None
+        self._K_consistency: Union[None, float] = None
 
         MagneticEntity.number_of_entities += 1
 
@@ -384,19 +322,19 @@ class MagneticEntity:
                 return False
             if not arrays_None_equal(self.energies, value.energies):
                 return False
-            if not arrays_None_equal(self.K, value.K):
+            if not arrays_None_equal(self._K, value._K):
                 return False
             # Checking K_consistency separately
             # if both are None, then pass and no other check is perfomred because of elif
-            if self.K_consistency is None and value.K_consistency is None:
+            if self._K_consistency is None and value.K_consistency is None:
                 pass
             # if either one is None, but the other is not, then return false
-            elif self.K_consistency is not None and value.K_consistency is None:
+            elif self._K_consistency is not None and value.K_consistency is None:
                 return False
-            elif self.K_consistency is None and value.K_consistency is not None:
+            elif self._K_consistency is None and value.K_consistency is not None:
                 return False
             # If neither of them is None, compare them
-            elif not np.isclose(self.K_consistency, value.K_consistency):
+            elif not np.isclose(self._K_consistency, value._K_consistency):
                 return False
             return True
         else:
@@ -412,16 +350,12 @@ class MagneticEntity:
     @property
     def tag(self):
         """The description of the magnetic entity"""
-        self.__tag = "--".join(self._tags)
-
-        return self.__tag
+        return "--".join(self._tags)
 
     @property
     def SBS(self) -> int:
         """The spin box size of the magnetic entity"""
-        self.__SBS = len(self._spin_box_indices)
-
-        return self.__SBS
+        return len(self._spin_box_indices)
 
     @property
     def SBI(self) -> NDArray:
@@ -431,9 +365,7 @@ class MagneticEntity:
     @property
     def xyz_center(self) -> NDArray:
         """The mean of the position of the atoms that are in the magnetic entity."""
-        self.__xyz_center = self._xyz.mean(axis=0)
-
-        return self.__xyz_center
+        return self._xyz.mean(axis=0)
 
     @property
     def total_Q(self) -> Union[NDArray, None]:
@@ -442,9 +374,7 @@ class MagneticEntity:
         if self._total_mulliken is None:
             return None
 
-        self.__total_Q = self._total_mulliken[0].sum()
-
-        return self.__total_Q
+        return self._total_mulliken[0].sum()
 
     @property
     def total_S(self) -> Union[None, float]:
@@ -454,14 +384,11 @@ class MagneticEntity:
             return None
 
         if self._total_mulliken.shape[0] == 2:
-            self.__total_S = self._total_mulliken[1].sum()
+            return self._total_mulliken[1].sum()
         elif self._total_mulliken.shape[0] in {3, 4}:
-            self.__total_S = np.linalg.norm(
-                self._total_mulliken.sum(axis=1)[1:]
-            ).astype(float)
+            return np.linalg.norm(self._total_mulliken.sum(axis=1)[1:]).astype(float)
         else:
             Exception("Unpolarized DFT calculation cannot be used!")
-        return self.__total_S
 
     @property
     def total_Sx(self) -> Union[None, float]:
@@ -471,12 +398,11 @@ class MagneticEntity:
             return None
 
         if self._total_mulliken.shape[0] == 2:
-            self.__total_Sx = 0
+            return 0
         elif self._total_mulliken.shape[0] in {3, 4}:
-            self.__total_Sx = self._total_mulliken[1].sum()
+            return self._total_mulliken[1].sum()
         else:
             Exception("Unpolarized DFT calculation cannot be used!")
-        return self.__total_Sx
 
     @property
     def total_Sy(self) -> Union[None, float]:
@@ -486,13 +412,11 @@ class MagneticEntity:
             return None
 
         if self._total_mulliken.shape[0] == 2:
-            self.__total_Sy = 0
+            return 0
         elif self._total_mulliken.shape[0] in {3, 4}:
-            self.__total_Sy = self._total_mulliken[2].sum()
+            return self._total_mulliken[2].sum()
         else:
             Exception("Unpolarized DFT calculation cannot be used!")
-
-        return self.__total_Sy
 
     @property
     def total_Sz(self) -> Union[None, float]:
@@ -502,13 +426,11 @@ class MagneticEntity:
             return None
 
         if self._total_mulliken.shape[0] == 2:
-            self.__total_Sz = self._total_mulliken[1].sum()
+            return self._total_mulliken[1].sum()
         elif self._total_mulliken.shape[0] in {3, 4}:
-            self.__total_Sz = self._total_mulliken[3].sum()
+            return self._total_mulliken[3].sum()
         else:
             Exception("Unpolarized DFT calculation cannot be used!")
-
-        return self.__total_Sz
 
     @property
     def local_Q(self) -> Union[None, float]:
@@ -517,9 +439,7 @@ class MagneticEntity:
         if self._local_mulliken is None:
             return None
 
-        self.__local_Q = self._local_mulliken[0].sum()
-
-        return self.__local_Q
+        return self._local_mulliken[0].sum()
 
     @property
     def local_S(self) -> Union[None, float]:
@@ -529,14 +449,11 @@ class MagneticEntity:
             return None
 
         if self._local_mulliken.shape[0] == 2:
-            self.__local_S = self._local_mulliken[1].sum()
+            return self._local_mulliken[1].sum()
         elif self._local_mulliken.shape[0] in {3, 4}:
-            self.__local_S = np.linalg.norm(
-                self._local_mulliken.sum(axis=1)[1:]
-            ).astype(float)
+            return np.linalg.norm(self._local_mulliken.sum(axis=1)[1:]).astype(float)
         else:
             Exception("Unpolarized DFT calculation cannot be used!")
-        return self.__local_S
 
     @property
     def local_Sx(self) -> Union[None, float]:
@@ -546,13 +463,11 @@ class MagneticEntity:
             return None
 
         if self._local_mulliken.shape[0] == 2:
-            self.__local_Sx = 0
+            return 0
         elif self._local_mulliken.shape[0] in {3, 4}:
-            self.__local_Sx = self._local_mulliken[1].sum()
+            return self._local_mulliken[1].sum()
         else:
             Exception("Unpolarized DFT calculation cannot be used!")
-
-        return self.__local_Sx
 
     @property
     def local_Sy(self) -> Union[None, float]:
@@ -562,13 +477,11 @@ class MagneticEntity:
             return None
 
         if self._local_mulliken.shape[0] == 2:
-            self.__local_Sy = 0
+            return 0
         elif self._local_mulliken.shape[0] in {3, 4}:
-            self.__local_Sy = self._local_mulliken[2].sum()
+            return self._local_mulliken[2].sum()
         else:
             Exception("Unpolarized DFT calculation cannot be used!")
-
-        return self.__local_Sy
 
     @property
     def local_Sz(self) -> Union[None, float]:
@@ -578,71 +491,93 @@ class MagneticEntity:
             return None
 
         if self._local_mulliken.shape[0] == 2:
-            self.__local_Sz = self._local_mulliken[1].sum()
+            return self._local_mulliken[1].sum()
         elif self._local_mulliken.shape[0] in {3, 4}:
-            self.__local_Sz = self._local_mulliken[3].sum()
+            return self._local_mulliken[3].sum()
         else:
             Exception("Unpolarized DFT calculation cannot be used!")
-
-        return self.__local_Sz
 
     @property
     def energies_meV(self) -> Union[None, float]:
         """The energies, but in meV."""
         if self.energies is None:
-            self.__energies_meV = None
+            return None
         else:
-            self.__energies_meV = self.energies * sisl.unit_convert("eV", "meV")
-        return self.__energies_meV
+            return self.energies * sisl.unit_convert("eV", "meV")
 
     @property
     def energies_mRy(self) -> Union[None, NDArray]:
         """The energies, but in mRy."""
         if self.energies is None:
-            self.__energies_mRy = None
+            return None
         else:
-            self.__energies_mRy = self.energies * sisl.unit_convert("eV", "mRy")
-        return self.__energies_mRy
+            return self.energies * sisl.unit_convert("eV", "mRy")
+
+    @property
+    def energies_J(self) -> Union[None, NDArray]:
+        """The energies, but in J."""
+        if self.energies is None:
+            return None
+        else:
+            return self.energies * sisl.unit_convert("eV", "J")
+
+    @property
+    def K(self) -> Union[None, NDArray]:
+        """The anisotropy tensor, in meV."""
+        return self._K
 
     @property
     def K_meV(self) -> Union[None, NDArray]:
         """The anisotropy tensor, but in meV."""
         if self.K is None:
-            self.__K_meV = None
+            return None
         else:
-            self.__K_meV = self.K * sisl.unit_convert("eV", "meV")
-        return self.__K_meV
+            return self.K * sisl.unit_convert("eV", "meV")
 
     @property
     def K_mRy(self) -> Union[None, NDArray]:
         """The anisotropy tensor, but in mRy."""
         if self.K is None:
-            self.__K_mRy = None
+            return None
         else:
-            self.__K_mRy = self.K * sisl.unit_convert("eV", "mRy")
-        return self.__K_mRy
+            return self.K * sisl.unit_convert("eV", "mRy")
+
+    @property
+    def K_J(self) -> Union[None, NDArray]:
+        """The anisotropy tensor, but in J."""
+        if self.K is None:
+            return None
+        else:
+            return self.K * sisl.unit_convert("eV", "J")
+
+    @property
+    def K_consistency(self) -> Union[None, NDArray]:
+        """The consistency check, in meV."""
+        return self._K_consistency
 
     @property
     def K_consistency_meV(self) -> Union[None, NDArray]:
         """The consistency check, but in meV."""
         if self.K_consistency is None:
-            self.__K_consistency_meV = None
+            return None
         else:
-            self.__K_consistency_meV = self.K_consistency * sisl.unit_convert(
-                "eV", "meV"
-            )
-        return self.__K_consistency_meV
+            return self.K_consistency * sisl.unit_convert("eV", "meV")
 
     @property
     def K_consistency_mRy(self) -> Union[None, NDArray]:
         """The consistency check, but in mRy."""
         if self.K_consistency is None:
-            self.__K_consistency_mRy = None
+            return None
         else:
-            self.__K_consistency_mRy = self.K_consistency * sisl.unit_convert(
-                "eV", "mRy"
-            )
-        return self.__K_consistency_mRy
+            return self.K_consistency * sisl.unit_convert("eV", "mRy")
+
+    @property
+    def K_consistency_J(self) -> Union[None, NDArray]:
+        """The consistency check, but in J."""
+        if self.K_consistency is None:
+            return None
+        else:
+            return self.K_consistency * sisl.unit_convert("eV", "J")
 
     def reset(self) -> None:
         """Resets the simulation results."""
@@ -651,8 +586,8 @@ class MagneticEntity:
         self._Vu2: list[list[NDArray]] = []
         self._Gii: Union[list[list[NDArray]], list[NDArray]] = []
         self.energies: Union[None, NDArray] = None
-        self.K: Union[None, NDArray] = None
-        self.K_consistency: Union[None, float] = None
+        self._K: Union[None, NDArray] = None
+        self._K_consistency: Union[None, float] = None
 
     def calculate_energies(
         self, weights: NDArray, append: bool = False, third_direction: bool = False
@@ -710,10 +645,6 @@ class MagneticEntity:
                 energies.append(storage)
             self.energies: Union[None, NDArray] = np.array(energies)
 
-        # call these so they are updated
-        self.energies_meV
-        self.energies_mRy
-
     def calculate_anisotropy(self) -> None:
         """Calculates the anisotropy matrix and the consistency from the energies.
 
@@ -726,13 +657,8 @@ class MagneticEntity:
             raise Exception("Energies missing for anisotropy!")
 
         K, K_consistency = calculate_anisotropy_tensor(self.energies)
-        self.K: Union[None, NDArray] = K
-        self.K_consistency: Union[None, float] = K_consistency
-        # call these so they are updated
-        self.K_meV
-        self.K_mRy
-        self.K_consistency_meV
-        self.K_consistency_mRy
+        self._K: Union[None, NDArray] = K
+        self._K_consistency: Union[None, float] = K_consistency
 
     def fit_anisotropy_tensor(self, ref_xcf: list[dict]) -> None:
         """Fits the anisotropy tensor to the energies.
@@ -752,14 +678,9 @@ class MagneticEntity:
             raise Exception("Energies missing for anisotropy!")
 
         K = fit_anisotropy_tensor(self.energies, ref_xcf)
-        self.K: Union[None, NDArray] = K
+        self._K: Union[None, NDArray] = K
         # it is not relevant with this method
-        self.K_consistency: Union[float, None] = None
-        # call these so they are updated
-        self.K_meV
-        self.K_mRy
-        self.K_consistency_meV
-        self.K_consistency_mRy
+        self._K_consistency: Union[float, None] = None
 
     def copy(self):
         """Returns the deepcopy of the instance.
