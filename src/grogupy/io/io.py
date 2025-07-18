@@ -883,7 +883,7 @@ def read_magnopy(file: str, dense_output: bool = True):
         if section[0] == "GROGU INFORMATION":
             out["grogu_information"] = "\n".join(section)
         elif section[0] == "Magnetic sites":
-            if section[2] == "Name x (Ang) y (Ang) z (Ang) s sx sy sz":
+            if section[2][:4] == "Name":
                 magnetic_sites = []
                 for l in section[3:-1]:
                     l = l.split()
