@@ -112,8 +112,6 @@ def main():
 
     # construct the input and output file paths
     infile = join(params["infolder"], params["infile"])
-    if not infile.endswith(".fdf"):
-        infile += ".fdf"
     outfile = join(params["outfolder"], params["outfile"])
 
     # Define simulation
