@@ -38,10 +38,10 @@ class Contour:
 
     Parameters
     ----------
-    eset : int
-        Number of energy samples on the contour
-    esetp : float
-        A parameters that changes the shape of the sampling
+    eset : int, optional
+        Number of energy samples on the contour, by default 100
+    esetp : float, optional
+        A parameters that changes the shape of the sampling, by default 10000
     emin : Union[float, None]
         The lower bound of the integral. When it is `None` it is automatically set
     emax : Union[float, None], optional
@@ -86,8 +86,8 @@ class Contour:
 
     def __init__(
         self,
-        eset: int,
-        esetp: float,
+        eset: int = 1000,
+        esetp: float = 10000,
         emin: Union[float, None] = None,
         emax: float = 0,
         emin_shift: float = -5,
@@ -101,10 +101,10 @@ class Contour:
 
         Parameters
         ----------
-        eset : int
-            Number of energy samples on the contour
-        esetp : float
-            A parameters that changes the shape of the sampling
+        eset : int, optional
+            Number of energy samples on the contour, by default 1000
+        esetp : float, optional
+            A parameters that changes the shape of the sampling, by default 10000
         emin : Union[float, None]
             The lower bound of the integral. When it is `None` it is automatically set
         emax : Union[float, None], optional
