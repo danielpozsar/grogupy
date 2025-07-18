@@ -61,10 +61,7 @@ class TestPair:
         pair._Gij = 1
         pair._Gji = None
         pair.energies = 3.14
-        pair.J_iso = (10, 20, 30)
-        pair.J = 2
-        pair.J_S = (10, 20, 30)
-        pair.D = 2
+        pair._J = np.random.random((3, 3))
 
         pair.reset()
         assert pair._Gij == []
@@ -128,24 +125,9 @@ class TestPair:
         p2.energies = p.energies
         assert p == p2
 
-        p2.J_iso = 100
+        p2._J = np.zeros(3)
         assert p != p2
-        p2.J_iso = p.J_iso
-        assert p == p2
-
-        p2.J = np.zeros(3)
-        assert p != p2
-        p2.J = p.J
-        assert p == p2
-
-        p2.J_S = 1000 * np.ones(3)
-        assert p != p2
-        p2.J_S = p.J_S
-        assert p == p2
-
-        p2.D = 1000 * np.ones(3)
-        assert p != p2
-        p2.D = p.D
+        p2._J = p._J
         assert p == p2
 
     @pytest.mark.parametrize("shift", [[0, 0, 0], [0, 1, 2], [-1, 10, 0]])

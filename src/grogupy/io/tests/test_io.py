@@ -191,12 +191,25 @@ class TestIO:
         os.remove("./src/grogupy/io/tests/test_UppASD/cell.tmp.txt")
         os.rmdir("./src/grogupy/io/tests/test_UppASD")
 
+    def test_save_Vampire(self):
+        builder = load_Builder("./benchmarks/test_builder.pkl")
+        os.mkdir("./src/grogupy/io/tests/test_Vampire")
+        save_Vampire(builder, "./src/grogupy/io/tests/test_Vampire")
+        assert os.path.isdir("./src/grogupy/io/tests/test_Vampire")
+        assert os.path.isfile("./src/grogupy/io/tests/test_Vampire/vampire.mat")
+        assert os.path.isfile("./src/grogupy/io/tests/test_Vampire/vampire.UCF")
+        assert os.path.isfile("./src/grogupy/io/tests/test_Vampire/input")
+        os.remove("./src/grogupy/io/tests/test_Vampire/vampire.mat")
+        os.remove("./src/grogupy/io/tests/test_Vampire/vampire.UCF")
+        os.remove("./src/grogupy/io/tests/test_Vampire/input")
+        os.rmdir("./src/grogupy/io/tests/test_Vampire")
+
     @pytest.mark.xfail(raises=NotImplementedError)
     def test_read_fdf(self):
         raise NotImplementedError
 
     @pytest.mark.xfail(raises=NotImplementedError)
-    def test_py(self):
+    def test_read_py(self):
         raise NotImplementedError
 
     def test_save_compression(self):

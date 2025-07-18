@@ -497,11 +497,6 @@ class TestMagneticEntity:
         m2._total_mulliken = m._total_mulliken
         assert m == m2
 
-        m2._spin_box_indices = np.ones_like(m._spin_box_indices)
-        assert m != m2
-        m2._spin_box_indices = m._spin_box_indices
-        assert m == m2
-
         m2._xyz[-1] = np.zeros(3)
         assert m != m2
         m2._xyz = m._xyz
