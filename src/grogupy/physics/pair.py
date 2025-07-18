@@ -179,6 +179,7 @@ class Pair:
         self.M1: MagneticEntity = M1
         self.M2: MagneticEntity = M2
 
+        self.cell: NDArray = self._dh.geometry.cell
         self.supercell_shift: NDArray = np.array(supercell_shift)
 
         # initialize simulation parameters
@@ -273,17 +274,6 @@ class Pair:
     def tags(self) -> list[str]:
         """Tags of the magnetic entities."""
         return [self.M1.tag, self.M2.tag]
-
-    @property
-    def cell(self):
-        """Unit cell of the system."""
-        try:
-            cell = self._dh.cell
-        except:
-            warnings.warn(
-                "Property could not be calculated. This is only acceptable for loaded Hamiltonian!"
-            )
-        return cell
 
     @property
     def supercell_shift_xyz(self) -> NDArray:
