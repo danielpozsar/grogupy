@@ -680,18 +680,19 @@ class Builder:
         out += section + newline
         out += "Magnetic sites" + newline
         out += f"Number of sites {len(self.magnetic_entities)}" + newline
-        out += "Name x (Ang) y (Ang) z (Ang) s sx sy sz" + newline
+        out += "Name\t\tx (Ang)\t\ty (Ang)\t\tz (Ang)\t\ts\t\tsx\t\tsy\t\tsz" + newline
         for mag_ent in self.magnetic_entities:
             out += mag_ent.tag + " "
             out += "\t".join(map(lambda s: f"{s:.8e}", mag_ent._xyz.mean(axis=0)))
+            out += "\t"
             if magnetic_moment[0].lower() == "l":
                 s = np.array([mag_ent.local_Sx, mag_ent.local_Sy, mag_ent.local_Sz])
                 s = s / np.linalg.norm(s)
-                out += f"{mag_ent.local_S:.8e}\t{s[0]:.8e}\t{s[1]:.8e}\t{s[2]}"
+                out += f"{mag_ent.local_S:.8e}\t{s[0]:.8e}\t{s[1]:.8e}\t{s[2]:.8e}"
             else:
                 s = np.array([mag_ent.total_Sx, mag_ent.total_Sy, mag_ent.total_Sz])
                 s = s / np.linalg.norm(s)
-                out += f"{mag_ent.total_S:.8e}\t{s[0]:.8e}\t{s[1]:.8e}\t{s[2]}"
+                out += f"{mag_ent.total_S:.8e}\t{s[0]:.8e}\t{s[1]:.8e}\t{s[2]:.8e}"
             out += newline
 
         out += section + newline
