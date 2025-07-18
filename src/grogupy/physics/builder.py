@@ -687,12 +687,18 @@ class Builder:
             out += "\t"
             if magnetic_moment[0].lower() == "l":
                 s = np.array([mag_ent.local_Sx, mag_ent.local_Sy, mag_ent.local_Sz])
-                s = s / np.linalg.norm(s)
-                out += f"{mag_ent.local_S:.8e}\t{s[0]:.8e}\t{s[1]:.8e}\t{s[2]:.8e}"
+                if s[0] is not None:
+                    s = s / np.linalg.norm(s)
+                    out += f"{mag_ent.local_S:.8e}\t{s[0]:.8e}\t{s[1]:.8e}\t{s[2]:.8e}"
+                else:
+                    out += "None\tNone\tNone\tNone"
             else:
                 s = np.array([mag_ent.total_Sx, mag_ent.total_Sy, mag_ent.total_Sz])
-                s = s / np.linalg.norm(s)
-                out += f"{mag_ent.total_S:.8e}\t{s[0]:.8e}\t{s[1]:.8e}\t{s[2]:.8e}"
+                if s[0] is not None:
+                    s = s / np.linalg.norm(s)
+                    out += f"{mag_ent.total_S:.8e}\t{s[0]:.8e}\t{s[1]:.8e}\t{s[2]:.8e}"
+                else:
+                    out += "None\tNone\tNone\tNone"
             out += newline
 
         out += section + newline
