@@ -320,6 +320,7 @@ def load(
         "_dh",
         "M1",
         "M2",
+        "cell",
         "supercell_shift",
         "_Gij",
         "_Gji",
@@ -723,7 +724,7 @@ def save_Vampire(
                 k,
             ]
             # corresponding exchange in J
-            b = list(builder.pairs[l].J.flatten() * sisl.unit_convert("eV", "J"))
+            b = list(builder.pairs[l].J_J.flatten())
             # write out data
             new_pairs.append(a + b)
     new_pairs = np.array(new_pairs)
