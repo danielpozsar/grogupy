@@ -1,7 +1,7 @@
 .. _magnopy_input_format:
 
-Magnopy input format
-====================
+Output format
+=============
 
 Spin Hamiltonian file
 ---------------------
