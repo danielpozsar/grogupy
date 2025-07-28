@@ -115,9 +115,9 @@ parallel_mode = None
 
 
 # either total or local, which controls if only the magnetic
-# entity's magnetic monent or the whole atom's magnetic moment is printed
+# entity's spin moment or the whole atom's spin moment is printed
 # used by all output modes
-out_magnetic_moment = "Local"
+out_spin_moment = "Local"
 
 # save the magnopy file
 save_magnopy = True
@@ -127,7 +127,7 @@ magnopy_precision = 3
 magnopy_comments = False
 
 # save the Uppsala Atomistic Spin Dynamics software input files
-# uses the outfolder and out_magentic_moment
+# uses the outfolder and out_spin_moment
 save_UppASD = True
 # add the simulation parameters to the cell.tmp.txt file as
 # comments
