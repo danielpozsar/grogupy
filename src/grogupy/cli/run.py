@@ -272,12 +272,7 @@ def main():
         )
         print("solved:", (timer() - start) / 60, "min")
         print(simulation.times.times)
-        if not params["applyspinmodel"]:
-            print("THE ENERGIES ARE CALCULATED, BUT THE SUMMARY IS NOT AVAILABLE!")
-            print("THE ENERGIES ARE CALCULATED, BUT THE SUMMARY IS NOT AVAILABLE!")
-            print("THE ENERGIES ARE CALCULATED, BUT THE SUMMARY IS NOT AVAILABLE!")
-        else:
-            print(simulation.to_magnopy())
+        print(simulation.to_grogupy())
         print(
             "################################################################################"
         )
@@ -296,8 +291,7 @@ def main():
             save_magnopy(
                 simulation,
                 path=outfile,
-                magnetic_moment=params["outmagneticmoment"],
-                precision=params["magnopyprecision"],
+                spin_moment=params["outspinmoment"],
                 comments=params["magnopycomments"],
             )
             print("Saved magnopy")
@@ -312,7 +306,7 @@ def main():
                 simulation,
                 folder=UppASD_folder,
                 fast_compare=True,
-                magnetic_moment=params["outmagneticmoment"],
+                spin_moment=params["outspinmoment"],
                 comments=params["uppasdcomments"],
             )
             print("Saved UppASD")
@@ -327,7 +321,7 @@ def main():
                 simulation,
                 folder=Vampire_folder,
                 fast_compare=True,
-                magnetic_moment=params["outmagneticmoment"],
+                spin_moment=params["outspinmoment"],
                 comments=params["vampirecomments"],
             )
             print("Saved Vampire")
