@@ -215,7 +215,7 @@ class MagneticEntity:
             self._local_mulliken: Union[None, NDArray] = self._ds.mulliken()[
                 :, self._orbital_box_indices
             ]
-            # this is the spin moment instwad of the magnetic moment
+            # this is the spin moment instwad of the spin moment
             self._total_mulliken[:, 1:] = self._total_mulliken[:, 1:] / 2
             self._local_mulliken[:, 1:] = self._local_mulliken[:, 1:] / 2
         else:
