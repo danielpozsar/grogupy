@@ -121,7 +121,7 @@ magnopy_comments = True
 # save the Uppsala Atomistic Spin Dynamics software input files
 # uses the outfolder and out_spin_moment
 save_UppASD = False
-# add the simulation parameters to the cell.tmp.txt file as
+# add the simulation parameters to the inpsd.dat file as
 # comments
 uppasd_comments = True
 

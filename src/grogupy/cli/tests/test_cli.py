@@ -59,11 +59,11 @@ class TestCommandLineTools:
         assert os.path.isfile("./src/grogupy/cli/tests/test_UppASD_output/jfile")
         assert os.path.isfile("./src/grogupy/cli/tests/test_UppASD_output/momfile")
         assert os.path.isfile("./src/grogupy/cli/tests/test_UppASD_output/posfile")
-        assert os.path.isfile("./src/grogupy/cli/tests/test_UppASD_output/cell.tmp.txt")
+        assert os.path.isfile("./src/grogupy/cli/tests/test_UppASD_output/inpsd.dat")
         os.remove("./src/grogupy/cli/tests/test_UppASD_output/jfile")
         os.remove("./src/grogupy/cli/tests/test_UppASD_output/momfile")
         os.remove("./src/grogupy/cli/tests/test_UppASD_output/posfile")
-        os.remove("./src/grogupy/cli/tests/test_UppASD_output/cell.tmp.txt")
+        os.remove("./src/grogupy/cli/tests/test_UppASD_output/inpsd.dat")
         os.rmdir("./src/grogupy/cli/tests/test_UppASD_output")
 
     @pytest.mark.parametrize(
@@ -84,7 +84,7 @@ class TestCommandLineTools:
         assert not os.path.isfile("./src/grogupy/cli/tests/test_UppASD_output/momfile")
         assert not os.path.isfile("./src/grogupy/cli/tests/test_UppASD_output/posfile")
         assert not os.path.isfile(
-            "./src/grogupy/cli/tests/test_UppASD_output/cell.tmp.txt"
+            "./src/grogupy/cli/tests/test_UppASD_output/inpsd.dat"
         )
 
     def test_analyze(self):
