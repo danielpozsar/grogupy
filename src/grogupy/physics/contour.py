@@ -138,7 +138,9 @@ class Contour:
         self._esetp: float = esetp
         self.samples: NDArray = np.empty(1)
         self.weights: NDArray = np.empty(1)
-        self.__make_contour()
+        self.samples, self.weights = make_contour(
+            self.emin, self.emax, self.eset, self.esetp
+        )
         self.times.measure("setup", restart=True)
 
     def __getstate__(self):
@@ -205,33 +207,30 @@ class Contour:
     @emin.setter
     def emin(self, value: float) -> None:
         self._emin = value
-        self.__make_contour()
+        self.samples, self.weights = make_contour(
+            self.emin, self.emax, self.eset, self.esetp
+        )
 
     @emax.setter
     def emax(self, value: float) -> None:
         self._emax = value
-        self.__make_contour()
+        self.samples, self.weights = make_contour(
+            self.emin, self.emax, self.eset, self.esetp
+        )
 
     @eset.setter
     def eset(self, value: int) -> None:
         self._eset = value
-        self.__make_contour()
+        self.samples, self.weights = make_contour(
+            self.emin, self.emax, self.eset, self.esetp
+        )
 
     @esetp.setter
     def esetp(self, value: float) -> None:
         self._esetp = value
-        self.__make_contour()
-
-    def __make_contour(self) -> None:
-        """It calculates the samples and weights.
-
-        It calculates the samples and weights based on the instance attributes
-        and dumps them to the instance attributes `samples` and `weights`.
-        """
-
-        ze, we = make_contour(self.emin, self.emax, self.eset, self.esetp)
-        self.samples: NDArray = ze
-        self.weights: NDArray = we
+        self.samples, self.weights = make_contour(
+            self.emin, self.emax, self.eset, self.esetp
+        )
 
     def copy(self):
         """Returns the deepcopy of the instance.
