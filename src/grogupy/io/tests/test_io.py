@@ -184,11 +184,11 @@ class TestIO:
         assert os.path.isfile("./src/grogupy/io/tests/test_UppASD/jfile")
         assert os.path.isfile("./src/grogupy/io/tests/test_UppASD/momfile")
         assert os.path.isfile("./src/grogupy/io/tests/test_UppASD/posfile")
-        assert os.path.isfile("./src/grogupy/io/tests/test_UppASD/cell.tmp.txt")
+        assert os.path.isfile("./src/grogupy/io/tests/test_UppASD/inpsd.dat")
         os.remove("./src/grogupy/io/tests/test_UppASD/jfile")
         os.remove("./src/grogupy/io/tests/test_UppASD/momfile")
         os.remove("./src/grogupy/io/tests/test_UppASD/posfile")
-        os.remove("./src/grogupy/io/tests/test_UppASD/cell.tmp.txt")
+        os.remove("./src/grogupy/io/tests/test_UppASD/inpsd.dat")
         os.rmdir("./src/grogupy/io/tests/test_UppASD")
 
     def test_save_Vampire(self):
