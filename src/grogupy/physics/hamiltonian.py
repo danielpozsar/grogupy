@@ -19,6 +19,7 @@
 # SOFTWARE.
 
 import copy
+import os
 import warnings
 from typing import Union
 
@@ -133,7 +134,7 @@ class Hamiltonian:
                 )
             except:
                 self._ds: Union[None, sisl.physics.DensityMatrix] = None
-            self.infile: str = infile
+            self.infile: str = os.path.abspath(infile)
         elif isinstance(infile, tuple):
             if isinstance(infile[0], sisl.physics.Hamiltonian) and isinstance(
                 infile[1], sisl.physics.DensityMatrix
