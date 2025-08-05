@@ -209,18 +209,9 @@ class MagneticEntity:
 
         # try to get Mulliken charges
         if self._ds is not None:
-            self._total_mulliken: Union[None, NDArray] = self._ds.mulliken()[
-                :, self._dh.a2o(self._atom, all=True)
-            ]
-            self._local_mulliken: Union[None, NDArray] = self._ds.mulliken()[
-                :, self._orbital_box_indices
-            ]
-            # this is the spin moment instwad of the spin moment
-            self._total_mulliken[:, 1:] = self._total_mulliken[:, 1:] / 2
-            self._local_mulliken[:, 1:] = self._local_mulliken[:, 1:] / 2
+            self._mulliken: Union[None, NDArray] = self._ds.mulliken()
         else:
-            self._total_mulliken: Union[None, NDArray] = None
-            self._local_mulliken: Union[None, NDArray] = None
+            self._mulliken: Union[None, NDArray] = None
 
         self._xyz: NDArray = np.array([self._dh.xyz[i] for i in self._atom])
 
@@ -369,8 +360,28 @@ class MagneticEntity:
         return self._xyz.mean(axis=0)
 
     @property
+    def _total_mulliken(self) -> Union[NDArray, None]:
+        """The total mulliken projection of the atom or the atoms of magnetic entity.
+        This is still the magnetic moment and not the spin moment!"""
+        # check if DM is available
+        if self._mulliken is None:
+            return None
+
+        return self._mulliken[:, self._dh.a2o(self._atom, all=True)]
+
+    @property
+    def _local_mulliken(self) -> Union[NDArray, None]:
+        """The local mulliken projection of the atom or the atoms of magnetic entity.
+        This is still the magnetic moment and not the spin moment!"""
+        # check if DM is available
+        if self._mulliken is None:
+            return None
+
+        return self._mulliken[:, self._orbital_box_indices]
+
+    @property
     def total_Q(self) -> Union[NDArray, None]:
-        """The total charge of the atom or the atoms of magnetic entity."""
+        """The total charge of the atom or the atoms of the magnetic entity."""
         # check if DM is available
         if self._total_mulliken is None:
             return None
@@ -379,57 +390,67 @@ class MagneticEntity:
 
     @property
     def total_S(self) -> Union[None, float]:
-        """Spin moment of the atom or the atoms of the magnetic entity."""
+        """Total spin moment of the atom or the atoms of the magnetic entity.
+        This is the spin moment instead of the magnetic moment!"""
         # check if DM is available
         if self._total_mulliken is None:
             return None
 
+        # this is the spin moment instead of the magnetic moment
         if self._total_mulliken.shape[0] == 2:
-            return self._total_mulliken[1].sum()
+            return self._total_mulliken[1].sum() / 2
         elif self._total_mulliken.shape[0] in {3, 4}:
-            return np.linalg.norm(self._total_mulliken.sum(axis=1)[1:]).astype(float)
+            return (
+                np.linalg.norm(self._total_mulliken.sum(axis=1)[1:]).astype(float) / 2
+            )
         else:
             Exception("Unpolarized DFT calculation cannot be used!")
 
     @property
     def total_Sx(self) -> Union[None, float]:
-        """Sx of the atom or the atoms of the magnetic entity."""
+        """Total Sx of the atom or the atoms of the magnetic entity.
+        This is the spin moment instead of the magnetic moment!"""
         # check if DM is available
         if self._total_mulliken is None:
             return None
 
+        # this is the spin moment instead of the magnetic moment
         if self._total_mulliken.shape[0] == 2:
             return 0
         elif self._total_mulliken.shape[0] in {3, 4}:
-            return self._total_mulliken[1].sum()
+            return self._total_mulliken[1].sum() / 2
         else:
             Exception("Unpolarized DFT calculation cannot be used!")
 
     @property
     def total_Sy(self) -> Union[None, float]:
-        """Sy of the atom or the atoms of the magnetic entity."""
+        """Total Sy of the atom or the atoms of the magnetic entity.
+        This is the spin moment instead of the magnetic moment!"""
         # check if DM is available
         if self._total_mulliken is None:
             return None
 
+        # this is the spin moment instead of the magnetic moment
         if self._total_mulliken.shape[0] == 2:
             return 0
         elif self._total_mulliken.shape[0] in {3, 4}:
-            return self._total_mulliken[2].sum()
+            return self._total_mulliken[2].sum() / 2
         else:
             Exception("Unpolarized DFT calculation cannot be used!")
 
     @property
     def total_Sz(self) -> Union[None, float]:
-        """Sz of the atom or the atoms of the magnetic entity."""
+        """Total Sz of the atom or the atoms of the magnetic entity.
+        This is the spin moment instead of the magnetic moment!"""
         # check if DM is available
         if self._total_mulliken is None:
             return None
 
+        # this is the spin moment instead of the magnetic moment
         if self._total_mulliken.shape[0] == 2:
-            return self._total_mulliken[1].sum()
+            return self._total_mulliken[1].sum() / 2
         elif self._total_mulliken.shape[0] in {3, 4}:
-            return self._total_mulliken[3].sum()
+            return self._total_mulliken[3].sum() / 2
         else:
             Exception("Unpolarized DFT calculation cannot be used!")
 
@@ -444,57 +465,71 @@ class MagneticEntity:
 
     @property
     def local_S(self) -> Union[None, float]:
-        """Spin moment of the atom or the atoms of the magnetic entity."""
+        """Spin moment of the magnetic entity.
+        It only takes the contribution from the specified sub-orbitals or
+        sub-shells! This is the spin moment instead of the magnetic moment!"""
         # check if DM is available
         if self._local_mulliken is None:
             return None
 
+        # this is the spin moment instead of the magnetic moment
         if self._local_mulliken.shape[0] == 2:
-            return self._local_mulliken[1].sum()
+            return self._local_mulliken[1].sum() / 2
         elif self._local_mulliken.shape[0] in {3, 4}:
-            return np.linalg.norm(self._local_mulliken.sum(axis=1)[1:]).astype(float)
+            return (
+                np.linalg.norm(self._local_mulliken.sum(axis=1)[1:]).astype(float) / 2
+            )
         else:
             Exception("Unpolarized DFT calculation cannot be used!")
 
     @property
     def local_Sx(self) -> Union[None, float]:
-        """Sx of the magnetic entity."""
+        """Sx of the magnetic entity.
+        It only takes the contribution from the specified sub-orbitals or
+        sub-shells! This is the spin moment instead of the magnetic moment!"""
         # check if DM is available
         if self._local_mulliken is None:
             return None
 
+        # this is the spin moment instead of the magnetic moment
         if self._local_mulliken.shape[0] == 2:
             return 0
         elif self._local_mulliken.shape[0] in {3, 4}:
-            return self._local_mulliken[1].sum()
+            return self._local_mulliken[1].sum() / 2
         else:
             Exception("Unpolarized DFT calculation cannot be used!")
 
     @property
     def local_Sy(self) -> Union[None, float]:
-        """Sy of the magnetic entity."""
+        """Sy of the magnetic entity.
+        It only takes the contribution from the specified sub-orbitals or
+        sub-shells! This is the spin moment instead of the magnetic moment!"""
         # check if DM is available
         if self._local_mulliken is None:
             return None
 
+        # this is the spin moment instead of the magnetic moment
         if self._local_mulliken.shape[0] == 2:
             return 0
         elif self._local_mulliken.shape[0] in {3, 4}:
-            return self._local_mulliken[2].sum()
+            return self._local_mulliken[2].sum() / 2
         else:
             Exception("Unpolarized DFT calculation cannot be used!")
 
     @property
     def local_Sz(self) -> Union[None, float]:
-        """Sz of the magnetic entity."""
+        """Sz of the magnetic entity.
+        It only takes the contribution from the specified sub-orbitals or
+        sub-shells! This is the spin moment instead of the magnetic moment!"""
         # check if DM is available
         if self._local_mulliken is None:
             return None
 
+        # this is the spin moment instead of the magnetic moment
         if self._local_mulliken.shape[0] == 2:
-            return self._local_mulliken[1].sum()
+            return self._local_mulliken[1].sum() / 2
         elif self._local_mulliken.shape[0] in {3, 4}:
-            return self._local_mulliken[3].sum()
+            return self._local_mulliken[3].sum() / 2
         else:
             Exception("Unpolarized DFT calculation cannot be used!")
 
