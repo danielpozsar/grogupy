@@ -385,7 +385,7 @@ def arrays_lists_equal(array1: Any, array2: Any) -> bool:
 
     # if both are lists, then they can be equal
     elif isinstance(array1, list) and isinstance(array2, list):
-        # the list legngths should be equal
+        # the list lengths should be equal
         if len(array1) == len(array2):
             equality = []
             # all the list elements should be equal
@@ -774,8 +774,8 @@ def process_ref_directions(
     then it just return that with normalization. Otherwise either creates
     (x,y,z) directions for "generalised-grogu" or generates the perpendicular
     directions for the given reference directions for the "generalised-fit"
-    model. In case of "isotropic-only" only one reference direction and one
-    perpendicular direction is needed.
+    model. In case of "isotropic-only" or "isotropic-biquadratic-only" only
+    the first reference direction and the first perpendicular direction is used.
 
     Parameters
     ----------
@@ -792,10 +792,12 @@ def process_ref_directions(
     """
     orientations = []
 
-    # when it already contains dictionaries, then everythin was
+    # when it already contains dictionaries, then everything was
     # defined by hand
-    if isinstance(ref_xcf_orientations, list) and isinstance(
-        ref_xcf_orientations[0], dict
+    if (
+        isinstance(ref_xcf_orientations, list)
+        and isinstance(ref_xcf_orientations[0], dict)
+        and spin_model != "generalised-grogu"
     ):
         orientations: list[dict] = ref_xcf_orientations
 
@@ -836,8 +838,8 @@ def process_ref_directions(
             ref["o"] = ref["o"] / np.linalg.norm(ref["o"])
             ref["vw"] = ref["vw"] / np.linalg.norm(ref["vw"], axis=1)[:, None]
 
-    # one reference directon and one perpendicular direction
-    elif spin_model == "isotropic-only":
+    # one reference direction and one perpendicular direction
+    elif spin_model == "isotropic-only" or spin_model == "isotropic-biquadratic-only":
         orientations = [orientations[0]]
         orientations[0]["vw"] = np.array([orientations[0]["vw"][0]])
 
