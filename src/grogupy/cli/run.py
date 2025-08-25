@@ -34,6 +34,7 @@ from grogupy.io import (
     read_fdf,
     read_py,
     save,
+    save_grogupy,
     save_magnopy,
     save_UppASD,
     save_Vampire,
@@ -272,7 +273,7 @@ def main():
         )
         print("solved:", (timer() - start) / 60, "min")
         print(simulation.times.times)
-        print(simulation.to_grogupy())
+        print(save_grogupy(simulation))
         print(
             "################################################################################"
         )
