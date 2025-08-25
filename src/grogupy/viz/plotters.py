@@ -246,6 +246,103 @@ def plot_magnetic_entities(
     return fig
 
 
+def plot_onsite_anisotropy(
+    magnetic_entities: Union[Builder, list[MagneticEntity], MagneticEntityList],
+    **kwargs,
+) -> go.Figure:
+    """Creates a plot of the on-site anisotropy from a list of magnetic entities.
+
+    Parameters
+    ----------
+    magnetic_entities : Union[Builder, list[MagneticEntity], MagneticEntityList]
+        The magnetic entities that contain the tags and coordinates
+
+    Returns
+    -------
+    plotly.graph_objs.go.Figure
+        The created figure
+    """
+
+    # conversion line for the case when it is set as the plot function of a builder
+    if isinstance(magnetic_entities, Builder):
+        magnetic_entities = magnetic_entities.magnetic_entities
+    elif not (
+        isinstance(magnetic_entities, list)
+        or isinstance(magnetic_entities, MagneticEntityList)
+    ):
+        magnetic_entities = [magnetic_entities]
+
+    # Create figure
+    fig = go.Figure()
+
+    # Create angular grid for unit sphere
+    phi = np.linspace(0, 2 * np.pi, 100)
+    theta = np.linspace(0, np.pi, 100)
+    phi_grid, theta_grid = np.meshgrid(phi, theta)
+
+    # Convert spherical to cartesian
+    x = np.sin(theta_grid) * np.cos(phi_grid)
+    y = np.sin(theta_grid) * np.sin(phi_grid)
+    z = np.cos(theta_grid)
+
+    anisotropy_energy = np.zeros((len(magnetic_entities), x.shape[0], x.shape[1]))
+    for m, mag_ent in enumerate(magnetic_entities):
+        if mag_ent.K is None:
+            raise Exception("On-site anisotropy is not calculated yet!")
+        for i in range(100):
+            for j in range(100):
+                # Unit vector at this point
+                S = np.array([x[i, j], y[i, j], z[i, j]])
+                # Anisotropy energy
+                anisotropy_energy[m, i, j] = S @ mag_ent.K @ S
+
+    # Add surface plot
+    for i, m in enumerate(anisotropy_energy):
+        if i == 0:
+            fig.add_trace(
+                go.Surface(
+                    x=x + magnetic_entities[i].xyz_center[0],
+                    y=y + magnetic_entities[i].xyz_center[1],
+                    z=z + magnetic_entities[i].xyz_center[2],
+                    surfacecolor=m,
+                    colorbar=dict(title="Anisotropy energy [eV]"),
+                    colorscale="Viridis",
+                    opacity=1,
+                    cmin=anisotropy_energy.min(),
+                    cmax=anisotropy_energy.max(),
+                )
+            )
+        else:
+            fig.add_trace(
+                go.Surface(
+                    x=x + magnetic_entities[i].xyz_center[0],
+                    y=y + magnetic_entities[i].xyz_center[1],
+                    z=z + magnetic_entities[i].xyz_center[2],
+                    surfacecolor=m,
+                    colorscale="Viridis",
+                    opacity=1,
+                    showscale=False,
+                    cmin=anisotropy_energy.min(),
+                    cmax=anisotropy_energy.max(),
+                )
+            )
+
+    # Create layout
+    fig.update_layout(
+        autosize=False,
+        width=kwargs.get("width", 800),
+        height=kwargs.get("height", 500),
+        scene=dict(
+            aspectmode="data",
+            xaxis=dict(title="X Axis", showgrid=True, gridwidth=1),
+            yaxis=dict(title="Y Axis", showgrid=True, gridwidth=1),
+            zaxis=dict(title="Z Axis", showgrid=True, gridwidth=1),
+        ),
+    )
+
+    return fig
+
+
 def plot_pairs(
     pairs: Union[Builder, list[Pair], PairList],
     connect: bool = False,

@@ -38,6 +38,7 @@ Functions
     plot_contour              Plots the contour for the integration.
     plot_kspace               Plots the Brillouin-zone sampling.
     plot_magnetic_entities    Plots the magnetic entities in the lattice.
+    plot_onsite_anisotropy    Plots the on-site anisotropies in the lattice.
     plot_pairs                Plots the pairs, with or without connections.
     plot_DMI                  Plots the DMI vectors.
     plot_DM_distance          Plots the magnitude of DM vectors as a function of distance.
@@ -72,6 +73,7 @@ setattr(Contour, "plot", plot_contour)
 setattr(Kspace, "plot", plot_kspace)
 setattr(Builder, "plot_DMI", plot_DMI)
 setattr(Builder, "plot_magnetic_entities", plot_magnetic_entities)
+setattr(Builder, "plot_onsite_anisotropy", plot_onsite_anisotropy)
 setattr(Builder, "plot_pairs", plot_pairs)
 setattr(Builder, "plot_DM_distance", plot_DM_distance)
 setattr(Builder, "plot_Jiso_distance", plot_Jiso_distance)
