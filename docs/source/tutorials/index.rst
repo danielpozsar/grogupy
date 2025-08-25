@@ -10,7 +10,8 @@ features.
 .. toctree::
    :maxdepth: 2
 
-   io_formats
+   input_formats
+   output_formats
    magnetic_entity
    memory_management
    convergence_with_high_throughput

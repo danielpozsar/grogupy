@@ -1,8 +1,32 @@
-.. _magnopy_input_format:
+Output formats
+==============
 
-Output format
-=============
+Currently grogupy relies on a .pkl file as its main output format that can be 
+used to reload its main system object, but HDF should be the default in the 
+future. Furthermore it supports different input formats for atomistic spin 
+dynamics and magnon spectrum calculation.
 
+`Magnopy <https://docs.magnopy.org/en/latest/index.html>`_
+    The magnopy input format is fully supported. The two softwares can be 
+    easily used in a pipeline.
+`Uppsala Atomistic Spin Dynamics <https://uppasd.github.io/UppASD-manual/introduction/>`_
+    grogupy outputs the `posfile`, `momfile` and `exchange`. The on-site 
+    anisotropy, if it is available, is written in the `exchange` file as an 
+    interaction of a spin with itself. The `inpsd.dat` is mostly empty, it only 
+    contains the cell information and the paths to the other input files, so 
+    you have to manually fill in the remaining required information to run a 
+    simulation.
+
+    .. warning::
+        Before version 4.0 the wrong convention was used for this output.
+
+`Vampire <https://vampire.york.ac.uk>`_
+    Vampire only supports rectangular unit cells, which is partially supported 
+    by grogupy. It can convert some unit cells with C_3 symmetry to the acceptable 
+    format. grogupy outputs the `vampire.UCF` file with all the information, 
+    but you have to set some parameters in `vampire.mat` and in the `input` 
+    file.
+    
 Spin Hamiltonian file
 ---------------------
 

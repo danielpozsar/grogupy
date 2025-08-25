@@ -82,7 +82,7 @@ the source code is available on `github <https://github.com/danielpozsar/grogupy
 
 .. toctree::
    :hidden:
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: User Guide
 
    tutorials/index
