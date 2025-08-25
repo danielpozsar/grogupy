@@ -21,7 +21,7 @@
 import argparse
 
 from grogupy import __citation__, __definitely_not_grogu__
-from grogupy.io import load_Builder
+from grogupy.io import load_Builder, save_grogupy, save_magnopy
 from grogupy.viz import (
     plot_contour,
     plot_DM_distance,
@@ -29,6 +29,7 @@ from grogupy.viz import (
     plot_Jiso_distance,
     plot_kspace,
     plot_magnetic_entities,
+    plot_onsite_anisotropy,
     plot_pairs,
 )
 
@@ -71,10 +72,17 @@ def main():
 
     with open(name, "w") as file:
         file.write(
-            system.to_magnopy()
+            save_grogupy(system)
             .replace("\n", "<br>\n")
             .replace(" ", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
         )
+
+        file.write(
+            save_magnopy(system)
+            .replace("\n", "<br>\n")
+            .replace(" ", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
+        )
+
         fig = plot_contour(system.contour)
         file.write(fig.to_html(full_html=False, include_plotlyjs=True))
 
@@ -92,6 +100,9 @@ def main():
             file.write(fig.to_html(full_html=False, include_plotlyjs=False))
 
         fig = plot_magnetic_entities(system)
+        file.write(fig.to_html(full_html=False, include_plotlyjs=False))
+
+        fig = plot_onsite_anisotropy(system)
         file.write(fig.to_html(full_html=False, include_plotlyjs=False))
 
         fig = plot_pairs(system)
