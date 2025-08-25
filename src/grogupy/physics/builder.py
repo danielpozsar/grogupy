@@ -183,10 +183,17 @@ class Builder:
         self.__parallel_mode: Union[None, str] = None
         self.__architecture: str = CONFIG.architecture
         self.__apply_spin_model: bool = True
-        self.__spin_model: str = "generalised-grogu"
+        if ref_xcf_orientations == [
+            [1, 0, 0],
+            [0, 1, 0],
+            [0, 0, 1],
+        ]:
+            self.__spin_model: str = "generalised-grogu"
+        else:
+            self.__spin_model: str = "generalised-fit"
 
         # create reference directions
-        self.ref_xcf_orientations = process_ref_directions(
+        self.__ref_xcf_orientations = process_ref_directions(
             ref_xcf_orientations,
             self.spin_model,
         )
@@ -310,35 +317,43 @@ class Builder:
                 It contains the simulations parameters
         """
 
-        section = "========================================"
+        section = "--------------------------------------------------------------------------------"
         newline = "\n"
 
         out = ""
+        # ============================================================
         out += section + newline
-        out += f"grogupy version: {self.__version}" + newline
-        out += f"Input file: {self.infile}" + newline
+        out += "Metadata" + newline
+        out += f"grogupy version:\t{self.__version}" + newline
+        out += f"Architecture:\t\t{self.__architecture}" + newline
+        out += f"SLURM job ID:\t\t{self.SLURM_ID}" + newline
+        out += f"Input file:\t\t{self.infile}" + newline
+        # ============================================================
+        out += section + newline
+        out += "Hamiltonian" + newline
+        out += f"Spin model:\t\t{self.spin_model}" + newline
         if self.hamiltonian is not None:
-            out += f"Spin mode: {self.hamiltonian._spin_state}" + newline
-            out += f"Number of orbitals: {self.hamiltonian.NO}" + newline
+            out += f"Spin mode:\t\t{self.hamiltonian._spin_state}" + newline
+            out += f"Number of orbitals:\t{self.hamiltonian.NO}" + newline
         else:
-            out += f"Spin mode: Not defined" + newline
-            out += f"Number of orbitals: Not defined" + newline
+            out += f"Spin mode:\tNot defined" + newline
+            out += f"Number of orbitals:\tNot defined" + newline
+        # ============================================================
         out += section + newline
-        out += f"SLURM job ID: {self.SLURM_ID}" + newline
-        out += f"Architecture: {self.__architecture}" + newline
+        out += "Solver" + newline
         if self.__architecture == "CPU":
             out += (
-                f"Number of threads in the parallel cluster: {CONFIG.parallel_size}"
+                f"Number of threads in the parallel cluster:\t\t{CONFIG.parallel_size}"
                 + newline
             )
         elif self.__architecture == "GPU":
-            out += f"Number of GPUs in the cluster: {CONFIG.parallel_size}" + newline
+            out += f"Number of GPUs in the cluster:\t\t{CONFIG.parallel_size}" + newline
         if self.parallel_mode is None:
-            out += "Parallelization is over: Nothing" + newline
+            out += "Parallelization is over:\t\t\t\tNo parallelization" + newline
         else:
-            out += f"Parallelization is over: {self.parallel_mode}" + newline
+            out += f"Parallelization is over:\t\t\t\t{self.parallel_mode}" + newline
         out += (
-            f"Solver used for Greens function calculation: {self.greens_function_solver}"
+            f"Solver used for Greens function calculation:\t\t{self.greens_function_solver}"
             + newline
         )
         if self.greens_function_solver[0].lower() == "s":
@@ -348,49 +363,57 @@ class Builder:
                 max_g = self.contour.eset
             else:
                 max_g = "Not defined"
-        out += f"Maximum number of Greens function samples per batch: {max_g}" + newline
-
-        out += f"Spin model: {self.spin_model}" + newline
+        out += (
+            f"Maximum number of Greens function samples per batch:\t{max_g}" + newline
+        )
+        # ============================================================
         out += section + newline
-
-        out += f"Cell [Ang]:" + newline
+        out += "Cell [Ang]" + newline
 
         if self.hamiltonian is not None:
-            bio = io.BytesIO()
-            np.savetxt(bio, self.hamiltonian.cell)
-            cell = bio.getvalue().decode("latin1")
-            out += cell
+            out += "\t" + "\t".join(map(lambda s: f"{s:.8e}", self.cell[0])) + newline
+            out += "\t" + "\t".join(map(lambda s: f"{s:.8e}", self.cell[1])) + newline
+            out += "\t" + "\t".join(map(lambda s: f"{s:.8e}", self.cell[2])) + newline
         else:
-            out += "Not defined"
-
+            out += "\tNot defined"
+        # ============================================================
         out += section + newline
-        out += f"DFT axis: {self.scf_xcf_orientation}" + newline
-        out += "Quantization axis and perpendicular rotation directions:" + newline
+        out += "Exchange field rotations" + newline
+        out += f"DFT axis:\t{self.scf_xcf_orientation}" + newline
+        out += "Quantization axis and perpendicular directions:" + newline
         for ref in self.ref_xcf_orientations:
-            out += f"{ref['o']} --> {ref['vw']}" + newline
-
+            out += "\t".join(map(lambda s: f"{s:.8e}", ref["o"]))
+            out += " -->" + newline
+            for r in ref["vw"]:
+                out += "\t" + "\t".join(map(lambda s: f"{s:.8e}", r)) + newline
+        # ============================================================
         out += section + newline
-        out += "Parameters for the Brillouin zone sampling:" + newline
+        out += "Kspace" + newline
         if self.kspace is not None:
-            out += f"Number of k points: {self.kspace.kset.prod()}" + newline
-            out += f"K points in each directions: {self.kspace.kset}" + newline
+            out += f"Total number of k points:\t{self.kspace.kset.prod()}" + newline
+            out += f"K points in each directions:\t{self.kspace.kset}" + newline
         else:
-            out += f"Number of k points: Not defined" + newline
-            out += f"K points in each directions: Not defined" + newline
-        out += "Parameters for the contour integral:" + newline
+            out += f"Total number of k points:\tNot defined" + newline
+            out += f"K points in each directions:\tNot defined" + newline
+        # ============================================================
+        out += section + newline
+        out += "Contour" + newline
         if self.contour is not None:
-            out += f"Eset: {self.contour.eset}" + newline
-            out += f"Esetp: {self.contour.esetp}" + newline
+            out += f"Eset:\t{self.contour.eset}" + newline
+            out += f"Esetp:\t{self.contour.esetp}" + newline
             if self.contour.automatic_emin:
                 out += (
-                    f"Ebot: {self.contour.emin}        WARNING: This was automatically determined!"
+                    f"Ebot:\t{self.contour.emin}\t\t# WARNING: This was automatically determined!"
                     + newline
                 )
             else:
-                out += f"Ebot: {self.contour.emin}" + newline
-            out += f"Etop: {self.contour.emax}" + newline
+                out += f"Ebot:\t{self.contour.emin}" + newline
+            out += f"Etop:\t{self.contour.emax}" + newline
         else:
-            out += "Not defined"
+            out += f"Eset:\tNot defined" + newline
+            out += f"Esetp:\tNot defined" + newline
+            out += f"Ebot:\tNot defined" + newline
+            out += f"Etop:\tNot defined" + newline
         out += section + newline
 
         return out
@@ -428,17 +451,18 @@ class Builder:
     @spin_model.setter
     def spin_model(self, value: str) -> None:
         if value == "generalised-fit":
-            self.__spin_model: str = "generalised-fit"
+            self.__spin_model: str = value
             # if there are more than two perpendicular directions (generalised-grogu)
-            # or ther are less than two perpendicular directions (isotropic-only),
+            # or ther are less than two perpendicular directions (isotropic-only,
+            # isotropic-biquadratic-only),
             # then generate the perpendicular directions from the reference directions
             for ref_xcf in self.ref_xcf_orientations:
                 if len(ref_xcf["vw"]) != 2:
-                    process_ref_directions(
+                    self.__ref_xcf_orientations = process_ref_directions(
                         ref_xcf_orientations=np.array(
                             [ref["o"] for ref in self.ref_xcf_orientations]
                         ),
-                        spin_model="generalised-fit",
+                        spin_model=value,
                     )
                     warnings.warn(
                         "generalised-fit spin model: reset perpendicular directions!"
@@ -446,33 +470,42 @@ class Builder:
                     break
 
         elif value == "generalised-grogu":
-            self.__spin_model: str = "generalised-grogu"
-            self.ref_xcf_orientations = [
-                dict(o=np.array([1, 0, 0]), vw=np.array([[0, 0, -1], [0, 1, 0]])),
-                dict(o=np.array([0, 1, 0]), vw=np.array([[1, 0, 0], [0, 0, -1]])),
-                dict(o=np.array([0, 0, 1]), vw=np.array([[1, 0, 0], [0, 1, 0]])),
-            ]
-            for ref in self.ref_xcf_orientations:
-                v = ref["vw"][0]
-                w = ref["vw"][1]
-                vw = (v + w) / np.linalg.norm(v + w)
-                ref["vw"] = np.vstack((ref["vw"], vw))
+            self.__spin_model: str = value
             warnings.warn(
                 "generalised-grogu spin model: reset reference and perpendicular directions!"
             )
 
         elif value == "isotropic-only" or value == "isotropic-biquadratic-only":
-            self.__spin_model: str = "isotropic-only"
-            self.ref_xcf_orientations = [self.ref_xcf_orientations[0]]
-            self.ref_xcf_orientations[0]["vw"] = np.array(
-                [self.ref_xcf_orientations[0]["vw"][0]]
-            )
+            self.__spin_model: str = value
             warnings.warn(
                 "Isotropic spin model: first reference and first perpendicular direction is used!"
             )
 
         else:
             raise Exception(f"Unrecognized solution method: {value}")
+        self.__ref_xcf_orientations = process_ref_directions(
+            ref_xcf_orientations=self.ref_xcf_orientations,
+            spin_model=value,
+        )
+
+    @property
+    def ref_xcf_orientations(self) -> list[dict[str, NDArray]]:
+        """The reference directions and perpendicular rotations."""
+        return self.__ref_xcf_orientations
+
+    @ref_xcf_orientations.setter
+    def ref_xcf_orientations(
+        self, value: Union[list[list[float]], NDArray, list[dict]]
+    ) -> None:
+        if self.spin_model != "generalised-grogu":
+            self.__ref_xcf_orientations = process_ref_directions(
+                ref_xcf_orientations=value,
+                spin_model=self.spin_model,
+            )
+        else:
+            warnings.warn(
+                "Reference directions cannot be changed in 'generalised-grogu'!"
+            )
 
     @property
     def low_memory_mode(self) -> bool:
@@ -602,145 +635,6 @@ class Builder:
     def version(self) -> str:
         """Version of grogupy."""
         return self.__version
-
-    def to_magnopy(
-        self,
-        magnetic_moment: str = "total",
-        precision: Union[None, int] = None,
-        comments: bool = True,
-    ) -> str:
-        """Returns the magnopy input file as string.
-
-        It is useful for dumping information to the standard output on
-        runtime.
-
-        Parameters
-        ----------
-        magnetic_moment: str, optional
-            It switches the used spin moment in the output, can be 'total'
-            for the whole atom or atoms involved in the magnetic entity or
-            'local' if we only use the part of the mulliken projections that
-            are exactly on the magnetic entity, which may be just a subshell
-            of the atom, by default 'total'
-        precision: Union[None, int], optional
-            The precision of the magnetic parameters in the output, if None
-            everything is written, by default None
-        comments: bool, optional
-            Wether to add comments in the beginning of file, by default True
-
-        Returns
-        -------
-        str
-            Magnopy input file
-        """
-
-        if self.apply_spin_model == False:
-            raise Exception(
-                "Exchange and anisotropy is not calculated! Use apply_spin_model=True"
-            )
-
-        if precision is not None:
-            if not isinstance(precision, int):
-                warnings.warn(
-                    f"precision must by an integer, but it is {type(precision)}. It was set to None."
-                )
-                precision = None
-        if precision is None:
-            precision = 30
-
-        section = "================================================================================"
-        subsection = "--------------------------------------------------------------------------------"
-        newline = "\n"
-
-        out = ""
-        out += section + newline
-        out += "GROGU INFORMATION" + newline
-        if comments:
-            out += newline
-            out += "#" + "\n#".join(self.__str__().split("\n"))
-            out += newline
-
-        out += section + newline
-        out += "Hamiltonian convention" + newline
-        out += "Double counting      true" + newline
-        out += "Normalized spins     true" + newline
-        out += "Intra-atomic factor  +1" + newline
-        out += "Exchange factor      +0.5" + newline
-
-        out += section + newline
-        out += f"Cell (Ang)" + newline
-        if self.hamiltonian is not None:
-            bio = io.BytesIO()
-            np.savetxt(bio, self.hamiltonian.cell)
-            cell = bio.getvalue().decode("latin1")
-            out += cell
-        else:
-            raise Exception("Hamiltonian is not defined!")
-
-        out += section + newline
-        out += "Magnetic sites" + newline
-        out += f"Number of sites {len(self.magnetic_entities)}" + newline
-        out += "Name\t\tx (Ang)\t\ty (Ang)\t\tz (Ang)\t\ts\t\tsx\t\tsy\t\tsz" + newline
-        for mag_ent in self.magnetic_entities:
-            out += mag_ent.tag + " "
-            out += "\t".join(map(lambda s: f"{s:.8e}", mag_ent._xyz.mean(axis=0)))
-            out += "\t"
-            if magnetic_moment[0].lower() == "l":
-                s = np.array([mag_ent.local_Sx, mag_ent.local_Sy, mag_ent.local_Sz])
-                if s[0] is not None:
-                    s = s / np.linalg.norm(s)
-                    out += f"{mag_ent.local_S:.8e}\t{s[0]:.8e}\t{s[1]:.8e}\t{s[2]:.8e}"
-                else:
-                    out += "None\tNone\tNone\tNone"
-            else:
-                s = np.array([mag_ent.total_Sx, mag_ent.total_Sy, mag_ent.total_Sz])
-                if s[0] is not None:
-                    s = s / np.linalg.norm(s)
-                    out += f"{mag_ent.total_S:.8e}\t{s[0]:.8e}\t{s[1]:.8e}\t{s[2]:.8e}"
-                else:
-                    out += "None\tNone\tNone\tNone"
-            out += newline
-
-        out += section + newline
-        out += "Intra-atomic anisotropy tensor (meV)" + newline
-        for mag_ent in self.magnetic_entities:
-            out += subsection + newline
-            out += mag_ent.tag + newline
-            if mag_ent.K_meV is not None:
-                K = np.around(mag_ent.K_meV, decimals=precision)
-            else:
-                K = np.around(np.zeros((3, 3)), decimals=precision)
-            out += "Matrix" + newline
-            out += "\t" + "\t".join(map(lambda s: f"{s:.8e}", K[0])) + newline
-            out += "\t" + "\t".join(map(lambda s: f"{s:.8e}", K[1])) + newline
-            out += "\t" + "\t".join(map(lambda s: f"{s:.8e}", K[2])) + newline
-        out += subsection + newline
-
-        out += section + newline
-        out += "Exchange tensor (meV)" + newline
-        out += f"Number of pairs {len(self.pairs)}" + newline
-        out += subsection + newline
-        out += "Name1    Name2    i    j    k    d (Ang)" + newline
-        for pair in self.pairs:
-            out += subsection + newline
-            tag = pair.tags[0] + " " + pair.tags[1]
-            out += tag + " " + " ".join(map(str, pair.supercell_shift))
-            out += f" {pair.distance}" + newline
-            if pair.J_meV is not None:
-                J = np.around(pair.J_meV, decimals=precision)
-            elif pair.J_iso_meV is not None:
-                J = np.around(np.diag(np.ones(3) * pair.J_iso_meV), decimals=precision)
-            else:
-                raise Exception("Both J and J_iso is None!")
-            out += "Matrix" + newline
-            out += "\t" + "\t".join(map(lambda s: f"{s:.8e}", J[0])) + newline
-            out += "\t" + "\t".join(map(lambda s: f"{s:.8e}", J[1])) + newline
-            out += "\t" + "\t".join(map(lambda s: f"{s:.8e}", J[2])) + newline
-        out += subsection + newline
-
-        out += section + newline
-
-        return out
 
     def add_kspace(self, kspace: Kspace) -> None:
         """Adds the k-space information to the instance.
