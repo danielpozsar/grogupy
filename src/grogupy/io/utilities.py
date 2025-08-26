@@ -327,10 +327,16 @@ def standardize_input(input: dict, defaults: dict) -> dict:
 
     if defaults["outfolder"] is None:
         defaults["outfolder"] = defaults["infolder"]
+
     if defaults["outfile"] is None:
         defaults["outfile"] = (
             f"{defaults['infile'].split('.')[0]}_kset_{'_'.join(map(str, defaults['kset']))}_eset_{defaults['eset']}_{defaults['spinmodel']}"
         )
+        if defaults["kwargsformagent"] is None:
+            defaults["outfile"] += "-full"
+
+    if defaults["kwargsformagent"] is None:
+        defaults["kwargsformagent"] = dict(l=None)
 
     return defaults
 
