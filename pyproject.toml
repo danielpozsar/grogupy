@@ -29,8 +29,7 @@ dependencies = [
   "numpy",
   "sisl",
   "scipy",
-  "netcdf4",
-  "openmpi",
+  "h5py",
 ]
 
 classifiers = [
@@ -58,7 +57,7 @@ license-files = ["LICENSE"]
 
 [project.optional-dependencies]
 viz = ["plotly", "nbconvert"]
-mpi = ["mpi4py"]
+mpi = ["openmpi", "mpi4py"]
 gpu = ["cupy-cuda12x"]
 
 [project.scripts]
