@@ -134,6 +134,8 @@ class MagneticEntity:
     ----------
     _orbital_box_indices : NDArray
         The ORBITAL BOX indices
+    _total_orbital_box_indices : NDArray
+        The ORBITAL BOX indices for the whole atom
     _atom : NDArray
         The list of atoms in the magnetic entity
     _l : list[list[Union[None, int]]]
@@ -187,33 +189,32 @@ class MagneticEntity:
             # get sisl sile
             sile = sisl.get_sile(infile)
             # load density and hamiltonian
-            self._dh: sisl.physics.Hamiltonian = sile.read_hamiltonian()
+            dh: sisl.physics.Hamiltonian = sile.read_hamiltonian()
             try:
-                self._ds: Union[None, sisl.physics.DensityMatrix] = (
-                    sile.read_density_matrix()
-                )
+                ds: Union[None, sisl.physics.DensityMatrix] = sile.read_density_matrix()
             except:
-                self._ds: Union[None, sisl.physics.DensityMatrix] = None
+                ds: Union[None, sisl.physics.DensityMatrix] = None
             self.infile: str = infile
         elif isinstance(infile, tuple):
-            self._dh: sisl.physics.Hamiltonian = infile[0]
-            self._ds: Union[None, sisl.physics.DensityMatrix] = infile[1]
+            dh: sisl.physics.Hamiltonian = infile[0]
+            ds: Union[None, sisl.physics.DensityMatrix] = infile[1]
             self.infile: str = "Unknown!"
         else:
             raise Exception("Cannot setup without path or sisl objects!")
-        atom, l, orbital, tag = parse_magnetic_entity(self._dh, atom, l, orb)
+        atom, l, orbital, tag = parse_magnetic_entity(dh, atom, l, orb)
         self._atom: NDArray = np.array([atom]).flatten()
         self._l = l
         self._orbital_box_indices: NDArray = np.array(orbital).flatten()
+        self._total_orbital_box_indices: NDArray = dh.a2o(self._atom, all=True)
         self._tags = tag
 
         # try to get Mulliken charges
-        if self._ds is not None:
-            self._mulliken: Union[None, NDArray] = self._ds.mulliken()
+        if ds is not None:
+            self._mulliken: Union[None, NDArray] = ds.mulliken()
         else:
             self._mulliken: Union[None, NDArray] = None
 
-        self._xyz: NDArray = np.array([self._dh.xyz[i] for i in self._atom])
+        self._xyz: NDArray = np.array([dh.xyz[i] for i in self._atom])
 
         # initialize simulation parameters
         self._Vu1: list[list[NDArray]] = []
@@ -241,16 +242,13 @@ class MagneticEntity:
         # reset the values that does not make sense for a new magnetic entity
         new.reset()
         # update out instance
-        # accept both kinds of hamiltonian
-        if not arrays_lists_equal(new._dh.Hk().toarray(), value._dh.Hk().toarray()):
-            raise Exception("The sisl Hamiltonians are not the same!")
-        if not arrays_lists_equal(new._dh.Sk().toarray(), value._dh.Sk().toarray()):
-            raise Exception("The sisl Overlap matrices are not the same!")
-
         new._atom = np.hstack((new._atom, value._atom))
         new._l = new._l + value._l
         new._orbital_box_indices = np.hstack(
             (new._orbital_box_indices, value._orbital_box_indices)
+        )
+        new._total_orbital_box_indices = np.hstack(
+            (new._total_orbital_box_indices, value._total_orbital_box_indices)
         )
         new._tags = new._tags + value._tags
 
@@ -263,26 +261,6 @@ class MagneticEntity:
             # if the IDs are identical, skip comaprison
             if id(self) == id(value):
                 return True
-            # if there are sisl Hamiltonians, then compare
-            if self._dh is None and value._dh is None:
-                pass
-            else:
-                if not arrays_lists_equal(
-                    self._dh.Hk().toarray(), value._dh.Hk().toarray()
-                ):
-                    return False
-                if not arrays_lists_equal(
-                    self._dh.Sk().toarray(), value._dh.Sk().toarray()
-                ):
-                    return False
-                if not arrays_lists_equal(
-                    self._ds.Dk().toarray(), value._ds.Dk().toarray()
-                ):
-                    return False
-                if not arrays_lists_equal(
-                    self._ds.Sk().toarray(), value._ds.Sk().toarray()
-                ):
-                    return False
             if not self.infile == value.infile:
                 return False
             if not arrays_lists_equal(self._atom, value._atom):
@@ -293,12 +271,18 @@ class MagneticEntity:
                 self._orbital_box_indices, value._orbital_box_indices
             ):
                 return False
+            if not arrays_lists_equal(
+                self._total_orbital_box_indices, value._total_orbital_box_indices
+            ):
+                return False
             if not self._tags == value._tags:
                 return False
-            if not arrays_lists_equal(self._total_mulliken, value._total_mulliken):
-                return False
-            if not arrays_lists_equal(self._local_mulliken, value._local_mulliken):
-                return False
+            # if there are Mullikens, then compare
+            if self._mulliken is None and value._mulliken is None:
+                pass
+            else:
+                if not arrays_lists_equal(self._mulliken, value._mulliken):
+                    return False
             if not arrays_lists_equal(self._xyz, value._xyz):
                 return False
             if not arrays_lists_equal(self._Vu1, value._Vu1):
@@ -367,7 +351,7 @@ class MagneticEntity:
         if self._mulliken is None:
             return None
 
-        return self._mulliken[:, self._dh.a2o(self._atom, all=True)]
+        return self._mulliken[:, self._total_orbital_box_indices]
 
     @property
     def _local_mulliken(self) -> Union[NDArray, None]:
@@ -534,7 +518,7 @@ class MagneticEntity:
             Exception("Unpolarized DFT calculation cannot be used!")
 
     @property
-    def energies_meV(self) -> Union[None, float]:
+    def energies_meV(self) -> Union[None, NDArray]:
         """The energies, but in meV."""
         if self.energies is None:
             return None
@@ -587,12 +571,12 @@ class MagneticEntity:
             return self.K * sisl.unit_convert("eV", "J")
 
     @property
-    def K_consistency(self) -> Union[None, NDArray]:
+    def K_consistency(self) -> Union[None, float]:
         """The consistency check, in meV."""
         return self._K_consistency
 
     @property
-    def K_consistency_meV(self) -> Union[None, NDArray]:
+    def K_consistency_meV(self) -> Union[None, float]:
         """The consistency check, but in meV."""
         if self.K_consistency is None:
             return None
@@ -600,7 +584,7 @@ class MagneticEntity:
             return self.K_consistency * sisl.unit_convert("eV", "meV")
 
     @property
-    def K_consistency_mRy(self) -> Union[None, NDArray]:
+    def K_consistency_mRy(self) -> Union[None, float]:
         """The consistency check, but in mRy."""
         if self.K_consistency is None:
             return None
@@ -608,7 +592,7 @@ class MagneticEntity:
             return self.K_consistency * sisl.unit_convert("eV", "mRy")
 
     @property
-    def K_consistency_J(self) -> Union[None, NDArray]:
+    def K_consistency_J(self) -> Union[None, float]:
         """The consistency check, but in J."""
         if self.K_consistency is None:
             return None
