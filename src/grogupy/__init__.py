@@ -61,7 +61,15 @@ from sisl import __version__ as __sisl__version__
 from .config import *
 
 # pre-import stuff
-from .io import load, save, save_magnopy, save_UppASD, save_Vampire
+from .io import (
+    load,
+    save,
+    save_grogupy,
+    save_HDF5,
+    save_magnopy,
+    save_UppASD,
+    save_Vampire,
+)
 from .physics import (
     Builder,
     Contour,
@@ -77,9 +85,11 @@ from .physics import (
 __all__.extend(
     [
         "save",
+        "save_grogupy",
         "save_magnopy",
         "save_UppASD",
         "save_Vampire",
+        "save_HDF5",
         "load",
         "Contour",
         "Kspace",

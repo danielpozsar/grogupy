@@ -65,7 +65,19 @@ from grogupy.physics import Builder, Contour, Kspace
 
 from .plotters import *
 
-__all__.extend(["plot_1D_convergence"])
+__all__.extend(
+    [
+        "plot_1D_convergence",
+        "plot_contour",
+        "plot_kspace",
+        "plot_DMI",
+        "plot_magnetic_entities",
+        "plot_onsite_anisotropy",
+        "plot_pairs",
+        "plot_DM_distance",
+        "plot_Jiso_distance",
+    ]
+)
 
 CONFIG._Config__viz_loaded = True
 
