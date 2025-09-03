@@ -39,9 +39,11 @@ These are the main input output functions for the user.
 
    load                         General loader for any grogupy instance from the pickled dictionary.
    save                         General saver  for any grogupy instance, it stores the data in a pickled dictionary.
-   read_magnopy                 Reads data from a magnopy input file and creates a dictionary.
+   save_grogupy                 Creates a .txt file, that contains all the information from a calculated Builder.
    save_magnopy                 Creates a magnopy input file from a calculated Builder.
    save_UppASD                  Creates the Uppsala Atomistic Spin Dinamics input file from a calculated Builder.
+   save_Vampire                 Creates the Vampire input files from a calculated Builder.
+   save_HDF5                    Creates a HDF5 file from a calculated Builder.
    read_fdf                     Reads input for command line tools from an fdf file.
    read_py                      Reads input for command line tools from a python file.
 
