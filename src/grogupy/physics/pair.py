@@ -19,7 +19,6 @@
 # SOFTWARE.
 
 import copy
-import warnings
 from typing import Iterator, Union
 
 import numpy as np
