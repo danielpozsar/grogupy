@@ -201,6 +201,10 @@ class MagneticEntity:
             self.infile: str = "Unknown!"
         else:
             raise Exception("Cannot setup without path or sisl objects!")
+        # this is for checking underlying systems
+        self.__dh_ds_id: NDArray = np.array([id(dh), id(ds)])
+        self.__cell: NDArray = dh.geometry.cell
+
         atom, l, orbital, tag = parse_magnetic_entity(dh, atom, l, orb)
         self._atom: NDArray = np.array([atom]).flatten()
         self._l = l
@@ -236,6 +240,10 @@ class MagneticEntity:
     def __add__(self, value):
         if not isinstance(value, MagneticEntity):
             raise Exception("Only MagneticEntity instances can be added!")
+        if not np.allclose(self.__dh_ds_id, value.__dh_ds_id):
+            raise Exception("Different underlying Hamiltonians!")
+        if not np.allclose(self.__cell, value.__cell):
+            raise Exception("Different underlying Hamiltonians!")
 
         # do not change the current instance
         new = self.copy()
@@ -261,6 +269,10 @@ class MagneticEntity:
             # if the IDs are identical, skip comaprison
             if id(self) == id(value):
                 return True
+            if not np.allclose(self.__dh_ds_id, value.__dh_ds_id):
+                return False
+            if not np.allclose(self.__cell, value.__cell):
+                return False
             if not self.infile == value.infile:
                 return False
             if not arrays_lists_equal(self._atom, value._atom):

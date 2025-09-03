@@ -166,19 +166,17 @@ class Pair:
         <grogupy.Pair tag1=3Fe(l:2), tag2=5Fe(l:2), Ruc=[0 0 0]>
         """
 
-        if M1._dh is M2._dh:
-            self._dh: sisl.physics.Hamiltonian = M1._dh
-        elif arrays_lists_equal(
-            M1._dh.Hk().toarray(), M2._dh.Hk().toarray()
-        ) and arrays_lists_equal(M1._dh.Sk().toarray(), M2._dh.Sk().toarray()):
-            self._dh: sisl.physics.Hamiltonian = M1._dh
+        if np.allclose(M1.__dh_ds_id, M2.__dh_ds_id) and np.allclose(
+            M1.__cell, M2.__cell
+        ):
+            self.__dh_ds_id: NDArray = M1.__dh_ds_id
+            self.cell: NDArray = self.M1.__cell
         else:
             raise Exception("Different Hamiltonians from the magnetic entities!")
 
         self.M1: MagneticEntity = M1
         self.M2: MagneticEntity = M2
 
-        self.cell: NDArray = self._dh.geometry.cell
         self.supercell_shift: NDArray = np.array(supercell_shift)
 
         # initialize simulation parameters
@@ -212,18 +210,10 @@ class Pair:
             # if the IDs are identical, skip comaprison
             if id(self) == id(value):
                 return True
-            # if there are sisl Hamiltonians, then compare
-            if self._dh is None and value._dh is None:
-                pass
-            else:
-                if not arrays_lists_equal(
-                    self._dh.Hk().toarray(), value._dh.Hk().toarray()
-                ):
-                    return False
-                if not arrays_lists_equal(
-                    self._dh.Sk().toarray(), value._dh.Sk().toarray()
-                ):
-                    return False
+            if not np.allclose(self.__dh_ds_id, value.__dh_ds_id):
+                return False
+            if not np.allclose(self.cell, value.cell):
+                return False
             if not self.M1 == value.M1:
                 return False
             if not self.M2 == value.M2:
@@ -296,7 +286,7 @@ class Pair:
     @property
     def distance(self) -> float:
         """Distance of the magnetic entities."""
-        return np.linalg.norm(self.xyz_center[0] - self.xyz_center[1])
+        return np.linalg.norm(self.xyz_center[0] - self.xyz_center[1]).astype(float)
 
     @property
     def energies_meV(self) -> Union[None, NDArray]:
@@ -457,11 +447,11 @@ class Pair:
         Does not reset the underlying Magnetic Entity instances.
         """
 
-        self._Gij: list[NDArray] = []
-        self._Gji: list[NDArray] = []
-        self.energies: Union[None, NDArray] = None
+        self._Gij = []
+        self._Gji = []
+        self.energies = None
 
-        self._J: Union[None, NDArray] = None
+        self._J = None
 
     def calculate_energies(self, weights: NDArray, append: bool = False) -> None:
         """Calculates the energies of the infinitesimal rotations.
@@ -505,13 +495,15 @@ class Pair:
                         storage.append(interaction_energy(Vui, Vuj, Gij, Gji, weights))
                 # fill up the pairs dictionary with the energies
                 energies.append(storage)
-                self.energies: NDArray = np.array(energies)
+                self.energies = np.array(energies)
 
     def calculate_exchange_tensor(self) -> None:
         """Calculates the exchange tensor from the energies."""
+        if self.energies is None:
+            raise Exception("First calculate the energies!")
 
         J = calculate_exchange_tensor(self.energies)
-        self._J: Union[None, NDArray] = J
+        self._J = J
 
     def fit_exchange_tensor(self, ref_xcf: list[dict]) -> None:
         """Fits the exchange tensor to the energies.
@@ -521,21 +513,27 @@ class Pair:
         ref_xcf: list[dict]
             The reference directions containing the orientation and perpendicular directions
         """
+        if self.energies is None:
+            raise Exception("First calculate the energies!")
 
         J = fit_exchange_tensor(self.energies, ref_xcf)
-        self._J: Union[None, NDArray] = J
+        self._J = J
 
     def calculate_isotropic_only(self) -> None:
         """Calculates the isotropic exchange only."""
+        if self.energies is None:
+            raise Exception("First calculate the energies!")
 
         J = calculate_isotropic_only(self.energies)
-        self._J: Union[None, NDArray] = J
+        self._J = J
 
     def calculate_isotropic_biquadratic_only(self) -> None:
         """Calculates the isotropic and biquadratic isotropic exchange."""
+        if self.energies is None:
+            raise Exception("First calculate the energies!")
 
         J = calculate_isotropic_biquadratic_only(self.energies)
-        self._J: Union[None, NDArray] = None
+        self._J = None
 
     def copy(self):
         """Returns the deepcopy of the instance.
