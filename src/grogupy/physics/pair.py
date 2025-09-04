@@ -28,14 +28,14 @@ from numpy.typing import NDArray
 from grogupy import __version__
 from grogupy._core.utilities import arrays_lists_equal, arrays_None_equal
 
-from .magnetic_entity import MagneticEntity
-from .utilities import (
+from .._core.physics_utilities import (
     calculate_exchange_tensor,
     calculate_isotropic_biquadratic_only,
     calculate_isotropic_only,
     fit_exchange_tensor,
     interaction_energy,
 )
+from .magnetic_entity import MagneticEntity
 
 
 class Pair:

@@ -32,7 +32,7 @@ from grogupy._core.utilities import arrays_lists_equal, make_contour, make_kset
 from grogupy.batch.timing import DefaultTimer
 from grogupy.physics import Builder, Contour, Hamiltonian, Kspace, MagneticEntity, Pair
 
-from .utilities import strip_dict_structure
+from .._core.io_utilities import strip_dict_structure
 
 # Only print on MPI root node
 PRINTING = True

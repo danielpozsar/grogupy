@@ -23,8 +23,8 @@ import pytest
 import sisl
 
 import grogupy
+from grogupy._core.io_utilities import decipher
 from grogupy._core.utilities import arrays_lists_equal
-from grogupy.io.utilities import decipher
 from grogupy.physics import MagneticEntity, MagneticEntityList
 
 pytestmark = [pytest.mark.physics, pytest.mark.need_benchmark_data]

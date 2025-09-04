@@ -27,7 +27,7 @@ from numpy.typing import NDArray
 from grogupy._core.utilities import make_contour
 from grogupy.batch.timing import DefaultTimer
 
-from .utilities import automatic_emin
+from .._core.physics_utilities import automatic_emin
 
 
 class Contour:

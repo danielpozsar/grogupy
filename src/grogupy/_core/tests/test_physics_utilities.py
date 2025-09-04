@@ -20,7 +20,7 @@
 
 import pytest
 
-from grogupy.physics.utilities import *
+from grogupy._core.physics_utilities import *
 
 pytestmark = [pytest.mark.physics]
 

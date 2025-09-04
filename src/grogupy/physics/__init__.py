@@ -70,10 +70,10 @@ written to be highly modular, which is ideal for complicated systems that are
 easier to set up in a jupyter notebook environment. 
 """
 
+from .._core.physics_utilities import *
 from .builder import *
 from .contour import *
 from .hamiltonian import *
 from .kspace import *
 from .magnetic_entity import *
 from .pair import *
-from .utilities import *

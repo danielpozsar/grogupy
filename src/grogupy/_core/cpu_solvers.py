@@ -27,9 +27,9 @@ if TYPE_CHECKING:
 
 import numpy as np
 
+from grogupy._core.physics_utilities import interaction_energy
 from grogupy._tqdm import _tqdm
 from grogupy.config import CONFIG
-from grogupy.physics.utilities import interaction_energy
 
 from .utilities import calc_Vu, onsite_projection, tau_u
 

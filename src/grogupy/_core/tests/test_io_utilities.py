@@ -20,7 +20,7 @@
 
 import pytest
 
-from grogupy.io.utilities import *
+from grogupy._core.io_utilities import *
 
 pytestmark = [pytest.mark.io]
 

@@ -64,5 +64,5 @@ could be useful in some special applications.
 
 """
 
+from .._core.io_utilities import *
 from .io import *
-from .utilities import *

@@ -32,7 +32,7 @@ from grogupy._tqdm import _tqdm
 from grogupy.batch.timing import DefaultTimer
 from grogupy.config import CONFIG
 
-from .utilities import spin_tracer
+from .._core.physics_utilities import spin_tracer
 
 # Only print on MPI root node
 PRINTING = True
