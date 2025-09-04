@@ -34,6 +34,16 @@ from grogupy.physics import Builder, Contour, Hamiltonian, Kspace, MagneticEntit
 
 from .utilities import strip_dict_structure
 
+# Only print on MPI root node
+PRINTING = True
+if CONFIG.is_CPU:
+    if CONFIG.MPI_loaded:
+        from mpi4py import MPI
+
+        rank = MPI.COMM_WORLD.rank
+        if rank != 0:
+            PRINTING = False
+
 
 def load_DefaultTimer(infile: Union[str, dict]) -> DefaultTimer:
     """Recreates the instance from a pickled state.
@@ -328,9 +338,10 @@ def load(
         "_Builder__version",
     ]:
         b = load_Builder(infile)
-        warnings.warn(
-            f"There is a mismatch between Builder ({b.version}) and current ({__version__}) version!"
-        )
+        if PRINTING:
+            warnings.warn(
+                f"There is a mismatch between Builder ({b.version}) and current ({__version__}) version!"
+            )
         return b
 
     elif list(dat.keys()) == [
@@ -805,7 +816,8 @@ def save_Vampire(
         1,
     ):
         if len(builder.magnetic_entities) != 2:
-            warnings.warn("Only two magnetic entities in the unit cell is tested!")
+            if PRINTING:
+                warnings.warn("Only two magnetic entities in the unit cell is tested!")
         # DIRECTION should be set to 1 or -1 based on the tilt of the paralelogram
         if np.isclose(
             np.dot(normalized_cell[0], normalized_cell[1]),
@@ -852,7 +864,8 @@ def save_Vampire(
             # this can be solved by translating and rounding, but this
             # is an ugly solution that works for these atomic positions
             # without having to redefine the unit cell shift indices
-            warnings.warn("This is an ugly solution!")
+            if PRINTING:
+                warnings.warn("This is an ugly solution!")
             xyz_rel = np.around(
                 np.linalg.inv(new_cell) @ xyz + np.array([0.5, 0, 0]), 4
             )

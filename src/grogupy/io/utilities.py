@@ -25,6 +25,18 @@ from typing import Any, Union
 import numpy as np
 import sisl
 
+from grogupy.config import CONFIG
+
+# Only print on MPI root node
+PRINTING = True
+if CONFIG.is_CPU:
+    if CONFIG.MPI_loaded:
+        from mpi4py import MPI
+
+        rank = MPI.COMM_WORLD.rank
+        if rank != 0:
+            PRINTING = False
+
 
 def decipher(
     tag: str,
@@ -323,7 +335,8 @@ def standardize_input(input: dict, defaults: dict) -> dict:
         if key2 in defaults.keys():
             defaults[key2] = input[key]
         else:
-            warnings.warn(f"Unrecognized input parameter: {key}")
+            if PRINTING:
+                warnings.warn(f"Unrecognized input parameter: {key}")
 
     if defaults["outfolder"] is None:
         defaults["outfolder"] = defaults["infolder"]

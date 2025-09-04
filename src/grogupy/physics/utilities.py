@@ -25,6 +25,18 @@ import numpy as np
 import sisl
 from numpy.typing import NDArray
 
+from grogupy.config import CONFIG
+
+# Only print on MPI root node
+PRINTING = True
+if CONFIG.is_CPU:
+    if CONFIG.MPI_loaded:
+        from mpi4py import MPI
+
+        rank = MPI.COMM_WORLD.rank
+        if rank != 0:
+            PRINTING = False
+
 
 def get_number_of_electrons(dm: Union[str, sisl.DensityMatrix]) -> int:
     """Determines the number of electrons in the system from the density matrix.
@@ -401,9 +413,10 @@ def interaction_energy(
     )  # this is the on site projection
     # evaluation of the contour integral
     if len(traced) == 1:
-        warnings.warn(
-            "Only one energy point is given for integration! Returning energy point instead!"
-        )
+        if PRINTING:
+            warnings.warn(
+                "Only one energy point is given for integration! Returning energy point instead!"
+            )
         return float(-1 / np.pi * np.imag(traced * weights).squeeze())
 
     integral = float(-1 / np.pi * np.sum(np.imag(traced * weights)).squeeze())
@@ -438,9 +451,10 @@ def second_order_energy(
     )  # this is the on site projection
     # evaluation of the contour integral
     if len(traced) == 1:
-        warnings.warn(
-            "Only one energy point is given for integration! Returning energy point instead!"
-        )
+        if PRINTING:
+            warnings.warn(
+                "Only one energy point is given for integration! Returning energy point instead!"
+            )
         return float(-1 / np.pi * np.imag(traced * weights).squeeze())
 
     integral = float(-1 / np.pi * np.sum(np.imag(traced * weights)).squeeze())
@@ -468,9 +482,10 @@ def calculate_anisotropy_tensor(energies: NDArray) -> tuple[NDArray, float]:
 
     # more directions are useless
     if len(energies) > 3:
-        warnings.warn(
-            "There are more exchange field reference directions given, than what is needed.\nOnly the first three is used!"
-        )
+        if PRINTING:
+            warnings.warn(
+                "There are more exchange field reference directions given, than what is needed.\nOnly the first three is used!"
+            )
 
     K = np.zeros((3, 3))
 
@@ -529,7 +544,8 @@ def fit_anisotropy_tensor(energies: NDArray, ref_xcf: list[dict]) -> NDArray:
             Elements of the anisotropy tensor
     """
 
-    warnings.warn("This is experimenal!")
+    if PRINTING:
+        warnings.warn("This is experimenal!")
 
     A = np.zeros((5, 5))
     cA = np.zeros(5)
@@ -593,9 +609,10 @@ def calculate_exchange_tensor(
 
     # more directions are useless
     if len(energies) > 3:
-        warnings.warn(
-            "There are more exchange field reference directions given, than what is needed.\nOnly the first three is used!"
-        )
+        if PRINTING:
+            warnings.warn(
+                "There are more exchange field reference directions given, than what is needed.\nOnly the first three is used!"
+            )
 
     # Initialize output arrays
     J_diag = np.zeros(3)
@@ -651,7 +668,8 @@ def fit_exchange_tensor(energies: NDArray, ref_xcf: list[dict]) -> NDArray:
             Complete exchange tensor
     """
 
-    warnings.warn("This is experimenal!")
+    if PRINTING:
+        warnings.warn("This is experimenal!")
 
     # Based on the BME consultation
     M = np.zeros((9, 9))

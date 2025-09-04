@@ -34,6 +34,16 @@ from grogupy.config import CONFIG
 
 from .utilities import spin_tracer
 
+# Only print on MPI root node
+PRINTING = True
+if CONFIG.is_CPU:
+    if CONFIG.MPI_loaded:
+        from mpi4py import MPI
+
+        rank = MPI.COMM_WORLD.rank
+        if rank != 0:
+            PRINTING = False
+
 if CONFIG.is_GPU:
     import cupy as cp
     from cupy.typing import NDArray as CNDArray
@@ -161,9 +171,10 @@ class Hamiltonian:
         self.S: NDArray = S
         self.scf_xcf_orientation: NDArray = np.array(scf_xcf_orientation)
         if (self.scf_xcf_orientation != 0).sum() != 1:
-            warnings.warn(
-                f"Tilted exchange field in the DFT calculation: {self.scf_xcf_orientation}"
-            )
+            if PRINTING:
+                warnings.warn(
+                    f"Tilted exchange field in the DFT calculation: {self.scf_xcf_orientation}"
+                )
 
         self.orientation: NDArray = np.array(self.scf_xcf_orientation)
 
@@ -233,9 +244,10 @@ class Hamiltonian:
         try:
             self.__no = self._dh.no * 2
         except:
-            warnings.warn(
-                "Property could not be calculated. This is only acceptable for loaded Hamiltonian!"
-            )
+            if PRINTING:
+                warnings.warn(
+                    "Property could not be calculated. This is only acceptable for loaded Hamiltonian!"
+                )
         return self.__no
 
     @property
@@ -243,9 +255,10 @@ class Hamiltonian:
         try:
             self.__cell = self._dh.geometry.cell
         except:
-            warnings.warn(
-                "Property could not be calculated. This is only acceptable for loaded Hamiltonian!"
-            )
+            if PRINTING:
+                warnings.warn(
+                    "Property could not be calculated. This is only acceptable for loaded Hamiltonian!"
+                )
         return self.__cell
 
     @property
@@ -257,9 +270,10 @@ class Hamiltonian:
         try:
             self.__sc_off = self._dh.geometry.sc_off
         except:
-            warnings.warn(
-                "Property could not be calculated. This is only acceptable for loaded Hamiltonian!"
-            )
+            if PRINTING:
+                warnings.warn(
+                    "Property could not be calculated. This is only acceptable for loaded Hamiltonian!"
+                )
         return self.__sc_off
 
     @property
@@ -374,9 +388,10 @@ class Hamiltonian:
         # check if exchange field has scalar part
         max_xcfs: float = abs(np.array([f["c"] / 2 for f in traced])).max()
         if max_xcfs > 1e-12:
-            warnings.warn(
-                f"Exchange field has non negligible scalar part. Largest value is {max_xcfs}"
-            )
+            if PRINTING:
+                warnings.warn(
+                    f"Exchange field has non negligible scalar part. Largest value is {max_xcfs}"
+                )
         return hTRS, hTRB, XCF, H_XCF
 
     def rotate(self, orientation: Union[NDArray, list]) -> None:

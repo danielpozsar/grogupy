@@ -40,6 +40,16 @@ from .kspace import Kspace
 from .magnetic_entity import MagneticEntity, MagneticEntityList
 from .pair import Pair, PairList
 
+# Only print on MPI root node
+PRINTING = True
+if CONFIG.is_CPU:
+    if CONFIG.MPI_loaded:
+        from mpi4py import MPI
+
+        rank = MPI.COMM_WORLD.rank
+        if rank != 0:
+            PRINTING = False
+
 try:
     import pytest
 
@@ -464,22 +474,25 @@ class Builder:
                         ),
                         spin_model=value,
                     )
-                    warnings.warn(
-                        "generalised-fit spin model: reset perpendicular directions!"
-                    )
+                    if PRINTING:
+                        warnings.warn(
+                            "generalised-fit spin model: reset perpendicular directions!"
+                        )
                     break
 
         elif value == "generalised-grogu":
             self.__spin_model: str = value
-            warnings.warn(
-                "generalised-grogu spin model: reset reference and perpendicular directions!"
-            )
+            if PRINTING:
+                warnings.warn(
+                    "generalised-grogu spin model: reset reference and perpendicular directions!"
+                )
 
         elif value == "isotropic-only" or value == "isotropic-biquadratic-only":
             self.__spin_model: str = value
-            warnings.warn(
-                "Isotropic spin model: first reference and first perpendicular direction is used!"
-            )
+            if PRINTING:
+                warnings.warn(
+                    "Isotropic spin model: first reference and first perpendicular direction is used!"
+                )
 
         else:
             raise Exception(f"Unrecognized solution method: {value}")
@@ -503,9 +516,10 @@ class Builder:
                 spin_model=self.spin_model,
             )
         else:
-            warnings.warn(
-                "Reference directions cannot be changed in 'generalised-grogu'!"
-            )
+            if PRINTING:
+                warnings.warn(
+                    "Reference directions cannot be changed in 'generalised-grogu'!"
+                )
 
     @property
     def low_memory_mode(self) -> bool:
@@ -904,15 +918,17 @@ class Builder:
         if (self.spin_model == "generalised-grogu") and len(
             self.ref_xcf_orientations
         ) > 3:
-            warnings.warn(
-                "There are unnecessary orientations for the anisotropy or the exchange solver!"
-            )
+            if PRINTING:
+                warnings.warn(
+                    "There are unnecessary orientations for the anisotropy or the exchange solver!"
+                )
         elif (self.spin_model == "generalised-fit") and np.array(
             [len(i["vw"]) > 2 for i in self.ref_xcf_orientations]
         ).any():
-            warnings.warn(
-                "There are unnecessary perpendicular directions for the anisotropy or exchange solver!"
-            )
+            if PRINTING:
+                warnings.warn(
+                    "There are unnecessary perpendicular directions for the anisotropy or exchange solver!"
+                )
 
         # check the perpendicularity of directions
         for ref in self.ref_xcf_orientations:
