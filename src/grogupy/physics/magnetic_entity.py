@@ -166,6 +166,12 @@ class MagneticEntity:
         The magnetic anisotropy, by default None
     K_consistency : Union[None, float]
         Consistency check on the diagonal K elements, by default None
+    dh_ds_id: str
+        ID of the underlying system so MagneticEntities cannot be
+        mixed between Hamiltonians
+    cell: NDArray
+        Cell size of the underlying system so MagneticEntities cannot be
+        mixed between Hamiltonians
     """
 
     number_of_entities: int = 0
@@ -240,9 +246,9 @@ class MagneticEntity:
     def __add__(self, value):
         if not isinstance(value, MagneticEntity):
             raise Exception("Only MagneticEntity instances can be added!")
-        if not np.allclose(self.__dh_ds_id, value.__dh_ds_id):
+        if not np.allclose(self.dh_ds_id, value.dh_ds_id):
             raise Exception("Different underlying Hamiltonians!")
-        if not np.allclose(self.__cell, value.__cell):
+        if not np.allclose(self.cell, value.cell):
             raise Exception("Different underlying Hamiltonians!")
 
         # do not change the current instance
@@ -269,7 +275,7 @@ class MagneticEntity:
             # if the IDs are identical, skip comaprison
             if id(self) == id(value):
                 return True
-            if not np.allclose(self.__dh_ds_id, value.__dh_ds_id):
+            if not np.allclose(self.dh_ds_id, value.dh_ds_id):
                 return False
             if not np.allclose(self.__cell, value.__cell):
                 return False
@@ -329,6 +335,16 @@ class MagneticEntity:
         out = f"<grogupy.MagneticEntity tag={self.tag}, SBS={self.SBS}>"
 
         return out
+
+    @property
+    def dh_ds_id(self):
+        """The ID of the Hamiltonian and the Density  Matrix."""
+        return self.__dh_ds_id
+
+    @property
+    def cell(self):
+        """The cell of the Hamiltonian."""
+        return self.__cell
 
     @property
     def tag(self):

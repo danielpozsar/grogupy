@@ -80,6 +80,9 @@ class Pair:
 
     Attributes
     ----------
+    dh_ds_id: str
+        ID of the underlying system so MagneticEntities cannot be
+        mixed between Hamiltonians
     M1: MagneticEntity
         The first magnetic entity
     M2: MagneticEntity
@@ -166,11 +169,9 @@ class Pair:
         <grogupy.Pair tag1=3Fe(l:2), tag2=5Fe(l:2), Ruc=[0 0 0]>
         """
 
-        if np.allclose(M1.__dh_ds_id, M2.__dh_ds_id) and np.allclose(
-            M1.__cell, M2.__cell
-        ):
-            self.__dh_ds_id: NDArray = M1.__dh_ds_id
-            self.cell: NDArray = self.M1.__cell
+        if np.allclose(M1.dh_ds_id, M2.dh_ds_id) and np.allclose(M1.cell, M2.cell):
+            self.__dh_ds_id: NDArray = M1.dh_ds_id
+            self.cell: NDArray = M1.cell
         else:
             raise Exception("Different Hamiltonians from the magnetic entities!")
 
@@ -210,7 +211,7 @@ class Pair:
             # if the IDs are identical, skip comaprison
             if id(self) == id(value):
                 return True
-            if not np.allclose(self.__dh_ds_id, value.__dh_ds_id):
+            if not np.allclose(self.dh_ds_id, value.dh_ds_id):
                 return False
             if not np.allclose(self.cell, value.cell):
                 return False
@@ -238,6 +239,11 @@ class Pair:
         out = f"<grogupy.Pair tag1={self.tags[0]}, tag2={self.tags[1]}, Ruc={self.supercell_shift}>"
 
         return out
+
+    @property
+    def dh_ds_id(self):
+        """The ID of the Hamiltonian and the Density  Matrix."""
+        return self.__dh_ds_id
 
     @property
     def SBS1(self) -> int:
