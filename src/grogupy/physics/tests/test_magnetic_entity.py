@@ -452,14 +452,14 @@ class TestMagneticEntity:
         m2 = m.copy()
         assert m == m2
 
-        m2._dh = sisl.get_sile("./benchmarks/CrI3/CrI3.fdf").read_hamiltonian()
+        m2._MagneticEntity__dh_ds_id = np.array([10, 10])
         assert m != m2
-        m2._dh = m._dh
+        m2._MagneticEntity__dh_ds_id = m.dh_ds_id
         assert m == m2
 
-        m2._ds = sisl.get_sile("./benchmarks/CrI3/CrI3.fdf").read_density_matrix()
+        m2._MagneticEntity__cell = np.zeros((3, 3))
         assert m != m2
-        m2._ds = m._ds
+        m2._MagneticEntity__cell = m.cell
         assert m == m2
 
         m2.infile = "unknown!"  # lowercase
@@ -482,19 +482,19 @@ class TestMagneticEntity:
         m2._orbital_box_indices = m._orbital_box_indices
         assert m == m2
 
+        m2._total_orbital_box_indices = [0]
+        assert m != m2
+        m2._total_orbital_box_indices = m._total_orbital_box_indices
+        assert m == m2
+
         m2._tags = "asd"
         assert m != m2
         m2._tags = m._tags
         assert m == m2
 
-        m2._local_mulliken = np.zeros_like(m._local_mulliken)
+        m2._mulliken = np.zeros_like(m._mulliken)
         assert m != m2
-        m2._local_mulliken = m._local_mulliken
-        assert m == m2
-
-        m2._total_mulliken = np.zeros_like(m._total_mulliken)
-        assert m != m2
-        m2._total_mulliken = m._total_mulliken
+        m2._mulliken = m._mulliken
         assert m == m2
 
         m2._xyz[-1] = np.zeros(3)

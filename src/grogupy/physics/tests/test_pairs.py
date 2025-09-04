@@ -36,7 +36,7 @@ class TestPair:
 
         p = Pair(m1, m2, [1, 2, 3])
 
-        assert isinstance(p._dh, sisl.physics.Hamiltonian)
+        assert isinstance(p.dh_ds_id, np.ndarray)
 
         assert isinstance(p.M1, grogupy.MagneticEntity)
         assert isinstance(p.M2, grogupy.MagneticEntity)
@@ -90,9 +90,9 @@ class TestPair:
         p2 = p.copy()
         assert p == p2
 
-        p2._dh = sisl.get_sile("./benchmarks/Fe3GeTe2/Fe3GeTe2.fdf").read_hamiltonian()
+        p2._Pair__dh_ds_id = np.array([0, 0])
         assert p != p2
-        p2._dh = p._dh
+        p2._Pair__dh_ds_id = p.dh_ds_id
         assert p == p2
 
         p2.M1 = grogupy.MagneticEntity("./benchmarks/Fe3GeTe2/Fe3GeTe2.fdf", atom=3)
