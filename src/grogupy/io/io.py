@@ -24,9 +24,11 @@ import warnings
 from os.path import join
 from typing import Union
 
+import h5py
 import numpy as np
 
-from grogupy import __version__
+from grogupy import CONFIG, __version__
+from grogupy._core.utilities import arrays_lists_equal, make_contour, make_kset
 from grogupy.batch.timing import DefaultTimer
 from grogupy.physics import Builder, Contour, Hamiltonian, Kspace, MagneticEntity, Pair
 
@@ -88,6 +90,14 @@ def load_Contour(infile: Union[str, dict]) -> Contour:
     out = object.__new__(Contour)
     out.__setstate__(infile)
 
+    if len(out.samples) == 0:
+        try:
+            out.samples, out.weights = make_contour(
+                out.emin, out.emax, out.eset, out.esetp
+            )
+        except:
+            print("Failed to recreate contour!")
+
     return out
 
 
@@ -116,6 +126,13 @@ def load_Kspace(infile: Union[str, dict]) -> Kspace:
     # build instance
     out = object.__new__(Kspace)
     out.__setstate__(infile)
+
+    if len(out.kpoints) == 0:
+        try:
+            out.kpoints = make_kset(out.kset)
+            out.weights = np.ones(len(out.kpoints)) / len(out.kpoints)
+        except:
+            print("Failed to recreate kspace!")
 
     return out
 
@@ -233,6 +250,22 @@ def load_Builder(infile: Union[str, dict]) -> Builder:
     out = object.__new__(Builder)
     out.__setstate__(infile)
 
+    if len(out.contour.samples) == 0:
+        try:
+            out.contour.samples, out.contour.weights = make_contour(
+                out.contour.emin, out.contour.emax, out.contour.eset, out.contour.esetp
+            )
+        except:
+            print("Failed to recreate contour!")
+    if len(out.kspace.kpoints) == 0:
+        try:
+            out.kspace.kpoints = make_kset(out.kspace.kset)
+            out.kspace.weights = np.ones(len(out.kspace.kpoints)) / len(
+                out.kspace.kpoints
+            )
+        except:
+            print("Failed to recreate kspace!")
+
     return out
 
 
@@ -275,7 +308,7 @@ def load(
         "_Builder__architecture",
         "_Builder__apply_spin_model",
         "_Builder__spin_model",
-        "ref_xcf_orientations",
+        "_Builder__ref_xcf_orientations",
         "_rotated_hamiltonians",
         "SLURM_ID",
         "_Builder__version",
@@ -317,10 +350,10 @@ def load(
     ]:
         return load_Hamiltonian(infile)
     elif list(dat.keys()) == [
-        "_dh",
+        "_Pair__dh_ds_id",
+        "cell",
         "M1",
         "M2",
-        "cell",
         "supercell_shift",
         "_Gij",
         "_Gji",
@@ -329,15 +362,15 @@ def load(
     ]:
         return load_Pair(infile)
     elif list(dat.keys()) == [
-        "_dh",
-        "_ds",
         "infile",
+        "_MagneticEntity__dh_ds_id",
+        "_MagneticEntity__cell",
         "_atom",
         "_l",
         "_orbital_box_indices",
+        "_total_orbital_box_indices",
         "_tags",
-        "_total_mulliken",
-        "_local_mulliken",
+        "_mulliken",
         "_xyz",
         "_Vu1",
         "_Vu2",
@@ -475,37 +508,143 @@ def save(
         )
 
 
+def save_grogupy(
+    builder: Builder,
+    path: Union[None, str] = None,
+) -> Union[None, str]:
+    """Creates a grogupy output file.
+
+    Parameters
+    ----------
+    builder: Builder
+        The system that we want to save
+    path: Union[None, str], optional
+        Output path or if None it returns a string, by default None
+
+    Returns
+    -------
+    out: Union[None, str]
+        A string of the output file or None, in which case it is written
+        to the path
+    """
+
+    if path is not None:
+        if not path.endswith(".grogupy.txt"):
+            path += ".grogupy.txt"
+
+    section = "--------------------------------------------------------------------------------"
+    subsection = "----------------------------------------"
+    newline = "\n"
+
+    out = ""
+    out += builder.__str__()[:-1]
+    out += newline
+
+    out += "Magnetic entities" + newline
+    out += f"Number of magnetic entities {len(builder.magnetic_entities)}" + newline
+    for mag_ent in builder.magnetic_entities:
+        out += subsection + newline
+        out += "Tag\t\t\t" + mag_ent.tag + newline
+        out += "Atom\t\t" + " ".join(map(lambda s: f"{s:d}", mag_ent._atom))
+        out += newline
+        out += "Shell"
+        print(mag_ent._l)
+        for shell in mag_ent._l:
+            out += "\t\t" + " ".join(
+                map(lambda s: "None" if s is None else f"{s:d}", shell)
+            )
+            out += newline
+        out += "Orbital box\t" + " ".join(
+            map(lambda s: f"{s:d}", mag_ent._orbital_box_indices)
+        )
+        out += newline
+        out += "Position\tx [Ang]\t\ty [Ang]\t\tz [Ang]" + newline
+        for xyz in mag_ent._xyz:
+            out += "\t\t" + "\t".join(map(lambda s: f"{s:.8f}", xyz))
+            out += newline
+        out += "Energies [eV]" + newline
+        for e in mag_ent.energies:
+            out += "\t\t" + "\t".join(map(lambda s: f"{s:.8e}", e))
+            out += newline
+    out += subsection + newline
+    out += section + newline
+
+    out += "Pairs" + newline
+    out += f"Number of pairs {len(builder.pairs)}" + newline
+    out += subsection + newline
+    for pair in builder.pairs:
+        out += subsection + newline
+        out += "Tags\t\t" + pair.tags[0] + "\t" + pair.tags[1] + newline
+        out += "Cell shift\t" + "\t".join(map(str, pair.supercell_shift))
+        out += f"\t# Distance: {pair.distance} Ang" + newline
+        out += "Energies [eV]" + newline
+        for e in pair.energies:
+            out += "\t\t" + "\t".join(map(lambda s: f"{s:.8e}", e))
+            out += newline
+    out += subsection + newline
+    out += section + newline
+    # compare Mullikens
+    mismatch = False
+    base = builder.magnetic_entities[0]
+    for m in builder.magnetic_entities:
+        if m._mulliken is None and base._mulliken is None:
+            pass
+        else:
+            if not arrays_lists_equal(m._mulliken, base._mulliken):
+                mismatch = True
+                break
+    if not mismatch and base._mulliken is not None:
+        out += "Mulliken" + newline
+        for m in builder.magnetic_entities[0]._mulliken.T:
+            out += "\t".join(map(lambda s: f"{s:.8e}", m))
+            out += newline
+        out += section + newline
+
+    if path is None:
+        return out
+
+    with open(path, "w") as file:
+        file.write(out)
+
+
 def save_UppASD(
     builder: Builder,
-    folder: str,
+    folder: Union[None, str] = None,
     fast_compare: bool = False,
-    magnetic_moment: str = "total",
+    spin_moment: str = "total",
     comments: bool = True,
-):
+) -> Union[None, list[str]]:
     """Writes the UppASD input files to the given folder.
 
     The created input files are the posfile, momfile and
-    jfile. Furthermore a cell.tmp.txt file is created which
-    contains the unit cell for easy copy pasting.
+    jfile. Furthermore a the inpsd.dat file is created
+    with some basic information.
 
     Parameters
     ----------
     builder : Builder
         Main simulation object containing all the data
-    folder : str
-        The output folder where the files are created
+    folder : Union[None, str], optional
+        The output folder where the files are created or if it is
+        set to None, then a list of strings are returned with the
+        input data, by default, None
     fast_compare: bool, optional
         When determining the magnetic entity index a fast comparison can
         be used where only the tags are checked, by default False
-    magnetic_moment: str, optional
+    spin_moment: str, optional
         It switches the used spin moment in the output, can be 'total'
         for the whole atom or atoms involved in the magnetic entity or
         'local' if we only use the part of the mulliken projections that
         are exactly on the magnetic entity, which may be just a subshell
         of the atom, by default 'total'
     comments: bool, optional
-        Wether to add comments in the beginning of the cell.tmp.txt, by default True
+        Wether to add comments in the beginning of the inpsd.dat, by default True
 
+    Returns
+    -------
+    out: Union[None, str]
+        A list of the input file or None, in which case it is written
+        to the path
     """
 
     if builder.apply_spin_model == False:
@@ -519,36 +658,41 @@ def save_UppASD(
         # iterating over magnetic entities
         for i, mag_ent in enumerate(builder.magnetic_entities):
             # calculating positions in basis vector coordinates
-            basis_vector_coords = mag_ent.xyz_center @ np.linalg.inv(
-                builder.hamiltonian.cell
-            )
-            bvc = np.around(basis_vector_coords, decimals=5)
+            bvc = mag_ent.xyz_center @ np.linalg.inv(builder.hamiltonian.cell)
             # adding line to posfile
-            posfile += f"{i+1} {i+1} {bvc[0]:.5f} {bvc[1]:.5f} {bvc[2]:.5f}\n"
-            # if magnetic moment is local
-            if magnetic_moment.lower() == "l":
+            posfile += f"{i+1}\t{i+1}\t{bvc[0]:.8f}\t\t{bvc[1]:.8f}\t\t{bvc[2]:.8f}\n"
+            # if spin moment is local
+            if spin_moment[0].lower() == "l":
                 S = np.array([mag_ent.local_Sx, mag_ent.local_Sy, mag_ent.local_Sz])
-            # if magnetic moment is total
-            else:
+            # if spin moment is total
+            elif spin_moment[0].lower() == "t":
                 S = np.array([mag_ent.total_Sx, mag_ent.total_Sy, mag_ent.total_Sz])
+            else:
+                raise Exception(
+                    f"Unrecognized spin moment: {spin_moment}. It can be local or total."
+                )
+
             # get the norm of the vector
             S_abs = np.linalg.norm(S)
             S = S / S_abs
-            S = np.around(S, decimals=5)
-            S_abs = np.around(S_abs, decimals=5)
             # adding line to momfile
-            momfile += f"{i+1} 1 {S_abs:.5f} {S[0]:.5f} {S[1]:.5f} {S[2]:.5f}\n"
+            momfile += (
+                f"{i+1}\t1\t{S_abs:.8f}\t\t{S[0]:.8f}\t\t{S[1]:.8f}\t\t{S[2]:.8f}\n"
+            )
     else:
-        momfile = "No on site anisotropy in Isotropic Exchange only mode!"
+        momfile = "# No on site anisotropy in Isotropic Exchange only mode!"
 
     jfile = ""
     if not builder.spin_model == "isotropic-only":
-        # adding anisotropy to jfile
+        # adding anisotropy to jfile, we need -1, because Uppsala
+        # converts it back
         for i, mag_ent in enumerate(builder.magnetic_entities):
-            K = np.around(mag_ent.K_mRy.flatten(), decimals=5)
+            K = -mag_ent.K_mRy.flatten()
             # adding line to jfile
             jfile += (
-                f"{i+1} {i+1} 0 0 0 " + " ".join(map(lambda x: f"{x:.5f}", K)) + "\n"
+                f"{i+1}\t{i+1}\t0\t0\t0\t"
+                + "\t\t".join(map(lambda x: f"{x:.8f}", K))
+                + "\n"
             )
 
     # iterating over pairs
@@ -568,47 +712,51 @@ def save_UppASD(
 
         # this is the unit cell shift
         shift = pair.supercell_shift
-        if builder.spin_model == "isotropic-only":
-            J = np.around(-2 * pair.J_iso_mRy.flatten(), decimals=5)
-        else:
-            # -2 for convention, from Marci
-            J = np.around(-2 * pair.J_mRy.flatten(), decimals=5)
+        # -1/2 for convention, from uppsala
+        J = -1 / 2 * pair.J_mRy.flatten()
         # adding line to jfile
         jfile += (
-            f"{ai} {aj} {shift[0]} {shift[1]} {shift[2]} "
-            + " ".join(map(lambda x: f"{x:.5f}", J))
+            f"{ai}\t{aj}\t{shift[0]}\t{shift[1]}\t{shift[2]}\t"
+            + "\t\t".join(map(lambda x: f"{x:.8f}", J))
             + "\n"
         )
 
-    # cell as easily copy pastable string
-    c = np.around(builder.hamiltonian.cell, 5)
-    string = f"{c[0,0]} {c[0,1]} {c[0,2]}\n{c[1,0]} {c[1,1]} {c[1,2]}\n{c[2,0]} {c[2,1]} {c[2,2]}\n\n\n"
-
     # writing them to the given folder
-    with open(join(folder, "cell.tmp.txt"), "w") as f:
-        print(string, file=f)
+    inpsd = ""
+    # if comments are requested
+    if comments:
+        inpsd += "#" + "\n#".join(str(builder).split("\n"))[:-1]
+        inpsd += "\n\n"
 
-        # if comments are requested
-        if comments:
-            print(
-                "\n".join(["# " + row for row in builder.__str__().split("\n")]), file=f
-            )
+    inpsd += "cell " + " \t".join(map(lambda s: f"{s:.8f}", builder.cell[0])) + "\n"
+    inpsd += "     " + " \t".join(map(lambda s: f"{s:.8f}", builder.cell[1])) + "\n"
+    inpsd += "     " + " \t".join(map(lambda s: f"{s:.8f}", builder.cell[2])) + "\n"
+    inpsd += "posfile    ./posfile" + "\n"
+    inpsd += "momfile    ./momfile" + "\n"
+    inpsd += "exchange   ./jfile" + "\n"
+    inpsd += "\n\n"
+    inpsd += "do_jtensor 1" + "\n"
 
-    with open(join(folder, "jfile"), "w") as f:
-        print(jfile, file=f)
-    with open(join(folder, "momfile"), "w") as f:
-        print(momfile, file=f)
-    with open(join(folder, "posfile"), "w") as f:
-        print(posfile, file=f)
+    if folder is None:
+        return [inpsd, posfile, momfile, jfile]
+
+    with open(join(folder, "inpsd.dat"), "w") as file:
+        file.write(inpsd)
+    with open(join(folder, "momfile"), "w") as file:
+        file.write(momfile)
+    with open(join(folder, "posfile"), "w") as file:
+        file.write(posfile)
+    with open(join(folder, "jfile"), "w") as file:
+        file.write(jfile)
 
 
 def save_Vampire(
     builder: Builder,
-    folder: str,
+    folder: Union[None, str] = None,
     fast_compare: bool = False,
-    magnetic_moment: str = "total",
+    spin_moment: str = "total",
     comments: bool = True,
-):
+) -> Union[None, tuple[str, str, str]]:
     """Writes the Vampire input files to the given folder.
 
     The main Vampire input file, the .mat and .UCF files
@@ -618,12 +766,14 @@ def save_Vampire(
     ----------
     builder : Builder
         Main simulation object containing all the data
-    folder : str
-        The output folder where the files are created
+    folder : Union[None, str], optional
+        The output folder where the files are created or if it is
+        set to None, then a list of strings are returned with the
+        input data, by default, None
     fast_compare: bool, optional
         When determining the magnetic entity index a fast comparison can
         be used where only the tags are checked, by default False
-    magnetic_moment: str, optional
+    spin_moment: str, optional
         It switches the used spin moment in the output, can be 'total'
         for the whole atom or atoms involved in the magnetic entity or
         'local' if we only use the part of the mulliken projections that
@@ -632,185 +782,467 @@ def save_Vampire(
     comments: bool, optional
         Wether to add comments in the beginning of the input files, by default True
 
+    Returns
+    -------
+    out: Union[None, tuple[str, str, str]]
+        A list of the input files or None, in which case it is written
+        to the path
     """
 
+    # ===============================================================
+    # Cell transformation
+    # ===============================================================
     # number of atoms in the unit cell, number of new layers
     MODULUS = len(builder.magnetic_entities)
 
-    cell = builder.hamiltonian.cell
-    # 1 or -1, direction of unit cell 'tilt'
-    if np.isclose(
-        np.dot(cell[0] / np.linalg.norm(cell[0]), cell[1] / np.linalg.norm(cell[1])),
-        -0.5,
+    # if it is not a rectangular cell, we try to convert it,
+    # but it only works for threefold rotational systems
+    normalized_cell = builder.cell / np.linalg.norm(builder.cell, axis=1)
+    if not np.isclose(
+        np.linalg.norm(
+            np.dot(np.cross(normalized_cell[0], normalized_cell[1]), normalized_cell[2])
+        ),
+        1,
     ):
-        DIRECTION = -1
-    elif np.isclose(
-        np.dot(cell[0] / np.linalg.norm(cell[0]), cell[1] / np.linalg.norm(cell[1])),
-        0.5,
-    ):
-        DIRECTION = 1
-    else:
-        raise Exception("Unknown unit cell!")
-    # test for perpendicular z orientation
-    if not np.allclose(cell[2] / np.linalg.norm(cell[2]), np.array([0, 0, 1])):
-        raise Exception("Unknown unit cell!")
+        if len(builder.magnetic_entities) != 2:
+            warnings.warn("Only two magnetic entities in the unit cell is tested!")
+        # DIRECTION should be set to 1 or -1 based on the tilt of the paralelogram
+        if np.isclose(
+            np.dot(normalized_cell[0], normalized_cell[1]),
+            -0.5,
+        ):
+            DIRECTION = -1
+        elif np.isclose(
+            np.dot(normalized_cell[0], normalized_cell[1]),
+            0.5,
+        ):
+            DIRECTION = 1
+        else:
+            raise Exception("The unit cell is not threefold rotational symmetric!")
 
-    # new rectangular cell
-    a = builder.hamiltonian.cell[0]
-    b = np.array([0, np.sqrt(3), 0]) * a[0]
-    cell = np.array([a, b, builder.hamiltonian.cell[2]])
+        # test for perpendicular third orientation
+        if not np.allclose(normalized_cell[2], np.array([0, 0, 1])):
+            raise Exception("The third unit cell vector is not perpendicular!")
 
-    # generate new magnetic entities
+    # transform unit cell to rectangle
+    a1 = builder.cell[0]
+    a2 = np.array([0, np.sqrt(3), 0]) * a1[0]
+    a3 = builder.cell[2]
+    new_cell = np.array([a1, a2, a3])
+
+    # ===============================================================
+    # Generate new magnetic entities
+    # ===============================================================
     new_mag_ents = []
+    # iterate over magnetic entities
     for i in range(len(builder.magnetic_entities)):
+        # iterate over new sublattices
         for j in range(MODULUS):
-            mag_ent = builder.magnetic_entities[i]
-            xyz_rel = np.linalg.inv(cell) @ mag_ent.xyz_center
-            if magnetic_moment[0].lower() == "l":
-                mu = mag_ent.local_S
-            elif magnetic_moment[0].lower() == "t":
-                mu = mag_ent.total_S
+            m = builder.magnetic_entities[i]
+
+            # calculate relative coordinates
+            xyz = m.xyz_center
+            # WARNING: this only works for two magnetic entities...
+            if j == 1:
+                xyz += builder.cell[1]
+            # Vampire only accepts relative coordinates between 0 and 1
+            # this causes two problems
+            # 1 in the original geometry there is a Cr slightly outside the cell
+            # 2 the new atomic positions are shifted to one side of the new cell
+            # this can be solved by translating and rounding, but this
+            # is an ugly solution that works for these atomic positions
+            # without having to redefine the unit cell shift indices
+            warnings.warn("This is an ugly solution!")
+            xyz_rel = np.around(
+                np.linalg.inv(new_cell) @ xyz + np.array([0.5, 0, 0]), 4
+            )
+
+            # local or total spin moments
+            mu = None
+            if spin_moment[0].lower() == "l" and m.local_S is not None:
+                # because of the Vampire convention, which uses the
+                # magnetic moment we need two times the spin moment
+                mu = 2 * m.local_S
+            elif spin_moment[0].lower() == "t" and m.total_S is not None:
+                # because of the Vampire convention, which uses the
+                # magnetic moment we need two times the spin moment
+                mu = 2 * m.total_S
             else:
                 raise Exception(
-                    "Unrecognized magnetic moment: {magnetic_moment}. It can be local or total."
+                    f"Unrecognized spin moment: {spin_moment}. It can be local or total."
                 )
-            # this is the index, tag, new index, magnetic moment, relative atomix coordinates (xyz)
-            new_mag_ents.append(
-                [
-                    i,
-                    mag_ent.tag,
-                    MODULUS * i + j,
-                    mu,
-                    xyz_rel[0],
-                    xyz_rel[1],
-                    xyz_rel[2],
-                ]
-            )
-    new_mag_ents = np.array(new_mag_ents, dtype=object)
 
-    # generate new pairs
+            new_mag_ents.append(
+                dict(
+                    idx=i,  # original magnetic entity index
+                    tag=m.tag,  # tag
+                    spin_moment=mu,  # magnetic moment
+                    new_idx=MODULUS * i + j,  # new magnetic entity index
+                    relative_coordinates=xyz_rel,  # relative atomic coordinates
+                )
+            )
+
+    # ===============================================================
+    # Generate new pairs
+    # ===============================================================
     new_pairs = []
-    for l in range(len(builder.pairs)):
-        for k in range(MODULUS):
-            # current pair
-            pair = builder.pairs[l]
+    # iterate over pairs
+    for i in range(len(builder.pairs)):
+        # iterate over new sublattices
+        for j in range(MODULUS):
+            p = builder.pairs[i]
+
             # iterating over magnetic entities and comparing them to the ones stored in the pairs
-            for i, mag_ent in enumerate(builder.magnetic_entities):
+            m1_idx = None
+            m2_idx = None
+            for k, mag_ent in enumerate(builder.magnetic_entities):
                 if fast_compare:
-                    if mag_ent.tag == pair.M1.tag:
-                        p = i
-                    if mag_ent.tag == pair.M2.tag:
-                        q = i
+                    if mag_ent.tag == p.M1.tag:
+                        m1_idx = k
+                    if mag_ent.tag == p.M2.tag:
+                        m2_idx = k
                 else:
-                    if mag_ent == pair.M1:
-                        p = i
-                    if mag_ent == pair.M2:
-                        q = i
+                    if mag_ent == p.M1:
+                        m1_idx = k
+                    if mag_ent == p.M2:
+                        m2_idx = k
+            if m1_idx is None or m2_idx is None:
+                raise Exception("Magnetic entities not found!")
 
             # unit cell shift of the pair
-            i = pair.supercell_shift[0]
-            j = pair.supercell_shift[1]
-            k = pair.supercell_shift[2]
+            shift1 = p.supercell_shift[0]
+            shift2 = p.supercell_shift[1]
+            shift3 = p.supercell_shift[2]
 
             # new indices and unit cell shifts
-            a = [
-                MODULUS * p + k,
-                MODULUS * q + (k + (j % MODULUS + MODULUS) % MODULUS) % MODULUS,
-                i
-                + DIRECTION * ((j - (j % MODULUS + MODULUS) % MODULUS) // MODULUS)
-                + DIRECTION * ((k + (j % MODULUS + MODULUS) % MODULUS) // MODULUS),
-                (j - (j % MODULUS + MODULUS) % MODULUS) // MODULUS
-                + (k + (j % MODULUS + MODULUS) % MODULUS) // MODULUS,
-                k,
-            ]
-            # corresponding exchange in J
-            b = list(builder.pairs[l].J_J.flatten())
-            # write out data
-            new_pairs.append(a + b)
-    new_pairs = np.array(new_pairs)
+            new_pairs.append(
+                dict(
+                    m1=MODULUS * m1_idx + j,
+                    m2=MODULUS * m2_idx
+                    + (j + (shift2 % MODULUS + MODULUS) % MODULUS) % MODULUS,
+                    uc_shift=[
+                        shift1
+                        + DIRECTION
+                        * ((shift2 - (shift2 % MODULUS + MODULUS) % MODULUS) // MODULUS)
+                        + DIRECTION
+                        * ((j + (shift2 % MODULUS + MODULUS) % MODULUS) // MODULUS),
+                        (shift2 - (shift2 % MODULUS + MODULUS) % MODULUS) // MODULUS
+                        + (j + (shift2 % MODULUS + MODULUS) % MODULUS) // MODULUS,
+                        shift3,
+                    ],
+                    # corresponding exchange in Joule
+                    # and convention change (Vampire does not have 1/2,
+                    # but it sums only on half of the pairs)
+                    J=-1 * builder.pairs[i].J_J.flatten(),
+                )
+            )
 
-    # Vampire main file
-    with open(join(folder, "input"), "w") as f:
-        if comments:
-            f.write("#" + "\n#".join(str(builder).split("\n"))[:-1])
-            f.write("\n\n\n")
-
-        f.write("material:file = vampire.mat\n")
-        f.write("material:unit-cell-file = vampire.UCF\n")
-        f.write("#========================================\n")
-        f.write("# TODO: your simulation parameters\n")
+    # ===============================================================
+    # Write Vampire input files
+    # ===============================================================
+    # Vampire main input file
+    inp = ""
+    if comments:
+        inp += "#" + "\n#".join(str(builder).split("\n"))[:-1]
+        inp += "\n\n"
+    inp += "#------------------------------------------\n"
+    inp += "# Grogupy generated Vampire input file to \n"
+    inp += "# perform Curie temperature calculation\n"
+    inp += "#------------------------------------------\n"
+    inp += "material:file =           vampire.mat\n"
+    inp += "material:unit-cell-file = vampire.UCF\n"
+    inp += "#------------------------------------------\n"
+    inp += "# Creation attributes:\n"
+    inp += "#------------------------------------------\n"
+    inp += "dimensions:system-size-x = 50 !nm\n"
+    inp += "dimensions:system-size-y = 50 !nm\n"
+    # if the system is 2D and not bulk
+    if np.allclose(builder.pairs.supercell_shift[:, 2], 0):
+        # divide by 10 to convert Ang to nm
+        # constrain system size to less than a unit cell to get a single layer
+        inp += f"dimensions:system-size-z = {np.linalg.norm(new_cell[2]) * 0.99 / 10} !nm\n"
+    # if it is bulk use the same size as x and y
+    else:
+        inp += "dimensions:system-size-z = 50 !nm\n"
+    inp += "#------------------------------------------\n"
+    inp += "# Simulation attributes:\n"
+    inp += "#------------------------------------------\n"
+    inp += "sim:minimum-temperature = 0.0\n"
+    inp += "sim:maximum-temperature = 200.0\n"
+    inp += "sim:temperature-increment = 1.0\n"
+    inp += "sim:loop-time-steps = 50000.0\n"
+    inp += "sim:equilibration-time-steps = 100000.0\n"
+    inp += "sim:time-step = 0.1 !fs\n"
+    inp += "#------------------------------------------\n"
+    inp += "# Program and integrator details\n"
+    inp += "#------------------------------------------\n"
+    inp += "sim:program = curie-temperature\n"
+    inp += "sim:integrator = monte-carlo # or llg-heun\n"
+    inp += "#------------------------------------------\n"
+    inp += "# Data output\n"
+    inp += "#------------------------------------------\n"
+    inp += "output:real-time\n"
+    inp += "output:temperature\n"
+    inp += "output:magnetisation\n"
+    inp += "output:mean-susceptibility\n"
+    inp += "screen:temperature\n"
+    inp += "screen:magnetisation\n"
 
     # Vampire material file
-    with open(join(folder, "vampire.mat"), "w") as f:
-        if comments:
-            f.write("#" + "\n#".join(str(builder).split("\n"))[:-1])
-            f.write("\n\n\n")
+    mat = (
+        f"material:num-materials = {len(np.unique([m['tag'] for m in new_mag_ents]))}\n"
+    )
+    mat += "#---------------------------------------------------\n"
+    unique = []
+    for i in range(len(new_mag_ents)):
+        if new_mag_ents[i]["tag"] not in unique:
+            mat += "\n"
+            mat += f"# Material {new_mag_ents[i]['idx']+1}\n"
+            mat += f"material[{new_mag_ents[i]['idx']+1}]:material-name = {new_mag_ents[i]['tag'].replace(':', '_')}\n"
+            mat += f"material[{new_mag_ents[i]['idx']+1}]:material-element = "
+            mat += f"{''.join([i for i in new_mag_ents[i]['tag'].split('(')[0] if not i.isdigit()])}\n"
+            mat += f"material[{new_mag_ents[i]['idx']+1}]:unit-cell-category = {new_mag_ents[i]['idx']+1}\n"
+            mat += f"material[{new_mag_ents[i]['idx']+1}]:atomic-spin-moment = {new_mag_ents[i]['spin_moment']} ! muB\n"
+            mat += f"material[{new_mag_ents[i]['idx']+1}]:initial-spin-direction = 0, 0, 1\n"
+            mat += f"material[{new_mag_ents[i]['idx']+1}]:damping-constant = 0.1\n"
 
-        f.write(f"material:num-materials = {len(new_mag_ents)}\n")
-        f.write("#---------------------------------------------------\n")
-        for i in range(len(new_mag_ents)):
-            f.write(f"# Material {i+1}\n")
-            f.write("\n")
-            f.write("#---------------------------------------------------\n")
-
-            f.write(f"material[{i+1}]:material-name = {new_mag_ents[i,1]}\n")
-            f.write(
-                f"material[{i+1}]:material-element = {''.join([i for i in new_mag_ents[i,1].split('(')[0] if not i.isdigit()])}\n"
+            ################################################################################
+            # Calculate on-site anisotropy in Vampire format
+            ################################################################################
+            # convert to Joule from eV
+            eigs, eigvecs = np.linalg.eig(
+                builder.magnetic_entities[new_mag_ents[i]["idx"]].K_J
             )
-            f.write(f"material[{i+1}]:atomic-spin-moment = {new_mag_ents[i,3]} ! muB\n")
 
-            f.write(f"material[{i+1}]:initial-spin-direction = random\n")
-            f.write(f"material[{i+1}]:damping-constant = 0.1\n")
-            f.write(
-                f"material[{i+1}]:uniaxial-anisotropy-constant = \t\tWarning: tensorial anisotropy is not possible, this is a user input!\n"
+            # we iterate over a range of possible roundings to find the unique eigenvalue
+            # (we could take the minimum, but that does not neccesarily work for easy plane)
+            easy_idx = None
+            for r in range(40):
+                # round eigenvalues
+                reigs = np.around(eigs, r)
+                # if there are two unique eigenvalues we can get the easy axis,
+                # else continue
+                if len(np.unique(reigs)) == 2:
+                    # if the eigenvalues contains the first unique eigenvalue only once,
+                    # then it is the easy axis index
+                    if (np.unique(reigs)[0] == reigs).sum() == 1:
+                        easy_idx = np.where(np.unique(reigs)[0] == reigs)[0][0]
+                        plane_idx = np.where(np.unique(reigs)[1] == reigs)[0]
+                        # calculate the anisotropy constant from the easy axis and hard plane difference
+                        anisotropy_constant = eigs[plane_idx].mean() - abs(
+                            eigs[easy_idx]
+                        )
+                    # else the second unique eigenvalue is the easy axis
+                    else:
+                        easy_idx = np.where(np.unique(reigs)[1] == reigs)[0][0]
+                        plane_idx = np.where(np.unique(reigs)[0] == reigs)[0]
+                        # calculate the anisotropy constant from the easy axis and hard plane difference
+                        anisotropy_constant = eigs[plane_idx].mean() - abs(
+                            eigs[easy_idx]
+                        )
+                    break
+            # if there is no unique eigenvalue
+            if easy_idx is None:
+                print(eigs)
+                raise Exception("Easy axis not found!")
+
+            mat += f"material[{new_mag_ents[i]['idx']+1}]:uniaxial-anisotropy-constant = {anisotropy_constant}\n"
+            mat += (
+                f"material[{new_mag_ents[i]['idx']+1}]:uniaxial-anisotropy-direction = "
             )
-            f.write("#---------------------------------------------------\n")
+            mat += ", ".join(map(lambda x: f"{x:.6e}", eigvecs[:, easy_idx]))
+            mat += "\n"
+            mat += "#---------------------------------------------------\n"
+            unique.append(new_mag_ents[i]["tag"])
 
     # Vampire unit cell file
-    with open(join(folder, "vampire.UCF"), "w") as f:
-        if comments:
-            f.write("#" + "\n#".join(str(builder).split("\n"))[:-1])
-            f.write("\n\n\n")
-
-        f.write("# Unit cell size:\n")
-        f.write(
-            "\t".join(map(lambda x: f"{x:.8f}", np.linalg.norm(cell, axis=1))) + "\n"
+    ucf = ""
+    ucf += "# Unit cell size:\n"
+    ucf += "\t".join(map(lambda x: f"{x:.8f}", np.linalg.norm(new_cell, axis=1))) + "\n"
+    # this is not used by Vampire, just fake cell vectors...
+    ucf += "# Unit cell lattice vectors:\n"
+    ucf += "1.0 0.0 0.0\n"
+    ucf += "0.0 1.0 0.0\n"
+    ucf += "0.0 0.0 1.0\n"
+    ucf += "# Atoms\n"
+    ucf += f"{len(new_mag_ents)}\t{len(new_mag_ents)}\n"
+    for i in range(len(new_mag_ents)):
+        ucf += f"{i}\t"
+        ucf += "\t".join(
+            map(lambda x: f"{x:.8f}", new_mag_ents[i]["relative_coordinates"])
         )
-        f.write("# Unit cell lattice vectors:\n")
-        f.write("\t".join(map(lambda x: f"{x:.8f}", cell[0])) + "\n")
-        f.write("\t".join(map(lambda x: f"{x:.8f}", cell[1])) + "\n")
-        f.write("\t".join(map(lambda x: f"{x:.8f}", cell[2])) + "\n")
-        f.write("# Atoms\n")
-        f.write(f"{len(new_mag_ents)}\t{len(new_mag_ents)}\n")
-        for i in range(len(new_mag_ents)):
-            f.write(
-                f"{i}\t"
-                + "\t".join(map(lambda x: f"{x:.8f}", new_mag_ents[i, 4:]))
-                + "\n"
-            )
-        f.write("# Interactions\n")
-        f.write(f"{len(new_pairs)} tensorial\n")
-        for i in range(len(new_pairs)):
-            f.write(
-                f"{i}\t"
-                + "\t".join(map(lambda x: f"{x:d}", new_pairs[i, :5].astype(int)))
-                + "\t"
-                + "\t".join(map(lambda x: f"{x:.6e}", new_pairs[i, 5:]))
-                + "\n"
-            )
+        ucf += f"\t{new_mag_ents[i]['idx']}"
+        ucf += f"\t{i+1}"
+        ucf += "\t0"
+        ucf += "\n"
+    ucf += "# Interactions\n"
+    ucf += f"{len(new_pairs)} tensorial\n"
+    for i in range(len(new_pairs)):
+        ucf += f"{i}\t"
+        ucf += f"{new_pairs[i]['m1']}\t{new_pairs[i]['m2']}\t"
+        ucf += "\t".join(map(lambda x: f"{x:d}", new_pairs[i]["uc_shift"]))
+        ucf += "\t"
+        ucf += "\t".join(map(lambda x: f"{x:.6e}", new_pairs[i]["J"]))
+        ucf += "\n"
+
+    # if the output folder was not given return the files as string
+    if folder is None:
+        return inp, mat, ucf
+    # else create the files in the folder
+    else:
+        with open(join(folder, "input"), "w") as file:
+            file.write(inp)
+        with open(join(folder, "vampire.mat"), "w") as file:
+            file.write(mat)
+        with open(join(folder, "vampire.UCF"), "w") as file:
+            file.write(ucf)
 
 
 def save_magnopy(
     builder: Builder,
-    path: str,
-    magnetic_moment: str = "total",
-    precision: Union[None, int] = None,
+    path: Union[None, str] = None,
+    spin_moment: str = "total",
     comments: bool = True,
-) -> None:
-    """Creates a magnopy input file based on a path.
+) -> Union[None, str]:
+    """Creates a magnopy input file.
 
-    It does not create the folder structure if the path is invalid.
-    It saves to the outfile.
+    Parameters
+    ----------
+    builder: Builder
+        The system that we want to save
+    path: Union[None, str], optional
+        Output path or if None it returns a string, by default None
+    spin_moment: str, optional
+        It switches the used spin moment in the output, can be 'total'
+        for the whole atom or atoms involved in the magnetic entity or
+        'local' if we only use the part of the mulliken projections that
+        are exactly on the magnetic entity, which may be just a subshell
+        of the atom, by default 'total'
+    comments: bool, optional
+        Wether to add comments in the beginning of file, by default True
+
+    Returns
+    -------
+    out: Union[None, str]
+        A string of the input file or None, in which case it is written
+        to the path
+    """
+
+    if path is not None:
+        if not path.endswith(".magnopy.txt"):
+            path += ".magnopy.txt"
+
+    if builder.apply_spin_model == False:
+        raise Exception(
+            "Exchange and anisotropy is not calculated! Use apply_spin_model=True"
+        )
+
+    section = "================================================================================"
+    subsection = "--------------------------------------------------------------------------------"
+    newline = "\n"
+
+    out = ""
+    out += section + newline
+    out += "GROGU INFORMATION" + newline
+    if comments:
+        out += newline
+        out += "#" + "\n#".join(str(builder).split("\n"))[:-1]
+        out += newline + newline
+
+    out += section + newline
+    out += "Hamiltonian convention" + newline
+    out += "Double counting      true" + newline
+    out += "Normalized spins     true" + newline
+    out += "Intra-atomic factor  +1" + newline
+    out += "Exchange factor      +0.5" + newline
+
+    out += section + newline
+    out += f"Cell (Ang)" + newline
+    if builder.cell is not None:
+        out += "\t".join(map(lambda s: f"{s:.8f}", builder.cell[0])) + newline
+        out += "\t".join(map(lambda s: f"{s:.8f}", builder.cell[1])) + newline
+        out += "\t".join(map(lambda s: f"{s:.8f}", builder.cell[2])) + newline
+    else:
+        raise Exception("Cell is not defined!")
+
+    out += section + newline
+    out += "Magnetic sites" + newline
+    out += f"Number of sites {len(builder.magnetic_entities)}" + newline
+    out += (
+        "Name\t\tx (Ang)\t\ty (Ang)\t\tz (Ang)\t\ts\t\t\tsx\t\t\tsy\t\t\tsz" + newline
+    )
+    for mag_ent in builder.magnetic_entities:
+        out += mag_ent.tag + "\t"
+        out += "\t".join(map(lambda s: f"{s:.8f}", mag_ent._xyz.mean(axis=0)))
+        out += "\t"
+        if spin_moment[0].lower() == "l":
+            s = np.array([mag_ent.local_Sx, mag_ent.local_Sy, mag_ent.local_Sz])
+            if s[0] is not None:
+                s = s / np.linalg.norm(s)
+                out += f"{mag_ent.local_S:.8f}\t{s[0]:.8f}\t{s[1]:.8f}\t{s[2]:.8f}"
+            else:
+                out += "None\tNone\tNone\tNone"
+        elif spin_moment[0].lower() == "t":
+            s = np.array([mag_ent.total_Sx, mag_ent.total_Sy, mag_ent.total_Sz])
+            if s[0] is not None:
+                s = s / np.linalg.norm(s)
+                out += f"{mag_ent.total_S:.8f}\t{s[0]:.8f}\t{s[1]:.8f}\t{s[2]:.8f}"
+            else:
+                out += "None\tNone\tNone\tNone"
+        else:
+            raise Exception(
+                f"Unrecognized spin moment: {spin_moment}. It can be local or total."
+            )
+        out += newline
+
+    out += section + newline
+    out += "Intra-atomic anisotropy tensor (meV)" + newline
+    for mag_ent in builder.magnetic_entities:
+        out += subsection + newline
+        out += mag_ent.tag + newline
+        if mag_ent.K_meV is not None:
+            K = mag_ent.K_meV
+        else:
+            K = np.zeros((3, 3))
+        out += "Matrix" + newline
+        out += "\t" + "\t".join(map(lambda s: f"{s:.8f}", K[0])) + newline
+        out += "\t" + "\t".join(map(lambda s: f"{s:.8f}", K[1])) + newline
+        out += "\t" + "\t".join(map(lambda s: f"{s:.8f}", K[2])) + newline
+    out += subsection + newline
+
+    out += section + newline
+    out += "Exchange tensor (meV)" + newline
+    out += f"Number of pairs {len(builder.pairs)}" + newline
+    out += subsection + newline
+    out += "Name1\t\tName2\t\ti\tj\tk\td (Ang)" + newline
+    for pair in builder.pairs:
+        out += subsection + newline
+        tag = pair.tags[0] + "\t" + pair.tags[1]
+        out += tag + "\t" + "\t".join(map(str, pair.supercell_shift))
+        out += f"\t{pair.distance}" + newline
+        if pair.J_meV is not None:
+            J = pair.J_meV
+        else:
+            raise Exception("J is None!")
+        out += "Matrix" + newline
+        out += "\t" + "\t".join(map(lambda s: f"{s:.8f}", J[0])) + newline
+        out += "\t" + "\t".join(map(lambda s: f"{s:.8f}", J[1])) + newline
+        out += "\t" + "\t".join(map(lambda s: f"{s:.8f}", J[2])) + newline
+    out += subsection + newline
+    out += section + newline
+
+    if path is None:
+        return out
+
+    with open(path, "w") as file:
+        file.write(out)
+
+
+def save_HDF5(
+    builder: Builder,
+    path: str,
+) -> None:
+    """Creates a HDF5 output file.
 
     Parameters
     ----------
@@ -818,180 +1250,108 @@ def save_magnopy(
         The system that we want to save
     path: str
         Output path
-    magnetic_moment: str, optional
-        It switches the used magnetic moment in the output, can be 'total'
-        for the whole atom or atoms involved in the magnetic entity or
-        'local' if we only use the part of the mulliken projections that
-        are exactly on the magnetic entity, which may be just a subshell
-        of the atom, by default 'total'
-    precision: Union[None, int], optional
-        The precision of the magnetic parameters in the output, if None
-        everything is written, by default None
-    comments: bool, optional
-        Wether to add comments in the beginning of file, by default True
     """
 
-    if not path.endswith(".magnopy.txt"):
-        path += ".magnopy.txt"
+    if not path.endswith(".hdf5"):
+        path += ".hdf5"
+    file = h5py.File(path, "w")
 
-    data = builder.to_magnopy(
-        magnetic_moment=magnetic_moment, precision=precision, comments=comments
+    # Metadata
+    metadata = file.create_group("Metadata")
+    metadata.create_dataset("Version", data=builder.version)
+    metadata.create_dataset("Architecture", data=builder.architecture)
+    metadata.create_dataset("SLURM job ID", data=builder.SLURM_ID)
+    metadata.create_dataset("Input file", data=builder.infile)
+    # Hamiltonian
+    hamiltonian = file.create_group("Hamiltonian")
+    hamiltonian.create_dataset("Spin model", data=builder.spin_model)
+    if builder.hamiltonian is not None:
+        hamiltonian.create_dataset("Spin mode", data=builder.hamiltonian._spin_state)
+        hamiltonian.create_dataset("Number of orbitals", data=builder.hamiltonian.NO)
+    else:
+        hamiltonian.create_dataset("Spin mode", data="Not defined")
+        hamiltonian.create_dataset("Number of orbitals", data="Not defined")
+    # Solver
+    solver = file.create_group("Solver")
+    if builder.architecture == "CPU":
+        solver.create_dataset(
+            "Number of threads in the parallel cluster", data=CONFIG.parallel_size
+        )
+    elif builder.architecture == "GPU":
+        solver.create_dataset(
+            "Number of GPUs in the cluster", data=CONFIG.parallel_size
+        )
+    else:
+        raise Exception(f"Unknown architecture: {builder.architecture}")
+    if builder.parallel_mode is None:
+        solver.create_dataset("Parallelization is over", data="No parallelization")
+    else:
+        solver.create_dataset("Parallelization is over", data=builder.parallel_mode)
+    solver.create_dataset(
+        "Solver used for Greens function calculation",
+        data=builder.greens_function_solver,
     )
-    with open(path, "w") as file:
-        file.write(data)
-
-
-def read_magnopy(file: str, dense_output: bool = True):
-    """This function reads the magnopy input file and returns a dictionary
-
-    Parameters
-    ----------
-    file: str
-        Path to the ``magnopy`` input file
-    dense_output: bool, optional
-        It adds the magnetic sites to the anisotropy and then the anisotropy
-        to the pair information for easier post processing, by duplicating
-        data, by default True
-
-    Returns
-    -------
-    dict
-        The dictionary containing all the information from the ``magnopy`` file
-
-    Exception
-    ---------
-        If there is an unrecognised section
-    """
-
-    # read file
-    with open(file, "r") as f:
-        lines = f.readlines()
-
-    # this is a dense line that splits the magnopy file to sections,
-    # then splits the sections by lines
-    # this creates a list if lists of strings
-    sections = [
-        sec.split("\n")
-        for sec in "".join(lines).split(
-            "================================================================================\n"
-        )[1:-1]
-    ]
-
-    out = dict()
-    # iterate over sections
-    for section in sections:
-        if section[0] == "GROGU INFORMATION":
-            out["grogu_information"] = "\n".join(section)
-        elif section[0] == "Magnetic sites":
-            if section[2][:4] == "Name":
-                magnetic_sites = []
-                for l in section[3:-1]:
-                    l = l.split()
-                    site = dict()
-                    site["tag"] = l[0]
-                    site["xyz"] = [
-                        float(l[1]),
-                        float(l[2]),
-                        float(l[3]),
-                    ]
-                    site["s"] = float(l[4])
-                    site["s_xyz"] = [
-                        float(l[5]),
-                        float(l[6]),
-                        float(l[7]),
-                    ]
-                    magnetic_sites.append(site)
-                out["magnetic_sites"] = magnetic_sites
-            else:
-                warnings.warn("Not standard magnetic site definition!")
-                out["magnetic_sites"] = section
-        elif section[0] == "Hamiltonian convention":
-            hamiltonian_convention = []
-            for l in section[1:-1]:
-                l = l.split()
-                convention = dict()
-                convention["_".join(l[:-1]).lower()] = l[-1]
-                hamiltonian_convention.append(convention)
-            out["hamiltonian_convention"] = hamiltonian_convention
-        elif section[0] == "Cell (Ang)":
-            out["cell"] = np.array(
-                [
-                    section[1].split(),
-                    section[2].split(),
-                    section[3].split(),
-                ]
-            ).astype(float)
-        elif section[0] == "Intra-atomic anisotropy tensor (meV)":
-            # similar to the above processing, but here we separate
-            # the intra-atomic anisotropies to subsections
-            tmp = "\n".join(section).split(
-                "--------------------------------------------------------------------------------\n"
-            )
-            magnetic_sites = []
-            for site in tmp[1:-1]:
-                site = site.split("\n")[:-1]
-                out_site = dict()
-                out_site["tag"] = site[0]
-                out_site["K"] = np.array(
-                    [
-                        site[2].split(),
-                        site[3].split(),
-                        site[4].split(),
-                    ]
-                ).astype(float)
-                magnetic_sites.append(out_site)
-            out["anisotropy"] = magnetic_sites
-        elif section[0] == "Exchange tensor (meV)":
-            # similar to the above processing, but here we separate
-            # the pairs to subsections
-            tmp = "\n".join(section).split(
-                "--------------------------------------------------------------------------------\n"
-            )
-            pairs = []
-            for pair in tmp[2:-1]:
-                pair = pair.split("\n")[:-1]
-                out_pair = dict()
-                info_line = pair[0].split()
-                out_pair["tags"] = np.array(
-                    [
-                        info_line[0],
-                        info_line[1],
-                    ]
-                )
-                out_pair["cell_shift"] = np.array(
-                    [
-                        info_line[2],
-                        info_line[3],
-                        info_line[4],
-                    ]
-                ).astype(int)
-                out_pair["distance"] = float(info_line[5])
-                out_pair["J"] = np.array(
-                    [
-                        pair[2].split(),
-                        pair[3].split(),
-                        pair[4].split(),
-                    ]
-                ).astype(float)
-                pairs.append(out_pair)
-            out["exchange"] = pairs
+    if builder.greens_function_solver[0].lower() == "s":
+        max_g = builder.__max_g_per_loop
+    else:
+        if builder.contour is not None:
+            max_g = builder.contour.eset
         else:
-            raise Exception(f"Unknown section title: {section[0]}")
+            max_g = "Not defined"
+    solver.create_dataset(
+        "Maximum number of Greens function samples per batch", data=max_g
+    )
+    # Cell [Ang]
+    file.create_dataset("Cell [Ang]", data=builder.cell)
+    # Exchange field rotations
+    xcf = file.create_group("Exchange field rotations")
+    xcf.create_dataset("DFT axis", data=builder.scf_xcf_orientation)
+    rotations = xcf.create_group("Quantization axis and perpendicular directions")
+    for i, ref in enumerate(builder.ref_xcf_orientations):
+        r = rotations.create_group(str(i))
+        r.create_dataset("o", data=ref["o"])
+        r.create_dataset("vw", data=ref["vw"])
+    # Kspace
+    kspace = file.create_group("Kspace")
+    kspace.create_dataset("Nkpoints", data=builder.kspace.NK, dtype="i")
+    kspace.create_dataset("Kset", data=builder.kspace.kset, dtype="i")
+    # Contour
+    contour = file.create_group("Contour")
+    contour.create_dataset("Eset", data=builder.contour.eset, dtype="i")
+    contour.create_dataset("Esetp", data=builder.contour.esetp, dtype="i")
+    contour.create_dataset("Ebot", data=builder.contour.emin)
+    contour.create_dataset("Etop", data=builder.contour.emax)
+    # Magnetic entities
+    magnetic_entities = file.create_group("Magnetic entities")
+    for i, mag_ent in enumerate(builder.magnetic_entities):
+        m = magnetic_entities.create_group(str(i))
+        m.create_dataset("Tag", data=mag_ent.tag)
+        m.create_dataset("Atom", data=mag_ent._atom, dtype="i")
+        m.create_dataset("Shell", data=mag_ent._l, dtype="i")
+        m.create_dataset("Orbital box", data=mag_ent._orbital_box_indices, dtype="i")
+        m.create_dataset("Position [Ang]", data=mag_ent._xyz)
+        m.create_dataset("Energies [eV]", data=mag_ent.energies)
+    # Pairs
+    pairs = file.create_group("Pairs")
+    for i, pair in enumerate(builder.pairs):
+        p = pairs.create_group(str(i))
+        p.create_dataset("Tag", data=pair.tags)
+        p.create_dataset("Supercell shift", data=pair.supercell_shift, dtype="i")
+        p.create_dataset("Energies [eV]", data=pair.energies, dtype="i")
+    # Mullikens
+    mismatch = False
+    base = builder.magnetic_entities[0]
+    for m in builder.magnetic_entities:
+        if m._mulliken is None and base._mulliken is None:
+            pass
+        else:
+            if not arrays_lists_equal(m._mulliken, base._mulliken):
+                mismatch = True
+                break
+    if not mismatch and base._mulliken is not None:
+        file.create_dataset("Mulliken", data=base._mulliken)
 
-    if dense_output:
-        for ani in out["anisotropy"]:
-            for site in out["magnetic_sites"]:
-                if ani["tag"] == site["tag"]:
-                    ani["xyz"] = site["xyz"]
-                    ani["s"] = site["s"]
-                    ani["s_xyz"] = site["s_xyz"]
-        for pair in out["exchange"]:
-            for site in out["anisotropy"]:
-                if pair["tags"][0] == site["tag"]:
-                    pair["ai"] = site
-                if pair["tags"][1] == site["tag"]:
-                    pair["aj"] = site
-    return out
+    file.close()
 
 
 def read_fdf(path: str) -> dict:
