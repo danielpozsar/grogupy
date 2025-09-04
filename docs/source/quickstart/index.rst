@@ -12,7 +12,7 @@ Installation
         :columns: 12 12 12 12
 
         grogupy can be quickly installed via pip from 
-        `PyPI <https://pypi.org>`_.
+        `PyPI <https://pypi.org/project/grogupy/>`_.
 
         ++++
 
