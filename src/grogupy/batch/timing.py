@@ -20,6 +20,8 @@
 
 from time import time
 
+import numpy as np
+
 
 class DefaultTimer:
     """This class measures and stores the runtime of each object.
@@ -61,6 +63,20 @@ class DefaultTimer:
                 return True
             return False
         return False
+
+    def __repr__(self) -> str:
+        """String representation of the instance."""
+
+        out = f"<grogupy.DefaultTimer Measurements={len(self.times)}, Total runtime={np.array(list(self.times.values())).sum()} s>"
+
+        return out
+
+    def __str__(self) -> str:
+        """It prints the runtimes."""
+        out = "Runtimes:\n"
+        for k, v in self.times.items():
+            out += f"{k}: {v} s\n"
+        return out
 
     @property
     def times(self) -> dict:
