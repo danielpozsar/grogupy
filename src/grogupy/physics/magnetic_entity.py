@@ -167,7 +167,7 @@ class MagneticEntity:
     K_consistency : Union[None, float]
         Consistency check on the diagonal K elements, by default None
     dh_ds_id: str
-        ID of the underlying system so MagneticEntities cannot be
+        Hash of the underlying system so MagneticEntities cannot be
         mixed between Hamiltonians
     cell: NDArray
         Cell size of the underlying system so MagneticEntities cannot be
@@ -208,7 +208,12 @@ class MagneticEntity:
         else:
             raise Exception("Cannot setup without path or sisl objects!")
         # this is for checking underlying systems
-        self.__dh_ds_id: NDArray = np.array([id(dh), id(ds)])
+        dh_hash = hash(str(dh.Hk().data))
+        if ds is None:
+            ds_hash = hash(str(None))
+        else:
+            ds_hash = hash(str(ds.Dk().data))
+        self.__dh_ds_id: NDArray = np.array([ds_hash, dh_hash])
         self.__cell: NDArray = dh.geometry.cell
 
         atom, l, orbital, tag = parse_magnetic_entity(dh, atom, l, orb)
