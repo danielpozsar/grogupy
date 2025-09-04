@@ -632,9 +632,7 @@ def calculate_exchange_tensor(
     return J
 
 
-def fit_exchange_tensor(
-    energies: NDArray, ref_xcf: list[dict]
-) -> tuple[float, NDArray, NDArray, NDArray]:
+def fit_exchange_tensor(energies: NDArray, ref_xcf: list[dict]) -> NDArray:
     """Fits the exchange tensor to the energies.
 
     It uses a fitting method to calculate the exchange tensor from the
@@ -683,7 +681,7 @@ def fit_exchange_tensor(
 
 def calculate_isotropic_only(
     energies: NDArray,
-) -> float:
+) -> NDArray:
     """Calculates the isotropic exchange only.
 
     Parameters
@@ -707,7 +705,7 @@ def calculate_isotropic_only(
 
 def calculate_isotropic_biquadratic_only(
     energies: NDArray,
-) -> float:
+) -> NDArray:
     """Calculates the isotropic and isotropic biquadratic exchange only."""
 
     raise NotImplementedError
