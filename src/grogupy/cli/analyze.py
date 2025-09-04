@@ -71,18 +71,6 @@ def main():
     name += ".analysis.html"
 
     with open(name, "w") as file:
-        file.write(
-            save_grogupy(system)
-            .replace("\n", "<br>\n")
-            .replace(" ", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
-        )
-
-        file.write(
-            save_magnopy(system)
-            .replace("\n", "<br>\n")
-            .replace(" ", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
-        )
-
         fig = plot_contour(system.contour)
         file.write(fig.to_html(full_html=False, include_plotlyjs=True))
 
@@ -114,6 +102,18 @@ def main():
         ):
             fig = plot_DMI(system).add_traces(plot_pairs(system, connect=True).data)
             file.write(fig.to_html(full_html=False, include_plotlyjs=False))
+
+        file.write(
+            save_grogupy(system)
+            .replace("\n", "<br>\n")
+            .replace(" ", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
+        )
+
+        file.write(
+            save_magnopy(system)
+            .replace("\n", "<br>\n")
+            .replace(" ", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
+        )
 
     print(f"The output file is: {name}")
     print(__definitely_not_grogu__)
