@@ -130,8 +130,6 @@ OutSpinMoment   Total
 
 # save the magnopy file
 SaveMagnopy         True
-# precision of numerical values in the magnopy file
-MagnopyPrecision    None
 # add the simulation parameters to the magnopy file as comments
 Magnopy_Comments    True
 
