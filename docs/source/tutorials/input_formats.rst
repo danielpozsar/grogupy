@@ -110,6 +110,9 @@ format. See and compare the following examples.
             # used by all output modes
             out_spin_moment = "Total"
 
+            # save the grogupy file
+            save_grogupy = True
+
             # save the magnopy file
             save_magnopy = True
             # add the simulation parameters to the magnopy file as comments
@@ -265,7 +268,10 @@ format. See and compare the following examples.
             # either total or local, which controls if only the magnetic
             # entity's spin moment or the whole atom's spin moment is printed
             # used by all output modes
-            OutMagneticMoment           Total
+            OutSpinMoment           Total
+
+            # save the grogupy file
+            SaveGrogupy                 True
 
             # save the magnopy file
             SaveMagnopy                 True
@@ -482,6 +488,9 @@ outspinmoment, *by default total*
     It can be total or local and determines wether to use the total magnetic 
     moment from the atom or just spin moment of the selected shells or 
     orbitals. It is used for the Uppsala and Vampire input files.
+
+savegrogupy, *by default False*
+    If True the grogupy output file is saved, which can be reloaded later.
 
 savemagnopy, *by default False*
     If True the magnopy input file is saved.

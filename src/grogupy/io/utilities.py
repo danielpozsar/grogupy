@@ -381,6 +381,7 @@ DEFAULT_INPUT = dict(
     spinmodel="generalised-grogu",
     parallelmode=None,
     outspinmoment="total",
+    savegrogupy=False,
     savemagnopy=False,
     magnopycomments=True,
     saveuppasd=False,

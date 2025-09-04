@@ -288,6 +288,13 @@ def main():
             )
             print("Saved pickle")
 
+        if params["savegrogupy"]:
+            save_grogupy(
+                simulation,
+                path=outfile,
+            )
+            print("Saved grogupy")
+
         if params["savemagnopy"]:
             save_magnopy(
                 simulation,

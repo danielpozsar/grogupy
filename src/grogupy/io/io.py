@@ -559,7 +559,6 @@ def save_grogupy(
         out += "Atom\t\t" + " ".join(map(lambda s: f"{s:d}", mag_ent._atom))
         out += newline
         out += "Shell"
-        print(mag_ent._l)
         for shell in mag_ent._l:
             out += "\t\t" + " ".join(
                 map(lambda s: "None" if s is None else f"{s:d}", shell)
