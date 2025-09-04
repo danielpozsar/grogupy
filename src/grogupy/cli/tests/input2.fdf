@@ -126,7 +126,7 @@ ParallelMode        None
 # either total or local, which controls if only the magnetic
 # entity's spin moment or the whole atom's spin moment is printed
 # used by all output modes
-OutMagneticMoment   Total
+OutSpinMoment   Total
 
 # save the magnopy file
 SaveMagnopy         True
