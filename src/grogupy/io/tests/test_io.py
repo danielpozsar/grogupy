@@ -169,12 +169,11 @@ class TestIO:
         assert pair == pair2
 
     @pytest.mark.xfail(raises=NotImplementedError)
-    def test_load_save_magnopy(self):
+    def test_save_magnopy(self):
         builder = load_Builder("./benchmarks/test_builder.pkl")
         save_magnopy(builder, "./benchmarks/test_magnopy")
-        data = read_magnopy("./benchmarks/test_magnopy.magnopy.txt")
-        print(data)
-        raise NotImplementedError
+        assert os.path.isfile("./benchmarks/test_magnopy.magnopy.txt")
+        os.remove("./benchmarks/test_magnopy.magnopy.txt")
 
     def test_save_UppASD(self):
         builder = load_Builder("./benchmarks/test_builder.pkl")
