@@ -77,17 +77,13 @@ def main():
         fig = plot_kspace(system.kspace)
         file.write(fig.to_html(full_html=False, include_plotlyjs=False))
 
-        fig = plot_Jiso_distance(system)
+        fig = plot_Jiso_distance(system, group=True)
         file.write(fig.to_html(full_html=False, include_plotlyjs=False))
 
-        if (
-            system.spin_model != "isotropic-only"
-            and system.spin_model != "isotropic-biquadratic-only"
-        ):
-            fig = plot_DM_distance(system)
-            file.write(fig.to_html(full_html=False, include_plotlyjs=False))
+        fig = plot_DM_distance(system, normalise=True, group=True)
+        file.write(fig.to_html(full_html=False, include_plotlyjs=False))
 
-        fig = plot_magnetic_entities(system)
+        fig = plot_DM_distance(system, group=True)
         file.write(fig.to_html(full_html=False, include_plotlyjs=False))
 
         fig = plot_onsite_anisotropy(system)
@@ -96,12 +92,11 @@ def main():
         fig = plot_pairs(system)
         file.write(fig.to_html(full_html=False, include_plotlyjs=False))
 
-        if (
-            system.spin_model != "isotropic-only"
-            and system.spin_model != "isotropic-biquadratic-only"
-        ):
-            fig = plot_DMI(system).add_traces(plot_pairs(system, connect=True).data)
-            file.write(fig.to_html(full_html=False, include_plotlyjs=False))
+        fig = plot_DMI(system).add_traces(plot_pairs(system, connect=True).data)
+        file.write(fig.to_html(full_html=False, include_plotlyjs=False))
+
+        fig = plot_magnetic_entities(system)
+        file.write(fig.to_html(full_html=False, include_plotlyjs=False))
 
         file.write(
             save_grogupy(system)
