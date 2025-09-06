@@ -21,6 +21,7 @@
 from typing import TYPE_CHECKING, Union
 
 import numpy as np
+import plotly.express as px
 import plotly.graph_objs as go
 import sisl
 
@@ -109,7 +110,7 @@ def plot_contour(contour: Contour, **kwargs) -> go.Figure:
     # Update the layout
     fig.update_layout(
         autosize=False,
-        width=kwargs.get("width", 800),
+        width=kwargs.get("width", 810),
         height=kwargs.get("height", 500),
         title="Energy contour integral",
         xaxis_title="Real axis [eV]",
@@ -204,14 +205,11 @@ def plot_magnetic_entities(
     # conversion line for the case when it is set as the plot function of a builder
     if isinstance(magnetic_entities, Builder):
         magnetic_entities = magnetic_entities.magnetic_entities
-    elif not (
-        isinstance(magnetic_entities, list)
-        or isinstance(magnetic_entities, MagneticEntityList)
-    ):
-        magnetic_entities = [magnetic_entities]
+    else:
+        magnetic_entities = MagneticEntityList(magnetic_entities)
 
-    tags = [m.tag for m in magnetic_entities]
-    coords = [m._xyz for m in magnetic_entities]
+    tags = magnetic_entities.tag
+    coords = magnetic_entities._xyz
 
     colors = ["red", "green", "blue", "purple", "orange", "cyan", "magenta"]
     colors = colors * (len(coords) // len(colors) + 1)
@@ -266,11 +264,8 @@ def plot_onsite_anisotropy(
     # conversion line for the case when it is set as the plot function of a builder
     if isinstance(magnetic_entities, Builder):
         magnetic_entities = magnetic_entities.magnetic_entities
-    elif not (
-        isinstance(magnetic_entities, list)
-        or isinstance(magnetic_entities, MagneticEntityList)
-    ):
-        magnetic_entities = [magnetic_entities]
+    else:
+        magnetic_entities = MagneticEntityList(magnetic_entities)
 
     # Create figure
     fig = go.Figure()
@@ -294,7 +289,7 @@ def plot_onsite_anisotropy(
                 # Unit vector at this point
                 S = np.array([x[i, j], y[i, j], z[i, j]])
                 # Anisotropy energy
-                anisotropy_energy[m, i, j] = S @ mag_ent.K @ S
+                anisotropy_energy[m, i, j] = S @ mag_ent.K_meV @ S
 
     # Add surface plot
     for i, m in enumerate(anisotropy_energy):
@@ -305,7 +300,7 @@ def plot_onsite_anisotropy(
                     y=y + magnetic_entities[i].xyz_center[1],
                     z=z + magnetic_entities[i].xyz_center[2],
                     surfacecolor=m,
-                    colorbar=dict(title="Anisotropy energy [eV]"),
+                    colorbar=dict(title="Anisotropy energy [meV]"),
                     colorscale="Viridis",
                     opacity=1,
                     cmin=anisotropy_energy.min(),
@@ -369,11 +364,11 @@ def plot_pairs(
     # conversion line for the case when it is set as the plot function of a builder
     if isinstance(pairs, Builder):
         pairs = pairs.pairs
-    elif not (isinstance(pairs, list) or isinstance(pairs, PairList)):
-        pairs = [pairs]
+    else:
+        pairs = PairList(pairs)
 
     # the centers can contain many atoms
-    centers = [p.xyz[0] for p in pairs]
+    centers = pairs.xyz[0]
 
     # find unique centers
     uniques = []
@@ -396,9 +391,9 @@ def plot_pairs(
                 if np.all(c == u):
                     idx[i].append(j)
 
-    center_tags = np.array([p.tags[0] for p in pairs])
+    center_tags = pairs.tags[0]
 
-    interacting_atoms = np.array([p.xyz[1] for p in pairs], dtype=object)
+    interacting_atoms = pairs.xyz[1]
     interacting_tags = np.array(
         [p.tags[1] + ", ruc:" + str(p.supercell_shift) for p in pairs]
     )
@@ -527,11 +522,11 @@ def plot_DMI(
     # conversion line for the case when it is set as the plot function of a builder
     if isinstance(pairs, Builder):
         pairs = pairs.pairs
-    elif not (isinstance(pairs, list) or isinstance(pairs, PairList)):
-        pairs = [pairs]
+    else:
+        pairs = PairList(pairs)
 
     # Define some example vectors
-    vectors = np.array([p.D_meV * rescale for p in pairs])
+    vectors = pairs.D_meV
     # Define origins (optional)
     origins = np.array(
         [(p.M1.xyz_center + p.M2.xyz_center + p.supercell_shift_xyz) / 2 for p in pairs]
@@ -597,7 +592,7 @@ def plot_DMI(
     # Create layout
     fig.update_layout(
         autosize=False,
-        width=kwargs.get("width", 800),
+        width=kwargs.get("width", 1000),
         height=kwargs.get("height", 500),
         scene=dict(
             aspectmode="data",
@@ -611,7 +606,7 @@ def plot_DMI(
 
 
 def plot_Jiso_distance(
-    pairs: Union[Builder, list[Pair], PairList], **kwargs
+    pairs: Union[Builder, list[Pair], PairList], group: bool = False, **kwargs
 ) -> go.Figure:
     """Plots the isotropic exchange as a function of distance.
 
@@ -619,6 +614,8 @@ def plot_Jiso_distance(
     ----------
     pairs : Union[Builder, list[Pair], PairList]
         The pairs that contain the exchange and positions
+    group : bool, optional
+        The data can be grouped to unique pairs, by default False
 
     Returns
     -------
@@ -629,22 +626,45 @@ def plot_Jiso_distance(
     # conversion line for the case when it is set as the plot function of a builder
     if isinstance(pairs, Builder):
         pairs = pairs.pairs
-    elif not (isinstance(pairs, list) or isinstance(pairs, PairList)):
-        pairs = [pairs]
+    else:
+        pairs = PairList(pairs)
 
-    # Create figure
-    fig = go.Figure(
-        data=go.Scatter(
-            x=[p.distance for p in pairs],
-            y=[p.J_iso_meV for p in pairs],
-            mode="markers",
+    colors = px.colors.qualitative.D3
+    if group:
+        tags = pairs.tags[:, 0] + "-->" + pairs.tags[:, 1]
+        tags, mask = np.unique(tags, return_inverse=True)
+
+        values = pairs.J_iso_meV
+        dists = pairs.distance
+        colors = colors * (len(tags) // len(colors) + 1)
+
+        # Create figure
+        fig = go.Figure()
+        for i in range(len(tags)):
+            fig.add_trace(
+                go.Scatter(
+                    name="Jiso: " + tags[i],
+                    x=dists[mask == i],
+                    y=values[mask == i],
+                    mode="markers",
+                    marker=dict(color=colors[i]),
+                )
+            )
+    else:
+        # Create figure
+        fig = go.Figure(
+            data=go.Scatter(
+                x=pairs.distance,
+                y=pairs.J_iso_meV,
+                mode="markers",
+                marker=dict(color=colors[0]),
+            )
         )
-    )
 
     # Update the layout
     fig.update_layout(
         autosize=False,
-        width=kwargs.get("width", 800),
+        width=kwargs.get("width", 810),
         height=kwargs.get("height", 500),
         title=f"Isotropic exchange",
         xaxis_title="Pair distance [Ang]",
@@ -663,7 +683,10 @@ def plot_Jiso_distance(
 
 
 def plot_DM_distance(
-    pairs: Union[Builder, list[Pair], PairList], **kwargs
+    pairs: Union[Builder, list[Pair], PairList],
+    normalise: bool = True,
+    group: bool = False,
+    **kwargs,
 ) -> go.Figure:
     """Plots the magnitude of DM vectors as a function of distance.
 
@@ -671,6 +694,10 @@ def plot_DM_distance(
     ----------
     pairs : Union[Builder, list[Pair], PairList]
         The pairs that contain the DM vectors and positions
+    normalise : bool, optional
+        To return the norm of the DM vector or just the elements, by default True
+    group : bool, optional
+        The data can be grouped to unique pairs, by default False
 
     Returns
     -------
@@ -681,26 +708,233 @@ def plot_DM_distance(
     # conversion line for the case when it is set as the plot function of a builder
     if isinstance(pairs, Builder):
         pairs = pairs.pairs
-    elif not (isinstance(pairs, list) or isinstance(pairs, PairList)):
-        pairs = [pairs]
+    else:
+        pairs = PairList(pairs)
 
-    # Create figure
-    fig = go.Figure(
-        data=go.Scatter(
-            x=[p.distance for p in pairs],
-            y=np.linalg.norm([p.D_meV for p in pairs], axis=1),
-            mode="markers",
-        )
-    )
+    colors = px.colors.qualitative.D3
+    if group:
+        tags = pairs.tags[:, 0] + "-->" + pairs.tags[:, 1]
+        tags, mask = np.unique(tags, return_inverse=True)
+
+        values = pairs.D_meV
+        dists = pairs.distance
+        colors = colors * (len(tags) // len(colors) + 1)
+
+        if normalise:
+            # Create figure
+            fig = go.Figure()
+            for i in range(len(tags)):
+                fig.add_trace(
+                    go.Scatter(
+                        name="DM norm: " + tags[i],
+                        x=dists[mask == i],
+                        y=np.linalg.norm(values[mask == i], axis=1),
+                        mode="markers",
+                        marker=dict(color=colors[i]),
+                    )
+                )
+        else:
+            # Create figure
+            fig = go.Figure()
+            for i in range(len(tags)):
+                fig.add_trace(
+                    go.Scatter(
+                        name="DM_x: " + tags[i],
+                        x=dists[mask == i],
+                        y=values[mask == i, 0],
+                        mode="markers",
+                        marker=dict(color=colors[i], symbol="circle-open"),
+                    )
+                )
+                fig.add_trace(
+                    go.Scatter(
+                        name="DM_y: " + tags[i],
+                        x=dists[mask == i],
+                        y=values[mask == i, 1],
+                        mode="markers",
+                        marker=dict(color=colors[i], symbol="cross"),
+                    )
+                )
+                fig.add_trace(
+                    go.Scatter(
+                        name="DM_z: " + tags[i],
+                        x=dists[mask == i],
+                        y=values[mask == i, 2],
+                        mode="markers",
+                        marker=dict(color=colors[i], symbol="x"),
+                    )
+                )
+
+    else:
+        if normalise:
+            # Create figure
+            fig = go.Figure(
+                data=go.Scatter(
+                    x=pairs.distance,
+                    y=np.linalg.norm(pairs.D_meV, axis=1),
+                    mode="markers",
+                    marker=dict(color=colors[0]),
+                )
+            )
+        else:
+            # Create figure
+            fig = go.Figure()
+            fig.add_trace(
+                go.Scatter(
+                    name="DM_x: ",
+                    x=pairs.distance,
+                    y=pairs.D_meV[:, 0],
+                    mode="markers",
+                    marker=dict(color=colors[0]),
+                )
+            )
+            fig.add_trace(
+                go.Scatter(
+                    name="DM_y: ",
+                    x=pairs.distance,
+                    y=pairs.D_meV[:, 1],
+                    mode="markers",
+                    marker=dict(color=colors[1]),
+                )
+            )
+            fig.add_trace(
+                go.Scatter(
+                    name="DM_z: ",
+                    x=pairs.distance,
+                    y=pairs.D_meV[:, 2],
+                    mode="markers",
+                    marker=dict(color=colors[2]),
+                )
+            )
 
     # Update the layout
     fig.update_layout(
         autosize=False,
-        width=kwargs.get("width", 800),
+        width=kwargs.get("width", 810),
         height=kwargs.get("height", 500),
         title=f"Norm of the DM vectors",
         xaxis_title="Pair distance [Ang]",
         yaxis_title="DM norm [meV]",
+        xaxis=dict(
+            showgrid=True,
+            gridwidth=1,
+        ),
+        yaxis=dict(
+            showgrid=True,
+            gridwidth=1,
+        ),
+    )
+
+    return fig
+
+
+def plot_J_S_distance(
+    pairs: Union[Builder, list[Pair], PairList], group: bool = False, **kwargs
+) -> go.Figure:
+    """Plots the eigenvalues of symmetric exchange as a function of distance.
+
+    Parameters
+    ----------
+    pairs : Union[Builder, list[Pair], PairList]
+        The pairs that contain the exchange and positions
+    group : bool, optional
+        The data can be grouped to unique pairs, by default False
+
+    Returns
+    -------
+    plotly.graph_objs.go.Figure
+        The created figure
+    """
+
+    # conversion line for the case when it is set as the plot function of a builder
+    if isinstance(pairs, Builder):
+        pairs = pairs.pairs
+    else:
+        pairs = PairList(pairs)
+
+    colors = px.colors.qualitative.D3
+    if group:
+        tags = pairs.tags[:, 0] + "-->" + pairs.tags[:, 1]
+        tags, mask = np.unique(tags, return_inverse=True)
+
+        values = np.linalg.eigvalsh(pairs.J_S_meV)
+        dists = pairs.distance
+        colors = colors * (len(tags) // len(colors) + 1)
+
+        # Create figure
+        fig = go.Figure()
+        for i in range(len(tags)):
+            fig.add_trace(
+                go.Scatter(
+                    name="Eigenvalues 1: " + tags[i],
+                    x=dists[mask == i],
+                    y=values[mask == i, 0],
+                    mode="markers",
+                    marker=dict(color=colors[i], symbol="circle-open"),
+                )
+            )
+            fig.add_trace(
+                go.Scatter(
+                    name="Eigenvalues 2: " + tags[i],
+                    x=dists[mask == i],
+                    y=values[mask == i, 1],
+                    mode="markers",
+                    marker=dict(color=colors[i], symbol="cross"),
+                )
+            )
+            fig.add_trace(
+                go.Scatter(
+                    name="Eigenvalues 3: " + tags[i],
+                    x=dists[mask == i],
+                    y=values[mask == i, 2],
+                    mode="markers",
+                    marker=dict(color=colors[i], symbol="x"),
+                )
+            )
+
+    else:
+        # Create figure
+        fig = go.Figure()
+        fig.add_trace(
+            go.Scatter(
+                name="Eigenvalues 1",
+                x=pairs.distance,
+                y=np.linalg.eigvalsh(pairs.J_S_meV)[:, 0],
+                mode="markers",
+                marker=dict(color=colors[0]),
+            )
+        )
+        fig.add_trace(
+            go.Scatter(
+                name="Eigenvalues 2",
+                x=pairs.distance,
+                y=np.linalg.eigvalsh(pairs.J_S_meV)[:, 1],
+                mode="markers",
+                marker=dict(color=colors[1]),
+            )
+        )
+        fig.add_trace(
+            go.Scatter(
+                name="Eigenvalues 3",
+                x=pairs.distance,
+                y=np.linalg.eigvalsh(pairs.J_S_meV)[:, 2],
+                mode="markers",
+                marker=dict(color=colors[2]),
+            )
+        )
+
+    # Update the layout
+    if group:
+        width = kwargs.get("width", 1000)
+    else:
+        width = kwargs.get("width", 880)
+    fig.update_layout(
+        autosize=False,
+        width=width,
+        height=kwargs.get("height", 500),
+        title=f"Eigenvalues of symmetric exchange",
+        xaxis_title="Pair distance [Ang]",
+        yaxis_title="Eigenvalues of symmetric exchange [meV]",
         xaxis=dict(
             showgrid=True,
             gridwidth=1,
