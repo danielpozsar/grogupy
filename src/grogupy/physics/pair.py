@@ -579,13 +579,15 @@ class PairList:
     def __add__(self, other):
         if isinstance(other, PairList):
             other = other.__pairs
+        elif isinstance(other, Pair):
+            other = [other]
         elif isinstance(other, list):
             pass
         elif isinstance(other, np.ndarray):
             other = other.tolist()
         else:
             raise Exception(
-                "Only list, np.ndparray and PairList can be added to PairList"
+                "Only list, np.ndparray, Pair and PairList can be added to PairList"
             )
         return PairList(self.__pairs + other)
 
@@ -616,8 +618,12 @@ class PairList:
                 [p.__getattribute__(name) for p in self.__pairs], dtype=object
             )
 
-    def __getitem__(self, item: int) -> Pair:
-        return self.__pairs[item]
+    def __getitem__(self, item: int) -> Union[Pair, list[Pair]]:
+        # TODO: this is ugly, but works for now
+        out = np.array(self.__pairs, dtype=object)[item]
+        if not isinstance(out, Pair):
+            out = out.tolist()
+        return out
 
     def __repr__(self) -> str:
         """String representation of the instance."""

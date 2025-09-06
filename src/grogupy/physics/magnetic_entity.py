@@ -777,13 +777,15 @@ class MagneticEntityList:
     def __add__(self, other):
         if isinstance(other, MagneticEntityList):
             other = other.__magnetic_entities
+        elif isinstance(other, MagneticEntity):
+            other = [other]
         elif isinstance(other, list):
             pass
         elif isinstance(other, np.ndarray):
             other = other.tolist()
         else:
             raise Exception(
-                "Only list, np.ndparray and MagneticEntityList can be added to MagneticEntityList"
+                "Only list, np.ndparray, MagneticEntity and MagneticEntityList can be added to MagneticEntityList"
             )
         return MagneticEntityList(self.__magnetic_entities + other)
 
@@ -817,8 +819,12 @@ class MagneticEntityList:
                 dtype=object,
             )
 
-    def __getitem__(self, item: int) -> MagneticEntity:
-        return self.__magnetic_entities[item]
+    def __getitem__(self, item: int) -> Union[MagneticEntity, list[MagneticEntity]]:
+        # TODO: this is ugly, but works for now
+        out = np.array(self.__magnetic_entities, dtype=object)[item]
+        if not isinstance(out, MagneticEntity):
+            out = out.tolist()
+        return out
 
     def __repr__(self) -> str:
         """String representation of the instance."""
