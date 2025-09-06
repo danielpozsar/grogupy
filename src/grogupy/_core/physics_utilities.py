@@ -547,48 +547,45 @@ def fit_anisotropy_tensor(energies: NDArray, ref_xcf: list[dict]) -> NDArray:
     if PRINTING:
         warnings.warn("This is experimenal!")
 
-    A = np.zeros((5, 5))
-    cA = np.zeros(5)
+    K = np.zeros((3, 3))
+    eps = np.zeros((5, 5))
+    nu = np.zeros(5)
+    for i, xcf in enumerate(ref_xcf):
+        e = xcf["o"]
+        e1, e2 = xcf["vw"][:2]
+        e1p = np.cross(e, e1)
+        e2p = np.cross(e, e2)
 
-    for i in range(len(ref_xcf)):
-        E = energies[i, :4]
-        v = ref_xcf[i]["vw"][0]
-        w = ref_xcf[i]["vw"][1]
+        y_l = [
+            np.dot(e1p, e1p) * energies[i, 0] - np.dot(e2p, e2p) * energies[i, 3],
+            1
+            / 2
+            * (np.dot(e1p, e2p) * energies[i, 1] + np.dot(e2p, e1p) * energies[i, 2]),
+        ]
 
-        vw = np.array(
+        w_l = np.array(
             [
-                np.outer(w, w) - np.outer(v, v),
-                np.outer(v, w),
-                np.outer(w, v),
-                np.outer(v, v) - np.outer(w, w),
+                2 * (np.outer(e1p, e1p) - np.outer(e2p, e2p)),
+                np.outer(e1p, e2p) + np.outer(e2p, e1p),
             ]
         )
-        c = np.array([E[0] - E[3], E[1], E[2], E[3] - E[0]])
 
-        for ci, vwi in zip(c, vw):
-            a = np.array(
-                [
-                    vwi[0, 0],
-                    -2 * (vwi[0, 1] + vwi[1, 0]),  # HERE is the -2
-                    -2 * (vwi[0, 2] + vwi[2, 0]),  # HERE is the -2
-                    vwi[1, 1],
-                    -2 * (vwi[1, 2] + vwi[2, 1]),  # HERE is the -2
-                ]
-            )
+        for y, w in zip(y_l, w_l):
+            w = w[[0, 1, 0, 0, 1], [0, 1, 1, 2, 2]] * np.array([1, 1, 2, 2, 2])
+            eps += np.outer(w, w)
+            nu += y * w
 
-            A += np.outer(a, a)
-            cA += ci * a
+    K_tilda = np.linalg.inv(eps) @ nu
+    K[0, 0] = K_tilda[0]
+    K[1, 1] = K_tilda[1]
+    K[0, 1] = K_tilda[2]
+    K[1, 0] = K_tilda[2]
+    K[0, 2] = K_tilda[3]
+    K[2, 0] = K_tilda[3]
+    K[1, 2] = K_tilda[4]
+    K[2, 1] = K_tilda[4]
 
-    K = np.linalg.inv(A) @ cA
-    out = np.array(
-        [
-            [K[0], K[1], K[2]],
-            [K[1], K[3], K[4]],
-            [K[2], K[4], 0],
-        ]
-    )
-
-    return out
+    return K
 
 
 def calculate_exchange_tensor(
