@@ -348,6 +348,7 @@ class Builder:
         else:
             out += f"Spin mode:\tNot defined" + newline
             out += f"Number of orbitals:\tNot defined" + newline
+        out += f"Unique ID:\t\t{self.hamiltonian.dh_ds_id}" + newline
         # ============================================================
         out += section + newline
         out += "Solver" + newline
