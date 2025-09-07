@@ -90,6 +90,9 @@ class Hamiltonian:
 
     Attributes
     ----------
+    dh_ds_id: str
+        Hash of the underlying system so MagneticEntities cannot be
+        mixed between Hamiltonians
     _dh: sisl.physics.Hamiltonian
         The sisl Hamiltonian
     _ds: Union[sisl.physics.DensityMatrix, None]
@@ -166,6 +169,14 @@ class Hamiltonian:
         if self._dh.spin.kind == 3:
             self._spin_state: str = "SPIN-ORBIT"
 
+        # this is for consistency checking of the underlying systems
+        dh_hash = hash(str(self._dh.Hk().data))
+        if self._ds is None:
+            ds_hash = 0
+        else:
+            ds_hash = hash(str(self._ds.Dk().data))
+        self.__dh_ds_id: NDArray = np.array([ds_hash, dh_hash])
+
         H, S = build_hh_ss(self._dh)
         self.H: NDArray = H
         self.S: NDArray = S
@@ -234,6 +245,11 @@ class Hamiltonian:
         out = f"<grogupy.Hamiltonian scf_xcf_orientation={self.scf_xcf_orientation}, orientation={self.orientation}, NO={self.NO}>"
 
         return out
+
+    @property
+    def dh_ds_id(self):
+        """The ID of the Hamiltonian and the Density  Matrix."""
+        return self.__dh_ds_id
 
     @property
     def geometry(self) -> sisl.geometry.Geometry:
