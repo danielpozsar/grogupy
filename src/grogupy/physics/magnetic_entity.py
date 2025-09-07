@@ -210,7 +210,7 @@ class MagneticEntity:
         # this is for checking underlying systems
         dh_hash = hash(str(dh.Hk().data))
         if ds is None:
-            ds_hash = hash(str(None))
+            ds_hash = 0
         else:
             ds_hash = hash(str(ds.Dk().data))
         self.__dh_ds_id: NDArray = np.array([ds_hash, dh_hash])
