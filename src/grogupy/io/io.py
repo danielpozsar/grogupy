@@ -553,9 +553,11 @@ def save_grogupy(
 
     out += "Magnetic entities" + newline
     out += f"Number of magnetic entities {len(builder.magnetic_entities)}" + newline
+
     for mag_ent in builder.magnetic_entities:
         out += subsection + newline
         out += "Tag\t\t\t" + mag_ent.tag + newline
+        out += f"Unique ID:\t{mag_ent.dh_ds_id}" + newline
         out += "Atom\t\t" + " ".join(map(lambda s: f"{s:d}", mag_ent._atom))
         out += newline
         out += "Shell"
@@ -566,6 +568,10 @@ def save_grogupy(
             out += newline
         out += "Orbital box\t" + " ".join(
             map(lambda s: f"{s:d}", mag_ent._orbital_box_indices)
+        )
+        out += newline
+        out += "Total orbital box\t" + " ".join(
+            map(lambda s: f"{s:d}", mag_ent._total_orbital_box_indices)
         )
         out += newline
         out += "Position\tx [Ang]\t\ty [Ang]\t\tz [Ang]" + newline
@@ -581,10 +587,10 @@ def save_grogupy(
 
     out += "Pairs" + newline
     out += f"Number of pairs {len(builder.pairs)}" + newline
-    out += subsection + newline
     for pair in builder.pairs:
         out += subsection + newline
         out += "Tags\t\t" + pair.tags[0] + "\t" + pair.tags[1] + newline
+        out += f"Unique ID:\t{mag_ent.dh_ds_id}" + newline
         out += "Cell shift\t" + "\t".join(map(str, pair.supercell_shift))
         out += f"\t# Distance: {pair.distance} Ang" + newline
         out += "Energies [eV]" + newline
@@ -592,6 +598,29 @@ def save_grogupy(
             out += "\t\t" + "\t".join(map(lambda s: f"{s:.8e}", e))
             out += newline
     out += subsection + newline
+    out += section + newline
+    # save times
+    out += f"Times\n"
+    out += f"Builder\n"
+    times = builder.times.times
+    for k, v in times.items():
+        out += f"\t\t{k}\t\t{v}"
+        out += newline
+    out += f"Hamiltonian\n"
+    times = builder.hamiltonian.times.times
+    for k, v in times.items():
+        out += f"\t\t{k}\t\t{v}"
+        out += newline
+    out += f"Kspace\n"
+    times = builder.kspace.times.times
+    for k, v in times.items():
+        out += f"\t\t{k}\t\t{v}"
+        out += newline
+    out += f"Contour\n"
+    times = builder.contour.times.times
+    for k, v in times.items():
+        out += f"\t\t{k}\t\t{v}"
+        out += newline
     out += section + newline
     # compare Mullikens
     mismatch = False
@@ -615,6 +644,356 @@ def save_grogupy(
 
     with open(path, "w") as file:
         file.write(out)
+
+
+def read_grogupy(file: str):
+    """This function reads the grogupy input file and returns a Builder object
+
+    Parambeters
+    ----------
+    file: str
+        Path to the ``grogupy`` input file
+
+    Returns
+    -------
+    Builder
+        The Builder object
+
+    Exception
+    ---------
+        If there is an unrecognised section
+    """
+
+    # read file
+    with open(file, "r") as f:
+        lines = f.readlines()
+
+    for i, l in enumerate(lines):
+        if l.find("#") != -1:
+            lines[i] = l[: l.find("#")] + "\n"
+
+    # this is a dense line that splits the magnopy file to sections,
+    # then splits the sections by lines
+    # this creates a list if lists of strings
+    sections = [
+        sec.split("\n")
+        for sec in "".join(lines).split(
+            "--------------------------------------------------------------------------------\n"
+        )[1:-1]
+    ]
+
+    out = dict()
+    out["_Builder__apply_spin_model"] = True
+    # iterate over sections
+    for section in sections:
+        # metadata section
+        if section[0] == "Metadata":
+            out["hamiltonian"] = dict()
+            for line in section:
+                line = line.replace("\t", "").split(":")
+                if line[0] == "grogupy version":
+                    out["_Builder__version"] = line[1]
+                elif line[0] == "Architecture":
+                    out["_Builder__architecture"] = line[1]
+                elif line[0] == "SLURM job ID":
+                    out["SLURM_ID"] = line[1]
+                elif line[0] == "Input file":
+                    out["hamiltonian"]["infile"] = line[1]
+        # solver section
+        elif section[0] == "Solver":
+            for line in section:
+                line = line.replace("\t", "").split(":")
+                if line[0] == "Parallelization is over":
+                    out["_Builder__parallel_mode"] = line[1]
+                elif line[0] == "Solver used for Greens function calculation":
+                    out["_Builder__greens_function_solver"] = line[1]
+                elif line[0] == "Maximum number of Greens function samples per batch":
+                    out["_Builder__max_g_per_loop"] = line[1]
+        # hamiltonian section
+        elif section[0] == "Hamiltonian":
+            for line in section:
+                line = line.replace("\t", "").split(":")
+                if line[0] == "Spin model":
+                    out["_Builder__spin_model"] = line[1]
+                elif line[0] == "Spin mode":
+                    out["hamiltonian"]["_spin_state"] = line[1]
+                elif line[0] == "Number of orbitals":
+                    out["hamiltonian"]["_Hamiltonian__no"] = int(line[1])
+                elif line[0] == "Unique ID":
+                    out["hamiltonian"]["_Hamiltonian__dh_ds_id"] = np.array(
+                        line[1][1:-1].split(), dtype=int
+                    )
+        # cell section
+        elif section[0] == "Cell [Ang]":
+            cell = []
+            for line in section[1:-1]:
+                cell.append(line.split())
+            cell = np.array(cell, dtype=float)
+            out["hamiltonian"]["_Hamiltonian__cell"] = cell
+        # exchange field section
+        elif section[0] == "Exchange field rotations":
+            line = section[1]
+            line = line.replace("\t", "").split(":")
+            if line[0] == "DFT axis":
+                out["hamiltonian"]["scf_xcf_orientation"] = np.array(
+                    line[1][1:-1].split(), dtype=float
+                )
+                out["hamiltonian"]["orientation"] = np.array(
+                    line[1][1:-1].split(), dtype=float
+                )
+            ref_scf_orientation = []
+            for line in section[3:-1]:
+                line = line.split()
+                if line[-1] == "-->":
+                    if len(ref_scf_orientation) != 0:
+                        ref_scf_orientation[-1]["vw"] = np.array(vw, dtype=float)
+                    ref_scf_orientation.append({"o": np.array(line[:-1], dtype=float)})
+                    vw = []
+                else:
+                    vw.append(np.array(line, dtype=float))
+            if len(ref_scf_orientation) != 0:
+                ref_scf_orientation[-1]["vw"] = np.array(vw, dtype=float)
+            vw = []
+            out["_Builder__ref_xcf_orientations"] = ref_scf_orientation
+        # kspace section
+        elif section[0] == "Kspace":
+            out["kspace"] = dict()
+            line = section[2]
+            line = line.replace("\t", "").split(":")
+            out["kspace"]["_Kspace__kset"] = np.array(line[1][1:-1].split(), dtype=int)
+            out["kspace"]["kpoints"] = []
+        # coontour section
+        elif section[0] == "Contour":
+            out["contour"] = dict()
+            for line in section[1:-1]:
+                line = line.replace("\t", "").split(":")
+                if line[0] == "Eset":
+                    out["contour"]["_eset"] = int(line[1])
+                if line[0] == "Esetp":
+                    out["contour"]["_esetp"] = int(line[1])
+                if line[0] == "Ebot":
+                    out["contour"]["_emin"] = float(line[1])
+                if line[0] == "Etop":
+                    out["contour"]["_emax"] = float(line[1])
+        # magnetic entities section
+        elif section[0] == "Magnetic entities":
+            NM = 0
+            if " ".join(section[1].split()[:4]) == "Number of magnetic entities":
+                NM = int(section[1].split()[-1])
+            mag_ent_list = []
+            mag_ent = dict()
+            mag_ent["_l"] = []
+            mag_ent["_xyz"] = []
+            mag_ent["energies"] = []
+            continue_writing = None
+            for line in section[3:-1]:
+                if line.startswith("----------"):
+                    mag_ent["infile"] = out["hamiltonian"]["infile"]
+                    mag_ent["_Vu1"] = []
+                    mag_ent["_Vu2"] = []
+                    mag_ent["_Gii"] = []
+                    mag_ent["_MagneticEntity__cell"] = cell
+                    mag_ent["_xyz"] = np.array(mag_ent["_xyz"])
+                    mag_ent["energies"] = np.array(mag_ent["energies"])
+                    mag_ent_list.append(mag_ent)
+                    mag_ent = dict()
+                    mag_ent["_l"] = []
+                    mag_ent["_xyz"] = []
+                    mag_ent["energies"] = []
+                    continue_writing = None
+                    continue
+
+                line = line.split()
+                if line[0] == "Tag":
+                    mag_ent["_tags"] = line[1:]
+                elif line[0] == "Unique":
+                    mag_ent["_MagneticEntity__dh_ds_id"] = np.array(
+                        [line[2][1:], line[3][:-1]], dtype=int
+                    )
+                    if np.any(
+                        mag_ent["_MagneticEntity__dh_ds_id"]
+                        != out["hamiltonian"]["_Hamiltonian__dh_ds_id"]
+                    ):
+                        raise Exception("Inconsistent magnetic entity ID!")
+                elif line[0] == "Atom":
+                    mag_ent["_atom"] = np.array(line[1:], dtype=int)
+                elif line[0] == "Shell":
+                    mag_ent["_l"].append(np.array(line[1:], dtype=int))
+                    continue_writing = "_l"
+                elif line[0] == "Orbital":
+                    mag_ent["_orbital_box_indices"] = np.array(line[2:], dtype=int)
+                    continue_writing = None
+                elif line[0] == "Total":
+                    mag_ent["_total_orbital_box_indices"] = np.array(
+                        line[3:], dtype=int
+                    )
+                    continue_writing = None
+                elif line[0] == "Position":
+                    continue_writing = "_xyz"
+                elif line[0] == "Energies":
+                    continue_writing = "energies"
+                else:
+                    if continue_writing == "_l":
+                        mag_ent["_l"].append(np.array(line[1:], dtype=int))
+                    elif continue_writing == "_xyz":
+                        mag_ent["_xyz"].append(np.array(line, dtype=float))
+                    elif continue_writing == "energies":
+                        mag_ent["energies"].append(np.array(line, dtype=float))
+                    else:
+                        raise Exception("Bad input file format!")
+
+            if len(mag_ent_list) != NM:
+                raise Exception(
+                    "Expected number of magnetic entities and read number of magnetic entities are not equal!"
+                )
+            out["magnetic_entities"] = dict()
+            out["magnetic_entities"][
+                "_MagneticEntityList__magnetic_entities"
+            ] = mag_ent_list
+        # pairs
+        elif section[0] == "Pairs":
+            NP = 0
+            if " ".join(section[1].split()[:3]) == "Number of pairs":
+                NP = int(section[1].split()[-1])
+            pair_list = []
+            pair = dict()
+            reading_energies = False
+            for line in section[3:-1]:
+                # new pair
+                if line.startswith("----------"):
+                    pair["energies"] = np.array(pair["energies"])
+                    for m in out["magnetic_entities"][
+                        "_MagneticEntityList__magnetic_entities"
+                    ]:
+                        if "--".join(m["_tags"]) == pair["tags"][0]:
+                            pair["M1"] = m
+                        if "--".join(m["_tags"]) == pair["tags"][1]:
+                            pair["M2"] = m
+                    pair["cell"] = cell
+                    pair_list.append(pair)
+                    pair = dict()
+                    reading_energies = False
+                # readout
+                elif reading_energies:
+                    pair["energies"].append(np.array(line.split(), dtype=float))
+                else:
+                    line = line.split()
+                    if line[0] == "Tags":
+                        pair["tags"] = line[1:]
+                    elif line[0] == "Unique":
+                        pair["_Pair__dh_ds_id"] = np.array(
+                            [line[2][1:], line[3][:-1]], dtype=int
+                        )
+                        if np.any(
+                            pair["_Pair__dh_ds_id"]
+                            != out["hamiltonian"]["_Hamiltonian__dh_ds_id"]
+                        ):
+                            raise Exception("Inconsistent pair ID!")
+                    elif line[0] == "Cell":
+                        pair["supercell_shift"] = np.array(line[2:5], dtype=int)
+                    elif line[0] == "Energies":
+                        pair["energies"] = []
+                        reading_energies = True
+
+            if len(pair_list) != NP:
+                raise Exception(
+                    "Expected number of pairs and read number of pairs are not equal!"
+                )
+            out["pairs"] = dict()
+            out["pairs"]["_PairList__pairs"] = pair_list
+        # runtimes
+        elif section[0] == "Times":
+            out["times"] = dict()
+            out["times"]["_DefaultTimer__start_measure"] = 0
+            out["times"]["_times"] = dict()
+
+            out["hamiltonian"]["times"] = dict()
+            out["hamiltonian"]["times"]["_DefaultTimer__start_measure"] = 0
+            out["hamiltonian"]["times"]["_times"] = dict()
+            out["kspace"]["times"] = dict()
+            out["kspace"]["times"]["_DefaultTimer__start_measure"] = 0
+            out["kspace"]["times"]["_times"] = dict()
+            out["contour"]["times"] = dict()
+            out["contour"]["times"]["_DefaultTimer__start_measure"] = 0
+            out["contour"]["times"]["_times"] = dict()
+            continue_writing = None
+            for line in section[1:-1]:
+                line = line.split()
+                if line[0] == "Builder":
+                    continue_writing = "b"
+                elif line[0] == "Hamiltonian":
+                    continue_writing = "h"
+                elif line[0] == "Kspace":
+                    continue_writing = "k"
+                elif line[0] == "Contour":
+                    continue_writing = "c"
+                else:
+                    if continue_writing == "b":
+                        out["times"]["_times"][line[0]] = float(line[1])
+                    elif continue_writing == "h":
+                        out["hamiltonian"]["times"]["_times"][line[0]] = float(line[1])
+                    elif continue_writing == "k":
+                        out["kspace"]["times"]["_times"][line[0]] = float(line[1])
+                    elif continue_writing == "c":
+                        out["contour"]["times"]["_times"][line[0]] = float(line[1])
+        elif section[0] == "Mulliken":
+            mulliken = []
+            for line in section[1:-1]:
+                mulliken.append(line.split())
+            mulliken = np.array(mulliken, dtype=float).T
+
+    out["_rotated_hamiltonians"] = []
+    contour = grogupy.Contour(
+        eset=out["contour"]["_eset"],
+        esetp=out["contour"]["_esetp"],
+        emin=out["contour"]["_emin"],
+        emax=out["contour"]["_emax"],
+        emin_shift=0,
+        emax_shift=0,
+    )
+    kspace = grogupy.Kspace(out["kspace"]["_Kspace__kset"])
+    sys = object.__new__(Builder)
+    sys.__setstate__(out)
+    sys.add_contour(contour)
+    sys.add_kspace(kspace)
+
+    for m in sys.magnetic_entities:
+        if mulliken is not None:
+            m._mulliken = mulliken
+        else:
+            m._mulliken = None
+        m._K = None
+        m._K_consistency = None
+        if sys.apply_spin_model:
+            if sys.spin_model == "generalised-fit":
+                m.fit_anisotropy_tensor(sys.ref_xcf_orientations)
+            elif sys.spin_model == "generalised-grogu":
+                m.calculate_anisotropy()
+            else:
+                pass
+
+    for p in sys.pairs:
+        p._J = None
+        if sys.apply_spin_model:
+            if sys.spin_model == "generalised-fit":
+                p.fit_exchange_tensor(sys.ref_xcf_orientations)
+            elif sys.spin_model == "generalised-grogu":
+                p.calculate_exchange_tensor()
+            elif sys.spin_model == "isotropic-only":
+                p.calculate_isotropic_only()
+            elif sys.spin_model == "isotropic-biquadratic-only":
+                p.calculate_isotropic_biquadratic_only()
+            else:
+                raise Exception(
+                    f"Unknown spin model: {sys.spin_model}! Use apply_spin_model=False"
+                )
+        for m in sys.magnetic_entities:
+            if m.tag == p.M1.tag:
+                p.M1 = m
+            if m.tag == p.M2.tag:
+                p.M2 = m
+
+    return sys
 
 
 def save_UppASD(
@@ -981,15 +1360,15 @@ def save_Vampire(
     inp += "#------------------------------------------\n"
     inp += "sim:minimum-temperature = 0.0\n"
     inp += "sim:maximum-temperature = 200.0\n"
-    inp += "sim:temperature-increment = 1.0\n"
-    inp += "sim:loop-time-steps = 50000.0\n"
-    inp += "sim:equilibration-time-steps = 100000.0\n"
+    inp += "sim:temperature-increment = 0.5\n"
+    inp += "sim:loop-time-steps = 5000.0\n"
+    inp += "sim:equilibration-time-steps = 10000.0\n"
     inp += "sim:time-step = 0.1 !fs\n"
     inp += "#------------------------------------------\n"
     inp += "# Program and integrator details\n"
     inp += "#------------------------------------------\n"
     inp += "sim:program = curie-temperature\n"
-    inp += "sim:integrator = monte-carlo # or llg-heun\n"
+    inp += "sim:integrator = monte-carlo # or llg-heun for spin dinamics\n"
     inp += "#------------------------------------------\n"
     inp += "# Data output\n"
     inp += "#------------------------------------------\n"
