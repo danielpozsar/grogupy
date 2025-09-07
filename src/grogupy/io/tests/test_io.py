@@ -168,7 +168,21 @@ class TestIO:
         assert isinstance(pair2, grogupy.Pair)
         assert pair == pair2
 
-    @pytest.mark.xfail(raises=NotImplementedError)
+    def test_save_read_grogupy(self):
+        builder = load_Builder("./benchmarks/test_builder.pkl")
+        save_grogupy(builder, "./benchmarks/test_grogupy")
+        assert os.path.isfile("./benchmarks/test_grogupy.grogupy.txt")
+        builder2 = read_grogupy("./benchmarks/test_grogupy.grogupy.txt")
+        assert save_grogupy(builder) == save_grogupy(builder2)
+        assert save_magnopy(builder) == save_magnopy(builder2)
+        assert save_Vampire(builder)[0] == save_Vampire(builder2)[0]
+        assert save_Vampire(builder)[1] == save_Vampire(builder2)[1]
+        assert save_Vampire(builder)[2] == save_Vampire(builder2)[2]
+        assert save_UppASD(builder)[0] == save_UppASD(builder2)[0]
+        assert save_UppASD(builder)[1] == save_UppASD(builder2)[1]
+        assert save_UppASD(builder)[2] == save_UppASD(builder2)[2]
+        os.remove("./benchmarks/test_grogupy.grogupy.txt")
+
     def test_save_magnopy(self):
         builder = load_Builder("./benchmarks/test_builder.pkl")
         save_magnopy(builder, "./benchmarks/test_magnopy")

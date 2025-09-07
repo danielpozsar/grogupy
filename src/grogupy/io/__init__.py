@@ -40,6 +40,7 @@ These are the main input output functions for the user.
    load                         General loader for any grogupy instance from the pickled dictionary.
    save                         General saver  for any grogupy instance, it stores the data in a pickled dictionary.
    save_grogupy                 Creates a .txt file, that contains all the information from a calculated Builder.
+   read_grogupy                 Reads a .grogupy.txt file and rebuilds a Builder instance.
    save_magnopy                 Creates a magnopy input file from a calculated Builder.
    save_UppASD                  Creates the Uppsala Atomistic Spin Dinamics input file from a calculated Builder.
    save_Vampire                 Creates the Vampire input files from a calculated Builder.
