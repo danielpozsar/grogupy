@@ -350,6 +350,7 @@ def load(
         "_ds",
         "infile",
         "_spin_state",
+        "_Hamiltonian__dh_ds_id",
         "H",
         "S",
         "scf_xcf_orientation",
@@ -557,7 +558,11 @@ def save_grogupy(
     for mag_ent in builder.magnetic_entities:
         out += subsection + newline
         out += "Tag\t\t\t" + mag_ent.tag + newline
-        out += f"Unique ID:\t{mag_ent.dh_ds_id}" + newline
+        out += (
+            "Unique ID:\t"
+            + "\t".join(map(lambda s: f"{s:d}", mag_ent.dh_ds_id))
+            + newline
+        )
         out += "Atom\t\t" + " ".join(map(lambda s: f"{s:d}", mag_ent._atom))
         out += newline
         out += "Shell"
@@ -590,7 +595,9 @@ def save_grogupy(
     for pair in builder.pairs:
         out += subsection + newline
         out += "Tags\t\t" + pair.tags[0] + "\t" + pair.tags[1] + newline
-        out += f"Unique ID:\t{mag_ent.dh_ds_id}" + newline
+        out += (
+            "Unique ID:\t" + "\t".join(map(lambda s: f"{s:d}", pair.dh_ds_id)) + newline
+        )
         out += "Cell shift\t" + "\t".join(map(str, pair.supercell_shift))
         out += f"\t# Distance: {pair.distance} Ang" + newline
         out += "Energies [eV]" + newline
@@ -712,16 +719,16 @@ def read_grogupy(file: str):
         # hamiltonian section
         elif section[0] == "Hamiltonian":
             for line in section:
-                line = line.replace("\t", "").split(":")
+                line = line.split(":")
                 if line[0] == "Spin model":
-                    out["_Builder__spin_model"] = line[1]
+                    out["_Builder__spin_model"] = line[1].replace("\t", "")
                 elif line[0] == "Spin mode":
-                    out["hamiltonian"]["_spin_state"] = line[1]
+                    out["hamiltonian"]["_spin_state"] = line[1].replace("\t", "")
                 elif line[0] == "Number of orbitals":
                     out["hamiltonian"]["_Hamiltonian__no"] = int(line[1])
                 elif line[0] == "Unique ID":
                     out["hamiltonian"]["_Hamiltonian__dh_ds_id"] = np.array(
-                        line[1][1:-1].split(), dtype=int
+                        line[1].split(), dtype=int
                     )
         # cell section
         elif section[0] == "Cell [Ang]":
@@ -808,7 +815,7 @@ def read_grogupy(file: str):
                     mag_ent["_tags"] = line[1:]
                 elif line[0] == "Unique":
                     mag_ent["_MagneticEntity__dh_ds_id"] = np.array(
-                        [line[2][1:], line[3][:-1]], dtype=int
+                        [line[2], line[3]], dtype=int
                     )
                     if np.any(
                         mag_ent["_MagneticEntity__dh_ds_id"]
@@ -882,7 +889,7 @@ def read_grogupy(file: str):
                         pair["tags"] = line[1:]
                     elif line[0] == "Unique":
                         pair["_Pair__dh_ds_id"] = np.array(
-                            [line[2][1:], line[3][:-1]], dtype=int
+                            [line[2], line[3]], dtype=int
                         )
                         if np.any(
                             pair["_Pair__dh_ds_id"]
@@ -943,7 +950,7 @@ def read_grogupy(file: str):
             mulliken = np.array(mulliken, dtype=float).T
 
     out["_rotated_hamiltonians"] = []
-    contour = grogupy.Contour(
+    contour = Contour(
         eset=out["contour"]["_eset"],
         esetp=out["contour"]["_esetp"],
         emin=out["contour"]["_emin"],
@@ -951,7 +958,7 @@ def read_grogupy(file: str):
         emin_shift=0,
         emax_shift=0,
     )
-    kspace = grogupy.Kspace(out["kspace"]["_Kspace__kset"])
+    kspace = Kspace(out["kspace"]["_Kspace__kset"])
     sys = object.__new__(Builder)
     sys.__setstate__(out)
     sys.add_contour(contour)
