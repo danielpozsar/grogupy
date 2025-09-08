@@ -15,11 +15,39 @@ authors:
     email: daniel.pozsar@student.elte.hu
     affiliation: Eötvös Loránd University
     orcid: 'https://orcid.org/0009-0009-6169-9066'
+  - given-names: Gabriel
+    family-names: Martínez-Carracedo
+    name-suffix: Dr.
+    affiliation: Universidad Complutense de Madrid
+    orcid: 'https://orcid.org/0000-0003-4351-897X'
+  - given-names: Amador
+    family-names: García-Fuente
+    name-suffix: Dr.
+    affiliation: Universidad de Oviedo
+    orcid: 'https://orcid.org/0000-0002-4570-8315'
   - given-names: László
+    family-names: Udvardi
+    name-suffix: Dr.
+    affiliation: Budapest University of Technology and Economics
+    orcid: 'https://orcid.org/0000-0002-0822-2439'
+  - given-names: László
+    family-names: Szunyogh
+    name-suffix: Dr.
+    affiliation: Budapest University of Technology and Economics
+    orcid: 'https://orcid.org/0000-0001-7430-3627'
     family-names: Oroszlány
     name-suffix: Dr.
     affiliation: Eötvös Loránd University
     orcid: 'https://orcid.org/0000-0001-5682-6424'
+  - given-names: Jaime
+    family-names: Ferrer
+    name-suffix: Dr.
+    affiliation: Universidad de Oviedo
+    orcid: 'https://orcid.org/0000-0002-4067-2325'
+  - given-names: László
+
+
+Jaime Ferrer, Amador Garcia Fuente, Gabriel Marinez Carracedo, Szunyogh László és Udvardi László
 identifiers:
   - type: doi
     value: 10.5281/zenodo.15449541
