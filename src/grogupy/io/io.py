@@ -1235,6 +1235,8 @@ def save_Vampire(
     for i in range(len(builder.magnetic_entities)):
         # iterate over new sublattices
         for j in range(MODULUS):
+            print(i)
+            print(builder.magnetic_entities[i])
             m = builder.magnetic_entities[i]
 
             # calculate relative coordinates
@@ -1251,9 +1253,12 @@ def save_Vampire(
             # without having to redefine the unit cell shift indices
             if PRINTING:
                 warnings.warn("This is an ugly solution!")
-            xyz_rel = np.around(
-                np.linalg.inv(new_cell) @ xyz + np.array([0.5, 0, 0]), 4
-            )
+            xyz_rel = np.linalg.inv(new_cell) @ xyz
+            for k in [0, 1, 2]:
+                if xyz_rel[k].min() < 0:
+                    xyz_rel[k] = xyz_rel[k] + abs(xyz_rel[k].min())
+                elif xyz_rel[k].max() > 1:
+                    xyz_rel[k] = xyz_rel[k] - xyz_rel[k].min() + 1
 
             # local or total spin moments
             mu = None
