@@ -1235,8 +1235,6 @@ def save_Vampire(
     for i in range(len(builder.magnetic_entities)):
         # iterate over new sublattices
         for j in range(MODULUS):
-            print(i)
-            print(builder.magnetic_entities[i])
             m = builder.magnetic_entities[i]
 
             # calculate relative coordinates
