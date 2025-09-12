@@ -389,7 +389,7 @@ class Pair:
         if self.J is None:
             return None
         else:
-            return 0.5 * (self.J + self.J.T)
+            return 0.5 * (self.J + self.J.T) - np.eye(3) * np.trace(self.J) / 3
 
     @property
     def J_S_meV(self) -> Union[None, NDArray]:
