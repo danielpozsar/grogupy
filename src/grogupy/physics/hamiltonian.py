@@ -180,7 +180,9 @@ class Hamiltonian:
         H, S = build_hh_ss(self._dh)
         self.H: NDArray = H
         self.S: NDArray = S
-        self.scf_xcf_orientation: NDArray = np.array(scf_xcf_orientation)
+        self.scf_xcf_orientation: NDArray = np.array(
+            scf_xcf_orientation
+        ) / np.linalg.norm(scf_xcf_orientation)
         if (self.scf_xcf_orientation != 0).sum() != 1:
             if PRINTING:
                 warnings.warn(
