@@ -798,6 +798,8 @@ def process_ref_directions(
         isinstance(ref_xcf_orientations, list)
         and isinstance(ref_xcf_orientations[0], dict)
         and spin_model != "generalised-grogu"
+        and spin_model != "isotropic-only"
+        and spin_model != "isotropic-biquadratic-only"
     ):
         orientations: list[dict] = ref_xcf_orientations
 
@@ -840,8 +842,8 @@ def process_ref_directions(
 
     # one reference direction and one perpendicular direction
     elif spin_model == "isotropic-only" or spin_model == "isotropic-biquadratic-only":
-        orientations = [orientations[0]]
-        orientations[0]["vw"] = np.array([orientations[0]["vw"][0]])
+        orientations = [ref_xcf_orientations[0]]
+        orientations[0]["vw"] = np.array([ref_xcf_orientations[0]["vw"][0]])
 
     else:
         raise Exception(f"Unknown spin model: {spin_model}!")
