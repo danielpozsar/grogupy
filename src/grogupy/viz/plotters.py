@@ -216,8 +216,8 @@ def plot_magnetic_entities(
     tags = magnetic_entities.tag
     coords = magnetic_entities._xyz
 
-    colors = ["red", "green", "blue", "purple", "orange", "cyan", "magenta"]
-    colors = colors * (len(coords) // len(colors) + 1)
+    colors = px.colors.qualitative.D3
+    colors = colors * (len(tags) // len(colors) + 1)
 
     # Create figure
     fig = go.Figure()
@@ -405,7 +405,7 @@ def plot_pairs(
         [p.tags[1] + ", ruc:" + str(p.supercell_shift) for p in pairs]
     )
 
-    colors = ["red", "green", "blue", "purple", "orange", "cyan", "magenta"]
+    colors = px.colors.qualitative.D3
     colors = colors * (len(centers) // len(colors) + 1)
 
     # Create figure
@@ -543,7 +543,7 @@ def plot_DMI(
 
     labels = ["-->".join(p.tags) + ", ruc:" + str(p.supercell_shift) for p in pairs]
 
-    colors = ["red", "green", "blue", "purple", "orange", "cyan", "magenta"]
+    colors = px.colors.qualitative.D3
     colors = colors * (n_vectors // len(colors) + 1)
 
     # Create figure
