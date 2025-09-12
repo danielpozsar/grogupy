@@ -18,7 +18,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import TYPE_CHECKING, Union
+from typing import Union
 
 import numpy as np
 import plotly.express as px
@@ -55,7 +55,12 @@ def plot_contour(contour: Contour, **kwargs) -> go.Figure:
     """
 
     # Create the scatter plot
-    trace = go.Scatter(x=contour.samples.real, y=contour.samples.imag, mode="markers")
+    trace = go.Scatter(
+        x=contour.samples.real,
+        y=contour.samples.imag,
+        mode="markers",
+        name="Contour points",
+    )
 
     # if the eigenvalues are available
     if contour.automatic_emin:
@@ -249,6 +254,8 @@ def plot_onsite_anisotropy(
     **kwargs,
 ) -> go.Figure:
     """Creates a plot of the on-site anisotropy from a list of magnetic entities.
+
+    Function by Marcell Sipos.
 
     Parameters
     ----------
@@ -581,7 +588,7 @@ def plot_DMI(
                 colorscale=[[0, color], [1, color]],
                 showscale=False,
                 sizemode="absolute",
-                sizeref=max_magnitude / 10,
+                sizeref=max_magnitude / 10 * rescale,
                 legendgroup=legend_group,
                 showlegend=False,
             )
