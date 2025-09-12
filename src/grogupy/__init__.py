@@ -63,6 +63,7 @@ from .config import *
 # pre-import stuff
 from .io import (
     load,
+    read_grogupy,
     save,
     save_grogupy,
     save_HDF5,
@@ -86,6 +87,7 @@ __all__.extend(
     [
         "save",
         "save_grogupy",
+        "read_grogupy",
         "save_magnopy",
         "save_UppASD",
         "save_Vampire",
