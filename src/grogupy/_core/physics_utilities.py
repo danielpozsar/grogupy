@@ -286,11 +286,11 @@ def parse_magnetic_entity(
         orbital_indices = np.array(orb)
     # if it is a Cluster, get all the orbitals from all the atoms
     elif mode == "Cluster":
-        orbital_indices = []
+        orbital_indices = np.array([])
         l = []
         for a in atom:
             a_orb_idx = dh.geometry.a2o(a, all=True)
-            orbital_indices.append(a_orb_idx)
+            orbital_indices = np.hstack([orbital_indices, a_orb_idx])
             l.append([i for i in range(len(dh.atoms[a].orbitals))])
         orbital_indices = np.array(orbital_indices).flatten()
 
@@ -558,9 +558,7 @@ def fit_anisotropy_tensor(energies: NDArray, ref_xcf: list[dict]) -> NDArray:
 
         y_l = [
             np.dot(e1p, e1p) * energies[i, 0] - np.dot(e2p, e2p) * energies[i, 3],
-            1
-            / 2
-            * (np.dot(e1p, e2p) * energies[i, 1] + np.dot(e2p, e1p) * energies[i, 2]),
+            (np.dot(e1p, e2p) * energies[i, 1] + np.dot(e2p, e1p) * energies[i, 2]) / 2,
         ]
 
         w_l = np.array(
