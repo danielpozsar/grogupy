@@ -19,7 +19,6 @@
 # SOFTWARE.
 
 import pytest
-from numpy.testing import assert_allclose
 
 from grogupy._core.utilities import *
 
