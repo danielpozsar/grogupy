@@ -1384,10 +1384,10 @@ def save_Vampire(
     inp += "#------------------------------------------\n"
     inp += "output:real-time\n"
     inp += "output:temperature\n"
-    inp += "output:magnetisation\n"
+    inp += "output:mean-magnetisation-length\n"
     inp += "output:mean-susceptibility\n"
     inp += "screen:temperature\n"
-    inp += "screen:magnetisation\n"
+    inp += "screen:mean-magnetisation-length\n"
 
     # Vampire material file
     mat = (
@@ -1451,7 +1451,12 @@ def save_Vampire(
             mat += (
                 f"material[{new_mag_ents[i]['idx']+1}]:uniaxial-anisotropy-direction = "
             )
-            mat += ", ".join(map(lambda x: f"{x:.6e}", eigvecs[:, easy_idx]))
+            mat += ", ".join(
+                map(
+                    lambda x: f"{x:.6e}",
+                    eigvecs[:, easy_idx] / np.linalg.norm(eigvecs[:, easy_idx]),
+                )
+            )
             mat += "\n"
             mat += "#---------------------------------------------------\n"
             unique.append(new_mag_ents[i]["tag"])
