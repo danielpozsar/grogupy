@@ -55,36 +55,59 @@ def clean():
 
 
 class TestIO:
-    def test_load_save(self):
-        builder = grogupy.load("./benchmarks/test_builder.pkl")
+    @pytest.mark.parametrize(
+        "paths",
+        [
+            [
+                "./benchmarks/test_builder.pkl",
+                "./benchmarks/test_hamiltonian.pkl",
+                "./benchmarks/test_contour.pkl",
+                "./benchmarks/test_kspace.pkl",
+                "./benchmarks/test_default_timer.pkl",
+                "./benchmarks/test_magnetic_entity.pkl",
+                "./benchmarks/test_pair.pkl",
+            ],
+            [
+                "./benchmarks/test_builder_2.pkl",
+                "./benchmarks/test_hamiltonian_2.pkl",
+                "./benchmarks/test_contour_2.pkl",
+                "./benchmarks/test_kspace_2.pkl",
+                "./benchmarks/test_default_timer_2.pkl",
+                "./benchmarks/test_magnetic_entity_2.pkl",
+                "./benchmarks/test_pair_2.pkl",
+            ],
+        ],
+    )
+    def test_load_save(self, paths):
+        builder = grogupy.load(paths[0])
         assert isinstance(builder, grogupy.Builder)
         grogupy.save(builder, "./benchmarks/test_builder_temp.pkl", compress=0)
         builder2 = grogupy.load("./benchmarks/test_builder_temp.pkl")
         assert isinstance(builder2, grogupy.Builder)
         assert builder == builder2
 
-        hamiltonian = grogupy.load("./benchmarks/test_hamiltonian.pkl")
+        hamiltonian = grogupy.load(paths[1])
         assert isinstance(hamiltonian, grogupy.Hamiltonian)
         grogupy.save(hamiltonian, "./benchmarks/test_hamiltonian_temp.pkl", compress=0)
         hamiltonian2 = grogupy.load("./benchmarks/test_hamiltonian_temp.pkl")
         assert isinstance(hamiltonian2, grogupy.Hamiltonian)
         assert hamiltonian == hamiltonian2
 
-        contour = grogupy.load("./benchmarks/test_contour.pkl")
+        contour = grogupy.load(paths[2])
         assert isinstance(contour, grogupy.Contour)
         grogupy.save(contour, "./benchmarks/test_contour_temp.pkl", compress=0)
         contour2 = grogupy.load("./benchmarks/test_contour_temp.pkl")
         assert isinstance(contour2, grogupy.Contour)
         assert contour == contour2
 
-        kspace = grogupy.load("./benchmarks/test_kspace.pkl")
+        kspace = grogupy.load(paths[3])
         assert isinstance(kspace, grogupy.Kspace)
         grogupy.save(kspace, "./benchmarks/test_kspace_temp.pkl", compress=0)
         kspace2 = grogupy.load("./benchmarks/test_kspace_temp.pkl")
         assert isinstance(kspace2, grogupy.Kspace)
         assert kspace == kspace2
 
-        default_timer = grogupy.load("./benchmarks/test_default_timer.pkl")
+        default_timer = grogupy.load(paths[4])
         assert isinstance(default_timer, grogupy.batch.DefaultTimer)
         grogupy.save(
             default_timer, "./benchmarks/test_default_timer_temp.pkl", compress=0
@@ -93,38 +116,59 @@ class TestIO:
         assert isinstance(default_timer2, grogupy.batch.DefaultTimer)
         assert default_timer == default_timer2
 
-        mag_ent = grogupy.load("./benchmarks/test_magnetic_entity.pkl")
+        mag_ent = grogupy.load(paths[5])
         assert isinstance(mag_ent, grogupy.MagneticEntity)
         grogupy.save(mag_ent, "./benchmarks/test_magnetic_entity_temp.pkl", compress=0)
         mag_ent2 = grogupy.load("./benchmarks/test_magnetic_entity_temp.pkl")
         assert isinstance(mag_ent2, grogupy.MagneticEntity)
         assert mag_ent == mag_ent2
 
-        pair = grogupy.load("./benchmarks/test_pair.pkl")
+        pair = grogupy.load(paths[6])
         assert isinstance(pair, grogupy.Pair)
         grogupy.save(pair, "./benchmarks/test_pair_temp.pkl", compress=0)
         pair2 = grogupy.load("./benchmarks/test_pair_temp.pkl")
         assert isinstance(pair2, grogupy.Pair)
         assert pair == pair2
 
-    def test_load_save_Builder(self):
-        builder = load_Builder("./benchmarks/test_builder.pkl")
+    @pytest.mark.parametrize(
+        "path",
+        [
+            "./benchmarks/test_builder.pkl",
+            "./benchmarks/test_builder_2.pkl",
+        ],
+    )
+    def test_load_save_Builder(self, path):
+        builder = load_Builder(path)
         assert isinstance(builder, grogupy.Builder)
         grogupy.save(builder, "./benchmarks/test_builder_temp.pkl", compress=0)
         builder2 = grogupy.load("./benchmarks/test_builder_temp.pkl")
         assert isinstance(builder2, grogupy.Builder)
         assert builder == builder2
 
-    def test_load_save_Hamiltonian(self):
-        hamiltonian = load_Hamiltonian("./benchmarks/test_hamiltonian.pkl")
+    @pytest.mark.parametrize(
+        "path",
+        [
+            "./benchmarks/test_hamiltonian.pkl",
+            "./benchmarks/test_hamiltonian_2.pkl",
+        ],
+    )
+    def test_load_save_Hamiltonian(self, path):
+        hamiltonian = load_Hamiltonian(path)
         assert isinstance(hamiltonian, grogupy.Hamiltonian)
         grogupy.save(hamiltonian, "./benchmarks/test_hamiltonian_temp.pkl", compress=0)
         hamiltonian2 = grogupy.load("./benchmarks/test_hamiltonian_temp.pkl")
         assert isinstance(hamiltonian2, grogupy.Hamiltonian)
         assert hamiltonian == hamiltonian2
 
-    def test_load_save_Contour(self):
-        contour = load_Contour("./benchmarks/test_contour.pkl")
+    @pytest.mark.parametrize(
+        "path",
+        [
+            "./benchmarks/test_contour.pkl",
+            "./benchmarks/test_contour_2.pkl",
+        ],
+    )
+    def test_load_save_Contour(self, path):
+        contour = load_Contour(path)
         assert isinstance(contour, grogupy.Contour)
         grogupy.save(contour, "./benchmarks/test_contour_temp.pkl", compress=0)
         contour2 = grogupy.load("./benchmarks/test_contour_temp.pkl")
@@ -132,16 +176,30 @@ class TestIO:
         assert isinstance(contour2, grogupy.Contour)
         assert contour == contour2
 
-    def test_load_save_Kspace(self):
-        kspace = load_Kspace("./benchmarks/test_kspace.pkl")
+    @pytest.mark.parametrize(
+        "path",
+        [
+            "./benchmarks/test_kspace.pkl",
+            "./benchmarks/test_kspace_2.pkl",
+        ],
+    )
+    def test_load_save_Kspace(self, path):
+        kspace = load_Kspace(path)
         assert isinstance(kspace, grogupy.Kspace)
         grogupy.save(kspace, "./benchmarks/test_kspace_temp.pkl", compress=0)
         kspace2 = grogupy.load("./benchmarks/test_kspace_temp.pkl")
         assert isinstance(kspace2, grogupy.Kspace)
         assert kspace == kspace2
 
-    def test_load_save_DefaultTimer(self):
-        default_timer = load_DefaultTimer("./benchmarks/test_default_timer.pkl")
+    @pytest.mark.parametrize(
+        "path",
+        [
+            "./benchmarks/test_default_timer.pkl",
+            "./benchmarks/test_default_timer_2.pkl",
+        ],
+    )
+    def test_load_save_DefaultTimer(self, path):
+        default_timer = load_DefaultTimer(path)
         assert isinstance(default_timer, grogupy.batch.DefaultTimer)
         grogupy.save(
             default_timer, "./benchmarks/test_default_timer_temp.pkl", compress=0
@@ -150,8 +208,15 @@ class TestIO:
         assert isinstance(default_timer2, grogupy.batch.DefaultTimer)
         assert default_timer == default_timer2
 
-    def test_load_save_MagneticEntity(self):
-        magnetic_entity = load_MagneticEntity("./benchmarks/test_magnetic_entity.pkl")
+    @pytest.mark.parametrize(
+        "path",
+        [
+            "./benchmarks/test_magnetic_entity.pkl",
+            "./benchmarks/test_magnetic_entity_2.pkl",
+        ],
+    )
+    def test_load_save_MagneticEntity(self, path):
+        magnetic_entity = load_MagneticEntity(path)
         assert isinstance(magnetic_entity, grogupy.MagneticEntity)
         grogupy.save(
             magnetic_entity, "./benchmarks/test_magnetic_entity_temp.pkl", compress=0
@@ -160,8 +225,15 @@ class TestIO:
         assert isinstance(magnetic_entity2, grogupy.MagneticEntity)
         assert magnetic_entity == magnetic_entity2
 
-    def test_load_save_Pair(self):
-        pair = load_Pair("./benchmarks/test_pair.pkl")
+    @pytest.mark.parametrize(
+        "path",
+        [
+            "./benchmarks/test_pair.pkl",
+            "./benchmarks/test_pair_2.pkl",
+        ],
+    )
+    def test_load_save_Pair(self, path):
+        pair = load_Pair(path)
         assert isinstance(pair, grogupy.Pair)
         grogupy.save(pair, "./benchmarks/test_pair_temp.pkl", compress=0)
         pair2 = grogupy.load("./benchmarks/test_pair_temp.pkl")
@@ -169,8 +241,15 @@ class TestIO:
         assert pair == pair2
 
     @pytest.mark.xfail()
-    def test_save_read_grogupy(self):
-        builder = load_Builder("./benchmarks/test_builder.pkl")
+    @pytest.mark.parametrize(
+        "path",
+        [
+            "./benchmarks/test_builder.pkl",
+            "./benchmarks/test_builder_2.pkl",
+        ],
+    )
+    def test_save_read_grogupy(self, path):
+        builder = load_Builder(path)
         save_grogupy(builder, "./benchmarks/test_grogupy")
         assert os.path.isfile("./benchmarks/test_grogupy.grogupy.txt")
         builder2 = read_grogupy("./benchmarks/test_grogupy.grogupy.txt")
@@ -184,14 +263,28 @@ class TestIO:
         assert save_UppASD(builder)[2] == save_UppASD(builder2)[2]
         os.remove("./benchmarks/test_grogupy.grogupy.txt")
 
-    def test_save_magnopy(self):
-        builder = load_Builder("./benchmarks/test_builder.pkl")
+    @pytest.mark.parametrize(
+        "path",
+        [
+            "./benchmarks/test_builder.pkl",
+            "./benchmarks/test_builder_2.pkl",
+        ],
+    )
+    def test_save_magnopy(self, path):
+        builder = load_Builder(path)
         save_magnopy(builder, "./benchmarks/test_magnopy")
         assert os.path.isfile("./benchmarks/test_magnopy.magnopy.txt")
         os.remove("./benchmarks/test_magnopy.magnopy.txt")
 
-    def test_save_UppASD(self):
-        builder = load_Builder("./benchmarks/test_builder.pkl")
+    @pytest.mark.parametrize(
+        "path",
+        [
+            "./benchmarks/test_builder.pkl",
+            "./benchmarks/test_builder_2.pkl",
+        ],
+    )
+    def test_save_UppASD(self, path):
+        builder = load_Builder(path)
         os.mkdir("./src/grogupy/io/tests/test_UppASD")
         save_UppASD(builder, "./src/grogupy/io/tests/test_UppASD")
         assert os.path.isdir("./src/grogupy/io/tests/test_UppASD")
@@ -205,8 +298,15 @@ class TestIO:
         os.remove("./src/grogupy/io/tests/test_UppASD/inpsd.dat")
         os.rmdir("./src/grogupy/io/tests/test_UppASD")
 
-    def test_save_Vampire(self):
-        builder = load_Builder("./benchmarks/test_builder.pkl")
+    @pytest.mark.parametrize(
+        "path",
+        [
+            "./benchmarks/test_builder.pkl",
+            "./benchmarks/test_builder_2.pkl",
+        ],
+    )
+    def test_save_Vampire(self, path):
+        builder = load_Builder(path)
         os.mkdir("./src/grogupy/io/tests/test_Vampire")
         save_Vampire(builder, "./src/grogupy/io/tests/test_Vampire")
         assert os.path.isdir("./src/grogupy/io/tests/test_Vampire")
@@ -226,8 +326,15 @@ class TestIO:
     def test_read_py(self):
         raise NotImplementedError
 
+    @pytest.mark.parametrize(
+        "path",
+        [
+            "./benchmarks/test_builder.pkl",
+            "./benchmarks/test_builder_2.pkl",
+        ],
+    )
     def test_save_compression(self):
-        def parse(dictionary, key):
+        def parse(dictionary, key, path):
             out = []
             if isinstance(dictionary, dict):
                 for k, v in dictionary.items():
@@ -245,7 +352,7 @@ class TestIO:
                             out.append(d)
             return out
 
-        builder = grogupy.load("./benchmarks/test_builder.pkl")
+        builder = grogupy.load(path)
         assert isinstance(builder, grogupy.Builder)
 
         grogupy.save(builder, "./benchmarks/test_builder_temp2.pkl", compress=0)

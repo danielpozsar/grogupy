@@ -22,60 +22,153 @@ import plotly.graph_objs as go
 import pytest
 
 import grogupy
-from grogupy.viz import (
-    plot_1D_convergence,
-    plot_contour,
-    plot_DM_distance,
-    plot_DMI,
-    plot_Jiso_distance,
-    plot_kspace,
-    plot_magnetic_entities,
-    plot_pairs,
-)
+from grogupy.viz import *
 
 pytestmark = [pytest.mark.viz, pytest.mark.need_benchmark_data]
 
 
-@pytest.fixture
-def setup():
-    return grogupy.load("./benchmarks/test_builder.pkl")
-
-
 class TestPlots:
-    def test_contour(self, setup):
+    @pytest.mark.parametrize(
+        "path",
+        [
+            "./benchmarks/test_builder.pkl",
+            "./benchmarks/test_builder_2.pkl",
+        ],
+    )
+    def test_contour(self, path):
+        setup = grogupy.load(path)
         fig = plot_contour(setup.contour)
-        print(type(fig))
+        assert isinstance(fig, go.Figure)
+        fig = plot_contour(setup)
         assert isinstance(fig, go.Figure)
 
-    def test_kspace(self, setup):
+    @pytest.mark.parametrize(
+        "path",
+        [
+            "./benchmarks/test_builder.pkl",
+            "./benchmarks/test_builder_2.pkl",
+        ],
+    )
+    def test_kspace(self, path):
+        setup = grogupy.load(path)
         fig = plot_kspace(setup.kspace)
         assert isinstance(fig, go.Figure)
+        fig = plot_kspace(setup)
+        assert isinstance(fig, go.Figure)
 
-    def test_magnetic_entities(self, setup):
+    @pytest.mark.parametrize(
+        "path",
+        [
+            "./benchmarks/test_builder.pkl",
+            "./benchmarks/test_builder_2.pkl",
+        ],
+    )
+    def test_magnetic_entities(self, path):
+        setup = grogupy.load(path)
         fig = plot_magnetic_entities(setup.magnetic_entities)
         assert isinstance(fig, go.Figure)
-
-    @pytest.mark.parametrize("connect", [True, False])
-    def test_pairs(self, setup, connect):
-        fig = plot_pairs(setup.pairs, connect)
+        fig = plot_magnetic_entities(setup)
         assert isinstance(fig, go.Figure)
 
+    @pytest.mark.parametrize(
+        "path",
+        [
+            "./benchmarks/test_builder.pkl",
+            "./benchmarks/test_builder_2.pkl",
+        ],
+    )
+    def test_onsite_anisotropy(self, path):
+        setup = grogupy.load(path)
+        fig = plot_onsite_anisotropy(setup.magnetic_entities)
+        assert isinstance(fig, go.Figure)
+        fig = plot_onsite_anisotropy(setup)
+        assert isinstance(fig, go.Figure)
+
+    @pytest.mark.parametrize(
+        "path",
+        [
+            "./benchmarks/test_builder.pkl",
+            "./benchmarks/test_builder_2.pkl",
+        ],
+    )
+    @pytest.mark.parametrize("connect", [True, False])
+    @pytest.mark.parametrize("cell", [True, False])
+    def test_pairs(self, setup, path, connect, cell):
+        setup = grogupy.load(path)
+        fig = plot_pairs(setup.pairs, connect, cell)
+        assert isinstance(fig, go.Figure)
+        fig = plot_pairs(setup, connect, cell)
+        assert isinstance(fig, go.Figure)
+
+    @pytest.mark.parametrize(
+        "path",
+        [
+            "./benchmarks/test_builder.pkl",
+            "./benchmarks/test_builder_2.pkl",
+        ],
+    )
     @pytest.mark.parametrize("rescale", [-1, 0, 0.1, 1])
-    def test_DMI(self, setup, rescale):
+    def test_DMI(self, path, rescale):
+        setup = grogupy.load(path)
         fig = plot_DMI(setup.pairs, rescale)
         assert isinstance(fig, go.Figure)
-
-    def test_DM_distance(self, setup):
-        fig = plot_DM_distance(setup.pairs)
+        fig = plot_DMI(setup, rescale)
         assert isinstance(fig, go.Figure)
 
-    def test_Jiso_distance(self, setup):
-        fig = plot_Jiso_distance(setup.pairs)
+    @pytest.mark.parametrize(
+        "path",
+        [
+            "./benchmarks/test_builder.pkl",
+            "./benchmarks/test_builder_2.pkl",
+        ],
+    )
+    @pytest.mark.parametrize("normalise", [True, False])
+    @pytest.mark.parametrize("group", [True, False])
+    def test_DM_distance(self, normalise, group):
+        setup = grogupy.load(path)
+        fig = plot_DM_distance(setup.pairs, normalise, group)
+        assert isinstance(fig, go.Figure)
+        fig = plot_DM_distance(setup, normalise, group)
+        assert isinstance(fig, go.Figure)
+
+    @pytest.mark.parametrize(
+        "path",
+        [
+            "./benchmarks/test_builder.pkl",
+            "./benchmarks/test_builder_2.pkl",
+        ],
+    )
+    @pytest.mark.parametrize("group", [True, False])
+    def test_Jiso_distance(self, path, group):
+        setup = grogupy.load(path)
+        fig = plot_Jiso_distance(setup.pairs, group)
+        assert isinstance(fig, go.Figure)
+        fig = plot_Jiso_distance(setup, group)
+        assert isinstance(fig, go.Figure)
+
+    @pytest.mark.parametrize(
+        "path",
+        [
+            "./benchmarks/test_builder.pkl",
+            "./benchmarks/test_builder_2.pkl",
+        ],
+    )
+    @pytest.mark.parametrize("group", [True, False])
+    def test_J_S_distance(self, path, group):
+        setup = grogupy.load(path)
+        fig = plot_J_S_distance(setup.pairs, group)
+        assert isinstance(fig, go.Figure)
+        fig = plot_J_S_distance(setup, group)
         assert isinstance(fig, go.Figure)
 
     @pytest.mark.xfail(raises=NotImplementedError)
-    def test_1D_convergence(self):
-        pass
+    @pytest.mark.parametrize("files", [True, False])
+    @pytest.mark.parametrize("parameter", ["eset", "esetp", "kset"])
+    @pytest.mark.parametrize("maxdiff", [-1, 0, 100, 1e-5])
+    @pytest.mark.parametrize("method", ["absolute", "relative"])
+    def test_1D_convergence(self, files, parameter, maxdiff, method):
+        fig = plot_1D_convergence(files, parameter, maxdiff, method)
+        assert isinstance(fig, go.Figure)
 
 
 if __name__ == "__main__":
