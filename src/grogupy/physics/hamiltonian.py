@@ -191,7 +191,7 @@ class Hamiltonian:
 
         self.orientation: NDArray = np.array(self.scf_xcf_orientation)
 
-        # pre calculate hidden unuseed properties
+        # pre calculate hidden unused properties
         # they are here so they are dumped to the self.__dict__ upon saving
         self.__no = self._dh.no
         self.__cell = self._dh.geometry.cell
