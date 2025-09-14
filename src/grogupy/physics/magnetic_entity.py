@@ -19,17 +19,12 @@
 # SOFTWARE.
 
 import copy
-from typing import TYPE_CHECKING, Any, Iterator, Union
-
-from numpy.typing import NDArray
-
-if TYPE_CHECKING:
-    from grogupy.physics import Hamiltonian
+from typing import Iterator, Union
 
 import numpy as np
 import sisl
+from numpy.typing import NDArray
 
-from grogupy import __version__
 from grogupy._core.utilities import arrays_lists_equal, arrays_None_equal
 
 from .._core.physics_utilities import (
@@ -219,8 +214,8 @@ class MagneticEntity:
         atom, l, orbital, tag = parse_magnetic_entity(dh, atom, l, orb)
         self._atom: NDArray = np.array([atom]).flatten()
         self._l = l
-        self._orbital_box_indices: NDArray = np.array(orbital).flatten()
-        self._total_orbital_box_indices: NDArray = dh.a2o(self._atom, all=True)
+        self._orbital_box_indices: NDArray = np.sort(np.array(orbital).flatten())
+        self._total_orbital_box_indices: NDArray = np.sort(dh.a2o(self._atom, all=True))
         self._tags = tag
 
         # try to get Mulliken charges
@@ -755,7 +750,10 @@ class MagneticEntityList:
     """
 
     def __init__(
-        self, magnetic_entities: Union[None, list[MagneticEntity], NDArray] = None
+        self,
+        magnetic_entities: Union[
+            None, list[MagneticEntity], NDArray, "MagneticEntityList"
+        ] = None,
     ):
         if magnetic_entities is None:
             self.__magnetic_entities = []
@@ -819,11 +817,14 @@ class MagneticEntityList:
                 dtype=object,
             )
 
-    def __getitem__(self, item: int) -> Union[MagneticEntity, list[MagneticEntity]]:
-        # TODO: this is ugly, but works for now
-        out = np.array(self.__magnetic_entities, dtype=object)[item]
-        if not isinstance(out, MagneticEntity):
-            out = out.tolist()
+    def __getitem__(
+        self, item: Union[int, list[int], NDArray]
+    ) -> Union[MagneticEntity, list[MagneticEntity]]:
+        out = []
+        if isinstance(item, int):
+            item = [item]
+        for i in item:
+            out.append(self.__magnetic_entities[i])
         return out
 
     def __repr__(self) -> str:
@@ -837,6 +838,195 @@ class MagneticEntityList:
 
         out = "[" + "\n".join([p.__repr__() for p in self.__magnetic_entities]) + "]"
         return out
+
+    @property
+    def dh_ds_id(self) -> Union[list, NDArray]:
+        """The ID of the Hamiltonian and the Density  Matrix."""
+        return self.__getattr__("dh_ds_id")
+
+    @property
+    def cell(self) -> Union[list, NDArray]:
+        """The cell of the Hamiltonian."""
+        return self.__getattr__("cell")
+
+    @property
+    def tag(self) -> Union[list, NDArray]:
+        """The description of the magnetic entity"""
+        return self.__getattr__("tag")
+
+    @property
+    def _spin_box_indices(self) -> Union[list, NDArray]:
+        """The spin box indices of the magnetic entity"""
+        return self.__getattr__("_spin_box_indices")
+
+    @property
+    def _atom(self) -> Union[list, NDArray]:
+        """The list of atoms in the magnetic entity"""
+        return self.__getattr__("_atom")
+
+    @property
+    def _l(self) -> Union[list, NDArray]:
+        """The list of l in the magnetic entity, None if it is incomplete"""
+        return self.__getattr__("_l")
+
+    @property
+    def _orbital_box_indices(self) -> Union[list, NDArray]:
+        """The ORBITAL BOX indices"""
+        return self.__getattr__("_orbital_box_indices")
+
+    @property
+    def _total_orbital_box_indices(self) -> Union[list, NDArray]:
+        """The ORBITAL BOX indices for the whole atom"""
+        return self.__getattr__("_total_orbital_box_indices")
+
+    @property
+    def _xyz(self) -> Union[list, NDArray]:
+        """The center of coordinates for the magnetic entity"""
+        return self.__getattr__("_xyz")
+
+    @property
+    def SBS(self) -> Union[list, NDArray]:
+        """The spin box size of the magnetic entity"""
+        return self.__getattr__("SBS")
+
+    @property
+    def SBI(self) -> Union[list, NDArray]:
+        """The spin box indices of the magnetic entity"""
+        return self.__getattr__("SBI")
+
+    @property
+    def xyz_center(self) -> Union[list, NDArray]:
+        """The mean of the position of the atoms that are in the magnetic entity."""
+        return self.__getattr__("xyz_center")
+
+    @property
+    def _total_mulliken(self) -> Union[list, NDArray]:
+        """The total mulliken projection of the atom or the atoms of magnetic entity.
+        This is still the magnetic moment and not the spin moment!"""
+        return self.__getattr__("_total_mulliken")
+
+    @property
+    def _local_mulliken(self) -> Union[list, NDArray]:
+        """The local mulliken projection of the atom or the atoms of magnetic entity.
+        This is still the magnetic moment and not the spin moment!"""
+        return self.__getattr__("_local_mulliken")
+
+    @property
+    def total_Q(self) -> Union[list, NDArray]:
+        """The total charge of the atom or the atoms of the magnetic entity."""
+        return self.__getattr__("total_Q")
+
+    @property
+    def total_S(self) -> Union[list, NDArray]:
+        """Total spin moment of the atom or the atoms of the magnetic entity.
+        This is the spin moment instead of the magnetic moment!"""
+        return self.__getattr__("total_S")
+
+    @property
+    def total_Sx(self) -> Union[list, NDArray]:
+        """Total Sx of the atom or the atoms of the magnetic entity.
+        This is the spin moment instead of the magnetic moment!"""
+        return self.__getattr__("total_Sx")
+
+    @property
+    def total_Sy(self) -> Union[list, NDArray]:
+        """Total Sy of the atom or the atoms of the magnetic entity.
+        This is the spin moment instead of the magnetic moment!"""
+        return self.__getattr__("total_Sy")
+
+    @property
+    def total_Sz(self) -> Union[list, NDArray]:
+        """Total Sz of the atom or the atoms of the magnetic entity.
+        This is the spin moment instead of the magnetic moment!"""
+        return self.__getattr__("total_Sz")
+
+    @property
+    def local_Q(self) -> Union[list, NDArray]:
+        """The charge of the magnetic entity."""
+        return self.__getattr__("local_Q")
+
+    @property
+    def local_S(self) -> Union[list, NDArray]:
+        """Spin moment of the magnetic entity.
+        It only takes the contribution from the specified sub-orbitals or
+        sub-shells! This is the spin moment instead of the magnetic moment!"""
+        return self.__getattr__("local_S")
+
+    @property
+    def local_Sx(self) -> Union[list, NDArray]:
+        """Sx of the magnetic entity.
+        It only takes the contribution from the specified sub-orbitals or
+        sub-shells! This is the spin moment instead of the magnetic moment!"""
+        return self.__getattr__("local_Sx")
+
+    @property
+    def local_Sy(self) -> Union[list, NDArray]:
+        """Sy of the magnetic entity.
+        It only takes the contribution from the specified sub-orbitals or
+        sub-shells! This is the spin moment instead of the magnetic moment!"""
+        return self.__getattr__("local_Sy")
+
+    @property
+    def local_Sz(self) -> Union[list, NDArray]:
+        """Sz of the magnetic entity.
+        It only takes the contribution from the specified sub-orbitals or
+        sub-shells! This is the spin moment instead of the magnetic moment!"""
+        return self.__getattr__("local_Sz")
+
+    @property
+    def energies_meV(self) -> Union[list, NDArray]:
+        """The energies, but in meV."""
+        return self.__getattr__("energies_meV")
+
+    @property
+    def energies_mRy(self) -> Union[list, NDArray]:
+        """The energies, but in mRy."""
+        return self.__getattr__("energies_mRy")
+
+    @property
+    def energies_J(self) -> Union[list, NDArray]:
+        """The energies, but in J."""
+        return self.__getattr__("energies_J")
+
+    @property
+    def K(self) -> Union[list, NDArray]:
+        """The anisotropy tensor, in meV."""
+        return self.__getattr__("K")
+
+    @property
+    def K_meV(self) -> Union[list, NDArray]:
+        """The anisotropy tensor, but in meV."""
+        return self.__getattr__("K_meV")
+
+    @property
+    def K_mRy(self) -> Union[list, NDArray]:
+        """The anisotropy tensor, but in mRy."""
+        return self.__getattr__("K_mRy")
+
+    @property
+    def K_J(self) -> Union[list, NDArray]:
+        """The anisotropy tensor, but in J."""
+        return self.__getattr__("K_J")
+
+    @property
+    def K_consistency(self) -> Union[list, NDArray]:
+        """The consistency check, in meV."""
+        return self.__getattr__("K_consistency")
+
+    @property
+    def K_consistency_meV(self) -> Union[list, NDArray]:
+        """The consistency check, but in meV."""
+        return self.__getattr__("K_consistency_meV")
+
+    @property
+    def K_consistency_mRy(self) -> Union[list, NDArray]:
+        """The consistency check, but in mRy."""
+        return self.__getattr__("K_consistency_mRy")
+
+    @property
+    def K_consistency_J(self) -> Union[list, NDArray]:
+        """The consistency check, but in J."""
+        return self.__getattr__("K_consistency_J")
 
     def append(self, item):
         """Appends to the magnetic entity list."""
