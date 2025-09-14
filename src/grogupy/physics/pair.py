@@ -25,7 +25,6 @@ import numpy as np
 import sisl
 from numpy.typing import NDArray
 
-from grogupy import __version__
 from grogupy._core.utilities import arrays_lists_equal, arrays_None_equal
 
 from .._core.physics_utilities import (
@@ -560,7 +559,7 @@ class PairList:
     the list.
     """
 
-    def __init__(self, pairs: Union[None, list[Pair], NDArray] = None):
+    def __init__(self, pairs: Union[None, list[Pair], NDArray, "PairList"] = None):
         if pairs is None:
             self.__pairs = []
         elif isinstance(pairs, PairList):
@@ -618,11 +617,14 @@ class PairList:
                 [p.__getattribute__(name) for p in self.__pairs], dtype=object
             )
 
-    def __getitem__(self, item: int) -> Union[Pair, list[Pair]]:
-        # TODO: this is ugly, but works for now
-        out = np.array(self.__pairs, dtype=object)[item]
-        if not isinstance(out, Pair):
-            out = out.tolist()
+    def __getitem__(
+        self, item: Union[int, list[int], NDArray]
+    ) -> Union[Pair, list[Pair]]:
+        out = []
+        if isinstance(item, int):
+            item = [item]
+        for i in item:
+            out.append(self.__pairs[i])
         return out
 
     def __repr__(self) -> str:
@@ -636,6 +638,161 @@ class PairList:
 
         out = "[" + "\n".join([p.__repr__() for p in self.__pairs]) + "]"
         return out
+
+    @property
+    def dh_ds_id(self) -> Union[list, NDArray]:
+        """The ID of the Hamiltonian and the Density  Matrix."""
+        return self.__getattr__("dh_ds_id")
+
+    @property
+    def M1(self) -> Union[list, NDArray]:
+        """The first magnetic entity."""
+        return self.__getattr__("M1")
+
+    @property
+    def M2(self) -> Union[list, NDArray]:
+        """The second magnetic entity."""
+        return self.__getattr__("M2")
+
+    @property
+    def SBS1(self) -> Union[list, NDArray]:
+        """Spin box size of the first magnetic entity."""
+        return self.__getattr__("SBS1")
+
+    @property
+    def SBS2(self) -> Union[list, NDArray]:
+        """Spin box size of the second magnetic entity."""
+        return self.__getattr__("SBS2")
+
+    @property
+    def SBI1(self) -> Union[list, NDArray]:
+        """Spin box indices of the first magnetic entity."""
+        return self.__getattr__("SBI1")
+
+    @property
+    def SBI2(self) -> Union[list, NDArray]:
+        """Spin box indices of the second magnetic entity."""
+        return self.__getattr__("SBI2")
+
+    @property
+    def tags(self) -> Union[list, NDArray]:
+        """Tags of the magnetic entities."""
+        return self.__getattr__("tags")
+
+    @property
+    def supercell_shift_xyz(self) -> Union[list, NDArray]:
+        """Supercell shift in Angstrom."""
+        return self.__getattr__("supercell_shift_xyz")
+
+    @property
+    def xyz(self) -> Union[list, NDArray]:
+        """Coordinates of the magnetic entities."""
+        return self.__getattr__("xyz")
+
+    @property
+    def xyz_center(self) -> Union[list, NDArray]:
+        """Center coordinates of the magnetic entities."""
+        return self.__getattr__("xyz_center")
+
+    @property
+    def distance(self) -> Union[list, NDArray]:
+        """Distance of the magnetic entities."""
+        return self.__getattr__("distance")
+
+    @property
+    def energies_meV(self) -> Union[list, NDArray]:
+        """The energies, but in meV."""
+        return self.__getattr__("energies_meV")
+
+    @property
+    def energies_mRy(self) -> Union[list, NDArray]:
+        """The energies, but in mRy."""
+        return self.__getattr__("energies_mRy")
+
+    @property
+    def energies_J(self) -> Union[list, NDArray]:
+        """The energies, but in J."""
+        return self.__getattr__("energies_J")
+
+    @property
+    def J(self) -> Union[list, NDArray]:
+        """The exchange tensor, in eV."""
+        return self.__getattr__("J")
+
+    @property
+    def J_meV(self) -> Union[list, NDArray]:
+        """The exchange tensor, but in meV."""
+        return self.__getattr__("J_meV")
+
+    @property
+    def J_mRy(self) -> Union[list, NDArray]:
+        """The exchange tensor, but in mRy."""
+        return self.__getattr__("J_mRy")
+
+    @property
+    def J_J(self) -> Union[list, NDArray]:
+        """The exchange tensor, but in J."""
+        return self.__getattr__("J_J")
+
+    @property
+    def D(self) -> Union[list, NDArray]:
+        """The DM vector in eV."""
+        return self.__getattr__("D")
+
+    @property
+    def D_meV(self) -> Union[list, NDArray]:
+        """The DM vector, but in meV."""
+        return self.__getattr__("D_meV")
+
+    @property
+    def D_mRy(self) -> Union[list, NDArray]:
+        """The DM vector, but in mRy."""
+        return self.__getattr__("D_mRy")
+
+    @property
+    def D_J(self) -> Union[list, NDArray]:
+        """The DM vector, but in J."""
+        return self.__getattr__("D_J")
+
+    @property
+    def J_S(self) -> Union[list, NDArray]:
+        """The symmetric part of the exchange tensor, in eV."""
+        return self.__getattr__("J_S")
+
+    @property
+    def J_S_meV(self) -> Union[list, NDArray]:
+        """The symmetric part of the exchange tensor, but in meV."""
+        return self.__getattr__("J_S_meV")
+
+    @property
+    def J_S_mRy(self) -> Union[list, NDArray]:
+        """The symmetric part of the exchange tensor, but in mRy."""
+        return self.__getattr__("J_S_mRy")
+
+    @property
+    def J_S_J(self) -> Union[list, NDArray]:
+        """The symmetric part of the exchange tensor, but in J."""
+        return self.__getattr__("J_S_J")
+
+    @property
+    def J_iso(self) -> Union[list, NDArray]:
+        """The isotropic exchange, in eV."""
+        return self.__getattr__("J_iso")
+
+    @property
+    def J_iso_meV(self) -> Union[list, NDArray]:
+        """The isotropic exchange, but in meV."""
+        return self.__getattr__("J_iso_meV")
+
+    @property
+    def J_iso_mRy(self) -> Union[list, NDArray]:
+        """The isotropic exchange, but in mRy."""
+        return self.__getattr__("J_iso_mRy")
+
+    @property
+    def J_iso_J(self) -> Union[list, NDArray]:
+        """The isotropic exchange, but in J."""
+        return self.__getattr__("J_iso_J")
 
     def append(self, item):
         """Appends to the pair list."""
