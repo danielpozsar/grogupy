@@ -54,14 +54,14 @@ class Config:
 
     def __init__(self, architecture: str, tqdm: str):
         """Initializing configuration class."""
-        self.__viz_loaded = False
-        self.__MPI_loaded = False
+        self.__viz_loaded: bool = False
+        self.__MPI_loaded: bool = False
 
         # get architecture
         if architecture.lower() == "cpu":
-            self.__architecture = "CPU"
+            self.__architecture: str = "CPU"
         elif architecture.lower() == "gpu":
-            self.__architecture = "GPU"
+            self.__architecture: str = "GPU"
         else:
             raise Exception("Unknown architecture, use CPU or GPU!")
 
@@ -69,25 +69,25 @@ class Config:
             try:
                 from mpi4py import MPI
 
-                self.__MPI_loaded = True
-                self.__parallel_size = MPI.COMM_WORLD.Get_size()
+                self.__MPI_loaded: bool = True
+                self.__parallel_size: int = MPI.COMM_WORLD.Get_size()
             except:
                 warnings.warn(
                     """MPI could not be loaded in CPU architecture! 
                               Parallelization will not be possible!"""
                 )
-                self.__parallel_size = 1
+                self.__parallel_size: int = 1
 
         elif self.__architecture == "GPU":
             import cupy as cp
 
-            self.__parallel_size = cp.cuda.runtime.getDeviceCount()
+            self.__parallel_size: int = cp.cuda.runtime.getDeviceCount()
 
         # get tqdm
         if tqdm[0].lower() == "1" or tqdm[0].lower() == "t":
-            self.__tqdm_requested = True
+            self.__tqdm_requested: bool = True
         else:
-            self.__tqdm_requested = False
+            self.__tqdm_requested: bool = False
 
     @property
     def viz_loaded(self) -> bool:
