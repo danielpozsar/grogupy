@@ -41,8 +41,9 @@ Functions
     plot_onsite_anisotropy    Plots the on-site anisotropies in the lattice.
     plot_pairs                Plots the pairs, with or without connections.
     plot_DMI                  Plots the DMI vectors.
-    plot_DM_distance          Plots the magnitude of DM vectors as a function of distance.
     plot_Jiso_distance        Plots the isotropic exchange as a function of distance.
+    plot_DM_distance          Plots the magnitude of DM vectors as a function of distance.
+    plot_J_S_distance         Plots the symmetric exchange as a function of distance.
     plot_1D_convergence       Reads output files and create a plot for the convergence test.
 
 Background information
