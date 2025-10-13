@@ -273,7 +273,10 @@ def main():
         )
         print("solved:", (timer() - start) / 60, "min")
         print(simulation.times.times)
-        print(save_grogupy(simulation))
+        try:
+            print(save_magnopy(simulation))
+        except:
+            print(save_grogupy(simulation))
         print(
             "################################################################################"
         )
