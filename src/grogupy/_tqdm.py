@@ -18,6 +18,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+"""Tqdm wrapper module for grogupy."""
+
 from typing import Iterable
 
 from grogupy.config import CONFIG

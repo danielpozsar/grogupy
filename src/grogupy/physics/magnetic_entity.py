@@ -54,7 +54,7 @@ class MagneticEntity:
     Parameters
     ----------
     infile: Union[str, tuple[Union[sisl.physics.Hamiltonian, Hamiltonian], Union[sisl.physics.DensityMatrix, None]]]
-        Either the path to the .fdf file or a tuple of sisl or grogupy hamiltonian and a sisl density matrix
+        Either the path to the *.fdf* file or a tuple of sisl or grogupy hamiltonian and a sisl density matrix
     atom: Union[None, int, list[int]], optional
         Defining atom (or atoms) in the unit cell forming the magnetic entity, by default None
     l: Union[None, int, list[int], list[list[int]]], optional

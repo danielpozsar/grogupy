@@ -18,6 +18,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+"""Load results from multiple *.pkl* files and do convergence analysis with them."""
+
 import argparse
 
 from grogupy import __citation__, __definitely_not_grogu__
@@ -29,7 +31,7 @@ def main():
 
     # setup parser
     parser = argparse.ArgumentParser(
-        description="Load results from multiple .pkl files and do convergence analysis with them."
+        description="Load results from multiple *.pkl* files and do convergence analysis with them."
     )
     parser.add_argument(
         "-t",

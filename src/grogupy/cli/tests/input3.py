@@ -126,7 +126,7 @@ magnopy_precision = 3
 # add the simulation parameters to the magnopy file as comments
 magnopy_comments = False
 
-# save the Uppsala Atomistic Spin Dynamics software input files
+# save the UppASD Atomistic Spin Dynamics software input files
 # uses the outfolder and out_spin_moment
 save_UppASD = True
 # add the simulation parameters to the inpsd.dat file as

@@ -10,6 +10,7 @@ features.
 .. toctree::
    :maxdepth: 2
 
+   theoretical_background
    input_formats
    output_formats
    magnetic_entity

@@ -447,6 +447,7 @@ def plot_onsite_anisotropy(
         generated, by default None
     legend : bool, optional
         Whether to show the legend, by default True
+
     Returns
     -------
     plotly.graph_objs.go.Figure
@@ -1390,7 +1391,7 @@ def plot_1D_convergence(
         Multiple spin models in files!
     Exception
         Convergence parameter not found!
-    s"""
+    """
 
     # check number of files
     if len(files) < 2:

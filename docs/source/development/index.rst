@@ -2,7 +2,7 @@ Contributing to grogupy
 =======================
 
 Currently it is more favourable to request new features 
-of you want something implemented, but if you really 
+if you want something implemented, but if you really 
 want to contribute to the development of grogupy, 
 then you can download or fork the repository and once 
 you are satisfied with the state of the code you can 
@@ -21,7 +21,7 @@ the repository from Github.
     git clone https://github.com/danielpozsar/grogu.git
 
 Then the easiest way is to create a a virtual environment (.venv), for
-example with VSCode.
+example with VS Code.
 
 * Use at least python 3.9
 
@@ -46,10 +46,10 @@ Releasing new version
 ---------------------
 
 Before releasing you should be sure that pytest runs without 
-errors including the benchmarks as well. All new features 
+errors including benchmarks. All new features 
 should be documented in both docs and in the relevant 
 **__init__.py** files and new tests should be created. The 
-example notebooks should be run as well and the documentation 
+example notebooks should be run and the documentation 
 building should not throw any warnings after removing the 
 **_genrated** folder from **API** and running ``make clean``, 
 ``make build``.
@@ -62,7 +62,9 @@ parameters. Here is a list of TODOs in the last commit:
 2. Update release date in **CITATION.ciff**
 3. Update release version in **__init__.py**
 4. Update the changelogs in documentation
-5. tag the commit with the proper version number
+5. Update the changelogs in **CHANGELOG.md**
+6. Update versions in **references.bib**
+7. tag the commit with the proper version number
 
 The packaging and documentation generation is automatically 
-done during release by github workflows.
+done during release by GitHub workflows.

@@ -2,7 +2,7 @@ Environment Variables
 =====================
 
 Environment variables are key-value pairs that can
-affect the way running processes will behave on a computer. If 
+affect the way processes will behave on a computer. If 
 you are running in a HPC environment using Slurm workload manager, 
 then you can set these in the job description file.
 
@@ -10,7 +10,7 @@ Setting Environment Variables
 ------------------------------
 1. **GROGUPY_ARCHITECTURE**: This variable sets the architecture
    for the grogupy project. By default, the architecture is set to
-   CPU. To change it to GPU, you can set the `GROGUPY_ARCHITECTURE`
+   *CPU*. To change it to *GPU*, you can set the `GROGUPY_ARCHITECTURE`
    environment variable:
 
    .. code-block:: bash

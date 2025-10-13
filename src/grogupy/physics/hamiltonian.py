@@ -63,7 +63,7 @@ class Hamiltonian:
     Parameters
     ----------
     infile: Union[str, tuple[sisl.physics.Hamiltonian, Union[sisl.physics.DensityMatrix, None]]]
-        Path to the .fdf file or the sisl Hamiltonian and Density matrix, DM is optional
+        Path to the *.fdf* file or the sisl Hamiltonian and Density matrix, DM is optional
     scf_xcf_orientation: Union[list, NDArray]. optional
         The reference orientation, by default [0,0,1]
 
@@ -98,7 +98,7 @@ class Hamiltonian:
     _ds: Union[sisl.physics.DensityMatrix, None]
         The sisl density matrix or None if it is not given
     infile: str
-        The path to the .fdf file
+        The path to the *.fdf* file
     H: NDArray
         Hamiltonian built from the sisl Hamiltonian
     S: NDArray

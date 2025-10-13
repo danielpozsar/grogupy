@@ -18,6 +18,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+"""Takes an input file and runs a simulation from it."""
+
 import argparse
 import datetime
 import os
@@ -58,9 +60,9 @@ def main():
 
     # setup parser
     parser = argparse.ArgumentParser(
-        description="This script takes a .py or a .fdf input files and runs grogupy with the given input."
+        description="This script takes a *.py* or a *.fdf* input files and runs grogupy with the given input."
     )
-    parser.add_argument("file", nargs="?", help="Path to a .py or .fdfinput file.")
+    parser.add_argument("file", nargs="?", help="Path to a *.py* or .fdfinput file.")
     parser.add_argument(
         "-c" "--cite",
         dest="cite",

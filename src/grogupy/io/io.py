@@ -661,7 +661,7 @@ def read_grogupy(file: str):
     """This function reads the grogupy input file and returns a Builder object
 
     Parambeters
-    ----------
+    -----------
     file: str
         Path to the ``grogupy`` input file
 
@@ -1084,7 +1084,7 @@ def save_UppASD(
 
     jfile = ""
     if not builder.spin_model == "isotropic-only":
-        # adding anisotropy to jfile, we need -1, because Uppsala
+        # adding anisotropy to jfile, we need -1, because UppASD
         # converts it back
         for i, mag_ent in enumerate(builder.magnetic_entities):
             K = -mag_ent.K_mRy.flatten()
@@ -1112,7 +1112,7 @@ def save_UppASD(
 
         # this is the unit cell shift
         shift = pair.supercell_shift
-        # -1/2 for convention, from uppsala
+        # -1/2 for convention, from UppASD
         J = -1 / 2 * pair.J_mRy.flatten()
         # adding line to jfile
         jfile += (
@@ -1764,7 +1764,7 @@ def read_fdf(path: str) -> dict:
     Parameters
     ----------
         path: str
-            The path to the .fdf file
+            The path to the *.fdf* file
 
     Returns
     -------
@@ -1933,7 +1933,7 @@ def read_fdf(path: str) -> dict:
 
 
 def read_py(path: str) -> dict:
-    """Reading input parameters from a .py file.
+    """Reading input parameters from a *.py* file.
 
     Parameters
     ----------

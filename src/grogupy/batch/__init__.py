@@ -49,7 +49,7 @@ that can otherwise help with running in an HPC environment.
 Examples
 --------
 
-For examples, see the :ref:`tutorials <tutorials>`.
+For examples, see the :ref:`tutorials <convergence_with_high_throughput>`.
 
 """
 

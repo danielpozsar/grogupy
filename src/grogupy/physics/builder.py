@@ -118,7 +118,7 @@ class Builder:
     Attributes
     ----------
     infile: str
-        Input path to the .fdf file
+        Input path to the *.fdf* file
     scf_xcf_orientation: NDArray
         The DFT exchange filed orientation from the instance Hamiltonian
     ref_xcf_orientations: list[dict]

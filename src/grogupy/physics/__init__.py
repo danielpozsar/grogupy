@@ -67,7 +67,7 @@ Background information
 
 This module contains the high level API of the package. It was purposefully 
 written to be highly modular, which is ideal for complicated systems that are 
-easier to set up in a jupyter notebook environment. 
+easier to set up and develop in a jupyter notebook environment. 
 """
 
 from .._core.physics_utilities import *

@@ -314,7 +314,7 @@ def strip_dict_structure(
 
 
 def standardize_input(input: dict, defaults: dict) -> dict:
-    """Standardizes the input from .py and .fdf using the default values
+    """Standardizes the input from *.py* and *.fdf* using the default values
 
 
     Parameters

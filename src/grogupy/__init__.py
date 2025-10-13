@@ -32,13 +32,13 @@ parallelization.
 .. autosummary::
    :toctree: _generated/
 
-    _tqdm   Tqdm wrapper for grogupy.
+    _tqdm   Tqdm wrapper module for grogupy.
 
 Configuration
 -------------
 This module contains the configuration from the environment, which helps to 
 load or avoid the optional dependencies that can be part of grogupy. These 
-optional dependencies are tqd, cupy for gpu acceleration and plotly for 
+optional dependencies are tqdm, cupy for gpu acceleration and plotly for 
 visualization.
 
 

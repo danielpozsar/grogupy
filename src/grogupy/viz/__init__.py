@@ -26,7 +26,7 @@ Visualization
 
 
 This subpackage contains various routines to plot the system of magnetic entities
-and pairs. Furthermore it will be able to plot the calculated magnetic exchange
+and pairs. Furthermore it can plot the calculated magnetic exchange
 parameters.
 
 Functions
@@ -56,7 +56,7 @@ environment and supports interactive and 3D plots.
 Examples
 --------
 
-For examples, see the *Visualize the exchange* in  :ref:`tutorials <quickstart-guide>`.
+For examples, see the Visualize the exchange in the :ref:`tutorials </quickstart/visualize_the_exchange.ipynb>`.
 
 """
 

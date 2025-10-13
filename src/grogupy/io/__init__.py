@@ -27,7 +27,7 @@ Input/Output
 This subpackage contains various routines to read in different input files
 and to process the information. The main goal is to convert the information
 from the input files to a format that can be used by the ``Builder`` class 
-and to save the data in other input formats.
+and to save the data in input formats supported by other software.
 
 Input/Output Functions
 ----------------------
@@ -42,7 +42,7 @@ These are the main input output functions for the user.
    save_grogupy                 Creates a .txt file, that contains all the information from a calculated Builder.
    read_grogupy                 Reads a .grogupy.txt file and rebuilds a Builder instance.
    save_magnopy                 Creates a magnopy input file from a calculated Builder.
-   save_UppASD                  Creates the Uppsala Atomistic Spin Dinamics input file from a calculated Builder.
+   save_UppASD                  Creates the UppASD Atomistic Spin Dinamics input file from a calculated Builder.
    save_Vampire                 Creates the Vampire input files from a calculated Builder.
    save_HDF5                    Creates a HDF5 file from a calculated Builder.
    read_fdf                     Reads input for command line tools from an fdf file.
@@ -61,7 +61,7 @@ could be useful in some special applications.
    decipher_all_by_pos          Gets the magnetic entities and pairs from their position.
    decipher_all_by_tag          Gets the magnetic entities and pairs from their tags.
    strip_dict_structure         Clears the data structure during saving to reduce size.
-   standardize_input            Standardizes the input from .py and .fdf using the default values.
+   standardize_input            Standardizes the input from *.py* and *.fdf* using the default values.
 
 """
 

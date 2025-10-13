@@ -1,7 +1,7 @@
 Output formats
 ==============
 
-Currently grogupy relies on a .pkl file as its main output format that can be 
+Currently grogupy relies on a *.pkl* file as its main output format that can be 
 used to reload its main system object, but HDF should be the default in the 
 future. Furthermore it supports different input formats for atomistic spin 
 dynamics and magnon spectrum calculation.
@@ -9,40 +9,36 @@ dynamics and magnon spectrum calculation.
 `Magnopy <https://docs.magnopy.org/en/latest/index.html>`_
     The magnopy input format is fully supported. The two softwares can be 
     easily used in a pipeline.
-`Uppsala Atomistic Spin Dynamics <https://uppasd.github.io/UppASD-manual/introduction/>`_
-    grogupy outputs the `posfile`, `momfile` and `exchange`. The on-site 
-    anisotropy, if it is available, is written in the `exchange` file as an 
+`UppASD Atomistic Spin Dynamics <https://uppasd.github.io/UppASD-manual/introduction/>`_
+    grogupy outputs the `posfile`, `momfile`, `exchange` and `inpsd.dat`. The 
+    on-site anisotropy, if it is available, is written in the `exchange` file as an 
     interaction of a spin with itself. The `inpsd.dat` is mostly empty, it only 
     contains the cell information and the paths to the other input files, so 
     you have to manually fill in the remaining required information to run a 
     simulation.
 
-    .. warning::
-        Before version 4.0 the wrong convention was used for this output.
-
 `Vampire <https://vampire.york.ac.uk>`_
     Vampire only supports rectangular unit cells, which is partially supported 
-    by grogupy. It can convert some unit cells with C_3 symmetry to the acceptable 
-    format. grogupy outputs the `vampire.UCF` file with all the information, 
-    but you have to set some parameters in `vampire.mat` and in the `input` 
-    file.
+    by grogupy. It can convert some 2D unit cells with C3 symmetry to the acceptable 
+    format. grogupy outputs the `vampire.UCF` and `vampire.mat` files with all 
+    the information, but you have to set some parameters in the `input` file.
     
 Spin Hamiltonian file
 ---------------------
 
-On this page we describe the format of the spin Hamiltonian file that can be produced by GROGU.
+In a lot of cases grogupy outputs a spin Hamiltonian file using the magnopy format, 
+because in the future it should be able to convert between many input formats of 
+different softwares.
+
 First of all here is the specification of the full file
 
 .. literalinclude:: magnopy-input-specs.txt
     :linenos:
     :language: text 
 
-
 The file is composed by a number of sections. Sections are separated by approximately 80 "=" symbols.
 Some of the sections have subsections, that are separated by approximately 40 "-" symbols.
 Next we describe the sections of the file one by one.
-
-.. _user-guide_output-format_comment-section:
 
 Comment section
 ---------------
@@ -61,12 +57,10 @@ line   Formal description
 7      Section separator. Approximately 80 "=" symbols.
 ====== =========================================================================
 
-This section might list the detatils of the GROGU calculations or of the
+This section might list the detatils of the grogupy calculations or of the
 underlying DFT calcuation. The amount of lines in this section is arbitrary and
-might be different in different versions of GROGU. The content of this section
+might be different in different versions of grogupy. The content of this section
 is not restricted and can be arbitrary as well.
-
-.. _user-guide_output-format_hamiltonian-convention:
 
 Hamiltonian convention
 ----------------------
@@ -95,7 +89,7 @@ line   Formal description
 ====== =========================================================================
 
 This section has a fixed amount of lines. It describes the convention of the
-spin Hamiltonian in GROGU. The parameters of the file should be interpreted
+spin Hamiltonian in grogupy. The parameters of the file should be interpreted
 together with this convention.
 
 The Hamiltonian in this convention would be written as
@@ -126,8 +120,6 @@ is a full matrix of the exchange parameter. Both pairs
 :math:`\boldsymbol{e}_{i}\boldsymbol{J}_{ij}\boldsymbol{e}_{j}` and 
 :math:`\boldsymbol{e}_{j}\boldsymbol{J}_{ji}\boldsymbol{e}_{i}` are explicitly included in the
 sum (hence the ``Double counting true`` in the convention).
-
-.. _user-guide_output-format_cell:
 
 Cell
 ----
@@ -198,8 +190,6 @@ line   Formal description
 This section describes the magnetic sites that constitute the basis of the spin Hamlitonian.
 Magnetic sites can correspond to the atoms of the underlying crystall or to more complex structures.
 
-.. _user-guide_output-format_intra-atomic-anisotropy:
-
 Intra-atomic anisotropy
 -----------------------
 
@@ -230,19 +220,8 @@ line   Formal description
 ====== =========================================================================
 
 This section lists parameters of the intra-atomic anisotropy of the spin
-Hamiltonian :math:`\boldsymbol{A}_{i}`
-
-.. math::
-
-    \boldsymbol{A}_i
-    =
-    \begin{pmatrix}
-        A_i^{xx} & A_i^{xy} & A_i^{xz} \\
-        A_i^{xy} & A_i^{yy} & A_i^{yz} \\
-        A_i^{xz} & A_i^{yz} & A_i^{zz} \\
-    \end{pmatrix}
-
-.. _user-guide_output-format_exchange-interaction:
+Hamiltonian :math:`\boldsymbol{A}_{i}`. For further information see the 
+:ref: `theoretical background <theoretical_background>` in the tutorials.
 
 Exchange interaction
 --------------------
@@ -292,61 +271,4 @@ line   Formal description
 ====== =========================================================================
 
 The last section list full matrix of the biliniar exchange parameters :math:`\boldsymbol{J}_{ij}`.
-Full matrix can be decomposed into three primary parts
-
-*   Isotropic exchange
-
-    .. math::
-        J_{ij}^{isotropic}
-        =
-        \text{Tr}(\boldsymbol{J}_{ij})
-* Symmetric traceless anisotropy
-
-    .. math::
-        \boldsymbol{J}_{ij}^{aniso, symm}
-        =
-        \dfrac{\boldsymbol{J}_{ij} + \boldsymbol{J}_{ij}^T}{2}
-        -
-        \dfrac{\text{Tr}(\boldsymbol{J}_{ij})}{3}
-        \begin{pmatrix}
-            S_i^{xx} & S_i^{xy} & S_i^{xz} \\
-            S_i^{xy} & S_i^{yy} & S_i^{yz} \\
-            S_i^{xz} & S_i^{yz} & S_i^{zz} \\
-        \end{pmatrix}
-* Antisymmetric part
-
-    .. math::
-        \boldsymbol{J}_{ij}^{dmi}
-        =
-        \dfrac{\boldsymbol{J}_{ij} - \boldsymbol{J}_{ij}^T}{2}
-        =
-        \begin{pmatrix}
-            0         & D^z_{ij}  & -D^y_{ij} \\
-            -D^z_{ij} & 0         & D^x_{ij} \\
-            D^y_{ij}  & -D^x_{ij} & 0 
-        \end{pmatrix}
-
-Antysymmetric part can be written in a form of the Dzyaloshinskii-Moriya interaction (DMI) as
-
-.. math::
-
-    \mathcal{H}^{dmi}
-    =
-    \dfrac{1}{2}
-    \sum_{i\ne j}
-    \boldsymbol{e}_{i}
-    \cdot
-    \boldsymbol{J}^{dmi}_{ij}
-    \cdot
-    \boldsymbol{e}_{j}
-    =
-    \dfrac{1}{2}
-    \sum_{i\ne j}
-    \boldsymbol{D}_{ij}
-    \cdot
-    (
-    \boldsymbol{e}_{i}
-    \times
-    \boldsymbol{e}_{j})
-
-where :math:`\boldsymbol{D}_{ij} = (D^x_{ij}, D^y_{ij}, D^z_{ij})`.
+ For further information see the :ref: `theoretical background <theoretical_background>` in the tutorials.

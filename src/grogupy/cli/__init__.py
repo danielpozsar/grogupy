@@ -22,9 +22,9 @@
 Command line interface for grogupy
 ==================================
 
-This module does not contain functions, but provides a command line
-interface for grogupy. It loads the input parameters from a Python
-file and runs the simulation or makes analysis.
+This subpackage contains modules which provide a command line
+interface for grogupy. It loads the input parameters from a *.py*
+or a *.fdf* file and runs the simulation or makes analysis.
 
 Scripts
 -------
@@ -32,15 +32,14 @@ Scripts
 .. autosummary::
    :toctree: _generated/
 
-    run                     Takes an input file and runs a simulation from it.
-    analyze                 Takes a .pkl output file and creates an .html file from it with useful plots.
-    check_convergence       Load results from multiple .pkl files and do convergence analysis with them.
+    run                     Submodule with main which takes an input file and runs a simulation from it.
+    analyze                 Submodule with main which takes a *.pkl* output file and creates an *.html* file from it with useful plots.
+    check_convergence       Submodule with main which loads results from multiple *.pkl* files and do convergence analysis with them.
 
 Examples
 --------
 
-For examples, see the `running in HPC <running_in_hpc>`_ section in the documentation.
-
+For examples, see the :ref:`running in HPC <running_in_hpc>` section in the documentation.
 """
 
 from grogupy import CONFIG

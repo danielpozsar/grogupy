@@ -51,7 +51,7 @@ class Contour:
     emax_shift : float
         It is added to the emax value, by default 0
     eigfile : Union[str, None]
-        Either the path to the siesta .EIG or the .fdf file
+        Either the path to the siesta .EIG or the *.fdf* file
 
     Examples
     --------
@@ -114,7 +114,7 @@ class Contour:
         emax_shift : float
             It is added to the emax value, by default 0
         eigfile : Union[str, None]
-            Either the path to the siesta .EIG or the .fdf file
+            Either the path to the siesta .EIG or the *.fdf* file
         """
 
         self.times: DefaultTimer = DefaultTimer()

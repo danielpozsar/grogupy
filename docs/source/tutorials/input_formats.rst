@@ -118,7 +118,7 @@ format. See and compare the following examples.
             # add the simulation parameters to the magnopy file as comments
             magnopy_comments = True
 
-            # save the Uppsala Atomistic Spin Dynamics software input files
+            # save the UppASD Atomistic Spin Dynamics software input files
             # uses the outfolder and out_spin_moment
             save_UppASD = True
             # add the simulation parameters to the inpsd.dat file as 
@@ -278,7 +278,7 @@ format. See and compare the following examples.
             # add the simulation parameters to the magnopy file as comments
             MagnopyComments             True
             
-            # save the Uppsala Atomistic Spin Dynamics software input files
+            # save the UppASD Atomistic Spin Dynamics software input files
             SaveUppASD                  True
             # add the simulation parameters to the inpsd.dat file as 
             # comments
@@ -487,7 +487,7 @@ parallelmode, *by default None*
 outspinmoment, *by default total*
     It can be total or local and determines wether to use the total magnetic 
     moment from the atom or just spin moment of the selected shells or 
-    orbitals. It is used for the Uppsala and Vampire input files.
+    orbitals. It is used for the UppASD and Vampire input files.
 
 savegrogupy, *by default False*
     If True the grogupy output file is saved, which can be reloaded later.
@@ -530,11 +530,11 @@ picklecompresslevel, *by default 2*
     space. 4 contains compression 1, 2 and 3, but sets the keys "kpoints", 
     "samples", "weights" (for kpoints and energy points) to [], to save space.
 
-outfolder, *by default infolder*
+outfolder, *by default <infolder>*
     The output folder of all the requested output formats. If not specified 
     everything will be saved in the input folder.
 
-outfile, *by default <infile>_kset_<kset>_eset_<eset>_<anisotropysolver>*
+outfile, *by default <infile>_kset_<kset>_eset_<eset>_<spinmodel>*
     The base name of the output files. The different output formats may 
     concatenate some information or filename extension to this. For example 
     the UppASD output format is a directory of multiple input files.

@@ -74,7 +74,7 @@ def automatic_emin(infile: str) -> float:
     Parameters
     ----------
     infile : str
-        The path to the .EIG file or to the .fdf file.
+        The path to the .EIG file or to the *.fdf* file.
 
     Returns
     -------

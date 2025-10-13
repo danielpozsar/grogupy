@@ -8,7 +8,8 @@ API reference
 
 You can find the implementation and documentation of every 
 class and function of grogupy in this reference. The method 
-index can be found :ref:`here <genindex>`.
+and submodule index can be found :ref:`here <genindex>` and 
+:ref:`here <modindex>` respectively.
 
 .. toctree::
    :maxdepth: 2

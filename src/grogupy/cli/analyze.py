@@ -18,6 +18,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+"""Takes a *.pkl* output file and creates an .html file from it with useful plots."""
+
 import argparse
 
 from grogupy import __citation__, __definitely_not_grogu__
@@ -39,10 +41,10 @@ def main():
 
     # setup parser
     parser = argparse.ArgumentParser(
-        description="Load results from a .pkl file and do a summary on the system."
+        description="Load results from a *.pkl* file and do a summary on the system."
     )
     parser.add_argument(
-        "file", nargs="?", help="Path to a .pkl file containing the results."
+        "file", nargs="?", help="Path to a *.pkl* file containing the results."
     )
     parser.add_argument(
         "-c",

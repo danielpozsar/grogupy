@@ -16,7 +16,7 @@ more detailed interactive dashboard.
 Overflow in RAM
 ---------------
 
-The first thing to try is to turn on the **low memory mode** , where grogupy 
+The first thing to try is to turn in **low memory mode** , where grogupy 
 discards some temporary data that could be useful for interactive work and some 
 post processing.
 
@@ -71,7 +71,7 @@ Overflow in GPU memory
 ----------------------
 
 If the error message comes from CUDA, then the problem is the GPU memory, 
-which is usually just a fraction of RAM. grogupy should not store anything in 
+which is usually less than RAM. grogupy should not store anything in 
 GPU memory that is not neccecary so the only possible problem is the too 
 aggressive parallelization over the Green's functions. To change this we can 
 use the same parameters as before.
