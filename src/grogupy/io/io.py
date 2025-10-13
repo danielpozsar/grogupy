@@ -584,9 +584,13 @@ def save_grogupy(
             out += "\t\t" + "\t".join(map(lambda s: f"{s:.8f}", xyz))
             out += newline
         out += "Energies [eV]" + newline
-        for e in mag_ent.energies:
-            out += "\t\t" + "\t".join(map(lambda s: f"{s:.8e}", e))
+        if mag_ent.energies is None:
+            out += "\t\tNone"
             out += newline
+        else:
+            for e in mag_ent.energies:
+                out += "\t\t" + "\t".join(map(lambda s: f"{s:.8e}", e))
+                out += newline
     out += subsection + newline
     out += section + newline
 
@@ -1189,7 +1193,7 @@ def save_Vampire(
     # Cell transformation
     # ===============================================================
     # number of atoms in the unit cell, number of new layers
-    MODULUS = len(builder.magnetic_entities)
+    MODULUS = 2
 
     # if it is not a rectangular cell, we try to convert it,
     # but it only works for threefold rotational systems
@@ -1200,9 +1204,6 @@ def save_Vampire(
         ),
         1,
     ):
-        if len(builder.magnetic_entities) != 2:
-            if PRINTING:
-                warnings.warn("Only two magnetic entities in the unit cell is tested!")
         # DIRECTION should be set to 1 or -1 based on the tilt of the paralelogram
         if np.isclose(
             np.dot(normalized_cell[0], normalized_cell[1]),
@@ -1239,24 +1240,9 @@ def save_Vampire(
 
             # calculate relative coordinates
             xyz = m.xyz_center
-            # WARNING: this only works for two magnetic entities...
-            if j == 1:
+            if j != 0:
                 xyz += builder.cell[1]
-            # Vampire only accepts relative coordinates between 0 and 1
-            # this causes two problems
-            # 1 in the original geometry there is a Cr slightly outside the cell
-            # 2 the new atomic positions are shifted to one side of the new cell
-            # this can be solved by translating and rounding, but this
-            # is an ugly solution that works for these atomic positions
-            # without having to redefine the unit cell shift indices
-            if PRINTING:
-                warnings.warn("This is an ugly solution!")
             xyz_rel = np.linalg.inv(new_cell) @ xyz
-            for k in [0, 1, 2]:
-                if xyz_rel[k].min() < 0:
-                    xyz_rel[k] = xyz_rel[k] + abs(xyz_rel[k].min())
-                elif xyz_rel[k].max() > 1:
-                    xyz_rel[k] = xyz_rel[k] - xyz_rel[k].min() + 1
 
             # local or total spin moments
             mu = None
@@ -1282,6 +1268,14 @@ def save_Vampire(
                     relative_coordinates=xyz_rel,  # relative atomic coordinates
                 )
             )
+
+    # Vampire only accepts relative coordinates between 0 and 1
+    # shift coordinates and round them, to avoid numerical inaccuracies
+    mag_ent_coords = np.around([m["relative_coordinates"] for m in new_mag_ents], 4)
+    mag_ent_coords[:, 0] -= mag_ent_coords[:, 0].min()
+    mag_ent_coords[:, 1] -= mag_ent_coords[:, 1].min()
+    for i, m_in in enumerate(mag_ent_coords):
+        new_mag_ents[i]["relative_coordinates"] = m_in
 
     # ===============================================================
     # Generate new pairs
@@ -1382,12 +1376,16 @@ def save_Vampire(
     inp += "#------------------------------------------\n"
     inp += "# Data output\n"
     inp += "#------------------------------------------\n"
+    inp += "output:column-headers=true\n"
     inp += "output:real-time\n"
     inp += "output:temperature\n"
-    inp += "output:mean-magnetisation-length\n"
+    inp += "output:mean-magnetisation\n"
     inp += "output:mean-susceptibility\n"
+    inp += "output:mean-specific-heat\n"
+    inp += "screen:real-time\n"
     inp += "screen:temperature\n"
-    inp += "screen:mean-magnetisation-length\n"
+    inp += "screen:mean-magnetisation\n"
+    inp += "config:atoms = end\n"
 
     # Vampire material file
     mat = (
