@@ -34,13 +34,6 @@ def main():
         description="Load results from multiple *.pkl* files and do convergence analysis with them."
     )
     parser.add_argument(
-        "-t",
-        "--type",
-        dest="type",
-        default=None,
-        help="Type of convergence test, can be 'eset', 'esetp' or 'kset'.",
-    )
-    parser.add_argument(
         "-f",
         "--files",
         default=None,
@@ -48,11 +41,18 @@ def main():
         help="Path to the files taking part in the convergence tests.",
     )
     parser.add_argument(
-        "-m",
-        "--maxdiff",
-        dest="maxdiff",
+        "-a",
+        "--atol",
+        dest="atol",
         default=1e-4,
-        help="The criteria for the convergence by maximum difference from the last step, by default 1e-4.",
+        help="Absolute tolerance to convergence, by default 1e-4",
+    )
+    parser.add_argument(
+        "-r",
+        "--rtol",
+        dest="rtol",
+        default=1e-4,
+        help="Relative tolerance to convergence, by default 1e-4",
     )
     parser.add_argument(
         "-o",
@@ -78,8 +78,8 @@ def main():
             return
 
     # check if we have correct input
-    if args.files is None or args.type is None:
-        raise Exception("Convergence type and input files are needed!")
+    if args.files is None:
+        raise Exception("Input files are needed!")
 
     # get the output name
     if args.output is None:
@@ -98,7 +98,7 @@ def main():
         file.write(r"Files taking part in test: <br>")
         file.write(r"<br>".join(files))
 
-        fig = plot_1D_convergence(files, args.type, args.maxdiff)
+        fig = plot_1D_convergence(files, args.atol, args.rtol)
         file.write(fig.to_html(full_html=False, include_plotlyjs=True))
 
     print(f"The output file is: {name}")
