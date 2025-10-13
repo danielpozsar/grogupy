@@ -24,6 +24,7 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objs as go
 import sisl
+from numpy.typing import NDArray
 
 from grogupy.io import load_Builder
 from grogupy.physics import (
@@ -37,16 +38,101 @@ from grogupy.physics import (
 )
 
 
-def plot_contour(contour: Contour, **kwargs) -> go.Figure:
+def _plot_cell(fig: go.Figure, cell: NDArray) -> go.Figure:
+    """Add unit cell to figure.
+
+    Parameters
+    ----------
+    fig : go.Figure
+        Plotly figure without the cell
+    cell : NDArray
+        Unit cell matrix
+
+    Returns
+    -------
+    go.Figure
+        Figure containing the cell
+    """
+    a1 = cell[0, :]
+    a2 = cell[1, :]
+    a3 = cell[2, :]
+    vecs0 = np.array(
+        [
+            np.zeros(3),
+            np.zeros(3),
+            np.zeros(3),
+            a1,
+            a1,
+            a2,
+            a2,
+            a3,
+            a3,
+            a1 + a2 + a3,
+            a1 + a2 + a3,
+            a1 + a2 + a3,
+        ]
+    )
+    vecs1 = np.array(
+        [
+            a1,
+            a2,
+            a3,
+            a1 + a2,
+            a1 + a3,
+            a2 + a1,
+            a2 + a3,
+            a3 + a1,
+            a3 + a2,
+            a1 + a2,
+            a1 + a3,
+            a2 + a3,
+        ]
+    )
+    for v1, v2 in zip(vecs0, vecs1):
+        fig.add_trace(
+            go.Scatter3d(
+                x=[v1[0], v2[0]],
+                y=[v1[1], v2[1]],
+                z=[v1[2], v2[2]],
+                mode="lines",
+                showlegend=False,
+                line=dict(color="black", width=1),
+            )
+        )
+    return fig
+
+
+def plot_contour(
+    contour: Contour,
+    marker_size: float = 10,
+    marker_opacity: float = 1,
+    width: int = 800,
+    height: int = 500,
+    title: Union[None, str] = None,
+    legend: bool = True,
+) -> go.Figure:
     """Creates a plot from the contour sample points.
 
     If there are too many eigenvalues, then they are subsamled
-    them for the plot.
+    for the plot.
 
     Parameters
     ----------
     contour : Contour
         Contour class that contains the energy samples and weights
+    marker_size : float, optional
+        Size of the markers, by default 10
+    marker_opacity : float, optional
+        Opacity of the markers, by default 1
+    width : int, optional
+        Width of the figure, by default 800
+    height : int, optional
+        Height of the figure, by default 500
+    title : Union[None, str], optional
+        Title of the figure, if set to None, then title is not
+        generated, by default None
+    legend : bool, optional
+        Whether to show the legend, by default True
 
     Returns
     -------
@@ -60,6 +146,10 @@ def plot_contour(contour: Contour, **kwargs) -> go.Figure:
         y=contour.samples.imag,
         mode="markers",
         name="Contour points",
+        marker=dict(
+            size=marker_size,
+            opacity=marker_opacity,
+        ),
     )
 
     # if the eigenvalues are available
@@ -74,7 +164,7 @@ def plot_contour(contour: Contour, **kwargs) -> go.Figure:
             # read eigenvals
             eigs = sisl.get_sile(eigfile).read_data().flatten()
             eigs.sort()
-            # if there are too many eigenvalues subsample them for plot
+            # if there are too many eigenvalues subsample them for the plot
             if len(eigs) > 10000:
                 eigs = eigs[:: int(len(eigs) / 10000)]
                 # traces to eigenvals
@@ -83,12 +173,20 @@ def plot_contour(contour: Contour, **kwargs) -> go.Figure:
                     y=np.zeros_like(eigs[eigs < 0]),
                     mode="markers",
                     name="Subsampled occupied DFT eigs",
+                    marker=dict(
+                        size=marker_size,
+                        opacity=marker_opacity,
+                    ),
                 )
                 eig_trace2 = go.Scatter(
                     x=eigs[0 < eigs],
                     y=np.zeros_like(eigs[0 < eigs]),
                     mode="markers",
                     name="Subsampled unoccupied DFT eigs",
+                    marker=dict(
+                        size=marker_size,
+                        opacity=marker_opacity,
+                    ),
                 )
             else:
                 eig_trace1 = go.Scatter(
@@ -96,12 +194,20 @@ def plot_contour(contour: Contour, **kwargs) -> go.Figure:
                     y=np.zeros_like(eigs[eigs < 0]),
                     mode="markers",
                     name="Occupied DFT eigs",
+                    marker=dict(
+                        size=marker_size,
+                        opacity=marker_opacity,
+                    ),
                 )
                 eig_trace2 = go.Scatter(
                     x=eigs[0 < eigs],
                     y=np.zeros_like(eigs[0 < eigs]),
                     mode="markers",
                     name="Unoccupied DFT eigs",
+                    marker=dict(
+                        size=marker_size,
+                        opacity=marker_opacity,
+                    ),
                 )
             fig = go.Figure(data=[trace, eig_trace1, eig_trace2])
         # but something might have been moved, in which case just do the regular plot
@@ -115,9 +221,9 @@ def plot_contour(contour: Contour, **kwargs) -> go.Figure:
     # Update the layout
     fig.update_layout(
         autosize=False,
-        width=kwargs.get("width", 810),
-        height=kwargs.get("height", 500),
-        title="Energy contour integral",
+        width=width,
+        height=height,
+        title=title,
         xaxis_title="Real axis [eV]",
         yaxis_title="Imaginary axis [eV]",
         xaxis=dict(
@@ -133,18 +239,43 @@ def plot_contour(contour: Contour, **kwargs) -> go.Figure:
             y=1,
             xanchor="right",
         ),
+        showlegend=legend,
     )
 
     return fig
 
 
-def plot_kspace(kspace: Kspace, **kwargs) -> go.Figure:
+def plot_kspace(
+    kspace: Kspace,
+    marker_size: float = 10,
+    marker_opacity: float = 1,
+    colorscale: str = "Viridis",
+    width: int = 800,
+    height: int = 500,
+    title: Union[None, str] = None,
+    legend: bool = True,
+) -> go.Figure:
     """Creates a plot from the Brillouin zone sample points.
 
     Parameters
     ----------
     kspace : Kspace
         Kspace class that contains the Brillouin-zone samples and weights
+    colorscale : str, optional
+        The colorscale of the weights, by default Viridis
+    marker_size : float, optional
+        Size of the markers, by default 10
+    marker_opacity : float, optional
+        Opacity of the markers, by default 1
+    width : int, optional
+        Width of the figure, by default 800
+    height : int, optional
+        Height of the figure, by default 500
+    title : Union[None, str], optional
+        Title of the figure, if set to None, then title is not
+        generated, by default None
+    legend : bool, optional
+        Whether to show the legend, by default True
 
     Returns
     -------
@@ -161,10 +292,10 @@ def plot_kspace(kspace: Kspace, **kwargs) -> go.Figure:
         z=kspace.kpoints[:, 2],
         mode="markers",
         marker=dict(
-            size=5,
+            size=marker_size,
             color=kspace.weights,
-            colorscale="Viridis",
-            opacity=1,
+            colorscale=colorscale,
+            opacity=marker_opacity,
             colorbar=dict(title="Weights of kpoints", x=0.75),
         ),
     )
@@ -173,15 +304,16 @@ def plot_kspace(kspace: Kspace, **kwargs) -> go.Figure:
 
     layout = go.Layout(
         autosize=False,
-        title="Brillouin zone sampling",
-        width=kwargs.get("width", 800),
-        height=kwargs.get("height", 500),
+        title=title,
+        width=width,
+        height=height,
         scene=dict(
             aspectmode="data",
             xaxis=dict(title="X Axis", showgrid=True, gridwidth=1),
             yaxis=dict(title="Y Axis", showgrid=True, gridwidth=1),
             zaxis=dict(title="Z Axis", showgrid=True, gridwidth=1),
         ),
+        showlegend=legend,
     )
 
     # Create figure and show
@@ -192,7 +324,15 @@ def plot_kspace(kspace: Kspace, **kwargs) -> go.Figure:
 
 def plot_magnetic_entities(
     magnetic_entities: Union[Builder, list[MagneticEntity], MagneticEntityList],
-    **kwargs,
+    tags: Union[None, list[str]] = None,
+    colors: Union[None, list[str]] = None,
+    marker_size: float = 5,
+    marker_opacity: float = 1,
+    show_cell: bool = True,
+    width: int = 800,
+    height: int = 500,
+    title: Union[None, str] = None,
+    legend: bool = True,
 ) -> go.Figure:
     """Creates a plot from a list of magnetic entities.
 
@@ -200,6 +340,27 @@ def plot_magnetic_entities(
     ----------
     magnetic_entities : Union[Builder, list[MagneticEntity], MagneticEntityList]
         The magnetic entities that contain the tags and coordinates
+    tags : Union[None, list[str]], optional
+        The tags of the markers, if None, then it is autogenerated,
+        by default None
+    colors: Union[None, list[str]], optional
+        The colors of the markers, if None, then it is autogenerated,
+        by default None
+    marker_size : float, optional
+        Size of the markers, by default 10
+    marker_opacity : float, optional
+        Opacity of the markers, by default 1
+    show_cell : bool, optional
+        Whether to show the cell or not, by default True
+    width : int, optional
+        Width of the figure, by default 800
+    height : int, optional
+        Height of the figure, by default 500
+    title : Union[None, str], optional
+        Title of the figure, if set to None, then title is not
+        generated, by default None
+    legend : bool, optional
+        Whether to show the legend, by default True
 
     Returns
     -------
@@ -213,11 +374,13 @@ def plot_magnetic_entities(
     else:
         magnetic_entities = MagneticEntityList(magnetic_entities)
 
-    tags = magnetic_entities.tag
+    if tags is None:
+        tags = magnetic_entities.tag
     coords = magnetic_entities._xyz
 
-    colors = px.colors.qualitative.D3
-    colors = colors * (len(tags) // len(colors) + 1)
+    if colors is None:
+        colors = px.colors.qualitative.D3
+        colors = colors * (len(tags) // len(colors) + 1)
 
     # Create figure
     fig = go.Figure()
@@ -229,21 +392,27 @@ def plot_magnetic_entities(
                 y=coord[:, 1],
                 z=coord[:, 2],
                 mode="markers",
-                marker=dict(size=10, opacity=0.8, color=color),
+                marker=dict(size=marker_size, opacity=marker_opacity, color=color),
             )
         )
+
+    # optionally add cell
+    if show_cell:
+        fig = _plot_cell(fig, magnetic_entities[0].cell)
 
     # Create layout
     fig.update_layout(
         autosize=False,
-        width=kwargs.get("width", 800),
-        height=kwargs.get("height", 500),
+        width=width,
+        height=height,
+        title=title,
         scene=dict(
             aspectmode="data",
             xaxis=dict(title="X Axis", showgrid=True, gridwidth=1),
             yaxis=dict(title="Y Axis", showgrid=True, gridwidth=1),
             zaxis=dict(title="Z Axis", showgrid=True, gridwidth=1),
         ),
+        showlegend=legend,
     )
 
     return fig
@@ -251,17 +420,33 @@ def plot_magnetic_entities(
 
 def plot_onsite_anisotropy(
     magnetic_entities: Union[Builder, list[MagneticEntity], MagneticEntityList],
-    **kwargs,
+    colorscale: str = "Viridis",
+    show_cell: bool = True,
+    width: int = 800,
+    height: int = 500,
+    title: Union[None, str] = None,
 ) -> go.Figure:
     """Creates a plot of the on-site anisotropy from a list of magnetic entities.
 
-    Function by Marcell Sipos.
+    Based on the work of Marcell Sipos.
 
     Parameters
     ----------
     magnetic_entities : Union[Builder, list[MagneticEntity], MagneticEntityList]
         The magnetic entities that contain the tags and coordinates
-
+    colorscale : str, optional
+        The colorscale of the weights, by default Viridis
+    show_cell : bool, optional
+        Whether to show the cell or not, by default True
+    width : int, optional
+        Width of the figure, by default 800
+    height : int, optional
+        Height of the figure, by default 500
+    title : Union[None, str], optional
+        Title of the figure, if set to None, then title is not
+        generated, by default None
+    legend : bool, optional
+        Whether to show the legend, by default True
     Returns
     -------
     plotly.graph_objs.go.Figure
@@ -308,7 +493,7 @@ def plot_onsite_anisotropy(
                     z=z + magnetic_entities[i].xyz_center[2],
                     surfacecolor=m,
                     colorbar=dict(title="Anisotropy energy [meV]"),
-                    colorscale="Viridis",
+                    colorscale=colorscale,
                     opacity=1,
                     cmin=anisotropy_energy.min(),
                     cmax=anisotropy_energy.max(),
@@ -321,19 +506,22 @@ def plot_onsite_anisotropy(
                     y=y + magnetic_entities[i].xyz_center[1],
                     z=z + magnetic_entities[i].xyz_center[2],
                     surfacecolor=m,
-                    colorscale="Viridis",
+                    colorscale=colorscale,
                     opacity=1,
                     showscale=False,
-                    cmin=anisotropy_energy.min(),
-                    cmax=anisotropy_energy.max(),
                 )
             )
+
+    # optionally add cell
+    if show_cell:
+        fig = _plot_cell(fig, magnetic_entities[0].cell)
 
     # Create layout
     fig.update_layout(
         autosize=False,
-        width=kwargs.get("width", 800),
-        height=kwargs.get("height", 500),
+        width=width,
+        height=height,
+        title=title,
         scene=dict(
             aspectmode="data",
             xaxis=dict(title="X Axis", showgrid=True, gridwidth=1),
@@ -347,9 +535,16 @@ def plot_onsite_anisotropy(
 
 def plot_pairs(
     pairs: Union[Builder, list[Pair], PairList],
-    connect: bool = False,
-    cell: bool = True,
-    **kwargs,
+    group: bool = True,
+    tags: Union[None, list[str]] = None,
+    colors: Union[None, list[str]] = None,
+    marker_size: float = 10,
+    marker_opacity: float = 0.5,
+    show_cell: bool = True,
+    width: int = 800,
+    height: int = 500,
+    title: Union[None, str] = None,
+    legend: bool = True,
 ) -> go.Figure:
     """Creates a plot from a list of pairs.
 
@@ -357,10 +552,30 @@ def plot_pairs(
     ----------
     pairs : Union[Builder, list[Pair], PairList]
         The pairs that contain the tags and coordinates
-    connect : bool, optional
-        Wether to connect the pairs or not, by default False
-    cell: bool, optional
-        Wether to show the unit cell, by default True
+    group : bool, optional
+        Whether to group the pairs by their first magnetic entity,
+        by default True
+    tags : Union[None, list[str]], optional
+        The tags of the markers, if None, then it is autogenerated,
+        by default None
+    colors: Union[None, list[str]], optional
+        The colors of the markers, if None, then it is autogenerated,
+        by default None
+    marker_size : float, optional
+        Size of the markers, by default 10
+    marker_opacity : float, optional
+        Opacity of the markers, by default 1
+    show_cell : bool, optional
+        Whether to show the cell or not, by default True
+    width : int, optional
+        Width of the figure, by default 800
+    height : int, optional
+        Height of the figure, by default 500
+    title : Union[None, str], optional
+        Title of the figure, if set to None, then title is not
+        generated, by default None
+    legend : bool, optional
+        Whether to show the legend, by default True
 
     Returns
     -------
@@ -374,151 +589,163 @@ def plot_pairs(
     else:
         pairs = PairList(pairs)
 
-    # the centers can contain many atoms
-    centers = pairs.xyz[0]
+    # center tags
+    ctags = pairs.tags[:, 0]
 
-    # find unique centers
-    uniques = []
+    ctags, mask = np.unique(ctags, return_inverse=True)
 
-    def in_unique(c):
-        for u in uniques:
-            if c.shape == u.shape:
-                if np.all(c == u):
-                    return True
-        return False
+    if tags is not None:
+        # setup interacting tags by finding the ctags and changing them
+        itags = np.zeros_like(pairs.tags[:, 0], dtype=str)
+        for i in range(len(ctags)):
+            itags[np.where(pairs.tags[:, 1] == ctags[i])[0]] = tags[i]
+        itags = (
+            itags
+            + ", ruc:"
+            + np.apply_along_axis(
+                lambda s: f"[{s[0]:d}, {s[1]:d}, {s[2]:d}]", 1, pairs.supercell_shift
+            )
+        )
+        ctags = tags
+    else:
+        # interacting tags
+        itags = (
+            pairs.tags[:, 1]
+            + ", ruc:"
+            + np.apply_along_axis(
+                lambda s: f"[{s[0]:d}, {s[1]:d}, {s[2]:d}]", 1, pairs.supercell_shift
+            )
+        )
 
-    for c in centers:
-        if not in_unique(c):
-            uniques.append(c)
-    # findex indexes for the same center
-    idx = [[] for u in uniques]
-    for i, u in enumerate(uniques):
-        for j, c in enumerate(centers):
-            if c.shape == u.shape:
-                if np.all(c == u):
-                    idx[i].append(j)
-
-    center_tags = pairs.tags[0]
-
-    interacting_atoms = pairs.xyz[1]
-    interacting_tags = np.array(
-        [p.tags[1] + ", ruc:" + str(p.supercell_shift) for p in pairs]
-    )
-
-    colors = px.colors.qualitative.D3
-    colors = colors * (len(centers) // len(colors) + 1)
+    if colors is None:
+        colors = px.colors.qualitative.D3
+        colors = colors * (len(ctags) // len(colors) + 1)
 
     # Create figure
     fig = go.Figure()
-    for i in range(len(idx)):
-        center = centers[idx[i][0]]
-        center_tag = center_tags[idx[i][0]]
-        color = colors[i]
+    for i in range(len(ctags)):
+        # center xyz
+        cxyz = pairs[mask == i][0].xyz[0]
         # Create 3D scatter plot
         fig.add_trace(
             go.Scatter3d(
-                name="Center:" + center_tag,
-                x=center[:, 0],
-                y=center[:, 1],
-                z=center[:, 2],
+                name="Center:" + ctags[i],
+                x=cxyz[:, 0],
+                y=cxyz[:, 1],
+                z=cxyz[:, 2],
                 mode="markers",
-                marker=dict(size=10, opacity=0.8, color=color),
+                marker=dict(size=marker_size, opacity=marker_opacity, color=colors[i]),
             )
         )
-        for interacting_atom, interacting_tag in zip(
-            interacting_atoms[idx[i]], interacting_tags[idx[i]]
-        ):
-            legend_group = f"pair {center_tag}-{interacting_atom}"
+        # group to magnetic entities
+        if group:
+            # interacting xyz
+            ixyz = pairs.xyz[mask == i, 1].reshape(-1, 3)
             fig.add_trace(
                 go.Scatter3d(
-                    name=interacting_tag,
-                    x=interacting_atom[:, 0],
-                    y=interacting_atom[:, 1],
-                    z=interacting_atom[:, 2],
-                    legendgroup=legend_group,
+                    name="Pairs on: " + ctags[i],
+                    x=ixyz[:, 0],
+                    y=ixyz[:, 1],
+                    z=ixyz[:, 2],
                     mode="markers",
-                    marker=dict(size=5, opacity=0.5, color=color),
+                    marker=dict(
+                        size=marker_size / 2, opacity=marker_opacity, color=colors[i]
+                    ),
                 )
             )
-            if connect:
+        # plot separately
+        else:
+            for j in range(len(pairs[mask == i])):
+                legend_group = f"pair {ctags[i]}-{itags[mask == i][j]}"
+                # interacting xyz
+                ixyz = pairs.xyz[mask == i][j, 1]
                 fig.add_trace(
                     go.Scatter3d(
-                        x=[center.mean(axis=0)[0], interacting_atom.mean(axis=0)[0]],
-                        y=[center.mean(axis=0)[1], interacting_atom.mean(axis=0)[1]],
-                        z=[center.mean(axis=0)[2], interacting_atom.mean(axis=0)[2]],
-                        mode="lines",
+                        name=itags[mask == i][j],
+                        x=ixyz[:, 0],
+                        y=ixyz[:, 1],
+                        z=ixyz[:, 2],
                         legendgroup=legend_group,
-                        showlegend=False,
-                        line=dict(color=color),
+                        mode="markers",
+                        marker=dict(
+                            size=marker_size / 2,
+                            opacity=marker_opacity,
+                            color=colors[i],
+                        ),
                     )
                 )
 
-    # add unit cell to the plot
-    if cell:
-        x = pairs[0].cell[0, :]
-        y = pairs[0].cell[1, :]
-        z = pairs[0].cell[2, :]
-        vecs0 = np.array(
-            [
-                np.zeros(3),
-                np.zeros(3),
-                np.zeros(3),
-                x,
-                x,
-                y,
-                y,
-                z,
-                z,
-                x + y + z,
-                x + y + z,
-                x + y + z,
-            ]
-        )
-        vecs1 = np.array(
-            [x, y, z, x + y, x + z, y + x, y + z, z + x, z + y, x + y, x + z, y + z]
-        )
-        for v1, v2 in zip(vecs0, vecs1):
-            fig.add_trace(
-                go.Scatter3d(
-                    x=[v1[0], v2[0]],
-                    y=[v1[1], v2[1]],
-                    z=[v1[2], v2[2]],
-                    mode="lines",
-                    showlegend=False,
-                    line=dict(color="black", width=1),
-                )
-            )
+    # optionally add cell
+    if show_cell:
+        fig = _plot_cell(fig, pairs[0].cell)
 
     # Create layout
     fig.update_layout(
         autosize=False,
-        width=kwargs.get("width", 800),
-        height=kwargs.get("height", 500),
+        width=width,
+        height=height,
+        title=title,
         scene=dict(
             aspectmode="data",
             xaxis=dict(title="X Axis", showgrid=True, gridwidth=1),
             yaxis=dict(title="Y Axis", showgrid=True, gridwidth=1),
             zaxis=dict(title="Z Axis", showgrid=True, gridwidth=1),
         ),
+        showlegend=legend,
     )
 
     return fig
 
 
 def plot_DMI(
-    pairs: Union[Builder, list[Pair], PairList], rescale: float = 1, **kwargs
+    pairs: Union[Builder, list[Pair], PairList],
+    heatplot: bool = False,
+    rescale: float = 1,
+    tags: Union[None, list[str]] = None,
+    colors: Union[None, list[str]] = None,
+    colorscale: str = "Viridis",
+    show_cell: bool = True,
+    width: int = 800,
+    height: int = 500,
+    title: Union[None, str] = None,
+    legend: bool = True,
 ) -> go.Figure:
     """Creates a plot of the DM vectors from a list of pairs.
 
     It can only use pairs from a finished simulation. The magnitude of
-    the vectors are in meV.
+    the vectors are in meV. WARNING: because the sizes of the cones are
+    also dependent on the norm of the DM vectors, very small DMs can be
+    missing from the fgure.
 
     Parameters
     ----------
     pairs : Union[Builder, list[Pair], PairList]
         The pairs that contain the tags, coordinates and the DM vectors
+    heatplot : bool, optional
+        Whether to use heatplot or plot all DMs separatly, by default
+        False
     rescale : float, optional
-        The length of the vectors are rescaled by this, by default 1
+        Rescale parameter for the lengths of DM vectors. If this is
+        not set to 1, then the lengths are not in meV, by default 1
+    tags : Union[None, list[str]], optional
+        The tags of the markers, if None, then it is autogenerated,
+        by default None
+    colors: Union[None, list[str]], optional
+        The colors of the markers, if None, then it is autogenerated,
+        by default None
+    colorscale : str, optional
+        The colorscale of the weights, by default Viridis
+    show_cell : bool, optional
+        Whether to show the cell or not, by default True
+    width : int, optional
+        Width of the figure, by default 800
+    height : int, optional
+        Height of the figure, by default 500
+    title : Union[None, str], optional
+        Title of the figure, if set to None, then title is not
+        generated, by default None
+    legend : bool, optional
+        Whether to show the legend, by default True
 
     Returns
     -------
@@ -533,87 +760,117 @@ def plot_DMI(
         pairs = PairList(pairs)
 
     # Define some example vectors
-    vectors = pairs.D_meV
-    # Define origins (optional)
-    origins = np.array(
-        [(p.M1.xyz_center + p.M2.xyz_center + p.supercell_shift_xyz) / 2 for p in pairs]
-    )
+    dms = pairs.D_meV
+    if not heatplot:
+        dms = dms * rescale
 
-    n_vectors = len(vectors)
+    # Define origins
+    origins = pairs.xyz_center.mean(axis=1)
 
-    labels = ["-->".join(p.tags) + ", ruc:" + str(p.supercell_shift) for p in pairs]
+    if tags is None:
+        tags = ["-->".join(p.tags) + ", ruc:" + str(p.supercell_shift) for p in pairs]
 
-    colors = px.colors.qualitative.D3
-    colors = colors * (n_vectors // len(colors) + 1)
+    if colors is None:
+        colors = px.colors.qualitative.D3
+        colors = colors * (len(dms) // len(colors) + 1)
 
     # Create figure
     fig = go.Figure()
-
-    # Maximum vector magnitude for scaling
-    max_magnitude = max(np.linalg.norm(v) for v in vectors)
-
-    # Add each vector as a cone
-    for i, (vector, origin, label, color) in enumerate(
-        zip(vectors, origins, labels, colors)
-    ):
-        # End point of the vector
-        end = origin + vector
-
-        legend_group = f"vector_{i}"
-
-        # Add a line for the vector
-        fig.add_trace(
-            go.Scatter3d(
-                x=[origin[0], end[0]],
-                y=[origin[1], end[1]],
-                z=[origin[2], end[2]],
-                mode="lines",
-                line=dict(color=color, width=5),
-                name=label,
-                legendgroup=legend_group,
-                showlegend=True,
-            )
-        )
-
-        # Add a cone at the end to represent the arrow head
-        u, v, w = vector
+    if heatplot:
+        # Visualize field with cones
+        if rescale == 1:
+            ctitle = "DM norm [meV]"
+        else:
+            ctitle = "Scaled DM norm [ ]"
         fig.add_trace(
             go.Cone(
-                x=[end[0]],
-                y=[end[1]],
-                z=[end[2]],
-                u=[u / 5],  # Scale down for better visualization
-                v=[v / 5],
-                w=[w / 5],
-                colorscale=[[0, color], [1, color]],
-                showscale=False,
-                sizemode="absolute",
-                sizeref=max_magnitude / 10 * rescale,
-                legendgroup=legend_group,
-                showlegend=False,
+                x=origins[:, 0],
+                y=origins[:, 1],
+                z=origins[:, 2],
+                u=dms[:, 0],
+                v=dms[:, 1],
+                w=dms[:, 2],
+                colorbar=dict(title=ctitle),
+                colorscale=colorscale,
+                showscale=True,
             )
         )
+    else:
+        # Maximum vector magnitude for scaling
+        max_magnitude = max(np.linalg.norm(dm) for dm in dms)
 
-    # Set layout properties
+        # End point of the vector
+        endpoints = origins + dms
+
+        for i in range(len(dms)):
+            legend_group = f"vector_{i}"
+
+            # Add a line for the vector
+            fig.add_trace(
+                go.Scatter3d(
+                    x=[origins[i, 0], endpoints[i, 0]],
+                    y=[origins[i, 1], endpoints[i, 1]],
+                    z=[origins[i, 2], endpoints[i, 2]],
+                    mode="lines",
+                    line=dict(color=colors[i], width=5),
+                    name=tags[i],
+                    legendgroup=legend_group,
+                    showlegend=True,
+                )
+            )
+
+            # Add a cone at the end to represent the arrow head
+            u, v, w = dms[i]
+            fig.add_trace(
+                go.Cone(
+                    x=[endpoints[i, 0]],
+                    y=[endpoints[i, 1]],
+                    z=[endpoints[i, 2]],
+                    u=[u / 5],  # Scale down for better visualization
+                    v=[v / 5],
+                    w=[w / 5],
+                    colorscale=[[0, colors[i]], [1, colors[i]]],
+                    showscale=False,
+                    sizemode="absolute",
+                    sizeref=max(np.log(max_magnitude), 1),
+                    legendgroup=legend_group,
+                    showlegend=False,
+                )
+            )
+
+    # optionally add cell
+    if show_cell:
+        fig = _plot_cell(fig, pairs[0].cell)
 
     # Create layout
     fig.update_layout(
         autosize=False,
-        width=kwargs.get("width", 1000),
-        height=kwargs.get("height", 500),
+        width=width,
+        height=height,
+        title=title,
         scene=dict(
             aspectmode="data",
             xaxis=dict(title="X Axis", showgrid=True, gridwidth=1),
             yaxis=dict(title="Y Axis", showgrid=True, gridwidth=1),
             zaxis=dict(title="Z Axis", showgrid=True, gridwidth=1),
         ),
+        showlegend=legend,
     )
 
     return fig
 
 
 def plot_Jiso_distance(
-    pairs: Union[Builder, list[Pair], PairList], group: bool = False, **kwargs
+    pairs: Union[Builder, list[Pair], PairList],
+    group: bool = False,
+    tags: Union[None, list[str]] = None,
+    colors: Union[None, list[str]] = None,
+    marker_size: float = 10,
+    marker_opacity: float = 1,
+    width: int = 800,
+    height: int = 500,
+    title: Union[None, str] = None,
+    legend: bool = True,
 ) -> go.Figure:
     """Plots the isotropic exchange as a function of distance.
 
@@ -622,7 +879,27 @@ def plot_Jiso_distance(
     pairs : Union[Builder, list[Pair], PairList]
         The pairs that contain the exchange and positions
     group : bool, optional
-        The data can be grouped to unique pairs, by default False
+        Whether to group the pairs by their first magnetic entity,
+        by default True
+    tags : Union[None, list[str]], optional
+        The tags of the markers, if None, then it is autogenerated,
+        by default None
+    colors: Union[None, list[str]], optional
+        The colors of the markers, if None, then it is autogenerated,
+        by default None
+    marker_size : float, optional
+        Size of the markers, by default 10
+    marker_opacity : float, optional
+        Opacity of the markers, by default 1
+    width : int, optional
+        Width of the figure, by default 800
+    height : int, optional
+        Height of the figure, by default 500
+    title : Union[None, str], optional
+        Title of the figure, if set to None, then title is not
+        generated, by default None
+    legend : bool, optional
+        Whether to show the legend, by default True
 
     Returns
     -------
@@ -636,14 +913,17 @@ def plot_Jiso_distance(
     else:
         pairs = PairList(pairs)
 
-    colors = px.colors.qualitative.D3
     if group:
-        tags = pairs.tags[:, 0] + "-->" + pairs.tags[:, 1]
-        tags, mask = np.unique(tags, return_inverse=True)
+        _tags = pairs.tags[:, 0] + "-->" + pairs.tags[:, 1]
+        _tags, mask = np.unique(_tags, return_inverse=True)
+        if tags is None:
+            tags = _tags
 
         values = pairs.J_iso_meV
         dists = pairs.distance
-        colors = colors * (len(tags) // len(colors) + 1)
+        if colors is None:
+            colors = px.colors.qualitative.D3
+            colors = colors * (len(tags) // len(colors) + 1)
 
         # Create figure
         fig = go.Figure()
@@ -654,26 +934,30 @@ def plot_Jiso_distance(
                     x=dists[mask == i],
                     y=values[mask == i],
                     mode="markers",
-                    marker=dict(color=colors[i]),
+                    marker=dict(
+                        size=marker_size, opacity=marker_opacity, color=colors[i]
+                    ),
                 )
             )
     else:
+        if colors is None:
+            colors = px.colors.qualitative.D3
         # Create figure
         fig = go.Figure(
             data=go.Scatter(
                 x=pairs.distance,
                 y=pairs.J_iso_meV,
                 mode="markers",
-                marker=dict(color=colors[0]),
+                marker=dict(size=marker_size, opacity=marker_opacity, color=colors[0]),
             )
         )
 
-    # Update the layout
+    # Create layout
     fig.update_layout(
         autosize=False,
-        width=kwargs.get("width", 810),
-        height=kwargs.get("height", 500),
-        title=f"Isotropic exchange",
+        width=width,
+        height=height,
+        title=title,
         xaxis_title="Pair distance [Ang]",
         yaxis_title="Isotropic exchange [meV]",
         xaxis=dict(
@@ -684,6 +968,7 @@ def plot_Jiso_distance(
             showgrid=True,
             gridwidth=1,
         ),
+        showlegend=legend,
     )
 
     return fig
@@ -691,9 +976,16 @@ def plot_Jiso_distance(
 
 def plot_DM_distance(
     pairs: Union[Builder, list[Pair], PairList],
-    normalise: bool = True,
     group: bool = False,
-    **kwargs,
+    normalise: bool = True,
+    tags: Union[None, list[str]] = None,
+    colors: Union[None, list[str]] = None,
+    marker_size: float = 10,
+    marker_opacity: float = 1,
+    width: int = 800,
+    height: int = 500,
+    title: Union[None, str] = None,
+    legend: bool = True,
 ) -> go.Figure:
     """Plots the magnitude of DM vectors as a function of distance.
 
@@ -701,10 +993,31 @@ def plot_DM_distance(
     ----------
     pairs : Union[Builder, list[Pair], PairList]
         The pairs that contain the DM vectors and positions
-    normalise : bool, optional
-        To return the norm of the DM vector or just the elements, by default True
     group : bool, optional
-        The data can be grouped to unique pairs, by default False
+        Whether to group the pairs by their first magnetic entity,
+        by default True
+    normalise : bool, optional
+        To return the norm of the DM vector or just the elements,
+        by default True
+    tags : Union[None, list[str]], optional
+        The tags of the markers, if None, then it is autogenerated,
+        by default None
+    colors: Union[None, list[str]], optional
+        The colors of the markers, if None, then it is autogenerated,
+        by default None
+    marker_size : float, optional
+        Size of the markers, by default 10
+    marker_opacity : float, optional
+        Opacity of the markers, by default 1
+    width : int, optional
+        Width of the figure, by default 800
+    height : int, optional
+        Height of the figure, by default 500
+    title : Union[None, str], optional
+        Title of the figure, if set to None, then title is not
+        generated, by default None
+    legend : bool, optional
+        Whether to show the legend, by default True
 
     Returns
     -------
@@ -718,14 +1031,17 @@ def plot_DM_distance(
     else:
         pairs = PairList(pairs)
 
-    colors = px.colors.qualitative.D3
     if group:
-        tags = pairs.tags[:, 0] + "-->" + pairs.tags[:, 1]
-        tags, mask = np.unique(tags, return_inverse=True)
+        _tags = pairs.tags[:, 0] + "-->" + pairs.tags[:, 1]
+        _tags, mask = np.unique(_tags, return_inverse=True)
+        if tags is None:
+            tags = _tags
 
         values = pairs.D_meV
         dists = pairs.distance
-        colors = colors * (len(tags) // len(colors) + 1)
+        if colors is None:
+            colors = px.colors.qualitative.D3
+            colors = colors * (len(tags) // len(colors) + 1)
 
         if normalise:
             # Create figure
@@ -737,7 +1053,9 @@ def plot_DM_distance(
                         x=dists[mask == i],
                         y=np.linalg.norm(values[mask == i], axis=1),
                         mode="markers",
-                        marker=dict(color=colors[i]),
+                        marker=dict(
+                            size=marker_size, opacity=marker_opacity, color=colors[i]
+                        ),
                     )
                 )
         else:
@@ -750,7 +1068,12 @@ def plot_DM_distance(
                         x=dists[mask == i],
                         y=values[mask == i, 0],
                         mode="markers",
-                        marker=dict(color=colors[i], symbol="circle-open"),
+                        marker=dict(
+                            size=marker_size,
+                            opacity=marker_opacity,
+                            color=colors[i],
+                            symbol="circle-open",
+                        ),
                     )
                 )
                 fig.add_trace(
@@ -759,7 +1082,12 @@ def plot_DM_distance(
                         x=dists[mask == i],
                         y=values[mask == i, 1],
                         mode="markers",
-                        marker=dict(color=colors[i], symbol="cross"),
+                        marker=dict(
+                            size=marker_size,
+                            opacity=marker_opacity,
+                            color=colors[i],
+                            symbol="cross",
+                        ),
                     )
                 )
                 fig.add_trace(
@@ -768,19 +1096,28 @@ def plot_DM_distance(
                         x=dists[mask == i],
                         y=values[mask == i, 2],
                         mode="markers",
-                        marker=dict(color=colors[i], symbol="x"),
+                        marker=dict(
+                            size=marker_size,
+                            opacity=marker_opacity,
+                            color=colors[i],
+                            symbol="x",
+                        ),
                     )
                 )
-
     else:
+        if colors is None:
+            colors = px.colors.qualitative.D3
         if normalise:
             # Create figure
             fig = go.Figure(
                 data=go.Scatter(
+                    name="DM norm",
                     x=pairs.distance,
                     y=np.linalg.norm(pairs.D_meV, axis=1),
                     mode="markers",
-                    marker=dict(color=colors[0]),
+                    marker=dict(
+                        size=marker_size, opacity=marker_opacity, color=colors[0]
+                    ),
                 )
             )
         else:
@@ -788,40 +1125,46 @@ def plot_DM_distance(
             fig = go.Figure()
             fig.add_trace(
                 go.Scatter(
-                    name="DM_x: ",
+                    name="DM_x",
                     x=pairs.distance,
                     y=pairs.D_meV[:, 0],
                     mode="markers",
-                    marker=dict(color=colors[0]),
+                    marker=dict(
+                        size=marker_size, opacity=marker_opacity, color=colors[0]
+                    ),
                 )
             )
             fig.add_trace(
                 go.Scatter(
-                    name="DM_y: ",
+                    name="DM_y",
                     x=pairs.distance,
                     y=pairs.D_meV[:, 1],
                     mode="markers",
-                    marker=dict(color=colors[1]),
+                    marker=dict(
+                        size=marker_size, opacity=marker_opacity, color=colors[1]
+                    ),
                 )
             )
             fig.add_trace(
                 go.Scatter(
-                    name="DM_z: ",
+                    name="DM_z",
                     x=pairs.distance,
                     y=pairs.D_meV[:, 2],
                     mode="markers",
-                    marker=dict(color=colors[2]),
+                    marker=dict(
+                        size=marker_size, opacity=marker_opacity, color=colors[2]
+                    ),
                 )
             )
 
-    # Update the layout
+    # Create layout
     fig.update_layout(
         autosize=False,
-        width=kwargs.get("width", 810),
-        height=kwargs.get("height", 500),
-        title=f"Norm of the DM vectors",
+        width=width,
+        height=height,
+        title=title,
         xaxis_title="Pair distance [Ang]",
-        yaxis_title="DM norm [meV]",
+        yaxis_title="DM vectors [meV]",
         xaxis=dict(
             showgrid=True,
             gridwidth=1,
@@ -830,13 +1173,23 @@ def plot_DM_distance(
             showgrid=True,
             gridwidth=1,
         ),
+        showlegend=legend,
     )
 
     return fig
 
 
 def plot_J_S_distance(
-    pairs: Union[Builder, list[Pair], PairList], group: bool = False, **kwargs
+    pairs: Union[Builder, list[Pair], PairList],
+    group: bool = False,
+    tags: Union[None, list[str]] = None,
+    colors: Union[None, list[str]] = None,
+    marker_size: float = 10,
+    marker_opacity: float = 1,
+    width: int = 800,
+    height: int = 500,
+    title: Union[None, str] = None,
+    legend: bool = True,
 ) -> go.Figure:
     """Plots the eigenvalues of symmetric exchange as a function of distance.
 
@@ -845,7 +1198,27 @@ def plot_J_S_distance(
     pairs : Union[Builder, list[Pair], PairList]
         The pairs that contain the exchange and positions
     group : bool, optional
-        The data can be grouped to unique pairs, by default False
+        Whether to group the pairs by their first magnetic entity,
+        by default True
+    tags : Union[None, list[str]], optional
+        The tags of the markers, if None, then it is autogenerated,
+        by default None
+    colors: Union[None, list[str]], optional
+        The colors of the markers, if None, then it is autogenerated,
+        by default None
+    marker_size : float, optional
+        Size of the markers, by default 10
+    marker_opacity : float, optional
+        Opacity of the markers, by default 1
+    width : int, optional
+        Width of the figure, by default 800
+    height : int, optional
+        Height of the figure, by default 500
+    title : Union[None, str], optional
+        Title of the figure, if set to None, then title is not
+        generated, by default None
+    legend : bool, optional
+        Whether to show the legend, by default True
 
     Returns
     -------
@@ -859,14 +1232,17 @@ def plot_J_S_distance(
     else:
         pairs = PairList(pairs)
 
-    colors = px.colors.qualitative.D3
     if group:
-        tags = pairs.tags[:, 0] + "-->" + pairs.tags[:, 1]
-        tags, mask = np.unique(tags, return_inverse=True)
+        _tags = pairs.tags[:, 0] + "-->" + pairs.tags[:, 1]
+        _tags, mask = np.unique(_tags, return_inverse=True)
+        if tags is None:
+            tags = _tags
 
         values = np.linalg.eigvalsh(pairs.J_S_meV)
         dists = pairs.distance
-        colors = colors * (len(tags) // len(colors) + 1)
+        if colors is None:
+            colors = px.colors.qualitative.D3
+            colors = colors * (len(tags) // len(colors) + 1)
 
         # Create figure
         fig = go.Figure()
@@ -877,7 +1253,12 @@ def plot_J_S_distance(
                     x=dists[mask == i],
                     y=values[mask == i, 0],
                     mode="markers",
-                    marker=dict(color=colors[i], symbol="circle-open"),
+                    marker=dict(
+                        size=marker_size,
+                        opacity=marker_opacity,
+                        color=colors[i],
+                        symbol="circle-open",
+                    ),
                 )
             )
             fig.add_trace(
@@ -886,7 +1267,12 @@ def plot_J_S_distance(
                     x=dists[mask == i],
                     y=values[mask == i, 1],
                     mode="markers",
-                    marker=dict(color=colors[i], symbol="cross"),
+                    marker=dict(
+                        size=marker_size,
+                        opacity=marker_opacity,
+                        color=colors[i],
+                        symbol="cross",
+                    ),
                 )
             )
             fig.add_trace(
@@ -895,11 +1281,18 @@ def plot_J_S_distance(
                     x=dists[mask == i],
                     y=values[mask == i, 2],
                     mode="markers",
-                    marker=dict(color=colors[i], symbol="x"),
+                    marker=dict(
+                        size=marker_size,
+                        opacity=marker_opacity,
+                        color=colors[i],
+                        symbol="x",
+                    ),
                 )
             )
 
     else:
+        if colors is None:
+            colors = px.colors.qualitative.D3
         # Create figure
         fig = go.Figure()
         fig.add_trace(
@@ -908,7 +1301,7 @@ def plot_J_S_distance(
                 x=pairs.distance,
                 y=np.linalg.eigvalsh(pairs.J_S_meV)[:, 0],
                 mode="markers",
-                marker=dict(color=colors[0]),
+                marker=dict(size=marker_size, opacity=marker_opacity, color=colors[0]),
             )
         )
         fig.add_trace(
@@ -917,7 +1310,7 @@ def plot_J_S_distance(
                 x=pairs.distance,
                 y=np.linalg.eigvalsh(pairs.J_S_meV)[:, 1],
                 mode="markers",
-                marker=dict(color=colors[1]),
+                marker=dict(size=marker_size, opacity=marker_opacity, color=colors[1]),
             )
         )
         fig.add_trace(
@@ -926,20 +1319,16 @@ def plot_J_S_distance(
                 x=pairs.distance,
                 y=np.linalg.eigvalsh(pairs.J_S_meV)[:, 2],
                 mode="markers",
-                marker=dict(color=colors[2]),
+                marker=dict(size=marker_size, opacity=marker_opacity, color=colors[2]),
             )
         )
 
-    # Update the layout
-    if group:
-        width = kwargs.get("width", 1000)
-    else:
-        width = kwargs.get("width", 880)
+    # Create layout
     fig.update_layout(
         autosize=False,
         width=width,
-        height=kwargs.get("height", 500),
-        title=f"Eigenvalues of symmetric exchange",
+        height=height,
+        title=title,
         xaxis_title="Pair distance [Ang]",
         yaxis_title="Eigenvalues of symmetric exchange [meV]",
         xaxis=dict(
@@ -950,30 +1339,43 @@ def plot_J_S_distance(
             showgrid=True,
             gridwidth=1,
         ),
+        showlegend=legend,
     )
 
     return fig
 
 
 def plot_1D_convergence(
-    files: Union[str, list[str]],
-    parameter: str,
-    maxdiff: float = 1e-4,
-    method: str = "absolute",
-    **kwargs,
+    files: list[str],
+    atol: float = 1e-4,
+    rtol: float = 1e-4,
+    marker_size: float = 10,
+    marker_opacity: float = 1,
+    width: int = 800,
+    height: int = 500,
+    title: Union[None, str] = None,
 ) -> go.Figure:
     """Reads output files and create a plot for the convergence test.
 
     Parameters
     ----------
-    files : Union[str, list[str]]
+    files : list[str]
         The path to the output files .pkl
-    parameter : {"eset", "esetp", "kset"}
-        The parameter for the test
-    maxdiff : float, optional
-        The criteria for the convergence by relative difference from the last step, by default 1e-4
-    method: str, optional
-        The convergence method, can be 'relative' or 'absolute', by default 'absolute'
+    atol : float, optional
+        Absolute tolerance to convergence, by default 1e-4
+    rtol : float, optional
+        Relative tolerance to convergence, by default 1e-4
+    marker_size : float, optional
+        Size of the markers, by default 10
+    marker_opacity : float, optional
+        Opacity of the markers, by default 1
+    width : int, optional
+        Width of the figure, by default 800
+    height : int, optional
+        Height of the figure, by default 500
+    title : Union[None, str], optional
+        Title of the figure, if set to None, then title is not
+        generated, by default None
 
     Returns
     -------
@@ -983,21 +1385,29 @@ def plot_1D_convergence(
     Raises
     ------
     Exception
-        Multiple parameters changed in different runs!
+        Not enough paths to compare!
     Exception
-        Unknown convergence parameter!
-    """
-    # standardize input
-    parameter = parameter.lower()
+        Multiple spin models in files!
+    Exception
+        Convergence parameter not found!
+    s"""
 
-    # load
-    if not isinstance(files, list):
-        files = [files]
+    # check number of files
+    if len(files) < 2:
+        raise Exception("Not enough paths to compare!")
+
+    # load data
     builders = []
     spin_models = []
+    ksets = []
+    esets = []
+    esetps = []
     for f in files:
         builders.append(load_Builder(f))
         spin_models.append(builders[-1].spin_model)
+        ksets.append(builders[-1].kspace.NK)
+        esets.append(builders[-1].contour.eset)
+        esetps.append(builders[-1].contour.esetp)
     builders = np.array(builders, dtype=object)
 
     # check spin models
@@ -1005,31 +1415,27 @@ def plot_1D_convergence(
     if len(spin_models) != 1:
         raise Exception(f"Multiple spin models in files: {spin_models}!")
 
+    # check other parameters
+    # number of parameters in files
+    ksets = np.unique(np.array(ksets))
+    esets = np.unique(np.array(esets))
+    esetps = np.unique(np.array(esetps))
+    # check convergence type
+    mode = None
+    conv_params = None
+    if len(ksets) == 1 and len(esets) == 1 and len(esetps) != 1:
+        mode = "Esetp"
+        conv_params = [b.contour.esetp for b in builders]
+    if len(ksets) == 1 and len(esets) != 1 and len(esetps) == 1:
+        mode = "Eset"
+        conv_params = [b.contour.eset for b in builders]
+    if len(ksets) != 1 and len(esets) == 1 and len(esetps) == 1:
+        mode = "Total number of K points"
+        conv_params = [b.kspace.NK for b in builders]
+    if mode is None:
+        raise Exception("Convergence parameter not found!")
+
     # sort
-    conv_params = []
-    for b in builders:
-        if parameter == "eset":
-            if not (
-                b.kspace == builders[0].kspace
-                and b.contour.esetp == builders[0].contour.esetp
-            ):
-                raise Exception("Multiple parameters changed in different runs!")
-            conv_params.append(b.contour.eset)
-        elif parameter == "esetp":
-            if not (
-                b.kspace == builders[0].kspace
-                and b.contour.eset == builders[0].contour.eset
-            ):
-                raise Exception("Multiple parameters changed in different runs!")
-            conv_params.append(b.contour.esetp)
-        elif parameter == "kset":
-            if not (b.contour == builders[0].contour):
-                raise Exception("Multiple parameters changed in different runs!")
-            conv_params.append(b.kspace.NK)
-        else:
-            raise Exception(
-                f"Unknown convergence parameter: {parameter}! Use: eset, esetp or kset"
-            )
     conv_params = np.array(conv_params)
     idx = np.argsort(conv_params)
     conv_params = conv_params[idx]
@@ -1038,58 +1444,74 @@ def plot_1D_convergence(
     # get all data
     compare = []
     for b in builders:
-        dat = []
-        if spin_models[0] != "isotropic-only":
-            for m in b.magnetic_entities:
-                dat.append(m.K_meV)
-            for p in b.pairs:
-                dat.append(p.J_meV)
-        else:
-            for p in b.pairs:
-                dat.append(p.J_iso_meV)
-        compare.append(np.array(dat).flatten())
-    compare = np.array(compare).T
+        dat = np.hstack([b.magnetic_entities.K_meV.flatten(), b.pairs.J_meV.flatten()])
+        compare.append(dat[dat != None].astype(float))
+    try:
+        compare = np.array(compare).T
+    except:
+        raise Exception("Number of pairs or magnetic entites changed between Builders!")
 
     # add lines
     fig = go.Figure()
     for i in range(len(compare)):
         fig.add_trace(
             go.Scatter(
-                x=conv_params, y=compare[i], mode="markers+lines", showlegend=False
+                x=conv_params,
+                y=compare[i],
+                mode="markers+lines",
+                marker=dict(
+                    size=marker_size, opacity=marker_opacity, symbol="circle-open"
+                ),
             )
         )
 
-    # find maxdiff point
-    if method[0].lower() == "r":
-        idx = np.argwhere(
-            abs(np.diff(compare, axis=1) / compare[:, :-1]).max(axis=0) < maxdiff
+    # turn back
+    compare = compare.T
+
+    # check for convergence
+    converged = False
+    for i in range(int(len(compare) - 1)):
+        if np.allclose(compare[i], compare[-1], rtol=rtol, atol=atol):
+            fig.add_vline(
+                x=(conv_params[i] + conv_params[i + 1]) / 2,
+                line_width=3,
+                line_color="red",
+            )
+            converged = True
+            break
+
+    # if not converged
+    if converged:
+        fig.add_annotation(
+            x=0.99,
+            y=0.99,
+            showarrow=False,
+            text=f"Convergence reached compared to highest parameter (atol={atol:.2e}, rtol={rtol:.2e})",
+            textangle=0,
+            xanchor="right",
+            xref="paper",
+            yref="paper",
         )
-    elif method[0].lower() == "a":
-        idx = np.argwhere(abs(np.diff(compare, axis=1)).max(axis=0) < maxdiff)
+
     else:
-        raise Exception(f"Unknown convergence method: {method}")
-
-    if len(idx) != 0:
-        idx = idx.min()
-        fig.add_vline(
-            x=(conv_params[idx] + conv_params[idx + 1]) / 2,
-            line_width=1,
-            line_color="red",
-            name="Reached convergence criteria: %0.3e" % maxdiff,
-            showlegend=True,
+        fig.add_annotation(
+            x=0.99,
+            y=0.99,
+            showarrow=False,
+            text=f"Convergence not reached (atol={atol:.2e}, rtol={rtol:.2e})",
+            textangle=0,
+            xanchor="right",
+            xref="paper",
+            yref="paper",
         )
 
-    # a little renaming for kset
-    if parameter == "kset":
-        parameter = "total number of k points"
-
-    # Update the layout
+    # Create layout
     fig.update_layout(
         autosize=False,
-        width=kwargs.get("width", 800),
-        height=kwargs.get("height", 500),
-        title=f"Convergence on {parameter}",
-        xaxis_title=f"{parameter.capitalize()} [ ]",
+        width=width,
+        height=height,
+        title=title,
+        xaxis_title=f"{mode} [ ]",
         yaxis_title="System vector [meV]",
         xaxis=dict(
             tickmode="array",
@@ -1099,18 +1521,11 @@ def plot_1D_convergence(
             gridwidth=1,
         ),
         yaxis=dict(
-            type="log",
-            tickformat="0.2e",
             showgrid=True,
             gridwidth=1,
         ),
-        legend=dict(
-            x=1,
-            y=1,
-            xanchor="right",
-        ),
+        showlegend=False,
     )
-
     return fig
 
 

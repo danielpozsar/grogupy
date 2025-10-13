@@ -122,13 +122,12 @@ class TestPlots:
             "./benchmarks/test_builder_2.pkl",
         ],
     )
-    @pytest.mark.parametrize("normalise", [True, False])
     @pytest.mark.parametrize("group", [True, False])
-    def test_DM_distance(self, normalise, group):
+    def test_Jiso_distance(self, path, group):
         setup = grogupy.load(path)
-        fig = plot_DM_distance(setup.pairs, normalise, group)
+        fig = plot_Jiso_distance(setup.pairs, group)
         assert isinstance(fig, go.Figure)
-        fig = plot_DM_distance(setup, normalise, group)
+        fig = plot_Jiso_distance(setup, group)
         assert isinstance(fig, go.Figure)
 
     @pytest.mark.parametrize(
@@ -138,12 +137,13 @@ class TestPlots:
             "./benchmarks/test_builder_2.pkl",
         ],
     )
+    @pytest.mark.parametrize("normalise", [True, False])
     @pytest.mark.parametrize("group", [True, False])
-    def test_Jiso_distance(self, path, group):
+    def test_DM_distance(self, normalise, group):
         setup = grogupy.load(path)
-        fig = plot_Jiso_distance(setup.pairs, group)
+        fig = plot_DM_distance(setup.pairs, normalise, group)
         assert isinstance(fig, go.Figure)
-        fig = plot_Jiso_distance(setup, group)
+        fig = plot_DM_distance(setup, normalise, group)
         assert isinstance(fig, go.Figure)
 
     @pytest.mark.parametrize(
@@ -162,10 +162,18 @@ class TestPlots:
         assert isinstance(fig, go.Figure)
 
     @pytest.mark.xfail(raises=NotImplementedError)
-    @pytest.mark.parametrize("files", [True, False])
-    @pytest.mark.parametrize("parameter", ["eset", "esetp", "kset"])
-    @pytest.mark.parametrize("maxdiff", [-1, 0, 100, 1e-5])
-    @pytest.mark.parametrize("method", ["absolute", "relative"])
+    @pytest.mark.parametrize(
+        "files",
+        [
+            [
+                "CrI3/CrI3_kset_1_1_1_eset_100_generalised-grogu.pkl",
+                "CrI3/CrI3_kset_3_3_1_eset_100_generalised-grogu.pkl",
+                "CrI3/CrI3_kset_5_5_1_eset_100_generalised-grogu.pkl",
+            ]
+        ],
+    )
+    @pytest.mark.parametrize("atol", [1e-5, 1])
+    @pytest.mark.parametrize("rtol", [1e-5, 1])
     def test_1D_convergence(self, files, parameter, maxdiff, method):
         fig = plot_1D_convergence(files, parameter, maxdiff, method)
         assert isinstance(fig, go.Figure)
