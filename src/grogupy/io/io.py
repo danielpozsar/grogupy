@@ -260,14 +260,14 @@ def load_Builder(infile: Union[str, dict]) -> Builder:
     out = object.__new__(Builder)
     out.__setstate__(infile)
 
-    if len(out.contour.samples) == 0:
+    if out.contour is not None and len(out.contour.samples) == 0:
         try:
             out.contour.samples, out.contour.weights = make_contour(
                 out.contour.emin, out.contour.emax, out.contour.eset, out.contour.esetp
             )
         except:
             print("Failed to recreate contour!")
-    if len(out.kspace.kpoints) == 0:
+    if out.kspace is not None and len(out.kspace.kpoints) == 0:
         try:
             out.kspace.kpoints = make_kset(out.kspace.kset)
             out.kspace.weights = np.ones(len(out.kspace.kpoints)) / len(
@@ -544,6 +544,9 @@ def save_grogupy(
         if not path.endswith(".grogupy.txt"):
             path += ".grogupy.txt"
 
+    if builder.hamiltonian is None or builder.contour is None or builder.kspace is None:
+        raise Exception("Builder is not set up corretly!")
+
     section = "--------------------------------------------------------------------------------"
     subsection = "----------------------------------------"
     newline = "\n"
@@ -605,9 +608,13 @@ def save_grogupy(
         out += "Cell shift\t" + "\t".join(map(str, pair.supercell_shift))
         out += f"\t# Distance: {pair.distance} Ang" + newline
         out += "Energies [eV]" + newline
-        for e in pair.energies:
-            out += "\t\t" + "\t".join(map(lambda s: f"{s:.8e}", e))
+        if pair.energies is None:
+            out += "\t\tNone"
             out += newline
+        else:
+            for e in pair.energies:
+                out += "\t\t" + "\t".join(map(lambda s: f"{s:.8e}", e))
+                out += newline
     out += subsection + newline
     out += section + newline
     # save times
