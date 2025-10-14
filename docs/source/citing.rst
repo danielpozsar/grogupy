@@ -5,7 +5,7 @@
 
 Citing grogupy
 ==============
-grogupy is a completely open-source software package released under the 
+grogupy is a completely open source software package released under the 
 MIT license. You should always cite the underlying paper *Relativistic 
 magnetic interactions from nonorthogonal basis sets*.
 
@@ -31,7 +31,7 @@ the development of grogupy you can cite it through zenodo.
     :substitutions:
 
     @software{zerothi_grogupy,
-        author={Daniel, Pozsar},
+        author={D{\'a}niel Tibor, Pozs{\'a}r and Gabriel, Mart{\'\i}nez-Carracedo and Amador, Garc{\'\i}a-Fuente and L{\'a}szl{\'o}, Udvardi and L{\'a}szl{\'o}, Szunyogh and L{\'a}szl{\'o}, Oroszl{\'a}ny and Jaime, Ferrer},
         title={grogupy: v|release|},
         year={2025},
         doi={10.5281/zenodo.15449541},

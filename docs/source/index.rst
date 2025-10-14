@@ -107,4 +107,5 @@ the source code is available on `github <https://github.com/danielpozsar/grogupy
    :maxdepth: 3
    :caption: Extras
 
+   theoretical_background
    bibliography

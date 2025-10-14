@@ -23,7 +23,7 @@ the documentation of CUDA. Here is a quick summary for the
 recommended way to set up for Linux users:
 
 1. If you are using HPC, then usually you can load CUDA by first 
-    finding the module that you need:
+   finding the module that you need:
 
     .. code-block:: bash
 
@@ -46,11 +46,11 @@ recommended way to set up for Linux users:
 
         nvcc --version
 
-2. Then you should choose a Python module, which should be the same that 
-    you will use in the sbatch script and load it as well in a similar way.
+2. Then you should choose a Python module, which should be the 
+   same that you will use in the sbatch script and load it as well in a similar way.
 
-3. At this point the CUDA and Python version should be resolved, now you 
-    should install grogupy with GPU acceleration:
+3. At this point the CUDA and Python version should be resolved, 
+   now you should install grogupy with GPU acceleration:
 
     .. code-block:: bash
 
@@ -59,31 +59,32 @@ recommended way to set up for Linux users:
     You should use ``python -m``, so you do not use another install of pip 
     by accident.
 
-4. Now you can install the nvidia index, where you can get the missing 
-    libraries:
+4. Now you can install the nvidia index, where you can get the 
+   missing libraries:
 
     .. code-block:: bash
 
         python3 -m pip install --upgrade setuptools pip wheel
         python3 -m pip install nvidia-pyindex
 
-5. Finally you have to find out which nvidia package contain the missing 
-    library. You should take a look at the Metapackages chapter in the 
-    documentation of CUDA above. The names are quite descriptive if you 
-    are missing **libnvrtc.so.11.2**, then you should install 
-    **nvidia-cuda-nvrtc-cu11**, if you use CUDA 12, then change the 
-    version number to 12. Now install the choosen library:
+5. Finally you have to find out which nvidia package contains the missing 
+   library. You should take a look at the Metapackages chapter in the 
+   documentation of CUDA above. The names are quite descriptive if you 
+   are missing **libnvrtc.so.11.2**, then you should install 
+   **nvidia-cuda-nvrtc-cu11**, if you use CUDA 12, then change the 
+   version number to 12. Now install the choosen library:
 
     .. code-block:: bash
 
         python3 -m pip install <nvidia-library>
 
-6. If you did everything as advised, then the missing CUDA library should 
-    be in the **nvidia** folder in the **site-packages** of the used 
-    Python version. Usually it is in 
-    **/home/<user-name>/.local/lib/python3.9/site-packages/nvidia**. If you 
-    used a different Python, for example one that was installed by Conda, 
-    then you can find the folder by running:
+6. If you did everything as advised, then the missing CUDA 
+   library should 
+   be in the **nvidia** folder in the **site-packages** of the used 
+   Python version. Usually it is in 
+   **/home/<user-name>/.local/lib/python3.9/site-packages/nvidia**. If you 
+   used a different Python, for example one that was installed by Conda, 
+   then you can find the folder by running:
 
     .. code-block:: bash
 

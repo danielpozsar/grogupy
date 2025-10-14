@@ -38,7 +38,7 @@ Configuration
 -------------
 This module contains the configuration from the environment, which helps to 
 load or avoid the optional dependencies that can be part of grogupy. These 
-optional dependencies are tqdm, cupy for gpu acceleration and plotly for 
+optional dependencies are tqdm, CuPy for gpu acceleration and Plotly for 
 visualization.
 
 
@@ -118,7 +118,7 @@ __bibtex__ = r"""
 }
 
 @software{zerothi_grogupy,
-    author={Daniel, Pozsar},
+    author={D{\'a}niel Tibor, Pozs{\'a}r and Gabriel, Mart{\'\i}nez-Carracedo and Amador, Garc{\'\i}a-Fuente and L{\'a}szl{\'o}, Udvardi and L{\'a}szl{\'o}, Szunyogh and L{\'a}szl{\'o}, Oroszl{\'a}ny and Jaime, Ferrer},
     title={grogupy: v%s},
     year={2025},
     doi={10.5281/zenodo.15449541},

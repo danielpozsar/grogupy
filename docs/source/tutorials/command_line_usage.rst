@@ -14,7 +14,7 @@ Further information on the input file formats is available :ref:`here
 <io_formats>`. The second one can create a summary and figures from the *.pkl* 
 output format, which will be stored in a *.html* file. All the important 
 physical information is aggregated here and you can do interactive system 
-exploration with plotly figures.
+exploration with Plotly figures.
 
 .. code-block:: console
 
@@ -23,7 +23,7 @@ exploration with plotly figures.
 The third and final script can help you determine the result of convergence 
 tests. It flattens the exchange and anysotropy tensors over all pairs and 
 magnetic entities and compares them with different convergence parameters. The 
-output is also a *.html* file which contains an interactive plotly figure.
+output is also a *.html* file which contains an interactive Plotly figure.
 
 .. code-block:: console
 

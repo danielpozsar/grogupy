@@ -49,7 +49,7 @@ Functions
 Background information
 ----------------------
 
-Currently all the functions are using the plotly library.
+Currently all the functions are using the Plotly library.
 This decision was made because it can be used in the Jupyter
 environment and supports interactive and 3D plots.
 
