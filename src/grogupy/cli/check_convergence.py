@@ -44,6 +44,7 @@ def main():
         "-a",
         "--atol",
         dest="atol",
+        type=float,
         default=1e-4,
         help="Absolute tolerance to convergence, by default 1e-4",
     )
@@ -51,6 +52,7 @@ def main():
         "-r",
         "--rtol",
         dest="rtol",
+        type=float,
         default=1e-4,
         help="Relative tolerance to convergence, by default 1e-4",
     )
@@ -74,7 +76,7 @@ def main():
     # print citation if needed
     if args.cite:
         print(__citation__ + __definitely_not_grogu__)
-        if args.files is None or args.type is None:
+        if args.files is None:
             return
 
     # check if we have correct input
@@ -83,7 +85,7 @@ def main():
 
     # get the output name
     if args.output is None:
-        name = f"grogupy_{args.type}_convergence.html"
+        name = f"grogupy_convergence.html"
     else:
         name = args.output
         if not name.endswith(".html"):

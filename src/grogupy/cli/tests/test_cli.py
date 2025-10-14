@@ -101,15 +101,19 @@ class TestCommandLineTools:
         subprocess.run(
             [
                 "grogupy_convergence",
-                "-t",
-                "kset",
+                "-a",
+                "1e-3",
+                "-r",
+                "1e-1",
                 "-f",
                 "'./src/grogupy/cli/tests/convergence1.pkl ./src/grogupy/cli/tests/convergence2.pkl'",
+                "-o",
+                "./src/grogupy/cli/tests/grogupy_kset_convergence.html",
             ]
         )
 
-        assert os.path.isfile("./grogupy_kset_convergence.html")
-        os.remove("./grogupy_kset_convergence.html")
+        assert os.path.isfile("./src/grogupy/cli/tests/grogupy_kset_convergence.html")
+        os.remove("./src/grogupy/cli/tests/grogupy_kset_convergence.html")
         os.remove("./src/grogupy/cli/tests/convergence1.pkl")
         os.remove("./src/grogupy/cli/tests/convergence2.pkl")
 
