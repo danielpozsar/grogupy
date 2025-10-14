@@ -20,7 +20,6 @@
 
 import importlib.util
 import pickle
-import warnings
 from os.path import join
 from typing import Union
 
@@ -303,112 +302,96 @@ def load(
             dat = pickle.load(file)
     else:
         dat = infile
-
-    if list(dat.keys()) == [
-        "times",
-        "kspace",
-        "contour",
-        "hamiltonian",
-        "magnetic_entities",
-        "pairs",
-        "_Builder__low_memory_mode",
+    keymatch = list(dat.keys())
+    keymatch.sort()
+    if keymatch == [
+        "SLURM_ID",
+        "_Builder__apply_spin_model",
+        "_Builder__architecture",
         "_Builder__greens_function_solver",
+        "_Builder__low_memory_mode",
         "_Builder__max_g_per_loop",
         "_Builder__parallel_mode",
-        "_Builder__architecture",
-        "_Builder__apply_spin_model",
-        "_Builder__spin_model",
         "_Builder__ref_xcf_orientations",
-        "_rotated_hamiltonians",
-        "SLURM_ID",
+        "_Builder__spin_model",
         "_Builder__version",
+        "_rotated_hamiltonians",
+        "contour",
+        "hamiltonian",
+        "kspace",
+        "magnetic_entities",
+        "pairs",
+        "times",
     ]:
         return load_Builder(infile)
 
-    elif list(dat.keys()) == [
-        "times",
-        "kspace",
-        "contour",
-        "hamiltonian",
-        "magnetic_entities",
-        "pairs",
-        "ref_xcf_orientations",
-        "_rotated_hamiltonians",
-        "SLURM_ID",
-        "_Builder__version",
-    ]:
-        b = load_Builder(infile)
-        if PRINTING:
-            warnings.warn(
-                f"There is a mismatch between Builder ({b.version}) and current ({__version__}) version!"
-            )
-        return b
-
-    elif list(dat.keys()) == [
-        "times",
-        "_dh",
-        "_ds",
-        "infile",
-        "_spin_state",
-        "_Hamiltonian__dh_ds_id",
+    elif keymatch == [
         "H",
         "S",
-        "scf_xcf_orientation",
-        "orientation",
-        "_Hamiltonian__no",
         "_Hamiltonian__cell",
-        "_Hamiltonian__sc_off",
-        "_Hamiltonian__uc_in_sc_index",
+        "_Hamiltonian__dh_ds_id",
+        "_Hamiltonian__no",
+        "_dh",
+        "_ds",
+        "_spin_state",
+        "infile",
+        "orientation",
+        "scf_xcf_orientation",
+        "times",
     ]:
         return load_Hamiltonian(infile)
-    elif list(dat.keys()) == [
-        "_Pair__dh_ds_id",
-        "cell",
+
+    elif keymatch == [
         "M1",
         "M2",
-        "supercell_shift",
         "_Gij",
         "_Gji",
-        "energies",
         "_J",
+        "_Pair__dh_ds_id",
+        "cell",
+        "energies",
+        "supercell_shift",
     ]:
         return load_Pair(infile)
-    elif list(dat.keys()) == [
-        "infile",
-        "_MagneticEntity__dh_ds_id",
-        "_MagneticEntity__cell",
-        "_atom",
-        "_l",
-        "_orbital_box_indices",
-        "_total_orbital_box_indices",
-        "_tags",
-        "_mulliken",
-        "_xyz",
-        "_Vu1",
-        "_Vu2",
+
+    elif keymatch == [
         "_Gii",
-        "energies",
         "_K",
         "_K_consistency",
+        "_MagneticEntity__cell",
+        "_MagneticEntity__dh_ds_id",
+        "_Vu1",
+        "_Vu2",
+        "_atom",
+        "_l",
+        "_mulliken",
+        "_orbital_box_indices",
+        "_tags",
+        "_total_orbital_box_indices",
+        "_xyz",
+        "energies",
+        "infile",
     ]:
         return load_MagneticEntity(infile)
-    elif list(dat.keys()) == ["times", "_Kspace__kset", "kpoints", "weights"]:
+
+    elif keymatch == ["_Kspace__kset", "kpoints", "times", "weights"]:
         return load_Kspace(infile)
-    elif list(dat.keys()) == [
-        "times",
+    elif keymatch == [
         "_Contour__automatic_emin",
         "_eigfile",
-        "_emin",
         "_emax",
+        "_emin",
         "_eset",
         "_esetp",
         "samples",
+        "times",
         "weights",
     ]:
         return load_Contour(infile)
-    elif list(dat.keys()) == ["_DefaultTimer__start_measure", "_times"]:
+    elif keymatch == ["_DefaultTimer__start_measure", "_times"]:
         return load_DefaultTimer(infile)
     else:
+        print(keymatch)
         raise Exception("Unknown pickle format!")
 
 
@@ -707,6 +690,10 @@ def read_grogupy(file: str):
         # metadata section
         if section[0] == "Metadata":
             out["hamiltonian"] = dict()
+            out["hamiltonian"]["_dh"] = None
+            out["hamiltonian"]["_ds"] = None
+            out["hamiltonian"]["H"] = []
+            out["hamiltonian"]["S"] = []
             for line in section:
                 line = line.replace("\t", "").split(":")
                 if line[0] == "grogupy version":
@@ -726,7 +713,9 @@ def read_grogupy(file: str):
                 elif line[0] == "Solver used for Greens function calculation":
                     out["_Builder__greens_function_solver"] = line[1]
                 elif line[0] == "Maximum number of Greens function samples per batch":
-                    out["_Builder__max_g_per_loop"] = line[1]
+                    out["_Builder__max_g_per_loop"] = int(line[1])
+                elif line[0] == "Low memory mode":
+                    out["_Builder__low_memory_mode"] = bool(line[1])
         # hamiltonian section
         elif section[0] == "Hamiltonian":
             for line in section:
@@ -836,7 +825,7 @@ def read_grogupy(file: str):
                 elif line[0] == "Atom":
                     mag_ent["_atom"] = np.array(line[1:], dtype=int)
                 elif line[0] == "Shell":
-                    mag_ent["_l"].append(np.array(line[1:], dtype=int))
+                    mag_ent["_l"].append([int(i) for i in line[1:]])
                     continue_writing = "_l"
                 elif line[0] == "Orbital":
                     mag_ent["_orbital_box_indices"] = np.array(line[2:], dtype=int)
@@ -888,6 +877,9 @@ def read_grogupy(file: str):
                         if "--".join(m["_tags"]) == pair["tags"][1]:
                             pair["M2"] = m
                     pair["cell"] = cell
+                    pair["_Gij"] = []
+                    pair["_Gji"] = []
+                    pair.pop("tags")
                     pair_list.append(pair)
                     pair = dict()
                     reading_energies = False
