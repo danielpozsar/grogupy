@@ -747,6 +747,11 @@ class Builder:
                 self.hamiltonian._dh, R, subset, **kwargs
             )
 
+            # clear previous magnetic entities and pairs
+            self.magnetic_entities = MagneticEntityList()
+            self.pairs = PairList()
+
+            # add new magnetic entities and pairs
             self.add_magnetic_entities(magnetic_entities)
             self.add_pairs(pairs)
         else:
