@@ -20,7 +20,6 @@
 
 import numpy as np
 import pytest
-import sisl
 
 import grogupy
 from grogupy._core.io_utilities import decipher
@@ -384,15 +383,15 @@ class TestMagneticEntity:
         assert mag_ent.K_consistency is None
 
     @pytest.mark.xfail(raises=NotImplementedError)
-    def test_add_G_tmp(self):
+    def test_calculate_energies(self):
         raise NotImplementedError
 
     @pytest.mark.xfail(raises=NotImplementedError)
-    def test_energies(self):
+    def test_calculate_anisotropy(self):
         raise NotImplementedError
 
     @pytest.mark.xfail(raises=NotImplementedError)
-    def test_anisotropy(self):
+    def test_fit_anisotropy_tensor(self):
         raise NotImplementedError
 
     @pytest.mark.parametrize(
@@ -651,6 +650,10 @@ class TestMagneticEntity:
         m2.__setstate__(state)
         assert m == m2
 
+    @pytest.mark.xfail(raises=NotImplementedError)
+    def test_properties(self):
+        raise NotImplementedError
+
 
 class TestMagneticEntityList:
     def test_properties(self):
@@ -705,6 +708,22 @@ class TestMagneticEntityList:
 
         assert isinstance(mlist, MagneticEntityList)
         assert isinstance(mlist.toarray(), np.ndarray)
+
+    @pytest.mark.xfail(raises=NotImplementedError)
+    def test_getstate_setstate(self):
+        raise NotImplementedError
+
+    @pytest.mark.xfail(raises=NotImplementedError)
+    def test_iter(self):
+        raise NotImplementedError
+
+    @pytest.mark.xfail(raises=NotImplementedError)
+    def test_len(self):
+        raise NotImplementedError
+
+    @pytest.mark.xfail(raises=NotImplementedError)
+    def test_add(self):
+        raise NotImplementedError
 
 
 if __name__ == "__main__":
