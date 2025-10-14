@@ -195,8 +195,6 @@ class Hamiltonian:
         # they are here so they are dumped to the self.__dict__ upon saving
         self.__no = self._dh.no
         self.__cell = self._dh.geometry.cell
-        self.__sc_off = self._dh.geometry.sc_off
-        self.__uc_in_sc_index = self._dh.lattice.sc_index([0, 0, 0])
 
         self.times.measure("setup", restart=True)
         Hamiltonian.number_of_hamiltonians += 1
@@ -216,9 +214,7 @@ class Hamiltonian:
     def __eq__(self, value):
         if isinstance(value, Hamiltonian):
             if (
-                np.allclose(self._dh.Hk().toarray(), value._dh.Hk().toarray())
-                and np.allclose(self._dh.Sk().toarray(), value._dh.Sk().toarray())
-                and self.infile == value.infile
+                self.infile == value.infile
                 and self._spin_state == value._spin_state
                 and np.allclose(self.H, value.H)
                 and np.allclose(self.S, value.S)
@@ -227,7 +223,7 @@ class Hamiltonian:
             ):
                 # if DM is None return True
                 if self._ds is None and value._ds is None:
-                    return True
+                    pass
                 # if DM is not None, then compare
                 else:
                     if np.allclose(
@@ -238,6 +234,20 @@ class Hamiltonian:
                         return True
                     else:
                         return False
+                # if DM is None return True
+                if self._dh is None and value._dh is None:
+                    pass
+                # if DM is not None, then compare
+                else:
+                    if np.allclose(
+                        self._dh.Hk().toarray(), value._dh.Hk().toarray()
+                    ) and np.allclose(
+                        self._dh.Sk().toarray(), value._dh.Sk().toarray()
+                    ):
+                        return True
+                    else:
+                        return False
+                return True
             return False
         return False
 
@@ -285,19 +295,11 @@ class Hamiltonian:
 
     @property
     def sc_off(self) -> NDArray:
-        try:
-            self.__sc_off = self._dh.geometry.sc_off
-        except:
-            if PRINTING:
-                warnings.warn(
-                    "Property could not be calculated. This is only acceptable for loaded Hamiltonian!"
-                )
-        return self.__sc_off
+        return self._dh.geometry.sc_off
 
     @property
     def uc_in_sc_index(self) -> int:
-        self.__uc_in_sc_index = self._dh.sc_index([0, 0, 0])
-        return self.__uc_in_sc_index
+        return self._dh.sc_index([0, 0, 0])
 
     @property
     def H_uc(self) -> NDArray:
