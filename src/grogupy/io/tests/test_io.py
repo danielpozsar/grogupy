@@ -333,8 +333,8 @@ class TestIO:
             "./benchmarks/test_builder_2.pkl",
         ],
     )
-    def test_save_compression(self):
-        def parse(dictionary, key, path):
+    def test_save_compression(self, path):
+        def parse(dictionary, key):
             out = []
             if isinstance(dictionary, dict):
                 for k, v in dictionary.items():
@@ -436,6 +436,10 @@ class TestIO:
                 dat.append(t)
         for d in dat:
             assert d is None
+
+    @pytest.mark.xfail(raises=NotImplementedError)
+    def test_save_HDF5(self):
+        raise NotImplementedError
 
 
 if __name__ == "__main__":

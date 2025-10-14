@@ -20,7 +20,6 @@
 
 import numpy as np
 import pytest
-import sisl
 
 import grogupy
 from grogupy.physics import Pair, PairList
@@ -73,15 +72,23 @@ class TestPair:
         assert pair.D == None
 
     @pytest.mark.xfail(raises=NotImplementedError)
-    def test_add_G_tmp(self):
+    def test_calculate_energies(self):
         raise NotImplementedError
 
     @pytest.mark.xfail(raises=NotImplementedError)
-    def test_energies(self):
+    def test_calculate_exchange_tensor(self):
         raise NotImplementedError
 
     @pytest.mark.xfail(raises=NotImplementedError)
-    def test_exchange(self):
+    def test_fit_exchange_tensor(self):
+        raise NotImplementedError
+
+    @pytest.mark.xfail(raises=NotImplementedError)
+    def test_calculate_isotropic_only(self):
+        raise NotImplementedError
+
+    @pytest.mark.xfail(raises=NotImplementedError)
+    def test_calculate_isotropic_biquadratic_only(self):
         raise NotImplementedError
 
     def test_equality(self):
@@ -213,6 +220,10 @@ class TestPair:
         p2.__setstate__(state)
         assert p == p2
 
+    @pytest.mark.xfail(raises=NotImplementedError)
+    def test_properties(self):
+        raise NotImplementedError
+
 
 class TestPairList:
     def test_properties(self):
@@ -267,6 +278,22 @@ class TestPairList:
 
         assert isinstance(plist, PairList)
         assert isinstance(plist.toarray(), np.ndarray)
+
+    @pytest.mark.xfail(raises=NotImplementedError)
+    def test_getstate_setstate(self):
+        raise NotImplementedError
+
+    @pytest.mark.xfail(raises=NotImplementedError)
+    def test_iter(self):
+        raise NotImplementedError
+
+    @pytest.mark.xfail(raises=NotImplementedError)
+    def test_len(self):
+        raise NotImplementedError
+
+    @pytest.mark.xfail(raises=NotImplementedError)
+    def test_add(self):
+        raise NotImplementedError
 
 
 if __name__ == "__main__":

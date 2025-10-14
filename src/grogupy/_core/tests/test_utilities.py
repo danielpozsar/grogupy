@@ -25,7 +25,7 @@ from grogupy._core.utilities import *
 pytestmark = [pytest.mark.core]
 
 
-class TestCore:
+class TestUtilities:
     def test_commutator(self):
         A = np.random.random((10, 10))
         B = np.random.random((10, 10))

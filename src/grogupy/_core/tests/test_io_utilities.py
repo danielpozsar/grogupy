@@ -25,7 +25,7 @@ from grogupy._core.io_utilities import *
 pytestmark = [pytest.mark.io]
 
 
-class TestUtilities:
+class TestIOUtilities:
     @pytest.mark.parametrize(
         "tag, atom, l, orb",
         [

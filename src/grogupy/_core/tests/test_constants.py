@@ -20,15 +20,17 @@
 
 import pytest
 
-from grogupy.physics import Builder
+from grogupy._core.constants import *
 
-pytestmark = [pytest.mark.physics]
+pytestmark = [pytest.mark.core]
 
 
-class TestBuilder:
-    @pytest.mark.xfail(raises=NotImplementedError)
-    def test_Builder(self):
-        raise NotImplementedError
+class TestConstants:
+    def test_pauli_matrixes(self):
+        assert np.allclose(TAU_0, np.array([[1, 0], [0, 1]]))
+        assert np.allclose(TAU_X, np.array([[0, 1], [1, 0]]))
+        assert np.allclose(TAU_Y, np.array([[0, -1j], [1j, 0]]))
+        assert np.allclose(TAU_Z, np.array([[1, 0], [0, -1]]))
 
 
 if __name__ == "__main__":

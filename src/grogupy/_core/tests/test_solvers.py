@@ -20,62 +20,27 @@
 
 import pytest
 
-from grogupy._core.physics_utilities import *
+from grogupy._core.cpu_solvers import *
+from grogupy._core.gpu_solvers import *
 
-pytestmark = [pytest.mark.physics]
+pytestmark = [pytest.mark.core]
 
 
-class TestPhysicsUtilities:
+class TestSolvers:
     @pytest.mark.xfail(raises=NotImplementedError)
-    def test_get_number_of_electrons(self):
+    def test_cpu_default_solver(self):
         raise NotImplementedError
 
     @pytest.mark.xfail(raises=NotImplementedError)
-    def test_automatic_emin(self):
+    def test_cpu_solve_parallel_over_k(self):
         raise NotImplementedError
 
     @pytest.mark.xfail(raises=NotImplementedError)
-    def test_blow_up_orbindx(self):
+    def test_gpu_default_solver(self):
         raise NotImplementedError
 
     @pytest.mark.xfail(raises=NotImplementedError)
-    def test_spin_tracer(self):
-        raise NotImplementedError
-
-    @pytest.mark.xfail(raises=NotImplementedError)
-    def test_parse_magnetic_entity(self):
-        raise NotImplementedError
-
-    @pytest.mark.xfail(raises=NotImplementedError)
-    def test_interaction_energy(self):
-        raise NotImplementedError
-
-    @pytest.mark.xfail(raises=NotImplementedError)
-    def test_second_order_energy(self):
-        raise NotImplementedError
-
-    @pytest.mark.xfail(raises=NotImplementedError)
-    def test_calculate_anisotropy_tensor(self):
-        raise NotImplementedError
-
-    @pytest.mark.xfail(raises=NotImplementedError)
-    def test_fit_anisotropy_tensor(self):
-        raise NotImplementedError
-
-    @pytest.mark.xfail(raises=NotImplementedError)
-    def test_calculate_exchange_tensor(self):
-        raise NotImplementedError
-
-    @pytest.mark.xfail(raises=NotImplementedError)
-    def test_fit_exchange_tensor(self):
-        raise NotImplementedError
-
-    @pytest.mark.xfail(raises=NotImplementedError)
-    def test_calculate_isotropic_only(self):
-        raise NotImplementedError
-
-    @pytest.mark.xfail(raises=NotImplementedError)
-    def test_calculate_isotropic_biquadratic_only(self):
+    def test_gpu_solve_parallel_over_k(self):
         raise NotImplementedError
 
 

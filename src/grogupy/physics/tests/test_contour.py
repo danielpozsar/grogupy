@@ -37,19 +37,28 @@ class TestContour:
         assert len(c.samples) == 10
         assert len(c.weights) == 10
 
+    @pytest.mark.xfail(raises=NotImplementedError)
+    def test_esetp(self):
+        raise NotImplementedError
+
     @pytest.mark.parametrize("emin", [-10, -0.1, 0, 1, 1.2])
+    @pytest.mark.parametrize("emin_shift", [-10, -0.1, 0, 1, 1.2])
     @pytest.mark.parametrize("eset", [1, 10, 100, 500, 1000])
-    def test_emin(self, emin, eset):
-        c = Contour(eset, 10000, emin)
-        assert (emin - 5) <= c.samples.real.min()
+    def test_emin_and_emin_shift(self, emin, emin_shift, eset):
+        c = Contour(eset, 10000, emin=emin, emax=100, emin_shift=emin_shift)
+        assert (emin + emin_shift) <= c.samples.real.min()
         c.emin = -100
         assert -100 <= c.samples.real.min()
 
     @pytest.mark.parametrize("emax", [-10, -0.1, 0, 1, 1.2])
+    @pytest.mark.parametrize("emax_shift", [-10, -0.1, 0, 1, 1.2])
     @pytest.mark.parametrize("eset", [1, 10, 100, 500, 1000])
-    def test_emax(self, emax, eset):
-        c = Contour(eset, 10000, emin=-100, emax=emax)
-        assert c.samples.real.max() <= emax or (c.samples.real.max() - emax) < 1e-14
+    def test_emax_and_emax_shift(self, emax, emax_shift, eset):
+        c = Contour(eset, 10000, emin=-100, emax=emax, emax_shift=emax_shift)
+        assert (
+            c.samples.real.max() <= (emax + emax_shift)
+            or (c.samples.real.max() - (emax + emax_shift)) < 1e-14
+        )
         c.emax = 100
         assert c.samples.real.max() <= 100 or (c.samples.real.max() - 100) < 1e-14
 

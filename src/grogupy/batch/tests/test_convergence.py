@@ -20,14 +20,14 @@
 
 import pytest
 
-from grogupy.physics import Builder
+from grogupy.batch.converge import *
 
-pytestmark = [pytest.mark.physics]
+pytestmark = [pytest.mark.batch]
 
 
-class TestBuilder:
+class TestTiming:
     @pytest.mark.xfail(raises=NotImplementedError)
-    def test_Builder(self):
+    def test_generate_convergence(self):
         raise NotImplementedError
 
 

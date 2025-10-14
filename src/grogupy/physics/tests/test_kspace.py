@@ -42,12 +42,8 @@ class TestKspace:
         assert len(k.kpoints) == np.prod([100, 100, 100])
         assert len(k.weights) == np.prod([100, 100, 100])
 
-    @pytest.mark.parametrize(
-        "kset", [[1, 1, 1], [10, 10, 10], [1, 10, 1], [1, 1, 10], [10, 1, 1]]
-    )
     @pytest.mark.xfail(raises=NotImplementedError)
-    def test_kpoints(self, kset):
-        k = Kspace(kset)
+    def test_kpoints(self):
         raise NotImplementedError
 
     @pytest.mark.parametrize(
