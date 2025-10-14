@@ -212,10 +212,14 @@ class MagneticEntity:
         self.__cell: NDArray = dh.geometry.cell
 
         atom, l, orbital, tag = parse_magnetic_entity(dh, atom, l, orb)
-        self._atom: NDArray = np.array([atom]).flatten()
+        self._atom: NDArray = np.array([atom]).flatten().astype(int)
         self._l = l
-        self._orbital_box_indices: NDArray = np.sort(np.array(orbital).flatten())
-        self._total_orbital_box_indices: NDArray = np.sort(dh.a2o(self._atom, all=True))
+        self._orbital_box_indices: NDArray = np.sort(
+            np.array(orbital).flatten()
+        ).astype(int)
+        self._total_orbital_box_indices: NDArray = np.sort(
+            dh.a2o(self._atom, all=True)
+        ).astype(int)
         self._tags = tag
 
         # try to get Mulliken charges
@@ -756,13 +760,13 @@ class MagneticEntityList:
         ] = None,
     ):
         if magnetic_entities is None:
-            self.__magnetic_entities = []
+            self.__magnetic_entities: NDArray = np.array([])
         elif isinstance(magnetic_entities, MagneticEntityList):
             self.__magnetic_entities = magnetic_entities.__magnetic_entities
         elif isinstance(magnetic_entities, list) or isinstance(
             magnetic_entities, np.ndarray
         ):
-            self.__magnetic_entities = list(magnetic_entities)
+            self.__magnetic_entities: NDArray = np.array(magnetic_entities)
         else:
             raise Exception(f"Bad input type: {type(magnetic_entities)}!")
 
@@ -776,16 +780,16 @@ class MagneticEntityList:
         if isinstance(other, MagneticEntityList):
             other = other.__magnetic_entities
         elif isinstance(other, MagneticEntity):
-            other = [other]
+            other = np.array([other])
         elif isinstance(other, list):
-            pass
+            other = np.array(other)
         elif isinstance(other, np.ndarray):
-            other = other.tolist()
+            pass
         else:
             raise Exception(
                 "Only list, np.ndparray, MagneticEntity and MagneticEntityList can be added to MagneticEntityList"
             )
-        return MagneticEntityList(self.__magnetic_entities + other)
+        return MagneticEntityList(np.hstack([self.__magnetic_entities, other]))
 
     def __getstate__(self):
         state = self.__dict__.copy()
@@ -802,7 +806,7 @@ class MagneticEntityList:
             temp = object.__new__(MagneticEntity)
             temp.__setstate__(m)
             out.append(temp)
-        state["_MagneticEntityList__magnetic_entities"] = out
+        state["_MagneticEntityList__magnetic_entities"] = np.array(out)
 
         self.__dict__ = state
 
@@ -817,15 +821,8 @@ class MagneticEntityList:
                 dtype=object,
             )
 
-    def __getitem__(
-        self, item: Union[int, list[int], NDArray]
-    ) -> Union[MagneticEntity, list[MagneticEntity]]:
-        out = []
-        if isinstance(item, int):
-            item = [item]
-        for i in item:
-            out.append(self.__magnetic_entities[i])
-        return out
+    def __getitem__(self, item: Union[int, list[int], NDArray]) -> NDArray:
+        return self.__magnetic_entities[item]
 
     def __repr__(self) -> str:
         """String representation of the instance."""
@@ -1031,7 +1028,9 @@ class MagneticEntityList:
     def append(self, item):
         """Appends to the magnetic entity list."""
         if isinstance(item, MagneticEntity):
-            self.__magnetic_entities.append(item)
+            self.__magnetic_entities = np.hstack(
+                [self.__magnetic_entities, np.array([item])]
+            )
         else:
             raise Exception("This class is reserved for MagneticEntity instances only!")
 
@@ -1043,7 +1042,7 @@ class MagneticEntityList:
         list
             The magnetic entities in a list format.
         """
-        return self.__magnetic_entities
+        return self.__magnetic_entities.tolist()
 
     def toarray(self) -> NDArray:
         """Returns a numpy array from the underlying data.
@@ -1053,7 +1052,7 @@ class MagneticEntityList:
         NDArray
             The magnetic entities in a numpy array.
         """
-        return np.array(self.__magnetic_entities, dtype=object)
+        return self.__magnetic_entities
 
 
 if __name__ == "__main__":

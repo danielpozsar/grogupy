@@ -538,7 +538,7 @@ class Pair:
             raise Exception("First calculate the energies!")
 
         J = calculate_isotropic_biquadratic_only(self.energies)
-        self._J = None
+        self._J = J
 
     def copy(self):
         """Returns the deepcopy of the instance.
@@ -561,11 +561,11 @@ class PairList:
 
     def __init__(self, pairs: Union[None, list[Pair], NDArray, "PairList"] = None):
         if pairs is None:
-            self.__pairs = []
+            self.__pairs: NDArray = np.array([])
         elif isinstance(pairs, PairList):
             self.__pairs = pairs.__pairs
         elif isinstance(pairs, list) or isinstance(pairs, np.ndarray):
-            self.__pairs = list(pairs)
+            self.__pairs: NDArray = np.array(pairs)
         else:
             raise Exception(f"Bad input type: {type(pairs)}!")
 
@@ -579,16 +579,16 @@ class PairList:
         if isinstance(other, PairList):
             other = other.__pairs
         elif isinstance(other, Pair):
-            other = [other]
+            other = np.array([other])
         elif isinstance(other, list):
-            pass
+            other = np.array(other)
         elif isinstance(other, np.ndarray):
-            other = other.tolist()
+            pass
         else:
             raise Exception(
                 "Only list, np.ndparray, Pair and PairList can be added to PairList"
             )
-        return PairList(self.__pairs + other)
+        return PairList(np.hstack([self.__pairs, other]))
 
     def __getstate__(self) -> dict:
         state = self.__dict__.copy()
@@ -605,7 +605,7 @@ class PairList:
             temp = object.__new__(Pair)
             temp.__setstate__(p)
             out.append(temp)
-        state["_PairList__pairs"] = out
+        state["_PairList__pairs"] = np.array(out)
 
         self.__dict__ = state
 
@@ -617,15 +617,8 @@ class PairList:
                 [p.__getattribute__(name) for p in self.__pairs], dtype=object
             )
 
-    def __getitem__(
-        self, item: Union[int, list[int], NDArray]
-    ) -> Union[Pair, list[Pair]]:
-        out = []
-        if isinstance(item, int):
-            item = [item]
-        for i in item:
-            out.append(self.__pairs[i])
-        return out
+    def __getitem__(self, item: Union[int, list[int], NDArray]) -> NDArray:
+        return self.__pairs[item]
 
     def __repr__(self) -> str:
         """String representation of the instance."""
@@ -797,7 +790,7 @@ class PairList:
     def append(self, item):
         """Appends to the pair list."""
         if isinstance(item, Pair):
-            self.__pairs.append(item)
+            self.__pairs = np.hstack([self.__pairs, np.array([item])])
         else:
             raise Exception("This class is reserved for Pair instances only!")
 
@@ -809,7 +802,7 @@ class PairList:
         list
             The pairs in a list format.
         """
-        return self.__pairs
+        return self.__pairs.tolist()
 
     def toarray(self) -> NDArray:
         """Returns a numpy array from the underlying data.
@@ -819,7 +812,7 @@ class PairList:
         NDArray
             The pairs in a numpy array.
         """
-        return np.array(self.__pairs, dtype=object)
+        return self.__pairs
 
 
 if __name__ == "__main__":
