@@ -43,25 +43,6 @@ Physical classes
    PairList                List of Pairs.
    MagneticEntityList      List of MagneticEntities.
 
-Utilities
----------
-
-.. autosummary::
-   :toctree: _generated/
-
-   get_number_of_electrons      Determines the number of electrons in the system from the density matrix.
-   automatic_emin               It reads the lowest energy level from siesta.
-   blow_up_orbindx              Function to blow up orbital indices to make SPIN BOX indices
-   spin_tracer                  Spin tracer utility
-   parse_magnetic_entity        Function to get the orbital indices of a given magnetic entity.
-   interaction_energy           The interaction energy variation upon rotations.
-   second_order_energy          The second order energy variation upon rotations.
-   calculate_anisotropy_tensor  Calculates the renormalized anisotropy tensor from the energies.
-   fit_anisotropy_tensor        Fits the anisotropy tensor to the energies
-   calculate_exchange_tensor    Calculates the exchange tensor from the energies
-   fit_exchange_tensor          Fits the exchange tensor to the energies
-   calculate_isotropic_only     Calculates the isotropic exchange only.
-
 Background information
 ----------------------
 

@@ -430,13 +430,13 @@ def save(
        on the sisl version
 
     2. This contains compression 1, but sets the keys "Gii", "Gij",
-       "Gji", "Vu1" and "Vu2" to [], to save space
+       "Gji", "Vu1" and "Vu2" to [ ], to save space
 
     3. This contains compression 1 and 2, but sets the keys "S", "H",
-       to [], to save space
+       to [ ], to save space
 
     4. This contains compression 1, 2 and 3, but sets the keys "kpoints",
-       "samples", "weights" (for kpoints and energy points) to [], to
+       "samples", "weights" (for kpoints and energy points) to [ ], to
        save space
 
     Parameters

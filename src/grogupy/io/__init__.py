@@ -48,21 +48,6 @@ These are the main input output functions for the user.
    read_fdf                     Reads input for command line tools from an fdf file.
    read_py                      Reads input for command line tools from a python file.
 
-Utility functions
------------------
-
-These are utility functions that are mostly used in the background, but 
-could be useful in some special applications.
-
-.. autosummary::
-   :toctree: _generated/
-
-   decipher                     Figures out the orbital definition of a magnetic entity from a tag.
-   decipher_all_by_pos          Gets the magnetic entities and pairs from their position.
-   decipher_all_by_tag          Gets the magnetic entities and pairs from their tags.
-   strip_dict_structure         Clears the data structure during saving to reduce size.
-   standardize_input            Standardizes the input from *.py* and *.fdf* using the default values.
-
 """
 
 from .._core.io_utilities import *

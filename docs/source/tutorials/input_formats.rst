@@ -143,13 +143,13 @@ format. See and compare the following examples.
             # on the sisl version
             # 
             # 2. This contains compression 1, but sets the keys "Gii", "Gij", 
-            # "Gji", "Vu1" and "Vu2" to [], to save space
+            # "Gji", "Vu1" and "Vu2" to [ ], to save space
             # 
             # 3. This contains compression 1 and 2, but sets the keys "S", "H",
-            # to [], to save space
+            # to [ ], to save space
             # 
             # 4. This contains compression 1, 2 and 3, but sets the keys "kpoints", 
-            # "samples", "weights" (for kpoints and energy points) to [], to 
+            # "samples", "weights" (for kpoints and energy points) to [ ], to 
             # save space
             
             pickle_compress_level = 2
@@ -302,13 +302,13 @@ format. See and compare the following examples.
             # on the sisl version
             # 
             # 2. This contains compression 1, but sets the keys "Gii", "Gij", 
-            # "Gji", "Vu1" and "Vu2" to [], to save space
+            # "Gji", "Vu1" and "Vu2" to [ ], to save space
             # 
             # 3. This contains compression 1 and 2, but sets the keys "S", "H",
-            # to [], to save space
+            # to [ ], to save space
             # 
             # 4. This contains compression 1, 2 and 3, but sets the keys "kpoints", 
-            # "samples", "weights" (for kpoints and energy points) to [], to 
+            # "samples", "weights" (for kpoints and energy points) to [ ], to 
             # save space
 
             PickleCompressLevel         2
@@ -476,9 +476,9 @@ spinmodel, *by default generalised-grogu*
     includes the biquadratic exchange parameters.
 
     .. warning::
-        The 'generalised-fit' method does not work for the anisotropy tensors yet. 
-        The 'isotropic-biquadratic-only' method does not work, because we need to 
-        make design decesions about how to strore the energies.
+        The 'isotropic-biquadratic-only' method does not work automatically, because we need to 
+        make design decesions about how to strore the energies. Newertheless it is 
+        possible to calculate the biquadratic exchange from the energies by hand.
 
 parallelmode, *by default None*
     Parallelization can be turned on over the Brillouin-zone sampling by 
