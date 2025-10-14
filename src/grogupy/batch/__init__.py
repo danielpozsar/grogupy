@@ -46,6 +46,8 @@ that can otherwise help with running in an HPC environment.
 .. autosummary::
    :toctree: _generated/
 
+   generate_convergence          Generate a list of files for convergence calculations.
+
 Examples
 --------
 
