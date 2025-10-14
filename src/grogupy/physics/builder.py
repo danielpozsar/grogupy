@@ -19,7 +19,6 @@
 # SOFTWARE.
 
 import copy
-import io
 import os
 import warnings
 from typing import Union
@@ -381,6 +380,7 @@ class Builder:
         out += (
             f"Maximum number of Greens function samples per batch:\t{max_g}" + newline
         )
+        out += f"Low memory mode:\t\t\t\t\t{self.low_memory_mode}" + newline
         # ============================================================
         out += section + newline
         out += "Cell [Ang]" + newline
