@@ -221,7 +221,7 @@ line   Formal description
 
 This section lists parameters of the intra-atomic anisotropy of the spin
 Hamiltonian :math:`\boldsymbol{A}_{i}`. For further information see the 
-:ref: `theoretical background <theoretical_background>` in the tutorials.
+:ref:`theoretical background <theoretical_background>` in the tutorials.
 
 Exchange interaction
 --------------------
@@ -270,5 +270,5 @@ line   Formal description
 50     Section separator. Approximately 80 "=" symbols.
 ====== =========================================================================
 
-The last section list full matrix of the biliniar exchange parameters :math:`\boldsymbol{J}_{ij}`.
- For further information see the :ref: `theoretical background <theoretical_background>` in the tutorials.
+The last section lists full the matrices of the biliniar exchange parameters :math:`\boldsymbol{J}_{ij}`.
+For further information see the :ref:`theoretical background <theoretical_background>` in the tutorials.
