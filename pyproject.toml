@@ -8,6 +8,11 @@ dynamic = ["version"]
 authors = [
   { name="Daniel Tibor Pozsar", email="danielpozsar@student.elte.hu" },
   { name="Laszlo Oroszlany", email="laszlo.oroszlany@ttk.elte.hu" },
+  { name="Gabriel  Martinez-Carracedo"},
+  { name="Amador Garcia-Fuente"},
+  { name="Laszlo Udvardi"}, 
+  { name="Laszlo Szunyogh"},
+  { name="Jaime, Ferrer"},
 ]
 description = """Python package calculating relativistic magnetic interactions 
 for the generalised Heisenberg model."""
