@@ -21,3 +21,6 @@ pandoc
 # for doctest
 ipython
 plotly
+
+# for dependency graph
+pydeps

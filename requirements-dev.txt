@@ -17,7 +17,6 @@ ipykernel
 matplotlib
 plotly
 nbformat
-pydeps
 
 # testing
 pytest
