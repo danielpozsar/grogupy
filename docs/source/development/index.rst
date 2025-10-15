@@ -54,6 +54,12 @@ building should not throw any warnings after removing the
 **_genrated** folder from **API** and running ``make clean``, 
 ``make build``.
 
+Recreate the dependency graph by running the following command.
+
+.. code-block:: bash
+
+  pydeps src/grogupy --max-module-depth=2 --cluster --keep-target-cluster --rmprefix grogupy. --noshow -o docs/source/dependencies.svg
+
 The commit for the version release should not contain any new 
 features or bugfixes, just the final steps to update some 
 parameters. Here is a list of TODOs in the last commit:
