@@ -426,7 +426,7 @@ atomicsubset
 kwargsformagent, *by default dict(l=None)*
     Even if the magnetic entity is confined to a single atom there are many 
     ways to tweak its definition. See the :ref:`setting magnetic entities 
-    <setting_up_magnetic_entities>` tutorial. This parameter passes a 
+    </tutorials/setup_magnetic_entities.ipynb>` tutorial. This parameter passes a 
     dictionary to each magnetic entity definition. Furthermore you can specify
     dictionaries for each magnetic entity, by using their tags as keys. Then the 
     corresponding values will be used for that specific magnetic entity.
@@ -474,6 +474,11 @@ spinmodel, *by default generalised-grogu*
     perpendicular direction, which  is also enforced and it greatly reduces runtime.
     'isotropic-biquadratic-only' is the same as the 'isotropic-only', but it also 
     includes the biquadratic exchange parameters.
+
+    .. warning::
+        The 'generalised-fit' method fits the on-site anisotropy tensor from the 
+        reference directions, which is in an experimental phase. Always validate 
+        these results.
 
     .. warning::
         The 'isotropic-biquadratic-only' method does not work automatically, because we need to 
