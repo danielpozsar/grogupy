@@ -12,8 +12,8 @@ features.
 
    input_formats
    output_formats
-   magnetic_entity
-   memory_management
+   setup_magnetic_entities
    convergence_with_high_throughput
    command_line_usage
+   memory_management
    fix_gpu_linking
