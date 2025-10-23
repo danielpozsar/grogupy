@@ -1062,10 +1062,14 @@ def save_UppASD(
             posfile += f"{i+1}\t{i+1}\t{bvc[0]:.8f}\t\t{bvc[1]:.8f}\t\t{bvc[2]:.8f}\n"
             # if spin moment is local
             if spin_moment[0].lower() == "l":
-                S = np.array([mag_ent.local_Sx, mag_ent.local_Sy, mag_ent.local_Sz])
+                # because of the Uppsala convention, which uses the
+                # magnetic moment we need two times the spin moment
+                S = np.array([mag_ent.local_Sx, mag_ent.local_Sy, mag_ent.local_Sz]) * 2
             # if spin moment is total
             elif spin_moment[0].lower() == "t":
-                S = np.array([mag_ent.total_Sx, mag_ent.total_Sy, mag_ent.total_Sz])
+                # because of the Uppsala convention, which uses the
+                # magnetic moment we need two times the spin moment
+                S = np.array([mag_ent.total_Sx, mag_ent.total_Sy, mag_ent.total_Sz]) * 2
             else:
                 raise Exception(
                     f"Unrecognized spin moment: {spin_moment}. It can be local or total."
