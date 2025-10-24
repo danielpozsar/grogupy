@@ -205,7 +205,7 @@ if CONFIG.MPI_loaded:
 
                     # solve Greens function sequentially for the energies, because of memory bound
                     elif (
-                        builder.greens_function_solver == "sequenial"
+                        builder.greens_function_solver == "sequential"
                     ):  # sequential solver
 
                         # make chunks for reduced parallelization over energy sample points
