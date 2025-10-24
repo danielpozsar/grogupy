@@ -19,7 +19,7 @@
 # SOFTWARE.
 
 from concurrent.futures import ThreadPoolExecutor
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Literal, Union
 
 import numpy as np
 from numpy.typing import NDArray
@@ -45,7 +45,7 @@ if CONFIG.is_GPU:
 
     def gpu_solver(
         max_g_per_loop: int,
-        mode: str,
+        mode: Literal["parallel", "sequential"],
         gpu_number: int,
         kpoints: list[NDArray],
         kweights: list[NDArray],
@@ -70,7 +70,7 @@ if CONFIG.is_GPU:
         ----------
         max_g_per_loop: int
             Maximum number of greens function samples per loop
-        mode : str
+        mode : Literal["parallel", "sequential"]
             The Greens function solver, which can be parallel or sequential
         gpu_number : int
             The ID of the GPU which we want to run on
@@ -147,7 +147,7 @@ if CONFIG.is_GPU:
                 SK = cp.einsum("abc,a->bc", cp.array(S), phases)
 
                 # solve the Greens function on all energy points in one step
-                if mode[0].lower() == "p":
+                if mode == "parallel":
                     Gk = cp.linalg.inv(SK * samples - HK).get()
 
                     # store the Greens function slice of the magnetic entities
@@ -163,7 +163,7 @@ if CONFIG.is_GPU:
                         G_pair_ji[l] += onsite_projection(Gk, sbi2, sbi1) * wk / phase
 
                 # solve Greens function sequentially for the energies, because of memory bound
-                elif mode[0].lower() == "s":
+                elif mode == "sequential":
 
                     # make chunks for reduced parallelization over energy sample points
                     number_of_chunks = np.floor(eset / max_g_per_loop) + 1
@@ -262,9 +262,9 @@ if CONFIG.is_GPU:
             print(
                 "--------------------------------------------------------------------------------"
             )
-            if builder.greens_function_solver[0].lower() == "p":  # parallel solver
+            if builder.greens_function_solver == "parallel":  # parallel solver
                 G_mem = builder.contour.eset * np.prod(builder.hamiltonian.H.shape) * 16
-            elif builder.greens_function_solver[0].lower() == "s":  # sequential solver
+            elif builder.greens_function_solver == "sequential":  # sequential solver
                 G_mem = (
                     builder.max_g_per_loop * np.prod(builder.hamiltonian.H.shape) * 16
                 )
@@ -517,9 +517,9 @@ if CONFIG.is_GPU:
             print(
                 "--------------------------------------------------------------------------------"
             )
-            if builder.greens_function_solver[0].lower() == "p":  # parallel solver
+            if builder.greens_function_solver == "parallel":  # parallel solver
                 G_mem = builder.contour.eset * np.prod(builder.hamiltonian.H.shape) * 16
-            elif builder.greens_function_solver[0].lower() == "s":  # sequentia solver
+            elif builder.greens_function_solver == "sequential":  # sequential solver
                 G_mem = (
                     builder.max_g_per_loop * np.prod(builder.hamiltonian.H.shape) * 16
                 )

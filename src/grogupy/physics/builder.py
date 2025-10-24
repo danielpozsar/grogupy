@@ -21,7 +21,7 @@
 import copy
 import os
 import warnings
-from typing import Union
+from typing import Literal, Union
 
 import numpy as np
 import sisl
@@ -137,19 +137,19 @@ class Builder:
         List of pairs
     low_memory_mode: bool, optional
         The memory mode of the calculation, by default False
-    greens_function_solver: {"Sequential", "Parallel"}
-        The solution method for the Hamiltonian inversion, by default "Parallel"
+    greens_function_solver: Literal["sequential", "parallel"]
+        The solution method for the Hamiltonian inversion, by default "parallel"
     max_g_per_loop: int, optional
         Maximum number of greens function samples per loop, by default 1
     apply_spin_model: bool, optional
         If it is True, then the exchange and anisotropy tensors are calculated,
         by default True
-    spin_model: {"generalised-fit", "generalised-grogu", "isotropic-only"}
+    spin_model: Literal["generalised-fit", "generalised-grogu", "isotropic-only", "isotropic-biquadratic-only"]
         The solution method for the exchange and anisotropy tensor, by default
         "generalised-fit"
-    parallel_mode: Union[None, str], optional
+    parallel_mode: Literal[None, "K"], optional
         The parallelization mode for the Hamiltonian inversions, by default None
-    architecture: {"CPU", "GPU"}, optional
+    architecture: Literal["CPU", "GPU"], optional
         The architecture of the machine that grogupy is run on, by default 'CPU'
     SLURM_ID: str
         The ID of the SLURM job, if available, else 'Could not be determined.'
@@ -187,19 +187,29 @@ class Builder:
 
         # these are the relevant parameters for the solver
         self.__low_memory_mode: bool = False
-        self.__greens_function_solver: str = "Parallel"
+        self.__greens_function_solver: Literal["parallel", "sequential"] = "parallel"
         self.__max_g_per_loop: int = 1
-        self.__parallel_mode: Union[None, str] = None
-        self.__architecture: str = CONFIG.architecture
+        self.__parallel_mode: Literal[None, "K"] = None
+        self.__architecture: Literal["CPU", "GPU"] = CONFIG.architecture
         self.__apply_spin_model: bool = True
+
+        self.__spin_model: Literal[
+            "generalised-grogu",
+            "generalised-fit",
+            "isotropic-only",
+            "isotropic-biquadratic-only",
+        ] = "generalised-fit"
         if ref_xcf_orientations == [
             [1, 0, 0],
             [0, 1, 0],
             [0, 0, 1],
         ]:
-            self.__spin_model: str = "generalised-grogu"
-        else:
-            self.__spin_model: str = "generalised-fit"
+            self.__spin_model: Literal[
+                "generalised-grogu",
+                "generalised-fit",
+                "isotropic-only",
+                "isotropic-biquadratic-only",
+            ] = "generalised-grogu"
 
         # create reference directions
         self.__ref_xcf_orientations = process_ref_directions(
@@ -370,7 +380,7 @@ class Builder:
             f"Solver used for Greens function calculation:\t\t{self.greens_function_solver}"
             + newline
         )
-        if self.greens_function_solver[0].lower() == "s":
+        if self.greens_function_solver == "sequential":
             max_g = self.__max_g_per_loop
         else:
             if self.contour is not None:
@@ -459,14 +469,21 @@ class Builder:
         return self.hamiltonian.NO
 
     @property
-    def spin_model(self) -> str:
+    def spin_model(
+        self,
+    ) -> Literal[
+        "generalised-grogu",
+        "generalised-fit",
+        "isotropic-only",
+        "isotropic-biquadratic-only",
+    ]:
         """The solver used for the exchange and anisotropy tensor calculation."""
         return self.__spin_model
 
     @spin_model.setter
     def spin_model(self, value: str) -> None:
         if value == "generalised-fit":
-            self.__spin_model: str = value
+            self.__spin_model = value
             # if there are more than two perpendicular directions (generalised-grogu)
             # or ther are less than two perpendicular directions (isotropic-only,
             # isotropic-biquadratic-only),
@@ -486,14 +503,14 @@ class Builder:
                     break
 
         elif value == "generalised-grogu":
-            self.__spin_model: str = value
+            self.__spin_model = value
             if PRINTING:
                 warnings.warn(
                     "generalised-grogu spin model: reset reference and perpendicular directions!"
                 )
 
         elif value == "isotropic-only" or value == "isotropic-biquadratic-only":
-            self.__spin_model: str = value
+            self.__spin_model = value
             if PRINTING:
                 warnings.warn(
                     "Isotropic spin model: first reference and first perpendicular direction is used!"
@@ -556,15 +573,15 @@ class Builder:
 
     @property
     def greens_function_solver(self) -> str:
-        """The solution method for the Hamiltonian inversion, by default "Sequential"."""
+        """The solution method for the Hamiltonian inversion, by default "parallel"."""
         return self.__greens_function_solver
 
     @greens_function_solver.setter
-    def greens_function_solver(self, value: str) -> None:
-        if value.lower()[0] == "s":
-            self.__greens_function_solver = "Sequential"
-        elif value.lower()[0] == "p":
-            self.__greens_function_solver = "Parallel"
+    def greens_function_solver(self, value: Literal["sequential", "parallel"]) -> None:
+        if value == "sequential":
+            self.__greens_function_solver = "sequential"
+        elif value == "parallel":
+            self.__greens_function_solver = "parallel"
         else:
             raise Exception(
                 f"{value} is not a permitted Green's function solver, when the architecture is {self.__architecture}."
@@ -589,10 +606,10 @@ class Builder:
         return self.__parallel_mode
 
     @parallel_mode.setter
-    def parallel_mode(self, value) -> None:
+    def parallel_mode(self, value: Literal[None, "K"]) -> None:
         if value is None:
             self.__parallel_mode = None
-        elif value[0].lower() == "k":
+        elif value == "K":
             self.__parallel_mode = "K"
         else:
             raise Exception(f"Unknown parallel mode: {value}!")
@@ -951,19 +968,19 @@ class Builder:
         # no parallelization
         if self.__parallel_mode is None:
             # choose architecture solver
-            if self.__architecture.lower()[0] == "c":  # cpu
+            if self.__architecture == "CPU":  # cpu
                 from .._core.cpu_solvers import default_solver as solver
-            elif self.__architecture.lower()[0] == "g":  # gpu
+            elif self.__architecture == "GPU":  # gpu
                 from .._core.gpu_solvers import default_solver as solver
             else:
                 raise Exception(f"Unknown architecture: {self.__architecture}")
 
         # k point parallelization
-        elif self.__parallel_mode[0].lower() == "k":
+        elif self.__parallel_mode == "K":
             # choose architecture solver
-            if self.__architecture.lower()[0] == "c":  # cpu
+            if self.__architecture == "CPU":  # cpu
                 from .._core.cpu_solvers import solve_parallel_over_k as solver
-            elif self.__architecture.lower()[0] == "g":  # gpu
+            elif self.__architecture == "GPU":  # gpu
                 from .._core.gpu_solvers import solve_parallel_over_k as solver
             else:
                 raise Exception(f"Unknown architecture: {self.__architecture}")
@@ -985,7 +1002,9 @@ class Builder:
         return copy.deepcopy(self)
 
     def a2M(
-        self, atom: Union[int, list[int]], mode: str = "partial"
+        self,
+        atom: Union[int, list[int]],
+        mode: Literal["partial", "complete"] = "partial",
     ) -> list[MagneticEntity]:
         """Returns the magnetic entities that contains the given atoms.
 
@@ -995,7 +1014,7 @@ class Builder:
         ----------
         atom : Union[int, list[int]]
             Atomic indices from the sisl Hamiltonian
-        mode : {"partial", "complete"}, optional
+        mode : Literal["partial", "complete"], optional
             Wether to completely or partially match the atoms to the
             magnetic entities, by default "partial"
         Returns
@@ -1010,14 +1029,14 @@ class Builder:
         M: list = []
 
         # partial matching
-        if mode.lower()[0] == "p":
+        if mode == "partial":
             for at in atom:
                 for mag_ent in self.magnetic_entities:
                     if at in mag_ent._atom:
                         M.append(mag_ent)
 
         # complete matching
-        elif mode.lower()[0] == "c":
+        elif mode == "complete":
             for at in atom:
                 for mag_ent in self.magnetic_entities:
                     if at == mag_ent._atom:

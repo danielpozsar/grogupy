@@ -107,13 +107,11 @@ if CONFIG.MPI_loaded:
                 print(
                     "--------------------------------------------------------------------------------"
                 )
-                if builder.greens_function_solver[0].lower() == "p":  # parallel solver
+                if builder.greens_function_solver == "parallel":  # parallel solver
                     G_mem = (
                         builder.contour.eset * np.prod(builder.hamiltonian.H.shape) * 16
                     )
-                elif (
-                    builder.greens_function_solver[0].lower() == "s"
-                ):  # sequentia solver
+                elif builder.greens_function_solver == "sequential":  # sequentia solver
                     G_mem = (
                         builder.max_g_per_loop
                         * np.prod(builder.hamiltonian.H.shape)
@@ -172,9 +170,7 @@ if CONFIG.MPI_loaded:
                     Hk, Sk = rot_H.HkSk(k)
 
                     # Calculates the Greens function on all the energy levels
-                    if (
-                        builder.greens_function_solver[0].lower() == "p"
-                    ):  # parallel solver
+                    if builder.greens_function_solver == "parallel":  # parallel solver
                         Gk = np.linalg.inv(
                             Sk
                             * builder.contour.samples.reshape(
@@ -209,7 +205,7 @@ if CONFIG.MPI_loaded:
 
                     # solve Greens function sequentially for the energies, because of memory bound
                     elif (
-                        builder.greens_function_solver[0].lower() == "s"
+                        builder.greens_function_solver == "sequenial"
                     ):  # sequential solver
 
                         # make chunks for reduced parallelization over energy sample points
@@ -448,9 +444,9 @@ if CONFIG.MPI_loaded:
             print(
                 "--------------------------------------------------------------------------------"
             )
-            if builder.greens_function_solver[0].lower() == "p":  # parallel solver
+            if builder.greens_function_solver == "parallel":  # parallel solver
                 G_mem = builder.contour.eset * np.prod(builder.hamiltonian.H.shape) * 16
-            elif builder.greens_function_solver[0].lower() == "s":  # sequentia solver
+            elif builder.greens_function_solver == "sequential":  # sequentia solver
                 G_mem = (
                     builder.max_g_per_loop * np.prod(builder.hamiltonian.H.shape) * 16
                 )
@@ -516,7 +512,7 @@ if CONFIG.MPI_loaded:
                 Hk, Sk = rot_H.HkSk(k)
 
                 # Calculates the Greens function on all the energy levels
-                if builder.greens_function_solver[0].lower() == "p":  # parallel solver
+                if builder.greens_function_solver == "parallel":  # parallel solver
                     Gk = np.linalg.inv(
                         Sk * builder.contour.samples.reshape(builder.contour.eset, 1, 1)
                         - Hk
@@ -546,7 +542,7 @@ if CONFIG.MPI_loaded:
 
                 # solve Greens function sequentially for the energies, because of memory bound
                 elif (
-                    builder.greens_function_solver[0].lower() == "s"
+                    builder.greens_function_solver == "sequential"
                 ):  # sequential solver
 
                     # make chunks for reduced parallelization over energy sample points
@@ -801,9 +797,9 @@ else:
             print(
                 "--------------------------------------------------------------------------------"
             )
-            if builder.greens_function_solver[0].lower() == "p":  # parallel solver
+            if builder.greens_function_solver == "parallel":  # parallel solver
                 G_mem = builder.contour.eset * np.prod(builder.hamiltonian.H.shape) * 16
-            elif builder.greens_function_solver[0].lower() == "s":  # sequentia solver
+            elif builder.greens_function_solver == "sequential":  # sequentia solver
                 G_mem = (
                     builder.max_g_per_loop * np.prod(builder.hamiltonian.H.shape) * 16
                 )
@@ -860,7 +856,7 @@ else:
                 Hk, Sk = rot_H.HkSk(k)
 
                 # Calculates the Greens function on all the energy levels
-                if builder.greens_function_solver[0].lower() == "p":  # parallel solver
+                if builder.greens_function_solver == "parallel":  # parallel solver
                     Gk = np.linalg.inv(
                         Sk * builder.contour.samples.reshape(builder.contour.eset, 1, 1)
                         - Hk
@@ -890,7 +886,7 @@ else:
 
                 # solve Greens function sequentially for the energies, because of memory bound
                 elif (
-                    builder.greens_function_solver[0].lower() == "s"
+                    builder.greens_function_solver == "sequential"
                 ):  # sequential solver
 
                     # make chunks for reduced parallelization over energy sample points

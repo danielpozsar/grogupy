@@ -21,7 +21,7 @@
 import importlib.util
 import pickle
 from os.path import join
-from typing import Union
+from typing import Literal, Union
 
 import h5py
 import numpy as np
@@ -1011,7 +1011,7 @@ def save_UppASD(
     builder: Builder,
     folder: Union[None, str] = None,
     fast_compare: bool = False,
-    spin_moment: str = "total",
+    spin_moment: Literal["total", "local"] = "total",
     comments: bool = True,
 ) -> Union[None, list[str]]:
     """Writes the UppASD input files to the given folder.
@@ -1031,7 +1031,7 @@ def save_UppASD(
     fast_compare: bool, optional
         When determining the magnetic entity index a fast comparison can
         be used where only the tags are checked, by default False
-    spin_moment: str, optional
+    spin_moment: Literal["total", "local"], optional
         It switches the used spin moment in the output, can be 'total'
         for the whole atom or atoms involved in the magnetic entity or
         'local' if we only use the part of the mulliken projections that
@@ -1062,12 +1062,12 @@ def save_UppASD(
             # adding line to posfile
             posfile += f"{i+1}\t{i+1}\t{bvc[0]:.8f}\t\t{bvc[1]:.8f}\t\t{bvc[2]:.8f}\n"
             # if spin moment is local
-            if spin_moment[0].lower() == "l":
+            if spin_moment == "local":
                 # because of the Uppsala convention, which uses the
                 # magnetic moment we need two times the spin moment
                 S = np.array([mag_ent.local_Sx, mag_ent.local_Sy, mag_ent.local_Sz]) * 2
             # if spin moment is total
-            elif spin_moment[0].lower() == "t":
+            elif spin_moment == "total":
                 # because of the Uppsala convention, which uses the
                 # magnetic moment we need two times the spin moment
                 S = np.array([mag_ent.total_Sx, mag_ent.total_Sy, mag_ent.total_Sz]) * 2
@@ -1158,7 +1158,7 @@ def save_Vampire(
     builder: Builder,
     folder: Union[None, str] = None,
     fast_compare: bool = False,
-    spin_moment: str = "total",
+    spin_moment: Literal["total", "local"] = "total",
     comments: bool = True,
 ) -> Union[None, tuple[str, str, str]]:
     """Writes the Vampire input files to the given folder.
@@ -1177,7 +1177,7 @@ def save_Vampire(
     fast_compare: bool, optional
         When determining the magnetic entity index a fast comparison can
         be used where only the tags are checked, by default False
-    spin_moment: str, optional
+    spin_moment: Literal["total", "local"], optional
         It switches the used spin moment in the output, can be 'total'
         for the whole atom or atoms involved in the magnetic entity or
         'local' if we only use the part of the mulliken projections that
@@ -1250,11 +1250,11 @@ def save_Vampire(
 
             # local or total spin moments
             mu = None
-            if spin_moment[0].lower() == "l" and m.local_S is not None:
+            if spin_moment == "local" and m.local_S is not None:
                 # because of the Vampire convention, which uses the
                 # magnetic moment we need two times the spin moment
                 mu = 2 * m.local_S
-            elif spin_moment[0].lower() == "t" and m.total_S is not None:
+            elif spin_moment == "total" and m.total_S is not None:
                 # because of the Vampire convention, which uses the
                 # magnetic moment we need two times the spin moment
                 mu = 2 * m.total_S
@@ -1509,7 +1509,7 @@ def save_Vampire(
 def save_magnopy(
     builder: Builder,
     path: Union[None, str] = None,
-    spin_moment: str = "total",
+    spin_moment: Literal["total", "local"] = "total",
     comments: bool = True,
 ) -> Union[None, str]:
     """Creates a magnopy input file.
@@ -1520,7 +1520,7 @@ def save_magnopy(
         The system that we want to save
     path: Union[None, str], optional
         Output path or if None it returns a string, by default None
-    spin_moment: str, optional
+    spin_moment: Literal["total", "local"], optional
         It switches the used spin moment in the output, can be 'total'
         for the whole atom or atoms involved in the magnetic entity or
         'local' if we only use the part of the mulliken projections that
@@ -1583,14 +1583,14 @@ def save_magnopy(
         out += mag_ent.tag + "\t"
         out += "\t".join(map(lambda s: f"{s:.8f}", mag_ent._xyz.mean(axis=0)))
         out += "\t"
-        if spin_moment[0].lower() == "l":
+        if spin_moment == "local":
             s = np.array([mag_ent.local_Sx, mag_ent.local_Sy, mag_ent.local_Sz])
             if s[0] is not None:
                 s = s / np.linalg.norm(s)
                 out += f"{mag_ent.local_S:.8f}\t{s[0]:.8f}\t{s[1]:.8f}\t{s[2]:.8f}"
             else:
                 out += "None\tNone\tNone\tNone"
-        elif spin_moment[0].lower() == "t":
+        elif spin_moment == "total":
             s = np.array([mag_ent.total_Sx, mag_ent.total_Sy, mag_ent.total_Sz])
             if s[0] is not None:
                 s = s / np.linalg.norm(s)
@@ -1699,7 +1699,7 @@ def save_HDF5(
         "Solver used for Greens function calculation",
         data=builder.greens_function_solver,
     )
-    if builder.greens_function_solver[0].lower() == "s":
+    if builder.greens_function_solver == "sequential":
         max_g = builder.__max_g_per_loop
     else:
         if builder.contour is not None:

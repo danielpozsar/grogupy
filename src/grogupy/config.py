@@ -20,6 +20,7 @@
 
 import warnings
 from os import environ
+from typing import Literal
 
 
 class Config:
@@ -40,7 +41,7 @@ class Config:
         Returns wether visualization packages are loaded or not
     MPI_loaded: bool
         Returns wether MPI packages are loaded or not
-    architecture: str
+    architecture: Literal["CPU", "GPU"]
         Returns the architecture
     parallel_size: int
         Returns the parallel size over CPU or GPU
@@ -58,10 +59,10 @@ class Config:
         self.__MPI_loaded: bool = False
 
         # get architecture
-        if architecture.lower() == "cpu":
-            self.__architecture: str = "CPU"
-        elif architecture.lower() == "gpu":
-            self.__architecture: str = "GPU"
+        if architecture.lower() == "CPU":
+            self.__architecture: Literal["CPU", "GPU"] = "CPU"
+        elif architecture.lower() == "GPU":
+            self.__architecture: Literal["CPU", "GPU"] = "GPU"
         else:
             raise Exception("Unknown architecture, use CPU or GPU!")
 
@@ -84,7 +85,7 @@ class Config:
             self.__parallel_size: int = cp.cuda.runtime.getDeviceCount()
 
         # get tqdm
-        if tqdm[0].lower() == "1" or tqdm[0].lower() == "t":
+        if tqdm.lower() == "true":
             self.__tqdm_requested: bool = True
         else:
             self.__tqdm_requested: bool = False
@@ -100,7 +101,7 @@ class Config:
         return self.__MPI_loaded
 
     @property
-    def architecture(self) -> str:
+    def architecture(self) -> Literal["CPU", "GPU"]:
         """Returns the architecture"""
         return self.__architecture
 
