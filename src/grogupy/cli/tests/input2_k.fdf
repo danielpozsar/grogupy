@@ -97,7 +97,7 @@ MaxPairsPerLoop         2
 # interactive work
 LowMemoryMode           False
 # sequential solver is better for large systems
-GreensFunctionSolver    Sequential
+GreensFunctionSolver   sequential
 # maximum number of greens function samples per loop, when
 # greens_function_solver is set to "sequential", reduce it to avoid memory
 # overflow on GPU for large systems
