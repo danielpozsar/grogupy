@@ -78,9 +78,9 @@ format. See and compare the following examples.
             # interactive work
             low_memory_mode = True
             # sequential solver is better for large systems
-            greens_function_solver = "Parallel"
+            greens_function_solver = "parallel"
             # maximum number of greens function samples per loop, when 
-            # greens_function_solver is set to "Sequential", reduce it to avoid memory 
+            # greens_function_solver is set to "sequential", reduce it to avoid memory 
             # overflow on GPU for large systems
             max_g_per_loop = 20
 
@@ -108,7 +108,7 @@ format. See and compare the following examples.
             # either total or local, which controls if only the magnetic
             # entity's spin moment or the whole atom's spin moment is printed
             # used by all output modes
-            out_spin_moment = "Total"
+            out_spin_moment = "total"
 
             # save the grogupy file
             save_grogupy = True
@@ -238,9 +238,9 @@ format. See and compare the following examples.
             # interactive work
             low_memory_mode         True
             # sequential solver is better for large systems
-            GreensFunctionSolver    Parallel
+            GreensFunctionSolver    parallel
             # maximum number of greens function samples per loop, when 
-            greens_function_solver is set to "Sequential", reduce it to avoid memory 
+            greens_function_solver is set to "sequential", reduce it to avoid memory 
             # overflow on GPU for large systems
             MaxGPerLoop             20
 
@@ -268,7 +268,7 @@ format. See and compare the following examples.
             # either total or local, which controls if only the magnetic
             # entity's spin moment or the whole atom's spin moment is printed
             # used by all output modes
-            OutSpinMoment           Total
+            OutSpinMoment           total
 
             # save the grogupy file
             SaveGrogupy                 True
@@ -440,7 +440,7 @@ maxpairsperloop, *by default 1000*
 maxgperloop, *by default 1*
     The maxmum number of parallel matrix inversions. It can be useful, when 
     there is a memory overflow in RAM or in GPU memory. It is only used when 
-    **greensfunctionsolver** is "Sequential", otherwise grogupy uses full 
+    **greensfunctionsolver** is "sequential", otherwise grogupy uses full 
     parallelization of matrix inversions on all energy levels.
 
 lowmemorymode, *by default False*
@@ -448,10 +448,10 @@ lowmemorymode, *by default False*
     some post processing. Reduces RAM usage so it is useful for memory bound 
     systems.
             
-greensfunctionsolver, *by default Parallel*
-    It can be parallel or sequential and determines the parallelization over 
+greensfunctionsolver, *by default parallel*
+    It can be 'parallel' or 'sequential' and determines the parallelization over 
     the energy levels for the matrix inversions. Useful of the system is memory 
-    bound. If it is set to sequential, then **maxgperloop** is used to try some 
+    bound. If it is set to 'sequential', then **maxgperloop** is used to try some 
     less aggressive parallelization.
 
 applyspinmodel, *by default True*
@@ -487,10 +487,10 @@ spinmodel, *by default generalised-grogu*
 
 parallelmode, *by default None*
     Parallelization can be turned on over the Brillouin-zone sampling by 
-    setting parallelmode to "K". It should be turned on for efficiency.
+    setting parallelmode to 'K'. It should be turned on for efficiency.
 
 outspinmoment, *by default total*
-    It can be total or local and determines wether to use the total magnetic 
+    It can be 'total' or 'local' and determines wether to use the total magnetic 
     moment from the atom or just spin moment of the selected shells or 
     orbitals. It is used for the UppASD and Vampire input files.
 

@@ -59,9 +59,9 @@ class Config:
         self.__MPI_loaded: bool = False
 
         # get architecture
-        if architecture.lower() == "CPU":
+        if architecture == "CPU":
             self.__architecture: Literal["CPU", "GPU"] = "CPU"
-        elif architecture.lower() == "GPU":
+        elif architecture == "GPU":
             self.__architecture: Literal["CPU", "GPU"] = "GPU"
         else:
             raise Exception("Unknown architecture, use CPU or GPU!")

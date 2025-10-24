@@ -63,7 +63,7 @@ even more by setting the maximum number of Green's function in a batch.
 
 .. code-block:: python
 
-   greens_function_solver = "Sequential"
+   greens_function_solver = "sequential"
    max_g_per_loop = 100
 
 
@@ -78,5 +78,5 @@ use the same parameters as before.
 
 .. code-block:: python
 
-   greens_function_solver = "Sequential"
+   greens_function_solver = "sequential"
    max_g_per_loop = 100

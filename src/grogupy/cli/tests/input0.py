@@ -79,9 +79,9 @@ max_pairs_per_loop = 10000
 # interactive work
 low_memory_mode = True
 # sequential solver is better for large systems
-greens_function_solver = "Parallel"
+greens_function_solver = "parallel"
 # maximum number of greens function samples per loop, when
-# greens_function_solver is set to "Sequential", reduce it to avoid memory
+# greens_function_solver is set to "sequential", reduce it to avoid memory
 # overflow on GPU for large systems
 max_g_per_loop = 20
 
@@ -109,7 +109,7 @@ parallel_mode = None
 # either total or local, which controls if only the magnetic
 # entity's spin moment or the whole atom's spin moment is printed
 # used by all output modes
-out_spin_moment = "Total"
+out_spin_moment = "total"
 
 # save the magnopy file
 save_magnopy = True
