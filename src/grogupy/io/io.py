@@ -752,10 +752,11 @@ def read_grogupy(file: str):
             for line in section[3:-1]:
                 line = line.split()
                 if line[-1] == "-->":
+                    if len(ref_scf_orientation) == 0:
+                        vw = []
                     if len(ref_scf_orientation) != 0:
                         ref_scf_orientation[-1]["vw"] = np.array(vw, dtype=float)
                     ref_scf_orientation.append({"o": np.array(line[:-1], dtype=float)})
-                    vw = []
                 else:
                     vw.append(np.array(line, dtype=float))
             if len(ref_scf_orientation) != 0:
