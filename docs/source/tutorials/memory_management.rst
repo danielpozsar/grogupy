@@ -9,9 +9,8 @@ bottleneck is not the runtime, but the total memory of the hardware, then you
 should use the memory management part of grogupy. There could be two possible 
 problems, the first one is the memory overflow in RAM and the second one is the 
 memory overflow on a single GPU in the GPU accelerated case. Usually the 
-statistics of a job can be checked by the **jobstats** command and some HPC 
-environments like Komondor (https://jobstats.komondor.hpc.einfra.hu) provide a 
-more detailed interactive dashboard.
+statistics of a job can be checked by the **jobstats** command, but some HPC 
+environments provide a more detailed interactive dashboard.
 
 Overflow in RAM
 ---------------
