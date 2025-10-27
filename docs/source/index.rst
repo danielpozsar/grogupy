@@ -108,5 +108,6 @@ the source code is available on `github <https://github.com/danielpozsar/grogupy
    :caption: Extras
 
    theoretical_background
-   dependencies
    bibliography
+   dependencies
+   changelog
