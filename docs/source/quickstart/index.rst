@@ -20,7 +20,7 @@ Installation
 
             pip install grogupy
 
-        The plotting, MPI acceleration and GPU aceleration part of the 
+        The plotting, MPI acceleration and GPU aceleration parts of the 
         package are optional, but they can also be download via pip.
 
         .. code-block:: bash
@@ -43,6 +43,13 @@ Installation
             python -m build
             pip install dist/grogupy-VERSION_NUMBER-py3-none-any
 
+        ++++
+
+        Or install it directly through pip.
+
+        .. code-block:: bash
+
+            pip install git+https://github.com/danielpozsar/grogupy.git
 
 
 Quickstart tutorials
