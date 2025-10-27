@@ -4,164 +4,160 @@ Input formats
 ====================
 
 The **grogupy_run** command line tool accepts input in the  *.py* and *.fdf* 
-format. See the following example.
+format. See the following python example.
 
-.. tabs:: Input formats
+.. code-block:: python
 
-    .. tab:: Python
-
-        .. code-block:: python
-
-            ###############################################################################
-            #                                 Input files
-            ###############################################################################
+    ###############################################################################
+    #                                 Input files
+    ###############################################################################
 
 
-            infolder = "./benchmarks/CrI3"
-            infile = "CrI3.fdf"
+    infolder = "./benchmarks/CrI3"
+    infile = "CrI3.fdf"
 
 
-            ###############################################################################
-            #                            Convergence parameters
-            ###############################################################################
+    ###############################################################################
+    #                            Convergence parameters
+    ###############################################################################
 
 
-            # kset should be at least 100x100 for 2D diatomic systems
-            kset = [100, 100, 1]
-            # eset should be 100 for insulators and 1000 for metals
-            eset = 100
-            # esetp should be 600 for insulators and 10000 for metals
-            esetp = 10000
-            # emin None sets the minimum energy to the minimum energy in the eigfile
-            emin = None
-            # emax is at the Fermi level at 0
-            emax = 0
-            # the bottom of the energy contour should be shifted by -5 eV
-            emin_shift = -5
-            # the top of the energy contour can be shifted to the middle of the gap for
-            # insulators
-            emax_shift = 0
+    # kset should be at least 100x100 for 2D diatomic systems
+    kset = [100, 100, 1]
+    # eset should be 100 for insulators and 1000 for metals
+    eset = 100
+    # esetp should be 600 for insulators and 10000 for metals
+    esetp = 10000
+    # emin None sets the minimum energy to the minimum energy in the eigfile
+    emin = None
+    # emax is at the Fermi level at 0
+    emax = 0
+    # the bottom of the energy contour should be shifted by -5 eV
+    emin_shift = -5
+    # the top of the energy contour can be shifted to the middle of the gap for
+    # insulators
+    emax_shift = 0
 
 
-            ###############################################################################
-            #                                 Orientations
-            ###############################################################################
+    ###############################################################################
+    #                                 Orientations
+    ###############################################################################
 
 
-            # usually the DFT calculation axis is [0, 0, 1]
-            scf_xcf_orientation = [0, 0, 1]
-            # the reference directions for the energy derivations
-            ref_xcf_orientations = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+    # usually the DFT calculation axis is [0, 0, 1]
+    scf_xcf_orientation = [0, 0, 1]
+    # the reference directions for the energy derivations
+    ref_xcf_orientations = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
 
 
-            ###############################################################################
-            #                      Magnetic entity and pair definitions
-            ###############################################################################
+    ###############################################################################
+    #                      Magnetic entity and pair definitions
+    ###############################################################################
 
 
-            # magnetic entities and pairs can be defined automatically from the cutoff
-            # radius and magnetic atoms
-            setup_from_range = True
-            radius = 20
-            atomic_subset = "Cr"
-            kwargs_for_mag_ent = dict(l=2)
+    # magnetic entities and pairs can be defined automatically from the cutoff
+    # radius and magnetic atoms
+    setup_from_range = True
+    radius = 20
+    atomic_subset = "Cr"
+    kwargs_for_mag_ent = dict(l=2)
 
 
-            ###############################################################################
-            #                                Memory management
-            ###############################################################################
+    ###############################################################################
+    #                                Memory management
+    ###############################################################################
 
 
-            # maximum number of pairs per loop, reduce it to avoid memory overflow
-            max_pairs_per_loop = 10000
-            # in low memory mode we discard some temporary data that could be useful for
-            # interactive work
-            low_memory_mode = True
-            # sequential solver is better for large systems
-            greens_function_solver = "parallel"
-            # maximum number of greens function samples per loop, when 
-            # greens_function_solver is set to "sequential", reduce it to avoid memory 
-            # overflow on GPU for large systems
-            max_g_per_loop = 20
+    # maximum number of pairs per loop, reduce it to avoid memory overflow
+    max_pairs_per_loop = 10000
+    # in low memory mode we discard some temporary data that could be useful for
+    # interactive work
+    low_memory_mode = True
+    # sequential solver is better for large systems
+    greens_function_solver = "parallel"
+    # maximum number of greens function samples per loop, when 
+    # greens_function_solver is set to "sequential", reduce it to avoid memory 
+    # overflow on GPU for large systems
+    max_g_per_loop = 20
 
 
-            ###############################################################################
-            #                                 Solution methods
-            ###############################################################################
+    ###############################################################################
+    #                                 Solution methods
+    ###############################################################################
 
 
-            # the spin model solvers solvers can be turned off, in this case only the 
-            # energies upon rotations are meaningful
-            apply_spin_model = True
-            # the calculation of J and K from the energy derivations, either 
-            # "generalised-fit", "generalised-grogu" or "isotropic-only"
-            spin_model = "generalised-grogu"
-            # parallelization should be turned on for efficiency
-            parallel_mode = "K"
+    # the spin model solvers solvers can be turned off, in this case only the 
+    # energies upon rotations are meaningful
+    apply_spin_model = True
+    # the calculation of J and K from the energy derivations, either 
+    # "generalised-fit", "generalised-grogu" or "isotropic-only"
+    spin_model = "generalised-grogu"
+    # parallelization should be turned on for efficiency
+    parallel_mode = "K"
 
 
-            ###############################################################################
-            #                                   Output files
-            ###############################################################################
+    ###############################################################################
+    #                                   Output files
+    ###############################################################################
 
 
-            # either total or local, which controls if only the magnetic
-            # entity's spin moment or the whole atom's spin moment is printed
-            # used by all output modes
-            out_spin_moment = "total"
+    # either total or local, which controls if only the magnetic
+    # entity's spin moment or the whole atom's spin moment is printed
+    # used by all output modes
+    out_spin_moment = "total"
 
-            # save the grogupy file
-            save_grogupy = True
+    # save the grogupy file
+    save_grogupy = True
 
-            # save the magnopy file
-            save_magnopy = True
-            # add the simulation parameters to the magnopy file as comments
-            magnopy_comments = True
+    # save the magnopy file
+    save_magnopy = True
+    # add the simulation parameters to the magnopy file as comments
+    magnopy_comments = True
 
-            # save the UppASD Atomistic Spin Dynamics software input files
-            # uses the outfolder and out_spin_moment
-            save_UppASD = True
-            # add the simulation parameters to the inpsd.dat file as 
-            # comments
-            uppasd_comments = True
+    # save the UppASD Atomistic Spin Dynamics software input files
+    # uses the outfolder and out_spin_moment
+    save_UppASD = True
+    # add the simulation parameters to the inpsd.dat file as 
+    # comments
+    uppasd_comments = True
 
-            # save the Vampire input files
-            save_Vampire = True
-            # add the simulation parameters to the files as comments
-            vampire_comments = True
+    # save the Vampire input files
+    save_Vampire = True
+    # add the simulation parameters to the files as comments
+    vampire_comments = True
 
-            # save the pickle file
-            save_pickle = True
+    # save the pickle file
+    save_pickle = True
 
-            # The compression level can be set to 0,1,2,3,4. 
-            # Every other value defaults to 2.
-            # 
-            # 0. This means that there is no compression at all.
-            # 
-            # 1. This means, that the keys "_dh" and "_ds" are set
-            # to None, because otherwise the loading would be dependent
-            # on the sisl version
-            # 
-            # 2. This contains compression 1, but sets the keys "Gii", "Gij", 
-            # "Gji", "Vu1" and "Vu2" to [ ], to save space
-            # 
-            # 3. This contains compression 1 and 2, but sets the keys "S", "H",
-            # to [ ], to save space
-            # 
-            # 4. This contains compression 1, 2 and 3, but sets the keys "kpoints", 
-            # "samples", "weights" (for kpoints and energy points) to [ ], to 
-            # save space
-            
-            pickle_compress_level = 2
+    # The compression level can be set to 0,1,2,3,4. 
+    # Every other value defaults to 2.
+    # 
+    # 0. This means that there is no compression at all.
+    # 
+    # 1. This means, that the keys "_dh" and "_ds" are set
+    # to None, because otherwise the loading would be dependent
+    # on the sisl version
+    # 
+    # 2. This contains compression 1, but sets the keys "Gii", "Gij", 
+    # "Gji", "Vu1" and "Vu2" to [ ], to save space
+    # 
+    # 3. This contains compression 1 and 2, but sets the keys "S", "H",
+    # to [ ], to save space
+    # 
+    # 4. This contains compression 1, 2 and 3, but sets the keys "kpoints", 
+    # "samples", "weights" (for kpoints and energy points) to [ ], to 
+    # save space
+    
+    pickle_compress_level = 2
 
-            # output folder, for example the current folder
-            outfolder = "./"
-            # outfile name
-            outfile = None
+    # output folder, for example the current folder
+    outfolder = "./"
+    # outfile name
+    outfile = None
 
 
-            ###############################################################################
-            ###############################################################################
+    ###############################################################################
+    ###############################################################################
 
 Input parameters
 ----------------
