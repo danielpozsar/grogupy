@@ -35,19 +35,17 @@ authors:
     name-suffix: Dr.
     affiliation: Budapest University of Technology and Economics
     orcid: 'https://orcid.org/0000-0001-7430-3627'
-    family-names: Oroszlány
-    name-suffix: Dr.
-    affiliation: Eötvös Loránd University
-    orcid: 'https://orcid.org/0000-0001-5682-6424'
   - given-names: Jaime
     family-names: Ferrer
     name-suffix: Dr.
     affiliation: Universidad de Oviedo
     orcid: 'https://orcid.org/0000-0002-4067-2325'
   - given-names: László
+    family-names: Oroszlány
+    name-suffix: Dr.
+    affiliation: Eötvös Loránd University
+    orcid: 'https://orcid.org/0000-0001-5682-6424'
 
-
-Jaime Ferrer, Amador Garcia Fuente, Gabriel Marinez Carracedo, Szunyogh László és Udvardi László
 identifiers:
   - type: doi
     value: 10.5281/zenodo.15449541
@@ -96,6 +94,7 @@ abstract: >-
 
   grogupy was created by the [TRILMAX
   Consortium](https://trilmax.elte.hu).
+
 keywords:
   - dft
   - physics
@@ -107,4 +106,5 @@ keywords:
   - wannier90
   - solid-state
   - magnetic-materials
+  
 license: MIT

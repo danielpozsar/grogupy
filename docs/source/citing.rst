@@ -31,7 +31,7 @@ the development of grogupy you can cite it through zenodo.
     :substitutions:
 
     @software{zerothi_grogupy,
-        author={D{\'a}niel Tibor, Pozs{\'a}r and Gabriel, Mart{\'\i}nez-Carracedo and Amador, Garc{\'\i}a-Fuente and L{\'a}szl{\'o}, Udvardi and L{\'a}szl{\'o}, Szunyogh and L{\'a}szl{\'o}, Oroszl{\'a}ny and Jaime, Ferrer},
+        author={D{\'a}niel Tibor, Pozs{\'a}r and Gabriel, Mart{\'\i}nez-Carracedo and Amador, Garc{\'\i}a-Fuente and L{\'a}szl{\'o}, Udvardi and L{\'a}szl{\'o}, Szunyogh and Jaime, Ferrer and L{\'a}szl{\'o}, Oroszl{\'a}ny},
         title={grogupy: v|release|},
         year={2025},
         doi={10.5281/zenodo.15449541},
@@ -71,7 +71,7 @@ citation in **bibtex** format.
         }
 
         @software{zerothi_grogupy,
-            author={Daniel, Pozsar},
+            author={D{\'a}niel Tibor, Pozs{\'a}r and Gabriel, Mart{\'\i}nez-Carracedo and Amador, Garc{\'\i}a-Fuente and L{\'a}szl{\'o}, Udvardi and L{\'a}szl{\'o}, Szunyogh and Jaime, Ferrer and L{\'a}szl{\'o}, Oroszl{\'a}ny},
             title={grogupy: v|release|},
             year={2025},
             doi={10.5281/zenodo.15449541},
@@ -104,7 +104,7 @@ citation in **bibtex** format.
     }
 
     @software{zerothi_grogupy,
-        author={Daniel, Pozsar},
+        author={D{\'a}niel Tibor, Pozs{\'a}r and Gabriel, Mart{\'\i}nez-Carracedo and Amador, Garc{\'\i}a-Fuente and L{\'a}szl{\'o}, Udvardi and L{\'a}szl{\'o}, Szunyogh and Jaime, Ferrer and L{\'a}szl{\'o}, Oroszl{\'a}ny},
         title={grogupy: v|release|},
         year={2025},
         doi={10.5281/zenodo.15449541},

@@ -53,4 +53,3 @@ Quickstart tutorials
 
    calculate_magnetic_parameters.ipynb
    visualize_the_exchange.ipynb
-   running_in_hpc

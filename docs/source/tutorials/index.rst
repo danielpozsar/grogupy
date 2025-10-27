@@ -12,7 +12,7 @@ features.
 
    input_formats
    output_formats
-   setup_magnetic_entities
+   setup_magnetic_entities_and_pairs
    convergence_with_high_throughput
    command_line_usage
    memory_management

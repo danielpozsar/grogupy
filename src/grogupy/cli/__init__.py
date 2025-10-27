@@ -36,10 +36,6 @@ Scripts
     analyze                 Submodule with main which takes a *.pkl* output file and creates an *.html* file from it with useful plots.
     check_convergence       Submodule with main which loads results from multiple *.pkl* files and do convergence analysis with them.
 
-Examples
---------
-
-For examples, see the :ref:`running in HPC <running_in_hpc>` section in the documentation.
 """
 
 from grogupy import CONFIG

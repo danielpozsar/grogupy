@@ -4,7 +4,7 @@ Input formats
 ====================
 
 The **grogupy_run** command line tool accepts input in the  *.py* and *.fdf* 
-format. See and compare the following examples.
+format. See the following example.
 
 .. tabs:: Input formats
 
@@ -163,166 +163,6 @@ format. See and compare the following examples.
             ###############################################################################
             ###############################################################################
 
-    .. tab:: fdf
-
-        .. code-block::
-
-            ###############################################################################
-            #                                 Input files
-            ###############################################################################
-
-
-            InFolder        ./benchmarks/CrI3
-            Infile          CrI3.fdf
-
-
-            ###############################################################################
-            #                            Convergence parameters
-            ###############################################################################
-
-
-            # kset should be at least 100x100 for 2D diatomic systems
-            Kset        100 100 1
-            # eset should be 100 for insulators and 1000 for metals
-            Eset        100
-            # esetp should be 600 for insulators and 10000 for metals
-            Esetp       10000
-            # emin None sets the minimum energy to the minimum energy in the eigfile
-            Emin        None
-            # emax is at the Fermi level at 0
-            Emax        0
-            # the bottom of the energy contour should be shifted by -5 eV
-            EminShift   -5
-            # the top of the energy contour can be shifted to the middle of the gap for 
-            # insulators
-            EmaxShift   0
-
-            
-            ###############################################################################
-            #                                 Orientations
-            ###############################################################################
-
-
-            # usually the DFT calculation axis is [0, 0, 1]
-            ScfXcfOrientation   0   0   1
-            # the reference directions for the energy derivations
-            %block RefXcfOrientations
-                1   0   0
-                0   1   0
-                0   0   1
-            %endblock RefXcfOrientations
-
-            
-            ###############################################################################
-            #                      Magnetic entity and pair definitions
-            ###############################################################################
-
-
-            # magnetic entities and pairs can be defined automatically from the cutoff
-            SetupFromRange          True
-            Radius                  20                      # radius and magnetic atoms
-            AtomicSubset            Cr
-            %block KwargsForMagEnt
-                l                   2
-            %endblock KwargsForMagEnt
-
-
-            ###############################################################################
-            #                                Memory management
-            ###############################################################################
-
-
-            # maximum number of pairs per loop, reduce it to avoid memory overflow
-            MaxPairsPerLoop         10000
-            # in low memory mode we discard some temporary data that could be useful for 
-            # interactive work
-            low_memory_mode         True
-            # sequential solver is better for large systems
-            GreensFunctionSolver    parallel
-            # maximum number of greens function samples per loop, when 
-            greens_function_solver is set to "sequential", reduce it to avoid memory 
-            # overflow on GPU for large systems
-            MaxGPerLoop             20
-
-
-            ###############################################################################
-            #                                 Solution methods
-            ###############################################################################
-
-
-            # the spin model solvers solvers can be turned off, in this case only the 
-            # energies upon rotations are meaningful
-            ApplySpinModel  True
-            # the calculation of J and K from the energy derivations, either 
-            # "generalised-fit", "generalised-grogu" or "isotropic-only"
-            SpinModel       generalised-grogu
-            # parallelization should be turned on for efficiency
-            ParallelMode = "K"
-
-
-            ###############################################################################
-            #                                   Output files
-            ###############################################################################
-
-
-            # either total or local, which controls if only the magnetic
-            # entity's spin moment or the whole atom's spin moment is printed
-            # used by all output modes
-            OutSpinMoment           total
-
-            # save the grogupy file
-            SaveGrogupy                 True
-
-            # save the magnopy file
-            SaveMagnopy                 True
-            # add the simulation parameters to the magnopy file as comments
-            MagnopyComments             True
-            
-            # save the UppASD Atomistic Spin Dynamics software input files
-            SaveUppASD                  True
-            # add the simulation parameters to the inpsd.dat file as 
-            # comments
-            UppASDComments =  True
-
-            # save the Vampire input files
-            SaveVampire                 True
-            # add the simulation parameters to the files as comments
-            VampireComments = True
-            
-            # save the pickle file
-            SavePickle                  True
-
-            # The compression level can be set to 0,1,2,3,4. 
-            # Every other value defaults to 2.
-            # 
-            # 0. This means that there is no compression at all.
-            # 
-            # 1. This means, that the keys "_dh" and "_ds" are set
-            # to None, because otherwise the loading would be dependent
-            # on the sisl version
-            # 
-            # 2. This contains compression 1, but sets the keys "Gii", "Gij", 
-            # "Gji", "Vu1" and "Vu2" to [ ], to save space
-            # 
-            # 3. This contains compression 1 and 2, but sets the keys "S", "H",
-            # to [ ], to save space
-            # 
-            # 4. This contains compression 1, 2 and 3, but sets the keys "kpoints", 
-            # "samples", "weights" (for kpoints and energy points) to [ ], to 
-            # save space
-
-            PickleCompressLevel         2
-
-            # output folder, for example the input folder
-            OutFolder                   ./
-            # outfile name, default name
-            OutFile                     None
-
-
-            ###############################################################################
-            ###############################################################################
-
-
 Input parameters
 ----------------
 
@@ -426,7 +266,7 @@ atomicsubset
 kwargsformagent, *by default dict(l=None)*
     Even if the magnetic entity is confined to a single atom there are many 
     ways to tweak its definition. See the :ref:`setting magnetic entities 
-    </tutorials/setup_magnetic_entities.ipynb>` tutorial. This parameter passes a 
+    </tutorials/setup_magnetic_entities_and_pairs.ipynb>` tutorial. This parameter passes a 
     dictionary to each magnetic entity definition. Furthermore you can specify
     dictionaries for each magnetic entity, by using their tags as keys. Then the 
     corresponding values will be used for that specific magnetic entity.

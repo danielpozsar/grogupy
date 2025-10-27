@@ -93,3 +93,12 @@ form
     \boldsymbol{e}_{i}
     K_i
     \boldsymbol{e}_{i}.
+
+
+Furthermore grogupy returns the energy variations upon 
+infinitesimal rotations based on the 
+Liechtenstein-Katsnelson-Antropov-Gubanov torque formalism. 
+The most general Hamiltonian implemented in grogupy is the 
+above example, but in principle any classical Hamiltonian 
+can be fitted based on these energies. For examples see 
+the bibliography.

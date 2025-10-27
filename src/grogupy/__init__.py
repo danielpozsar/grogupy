@@ -118,7 +118,7 @@ __bibtex__ = r"""
 }
 
 @software{zerothi_grogupy,
-    author={D{\'a}niel Tibor, Pozs{\'a}r and Gabriel, Mart{\'\i}nez-Carracedo and Amador, Garc{\'\i}a-Fuente and L{\'a}szl{\'o}, Udvardi and L{\'a}szl{\'o}, Szunyogh and L{\'a}szl{\'o}, Oroszl{\'a}ny and Jaime, Ferrer},
+    author={D{\'a}niel Tibor, Pozs{\'a}r and Gabriel, Mart{\'\i}nez-Carracedo and Amador, Garc{\'\i}a-Fuente and L{\'a}szl{\'o}, Udvardi and L{\'a}szl{\'o}, Szunyogh and Jaime, Ferrer and L{\'a}szl{\'o}, Oroszl{\'a}ny},
     title={grogupy: v%s},
     year={2024-2025},
     doi={10.5281/zenodo.15449541},
