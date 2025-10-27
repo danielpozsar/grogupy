@@ -28,6 +28,7 @@ from grogupy.viz import (
     plot_contour,
     plot_DM_distance,
     plot_DMI,
+    plot_J_S_distance,
     plot_Jiso_distance,
     plot_kspace,
     plot_magnetic_entities,
@@ -88,13 +89,19 @@ def main():
         fig = plot_DM_distance(system, group=True)
         file.write(fig.to_html(full_html=False, include_plotlyjs=False))
 
+        fig = plot_J_S_distance(system, group=True)
+        file.write(fig.to_html(full_html=False, include_plotlyjs=False))
+
         fig = plot_onsite_anisotropy(system)
         file.write(fig.to_html(full_html=False, include_plotlyjs=False))
 
-        fig = plot_pairs(system)
+        fig = plot_DMI(system, heatplot=True)
         file.write(fig.to_html(full_html=False, include_plotlyjs=False))
 
         fig = plot_DMI(system).add_traces(plot_pairs(system, connect=True).data)
+        file.write(fig.to_html(full_html=False, include_plotlyjs=False))
+
+        fig = plot_pairs(system)
         file.write(fig.to_html(full_html=False, include_plotlyjs=False))
 
         fig = plot_magnetic_entities(system)
