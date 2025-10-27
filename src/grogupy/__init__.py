@@ -52,7 +52,7 @@ The ``CONFIG`` instance contains the configuration of grogupy.
 """
 
 __all__ = []
-__version__ = "0.3.1"
+__version__ = "0.4.0"
 version = __version__
 
 # this is for version numbering
