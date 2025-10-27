@@ -101,4 +101,4 @@ Liechtenstein-Katsnelson-Antropov-Gubanov torque formalism.
 The most general Hamiltonian implemented in grogupy is the 
 above example, but in principle any classical Hamiltonian 
 can be fitted based on these energies. For examples see 
-the bibliography.
+the works in the bibliography.
