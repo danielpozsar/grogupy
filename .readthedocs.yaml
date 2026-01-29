@@ -19,7 +19,7 @@ sphinx:
 
 # Build all formats
 formats:
-  -pdf
+  - pdf
 
 # Optional but recommended, declare the Python requirements required
 # to build your documentation
