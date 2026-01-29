@@ -37,7 +37,6 @@ extensions = [
     "sphinx.ext.doctest",
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
-    "sphinx.ext.imgconverter",
     "sphinx.ext.extlinks",
     "sphinx.ext.mathjax",
     "sphinx.ext.viewcode",
@@ -47,7 +46,6 @@ extensions = [
     "sphinxcontrib.bibtex",
     "nbsphinx",
     "sphinx_substitution_extensions",
-    "rst2pdf.pdfbuilder",
 ]
 
 # code block substitution
