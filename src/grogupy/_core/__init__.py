@@ -32,6 +32,33 @@ Constants
 
 Here are the physical constants and default values for the input.
 
+Cpu solvers
+-----------
+
+Functions used in the solution method of the ``Builder`` class.
+Parallelization is done using MPI if it is available.
+
+.. autosummary::
+   :toctree: _generated/
+
+   default_solver          It calculates the energies by the Greens function method without MPI parallelization.
+   solve_parallel_over_k   It calculates the energies by the Greens function method with parallelization over k points.
+
+
+Gpu solvers
+-----------
+
+Functions used in the solution method of the ``Builder`` class.
+Because GPUs run asyncronusly, we can unlock the GIL in python
+and run in a parallel manner over multiple GPUs. The only constrain
+is the input/output writing between hardwares.
+
+.. autosummary::
+   :toctree: _generated/
+
+   solve_parallel_over_k        It calculates the energies by the Greens function method.
+   gpu_solver                   Parallelizes the Green's function solution on GPU.
+
 Utilities
 ---------
 
@@ -95,7 +122,8 @@ Utility functions for the physics subpackage.
 """
 
 from .constants import *
+from .cpu_solvers import *
+from .gpu_solvers import *
 from .io_utilities import *
 from .physics_utilities import *
-from .solvers import *
 from .utilities import *
