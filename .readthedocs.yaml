@@ -18,7 +18,8 @@ sphinx:
   fail_on_warning: true
 
 # Build all formats
-formats: all
+formats:
+  -pdf
 
 # Optional but recommended, declare the Python requirements required
 # to build your documentation
