@@ -14,8 +14,6 @@ Installation
         grogupy can be quickly installed via pip from 
         `PyPI <https://pypi.org/project/grogupy/>`_.
 
-        ++++
-
         .. code-block:: bash
 
             pip install grogupy
@@ -35,15 +33,11 @@ Installation
         empty directory and clone the git repository. Then you can build the 
         wheel and install with pip.
 
-        ++++
-
         .. code-block:: bash
 
             git clone https://github.com/danielpozsar/grogupy.git
             python -m build
             pip install dist/grogupy-VERSION_NUMBER-py3-none-any
-
-        ++++
 
         Or install it directly through pip.
 

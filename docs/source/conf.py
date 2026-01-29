@@ -1,4 +1,4 @@
-# Copyright (c) [2024-2025] [Grogupy Team]
+# Copyright (c) [2024-2026] [Grogupy Team]
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -37,6 +37,7 @@ extensions = [
     "sphinx.ext.doctest",
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
+    "sphinx.ext.imgconverter",
     "sphinx.ext.extlinks",
     "sphinx.ext.mathjax",
     "sphinx.ext.viewcode",
@@ -46,6 +47,7 @@ extensions = [
     "sphinxcontrib.bibtex",
     "nbsphinx",
     "sphinx_substitution_extensions",
+    "rst2pdf.pdfbuilder",
 ]
 
 # code block substitution
