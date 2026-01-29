@@ -1,4 +1,4 @@
-# Copyright (c) [2024-2025] [Grogupy Team]
+# Copyright (c) [2024-2026] [Grogupy Team]
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -1494,18 +1494,22 @@ def plot_1D_convergence(
 
     # check for convergence
     converged = False
+    converged_idx = 0
     for i in range(int(len(compare) - 1)):
         if np.allclose(compare[i], compare[-1], rtol=rtol, atol=atol):
-            fig.add_vline(
-                x=(conv_params[i] + conv_params[i + 1]) / 2,
-                line_width=3,
-                line_color="red",
-            )
-            converged = True
-            break
+            if converged == False:
+                converged = True
+                converged_idx = i
+        else:
+            converged = False
 
-    # if not converged
+    # if converged
     if converged:
+        fig.add_vline(
+            x=(conv_params[converged_idx] + conv_params[converged_idx + 1]) / 2,
+            line_width=3,
+            line_color="red",
+        )
         fig.add_annotation(
             x=0.99,
             y=0.99,
